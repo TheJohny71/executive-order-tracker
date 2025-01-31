@@ -1,0 +1,73 @@
+import { chromium } from 'playwright';
+import { PrismaClient } from '@prisma/client';
+import { Logger } from 'pino';
+import pino from 'pino';
+
+const logger: Logger = pino({
+  transport: {
+    target: 'pino-pretty'
+  }
+});
+
+const prisma = new PrismaClient();
+
+export async function scrapeExecutiveOrders() {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  
+  try {
+    logger.info('Starting executive order scrape');
+    await page.goto('https://www.whitehouse.gov/briefing-room/presidential-actions/executive-orders/');
+    
+    const orders = await page.evaluate(() => {
+      const orderElements = document.querySelectorAll('.post-feed article');
+      return Array.from(orderElements).map(element => {
+        const title = element.querySelector('h2')?.textContent?.trim();
+        const dateStr = element.querySelector('.meta-date')?.textContent?.trim();
+        const link = element.querySelector('a')?.href;
+        const orderNumber = title?.match(/Executive Order \d+/)?.[0].split(' ').pop();
+        
+        return {
+          title,
+          signedDate: dateStr ? new Date(dateStr) : new Date(),
+          url: link,
+          orderNumber
+        };
+      });
+    });
+
+    logger.info(`Found ${orders.length} executive orders`);
+
+    for (const order of orders) {
+      if (!order.orderNumber) {
+        logger.warn('Skipping order without number', order);
+        continue;
+      }
+      
+      await prisma.executiveOrder.upsert({
+        where: { orderNumber: order.orderNumber },
+        update: {
+          title: order.title,
+          signedDate: order.signedDate,
+          url: order.url,
+        },
+        create: {
+          orderNumber: order.orderNumber,
+          title: order.title || '',
+          signedDate: order.signedDate,
+          url: order.url || '',
+        },
+      });
+      
+      logger.info(`Processed order ${order.orderNumber}`);
+    }
+
+    logger.info('Completed executive order scrape');
+  } catch (error) {
+    logger.error('Error scraping executive orders:', error);
+    throw error;
+  } finally {
+    await browser.close();
+    await prisma.$disconnect();
+  }
+}

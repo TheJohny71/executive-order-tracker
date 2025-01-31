@@ -1,15 +1,24 @@
-import { chromium } from 'playwright';
+import { chromium, type Page } from 'playwright';
 import { PrismaClient } from '@prisma/client';
-import { Logger } from 'pino';
+import type { Logger } from 'pino';
 import pino from 'pino';
+import pretty from 'pino-pretty';
 
-const logger: Logger = pino({
-  transport: {
-    target: 'pino-pretty'
-  }
-});
+// Initialize logger
+const logger = pino(
+  pretty({
+    colorize: true
+  })
+);
 
 const prisma = new PrismaClient();
+
+interface ExecutiveOrderData {
+  title: string | undefined;
+  signedDate: Date;
+  url: string | undefined;
+  orderNumber: string | undefined;
+}
 
 export async function scrapeExecutiveOrders() {
   const browser = await chromium.launch();
@@ -36,11 +45,11 @@ export async function scrapeExecutiveOrders() {
       });
     });
 
-    logger.info(`Found ${orders.length} executive orders`);
+    logger.info({ orderCount: orders.length }, 'Found executive orders');
 
     for (const order of orders) {
       if (!order.orderNumber) {
-        logger.warn('Skipping order without number', order);
+        logger.warn({ order }, 'Skipping order without number');
         continue;
       }
       
@@ -59,7 +68,7 @@ export async function scrapeExecutiveOrders() {
         },
       });
       
-      logger.info(`Processed order ${order.orderNumber}`);
+      logger.info({ orderNumber: order.orderNumber }, 'Processed order');
     }
 
     logger.info('Completed executive order scrape');

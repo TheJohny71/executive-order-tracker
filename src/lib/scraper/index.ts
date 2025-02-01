@@ -1,6 +1,6 @@
+// src/lib/scraper/index.ts
 import { chromium, type Page } from 'playwright';
 import { PrismaClient } from '@prisma/client';
-import type { Logger } from 'pino';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 
@@ -16,6 +16,14 @@ interface ScrapedOrder {
   summary?: string;
   agencies: string[];
   categories: string[];
+}
+
+interface RawOrder {
+  type: string;
+  orderNumber?: string;
+  title: string;
+  date: string;
+  url: string;
 }
 
 export async function scrapeExecutiveOrders() {
@@ -43,7 +51,7 @@ async function scrapeOrdersFromPage(page: Page, url: string) {
   await page.goto(url);
   await page.waitForSelector('article');
 
-  const orders = await page.evaluate(() => {
+  const orders: RawOrder[] = await page.evaluate(() => {
     const orderElements = document.querySelectorAll('article');
     return Array.from(orderElements).map(element => {
       const titleEl = element.querySelector('h2');
@@ -60,11 +68,8 @@ async function scrapeOrdersFromPage(page: Page, url: string) {
         type,
         orderNumber,
         title,
-        date: dateEl?.getAttribute('datetime') || dateEl?.textContent?.trim(),
-        url: linkEl?.href,
-        summary: '', // Will be populated when visiting individual pages
-        agencies: [], // Will be populated when visiting individual pages
-        categories: [] // Will be determined based on content analysis
+        date: (dateEl?.getAttribute('datetime') || dateEl?.textContent?.trim() || ''),
+        url: linkEl?.href || ''
       };
     });
   });

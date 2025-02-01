@@ -1,3 +1,4 @@
+// src/app/api/orders/route.ts
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
@@ -8,6 +9,32 @@ const logger = pino(pretty({ colorize: true }));
 
 export const runtime = 'nodejs';
 export const preferredRegion = 'auto';
+
+interface WhereClause {
+  type?: string;
+  date?: {
+    gte?: Date;
+    lte?: Date;
+  };
+  OR?: Array<{
+    title: { contains: string; mode: string };
+    summary: { contains: string; mode: string };
+  }>;
+  categories?: {
+    some: { name: string };
+  };
+  agencies?: {
+    some: { name: string };
+  };
+}
+
+interface Category {
+  name: string;
+}
+
+interface Agency {
+  name: string;
+}
 
 export async function GET(request: Request) {
   try {
@@ -22,33 +49,30 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    // Build where clause for filtering
-    const where: any = {};
+    const where: WhereClause = {};
 
-    if (type && type !== 'all') {
+    if (type) {
       where.type = type;
     }
 
-    if (category && category !== 'all') {
+    if (category) {
       where.categories = {
-        some: {
-          name: category
-        }
+        some: { name: category }
       };
     }
 
-    if (agency && agency !== 'all') {
+    if (agency) {
       where.agencies = {
-        some: {
-          name: agency
-        }
+        some: { name: agency }
       };
     }
 
     if (search) {
       where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { summary: { contains: search, mode: 'insensitive' } }
+        { 
+          title: { contains: search, mode: 'insensitive' },
+          summary: { contains: search, mode: 'insensitive' }
+        }
       ];
     }
 
@@ -58,10 +82,8 @@ export async function GET(request: Request) {
       if (dateTo) where.date.lte = new Date(dateTo);
     }
 
-    // Get total count for pagination
     const total = await prisma.executiveOrder.count({ where });
 
-    // Fetch orders with pagination
     const orders = await prisma.executiveOrder.findMany({
       where,
       include: {
@@ -75,8 +97,17 @@ export async function GET(request: Request) {
       take: limit
     });
 
+    const [categories, agencies] = await Promise.all([
+      prisma.category.findMany(),
+      prisma.agency.findMany()
+    ]);
+
     return NextResponse.json({
       orders,
+      metadata: {
+        categories: categories.map((c: Category) => c.name),
+        agencies: agencies.map((a: Agency) => a.name)
+      },
       pagination: {
         total,
         pages: Math.ceil(total / limit),
@@ -89,25 +120,6 @@ export async function GET(request: Request) {
     logger.error({ error }, 'Error fetching orders');
     return NextResponse.json(
       { error: 'Failed to fetch orders' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    const { orderId } = await request.json();
-
-    await prisma.executiveOrder.update({
-      where: { id: orderId },
-      data: { isNew: false }
-    });
-
-    return NextResponse.json({ status: 'success' });
-  } catch (error) {
-    logger.error({ error }, 'Error updating order');
-    return NextResponse.json(
-      { error: 'Failed to update order' },
       { status: 500 }
     );
   }

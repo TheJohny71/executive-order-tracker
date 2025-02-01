@@ -1,15 +1,11 @@
+// src/app/api/scrape/route.ts
 import { NextResponse } from 'next/server';
 import { scrapeExecutiveOrders } from '@/lib/scraper';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 
-const logger = pino(
-  pretty({
-    colorize: true
-  })
-);
+const logger = pino(pretty({ colorize: true }));
 
-// Mark this as a non-edge function since we're using Playwright
 export const runtime = 'nodejs';
 export const preferredRegion = 'auto';
 

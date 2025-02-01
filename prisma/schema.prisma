@@ -9,16 +9,33 @@ generator client {
 
 model ExecutiveOrder {
   id          String   @id @default(cuid())
-  orderNumber String   @unique
+  orderNumber String?  @unique // Some might be memoranda without numbers
+  type        String   // "Executive Order" or "Memorandum"
   title       String
-  signedDate  DateTime
+  date        DateTime
   url         String
-  pdfUrl      String?
-  content     String?
-  status      String   @default("active")
+  summary     String?  @db.Text
+  notes       String?  @db.Text
+  isNew       Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@index([orderNumber])
-  @@index([signedDate])
+  // Relations
+  categories  Category[]
+  agencies    Agency[]
+
+  @@index([date])
+  @@index([type])
+}
+
+model Category {
+  id          String           @id @default(cuid())
+  name        String           @unique
+  orders      ExecutiveOrder[]
+}
+
+model Agency {
+  id          String           @id @default(cuid())
+  name        String           @unique
+  orders      ExecutiveOrder[]
 }

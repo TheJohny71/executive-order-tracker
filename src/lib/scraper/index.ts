@@ -1,7 +1,6 @@
 // src/lib/scraper/index.ts
 import { chromium, type Page } from 'playwright';
 import { PrismaClient } from '@prisma/client';
-import type { Prisma } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 
@@ -75,34 +74,41 @@ async function scrapeOrdersFromPage(page: Page, url: string) {
   });
 
   for (const order of orders) {
-    if (!order.url) continue;
+    if (!order.url) {
+      logger.warn({ order }, 'Skipping order without URL');
+      continue;
+    }
     
-    await page.goto(order.url);
-    
-    const summary = await page.$eval('article p', 
-      (el) => el?.textContent?.trim() || ''
-    ).catch(() => '');
+    try {
+      await page.goto(order.url);
+      
+      const summary = await page.$eval('article p', 
+        (el) => el?.textContent?.trim() || ''
+      ).catch(() => '');
 
-    const content = await page.$eval('article', 
-      (el) => el?.textContent?.trim() || ''
-    ).catch(() => '');
+      const content = await page.$eval('article', 
+        (el) => el?.textContent?.trim() || ''
+      ).catch(() => '');
 
-    const categories = determineCategories(content);
-    const agencies = determineAgencies(content);
+      const categories = determineCategories(content);
+      const agencies = determineAgencies(content);
 
-    const scrapedOrder: ScrapedOrder = {
-      type: order.type,
-      orderNumber: order.orderNumber,
-      title: order.title,
-      date: new Date(order.date),
-      url: order.url,
-      summary,
-      agencies,
-      categories
-    };
+      const scrapedOrder: ScrapedOrder = {
+        type: order.type,
+        orderNumber: order.orderNumber,
+        title: order.title,
+        date: new Date(order.date),
+        url: order.url,
+        summary,
+        agencies,
+        categories
+      };
 
-    await saveOrder(scrapedOrder);
-    logger.info({ title: order.title }, 'Processed order');
+      await saveOrder(scrapedOrder);
+      logger.info({ title: order.title }, 'Processed order');
+    } catch (error) {
+      logger.error({ error, order }, 'Error processing individual order');
+    }
   }
 }
 
@@ -176,15 +182,15 @@ async function saveOrder(order: ScrapedOrder) {
       })
     );
 
-    // Find existing order by either orderNumber or URL
     const existingOrder = order.orderNumber
       ? await prisma.executiveOrder.findUnique({ where: { orderNumber: order.orderNumber } })
       : await prisma.executiveOrder.findFirst({ where: { url: order.url } });
 
-    // Prepare the where clause based on existing order
-    const where: Prisma.ExecutiveOrderWhereUniqueInput = existingOrder
+    const where = existingOrder
       ? { id: existingOrder.id }
-      : { orderNumber: order.orderNumber ?? undefined };
+      : order.orderNumber
+        ? { orderNumber: order.orderNumber }
+        : { id: '' }; // This will trigger a create operation
 
     await prisma.executiveOrder.upsert({
       where,
@@ -212,7 +218,7 @@ async function saveOrder(order: ScrapedOrder) {
       }
     });
 
-    logger.info({ title: order.title }, 'Saved order');
+    logger.info({ title: order.title }, 'Saved order successfully');
   } catch (error) {
     logger.error({ 
       error, 

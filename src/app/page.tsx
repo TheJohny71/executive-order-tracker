@@ -1,101 +1,405 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+import React, { useState, useEffect } from 'react';
+import { 
+  Search, Filter, Calendar, Building2, ChevronDown, 
+  ChevronRight, BarChart2, List, Grid, ArrowUp 
+} from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { useOrders } from '@/hooks/useOrders';
+import type { OrderFilters } from '@/types';
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+const LoadingSkeleton = () => (
+  <div className="animate-pulse">
+    <div className="h-32 bg-gray-200 rounded-lg mb-4"></div>
+    <div className="h-32 bg-gray-200 rounded-lg mb-4"></div>
+    <div className="h-32 bg-gray-200 rounded-lg"></div>
+  </div>
+);
+
+const ExecutiveOrderTracker = () => {
+  const [filters, setFilters] = useState<OrderFilters>({
+    type: 'all',
+    category: 'all',
+    agency: 'all',
+    search: '',
+    dateFrom: '',
+    dateTo: '',
+    page: 1,
+    limit: 10
+  });
+
+  const [viewMode, setViewMode] = useState('expanded');
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+  const [showTimeline, setShowTimeline] = useState(true);
+  const [isComparing, setIsComparing] = useState(false);
+  const [compareItems, setCompareItems] = useState([]);
+  const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
+
+  const { data, error, loading } = useOrders(filters);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Process data for timeline visualization
+  const timelineData = data?.orders.reduce((acc: any[], order) => {
+    const date = new Date(order.date);
+    const month = date.toLocaleString('default', { month: 'short' });
+    const existingMonth = acc.find(item => item.month === month);
+    
+    if (existingMonth) {
+      existingMonth.count++;
+    } else {
+      acc.push({ month, count: 1 });
+    }
+    
+    return acc;
+  }, []) ?? [];
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Orders</h2>
+          <p className="text-gray-600">{error.message}</p>
+          <Button 
+            className="mt-4"
+            onClick={() => setFilters(prev => ({ ...prev }))}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            Retry
+          </Button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="space-y-4">
+            {/* Title and Controls */}
+            <div className="flex justify-between items-start">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Executive Order Tracker</h1>
+                <div className="mt-2 flex items-center text-sm text-gray-500">
+                  <span>Last Updated: {new Date().toLocaleDateString()}</span>
+                  <span className="mx-2">•</span>
+                  <span>Track and analyze White House executive orders and memoranda</span>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setViewMode(viewMode === 'expanded' ? 'compact' : 'expanded')}
+                >
+                  {viewMode === 'expanded' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowTimeline(!showTimeline)}
+                >
+                  <BarChart2 className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="md:flex hidden items-center gap-2"
+                  onClick={() => setIsComparing(!isComparing)}
+                >
+                  Compare
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Timeline Visualization */}
+      {showTimeline && timelineData.length > 0 && (
+        <div className="bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="h-48 bg-gray-50 rounded-lg p-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={timelineData}>
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="count" stroke="#2563eb" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Recently Viewed */}
+      {recentlyViewed.length > 0 && (
+        <div className="bg-gray-50 border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h2 className="text-sm font-medium text-gray-500">Recently Viewed</h2>
+            <div className="mt-2 flex gap-2 overflow-x-auto">
+              {recentlyViewed.map(order => (
+                <Button key={order.id} variant="outline" size="sm">
+                  {order.title}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Filters */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+          <div className="relative lg:col-span-2">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input 
+              className="pl-10"
+              placeholder="Search orders... (Press '/' to focus)"
+              value={filters.search}
+              onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+            />
+          </div>
+          
+          <Select 
+            value={filters.type} 
+            onValueChange={(value) => setFilters(prev => ({ ...prev, type: value }))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="Executive Order">Executive Order</SelectItem>
+              <SelectItem value="Memorandum">Memorandum</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select 
+            value={filters.category}
+            onValueChange={(value) => setFilters(prev => ({ ...prev, category: value }))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {data?.metadata.categories.map(category => (
+                <SelectItem key={category} value={category}>{category}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select 
+            value={filters.agency}
+            onValueChange={(value) => setFilters(prev => ({ ...prev, agency: value }))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Agency" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Agencies</SelectItem>
+              {data?.metadata.agencies.map(agency => (
+                <SelectItem key={agency} value={agency}>{agency}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Input
+            type="date"
+            value={filters.dateFrom || ''}
+            onChange={(e) => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
+            className="w-full"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        </div>
+
+        {/* Filter results count */}
+        <div className="mt-4 text-sm text-gray-500">
+          Showing {data?.orders.length || 0} of {data?.pagination.total || 0} orders
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        {loading ? (
+          <LoadingSkeleton />
+        ) : (
+          <div className="space-y-4">
+            {data?.orders.map((order) => (
+              <Card 
+                key={order.id} 
+                className={`transform transition-all duration-200 hover:shadow-lg
+                  ${order.categories[0]?.name.toLowerCase()} border-l-4`}
+              >
+                <Collapsible>
+                  <CardHeader className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <Badge variant={order.type === 'Executive Order' ? 'default' : 'secondary'}>
+                            {order.type}
+                          </Badge>
+                          {order.isNew && (
+                            <Badge variant="destructive">New</Badge>
+                          )}
+                          <span className="text-sm text-gray-500">
+                            {new Date(order.date).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <CollapsibleTrigger className="flex items-center gap-2 hover:text-blue-600 transition-colors">
+                          <CardTitle className="text-xl">
+                            {order.orderNumber ? `${order.type} ${order.orderNumber}: ${order.title}` : order.title}
+                          </CardTitle>
+                          <ChevronDown className="h-4 w-4" />
+                        </CollapsibleTrigger>
+                      </div>
+                      {isComparing && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCompareItems(prev => [...prev, order])}
+                          disabled={compareItems.some(item => item.id === order.id)}
+                        >
+                          Compare
+                        </Button>
+                      )}
+                    </div>
+                  </CardHeader>
+                  <CollapsibleContent>
+                    <CardContent className="px-6 pb-6 pt-0">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-4 flex-1">
+                          <div>
+                            <h3 className="font-medium text-gray-900">Summary</h3>
+                            <p className="mt-1 text-gray-600">{order.summary}</p>
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-gray-900">Key Agencies</h3>
+                            <div className="mt-1 flex flex-wrap gap-2">
+                              {order.agencies.map((agency) => (
+                                <Badge 
+                                  key={agency.id} 
+                                  variant="outline"
+                                  className="cursor-pointer hover:bg-gray-100"
+                                  onClick={() => setFilters(prev => ({ ...prev, agency: agency.name }))}
+                                >
+                                  {agency.name}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-gray-900">Categories</h3>
+                            <div className="mt-1 flex flex-wrap gap-2">
+                              {order.categories.map((category) => (
+                                <Badge 
+                                  key={category.id}
+                                  variant="secondary"
+                                  className="cursor-pointer hover:bg-gray-200"
+                                  onClick={() => setFilters(prev => ({ ...prev, category: category.name }))}
+                                >
+                                  {category.name}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                          {order.notes && (
+                            <div>
+                              <h3 className="font-medium text-gray-900">Notes</h3>
+                              <p className="mt-1 text-gray-600">{order.notes}</p>
+                            </div>
+                          )}
+                        </div>
+                        <div className="ml-6 flex flex-col items-end">
+                          <a
+                            href={order.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                          >
+                            View on whitehouse.gov
+                          </a>
+                          <span className="text-sm text-gray-500 mt-2">Official Source</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Collapsible>
+              </Card>
+            ))}
+
+            {/* Pagination */}
+            {data?.pagination && data.pagination.pages > 1 && (
+              <div className="mt-6 flex justify-center gap-2">
+                <Button
+                  variant="outline"
+                  disabled={data.pagination.currentPage === 1}
+                  onClick={() => setFilters(prev => ({ 
+                    ...prev, 
+                    page: Math.max(1, (prev.page || 1) - 1)
+                  }))}
+                >
+                  Previous
+                </Button>
+                <span className="flex items-center px-4 text-sm text-gray-700">
+                  Page {data.pagination.currentPage} of {data.pagination.pages}
+                </span>
+                <Button
+                  variant="outline"
+                  disabled={data.pagination.currentPage === data.pagination.pages}
+                  onClick={() => setFilters(prev => ({ 
+                    ...prev, 
+                    page: Math.min(data.pagination.pages, (prev.page || 1) + 1)
+                  }))}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Mobile floating action button */}
+      <div className="md:hidden fixed bottom-6 right-6 flex flex-col gap-2">
+        <Button
+          className="rounded-full h-12 w-12 shadow-lg"
+          onClick={() => setMobileFiltersVisible(true)}
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <Filter className="h-6 w-6" />
+        </Button>
+        <Button
+          className="rounded-full h-12 w-12 shadow-lg"
+          onClick={scrollToTop}
         >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <ArrowUp className="h-6 w-6" />
+        </Button>
+      </div>
     </div>
   );
-}
+};
+
+export default ExecutiveOrderTracker;

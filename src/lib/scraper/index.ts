@@ -1,6 +1,7 @@
 // src/lib/scraper/index.ts
 import { chromium, type Page } from 'playwright';
-import { PrismaClient, type Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 
@@ -59,7 +60,6 @@ async function scrapeOrdersFromPage(page: Page, url: string) {
       const linkEl = element.querySelector('a');
       const title = titleEl?.textContent?.trim() || '';
       
-      // Determine type and extract order number if present
       const isEO = title.toLowerCase().includes('executive order');
       const type = isEO ? 'Executive Order' : 'Memorandum';
       const orderNumber = isEO ? title.match(/Executive Order (\d+)/)?.[1] : undefined;
@@ -74,46 +74,35 @@ async function scrapeOrdersFromPage(page: Page, url: string) {
     });
   });
 
-  // Visit each order's page to get additional details
   for (const order of orders) {
-    if (!order.url) {
-      logger.warn({ order }, 'Skipping order without URL');
-      continue;
-    }
+    if (!order.url) continue;
     
-    try {
-      await page.goto(order.url);
-      
-      // Extract summary from the first paragraph
-      const summary = await page.$eval('article p', 
-        (el) => el?.textContent?.trim() || ''
-      ).catch(() => '');
+    await page.goto(order.url);
+    
+    const summary = await page.$eval('article p', 
+      (el) => el?.textContent?.trim() || ''
+    ).catch(() => '');
 
-      // Extract content for analysis
-      const content = await page.$eval('article', 
-        (el) => el?.textContent?.trim() || ''
-      ).catch(() => '');
+    const content = await page.$eval('article', 
+      (el) => el?.textContent?.trim() || ''
+    ).catch(() => '');
 
-      // Determine categories and agencies based on content analysis
-      const categories = determineCategories(content);
-      const agencies = determineAgencies(content);
+    const categories = determineCategories(content);
+    const agencies = determineAgencies(content);
 
-      const scrapedOrder: ScrapedOrder = {
-        type: order.type,
-        orderNumber: order.orderNumber,
-        title: order.title,
-        date: new Date(order.date),
-        url: order.url,
-        summary,
-        agencies,
-        categories
-      };
+    const scrapedOrder: ScrapedOrder = {
+      type: order.type,
+      orderNumber: order.orderNumber,
+      title: order.title,
+      date: new Date(order.date),
+      url: order.url,
+      summary,
+      agencies,
+      categories
+    };
 
-      await saveOrder(scrapedOrder);
-      logger.info({ title: order.title }, 'Processed order');
-    } catch (error) {
-      logger.error({ error, order }, 'Error processing individual order');
-    }
+    await saveOrder(scrapedOrder);
+    logger.info({ title: order.title }, 'Processed order');
   }
 }
 
@@ -165,7 +154,6 @@ function determineAgencies(content: string): string[] {
 
 async function saveOrder(order: ScrapedOrder) {
   try {
-    // Create or connect categories
     const categoryConnects = await Promise.all(
       order.categories.map(async (name) => {
         const category = await prisma.category.upsert({
@@ -177,7 +165,6 @@ async function saveOrder(order: ScrapedOrder) {
       })
     );
 
-    // Create or connect agencies
     const agencyConnects = await Promise.all(
       order.agencies.map(async (name) => {
         const agency = await prisma.agency.upsert({
@@ -189,18 +176,18 @@ async function saveOrder(order: ScrapedOrder) {
       })
     );
 
-    // Type-safe where clause construction
-    let whereClause: Prisma.ExecutiveOrderWhereUniqueInput;
-    
-    if (order.orderNumber) {
-      whereClause = { orderNumber: order.orderNumber };
-    } else {
-      whereClause = { url: order.url };
-    }
+    // Find existing order by either orderNumber or URL
+    const existingOrder = order.orderNumber
+      ? await prisma.executiveOrder.findUnique({ where: { orderNumber: order.orderNumber } })
+      : await prisma.executiveOrder.findFirst({ where: { url: order.url } });
 
-    // Perform the upsert with proper type safety
+    // Prepare the where clause based on existing order
+    const where: Prisma.ExecutiveOrderWhereUniqueInput = existingOrder
+      ? { id: existingOrder.id }
+      : { orderNumber: order.orderNumber ?? undefined };
+
     await prisma.executiveOrder.upsert({
-      where: whereClause,
+      where,
       create: {
         type: order.type,
         orderNumber: order.orderNumber,
@@ -215,11 +202,11 @@ async function saveOrder(order: ScrapedOrder) {
         title: order.title,
         summary: order.summary,
         categories: { 
-          set: [], // Clear existing relationships
+          set: [], 
           connect: categoryConnects 
         },
         agencies: { 
-          set: [], // Clear existing relationships
+          set: [], 
           connect: agencyConnects 
         }
       }

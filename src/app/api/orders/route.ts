@@ -1,6 +1,5 @@
-// src/app/api/orders/route.ts
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 
@@ -10,23 +9,24 @@ const logger = pino(pretty({ colorize: true }));
 export const runtime = 'nodejs';
 export const preferredRegion = 'auto';
 
-interface WhereClause {
+// Define the where clause using Prisma's types
+type WhereClause = {
   type?: string;
   date?: {
     gte?: Date;
     lte?: Date;
   };
-  OR?: Array<{
-    title: { contains: string; mode: string };
-    summary: { contains: string; mode: string };
-  }>;
+  OR?: {
+    title?: { contains: string; mode: 'insensitive' | 'default' };
+    summary?: { contains: string; mode: 'insensitive' | 'default' };
+  }[];
   categories?: {
     some: { name: string };
   };
   agencies?: {
     some: { name: string };
   };
-}
+};
 
 interface Category {
   name: string;
@@ -70,7 +70,9 @@ export async function GET(request: Request) {
     if (search) {
       where.OR = [
         { 
-          title: { contains: search, mode: 'insensitive' },
+          title: { contains: search, mode: 'insensitive' }
+        },
+        { 
           summary: { contains: search, mode: 'insensitive' }
         }
       ];

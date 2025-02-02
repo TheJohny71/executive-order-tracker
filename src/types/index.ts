@@ -1,5 +1,5 @@
 export interface Order {
-  id: string;
+  id: number;  // Make sure this is explicitly typed as number
   orderNumber?: string;
   type: string;
   title: string;
@@ -12,6 +12,7 @@ export interface Order {
   agencies: { name: string }[];
 }
 
+// Rest of the interfaces remain the same
 export interface OrdersResponse {
   orders: Order[];
   metadata: {

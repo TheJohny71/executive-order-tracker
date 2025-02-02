@@ -1,18 +1,17 @@
 export interface Order {
-  id: number;  // Make sure this is explicitly typed as number
+  id: number;
   orderNumber?: string;
   type: string;
   title: string;
   date: string;
-  url: string;
   summary?: string;
   notes?: string;
+  url: string;
   isNew: boolean;
   categories: { name: string }[];
   agencies: { name: string }[];
 }
 
-// Rest of the interfaces remain the same
 export interface OrdersResponse {
   orders: Order[];
   metadata: {
@@ -27,13 +26,15 @@ export interface OrdersResponse {
   };
 }
 
+export type FilterType = 'type' | 'category' | 'agency' | 'search' | 'dateFrom' | 'dateTo' | 'page' | 'limit';
+
 export interface OrderFilters {
-  type?: string;
-  category?: string;
-  agency?: string;
-  search?: string;
-  dateFrom?: string;
-  dateTo?: string;
-  page?: number;
-  limit?: number;
+  type: string;
+  category: string;
+  agency: string;
+  search: string;
+  dateFrom: string;
+  dateTo: string;
+  page: number;
+  limit: number;
 }

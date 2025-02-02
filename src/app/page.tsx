@@ -10,8 +10,12 @@ import {
   Grid, 
   ArrowUp 
 } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -19,11 +23,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useOrders } from '@/hooks/useOrders';
-import type { Order } from '@/types';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
 import { LoadingSkeleton } from '@/components/executive-orders/loading-skeleton';
 import { TimelineChart } from '@/components/executive-orders/timeline-chart';
 import { OrderCard } from '@/components/executive-orders/order-card';
+import { ComparisonView } from '@/components/executive-orders/comparison-view';
+import { Pagination } from '@/components/executive-orders/pagination';
+import { useOrders } from '@/hooks/useOrders';
+import type { Order, FilterType } from '@/types';
 
 const DEFAULT_FILTERS = {
   type: 'all',
@@ -37,6 +47,7 @@ const DEFAULT_FILTERS = {
 };
 
 export default function ExecutiveOrderTracker() {
+  // State Management
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [viewMode, setViewMode] = useState<'expanded' | 'compact'>('expanded');
   const [recentlyViewed, setRecentlyViewed] = useState<Order[]>([]);
@@ -45,8 +56,10 @@ export default function ExecutiveOrderTracker() {
   const [compareItems, setCompareItems] = useState<Order[]>([]);
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
 
+  // Fetch data using custom hook
   const { data, error, loading } = useOrders(filters);
 
+  // Load recently viewed from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem('recentlyViewed');
     if (stored) {
@@ -58,6 +71,7 @@ export default function ExecutiveOrderTracker() {
     }
   }, []);
 
+  // Keyboard shortcut for search
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === '/' && e.target === document.body) {
@@ -72,6 +86,10 @@ export default function ExecutiveOrderTracker() {
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, []);
+
+  const handleFilterChange = (filterType: FilterType, value: string) => {
+    setFilters(prev => ({ ...prev, [filterType]: value, page: 1 }));
+  };
 
   const addToRecentlyViewed = (order: Order) => {
     setRecentlyViewed(prev => {
@@ -88,10 +106,6 @@ export default function ExecutiveOrderTracker() {
       }
       return [...prev, order].slice(0, 2);
     });
-  };
-
-  const handleFilterChange = (filterType: keyof typeof filters, value: string) => {
-    setFilters(prev => ({ ...prev, [filterType]: value, page: 1 }));
   };
 
   const scrollToTop = () => {
@@ -117,12 +131,46 @@ export default function ExecutiveOrderTracker() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header Component */}
-      <header className="bg-white border-b sticky top-0 z-50">
-        {/* ... Header content ... */}
-      </header>
+      {/* Header */}
+      <div className="bg-white border-b sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Executive Order Tracker</h1>
+              <div className="mt-2 flex items-center text-sm text-gray-500">
+                <span>Last Updated: {new Date().toLocaleDateString()}</span>
+                <span className="mx-2">•</span>
+                <span>Track and analyze White House executive orders and memoranda</span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                onClick={() => setViewMode(viewMode === 'expanded' ? 'compact' : 'expanded')}
+                title={viewMode === 'expanded' ? 'Switch to compact view' : 'Switch to expanded view'}
+              >
+                {viewMode === 'expanded' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowTimeline(!showTimeline)}
+                title={showTimeline ? 'Hide timeline' : 'Show timeline'}
+              >
+                <BarChart2 className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="outline"
+                className="md:flex hidden items-center gap-2"
+                onClick={() => setIsComparing(!isComparing)}
+              >
+                Compare {isComparing && `(${compareItems.length}/2)`}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      {/* Timeline Component */}
+      {/* Timeline Chart */}
       {showTimeline && data?.orders && (
         <div className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -131,14 +179,33 @@ export default function ExecutiveOrderTracker() {
         </div>
       )}
 
-      {/* Recently Viewed Component */}
+      {/* Recently Viewed */}
       {recentlyViewed.length > 0 && (
         <div className="bg-gray-50 border-b">
-          {/* ... Recently viewed content ... */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h2 className="text-sm font-medium text-gray-500">Recently Viewed</h2>
+            <div className="mt-2 flex gap-2 overflow-x-auto">
+              {recentlyViewed.map(order => (
+                <Button 
+                  key={order.id} 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    const element = document.getElementById(`order-${order.id}`);
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                >
+                  {order.title}
+                </Button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Filters Component */}
+      {/* Filters */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
           <div className="relative lg:col-span-2">
@@ -265,13 +332,13 @@ export default function ExecutiveOrderTracker() {
           className="rounded-full h-12 w-12 shadow-lg"
           onClick={() => setMobileFiltersVisible(!mobileFiltersVisible)}
         >
-          <Filter className="h-6 w-6" />
+          <Filter className="h-6 w-4" />
         </Button>
         <Button
           className="rounded-full h-12 w-12 shadow-lg"
           onClick={scrollToTop}
         >
-          <ArrowUp className="h-6 w-6" />
+          <ArrowUp className="h-6 w-4" />
         </Button>
       </div>
     </div>

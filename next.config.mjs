@@ -1,6 +1,4 @@
-/**
- * @type {import('next').NextConfig} 
- */
+/** @type {import('next').NextConfig} */
 const config = {
   experimental: {
     serverActions: true,
@@ -29,6 +27,15 @@ const config = {
       },
     ];
   },
+  api: {
+    bodyParser: {
+      sizeLimit: '1mb' // Specify a string value for sizeLimit
+    }
+  },
+  // Specify allowed origins as a string array if needed
+  cors: {
+    allowedOrigins: ['https://example.com']
+  }
 };
 
 export default config;

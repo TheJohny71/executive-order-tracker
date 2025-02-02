@@ -1,14 +1,13 @@
 import type { Config } from "tailwindcss";
 
-const config: Config = {
-  darkMode: "class",  // Changed from ["class"] to "class"
+const config = {
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
-  prefix: "",
+  darkMode: 'class', // Changed from ["class"] to 'class'
   theme: {
     container: {
       center: true,
@@ -75,6 +74,6 @@ const config: Config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-} as const;
+} satisfies Config;
 
 export default config;

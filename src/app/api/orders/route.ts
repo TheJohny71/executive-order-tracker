@@ -6,10 +6,12 @@ import pretty from 'pino-pretty';
 const prisma = new PrismaClient();
 const logger = pino(pretty({ colorize: true }));
 
+// Add these export configurations
+export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 export const preferredRegion = 'auto';
 
-// Define the where clause using Prisma's types
+// Rest of your code remains the same...
 type WhereClause = {
   type?: string;
   date?: {
@@ -51,17 +53,17 @@ export async function GET(request: Request) {
 
     const where: WhereClause = {};
 
-    if (type) {
+    if (type && type !== 'all') {
       where.type = type;
     }
 
-    if (category) {
+    if (category && category !== 'all') {
       where.categories = {
         some: { name: category }
       };
     }
 
-    if (agency) {
+    if (agency && agency !== 'all') {
       where.agencies = {
         some: { name: agency }
       };

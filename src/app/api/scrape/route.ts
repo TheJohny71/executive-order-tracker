@@ -1,4 +1,3 @@
-// src/app/api/scrape/route.ts
 import { NextResponse } from 'next/server';
 import { scrapeExecutiveOrders } from '@/lib/scraper';
 import pino from 'pino';
@@ -6,6 +5,8 @@ import pretty from 'pino-pretty';
 
 const logger = pino(pretty({ colorize: true }));
 
+// Add dynamic export
+export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 export const preferredRegion = 'auto';
 

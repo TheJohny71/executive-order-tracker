@@ -13,7 +13,7 @@ export function useOrders(filters: OrderFilters) {
         // Filter out null/undefined values and create query params
         const queryParams = new URLSearchParams(
           Object.entries(filters)
-            .filter(([_, v]) => v != null && v !== 'all')
+            .filter(([, v]) => v != null && v !== 'all')  // Removed unused k parameter
             .map(([k, v]) => [k, String(v)])
         );
 
@@ -33,16 +33,7 @@ export function useOrders(filters: OrderFilters) {
     };
 
     fetchOrders();
-  }, [
-    filters.type,
-    filters.category,
-    filters.agency,
-    filters.search,
-    filters.dateFrom,
-    filters.dateTo,
-    filters.page,
-    filters.limit
-  ]);
+  }, [filters]);
 
   return { data, error, loading };
 }

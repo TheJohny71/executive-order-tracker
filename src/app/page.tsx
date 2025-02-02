@@ -4,10 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   Filter, 
-  Calendar, 
-  Building2, 
   ChevronDown, 
-  ChevronRight, 
   BarChart2, 
   List, 
   Grid, 
@@ -65,7 +62,7 @@ const ExecutiveOrderTracker = () => {
   const [showTimeline, setShowTimeline] = useState(true);
   const [isComparing, setIsComparing] = useState(false);
   const [compareItems, setCompareItems] = useState<Order[]>([]);
-  const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
+  const [_mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
 
   // Fetch data using custom hook
   const { data, error, loading } = useOrders(filters);

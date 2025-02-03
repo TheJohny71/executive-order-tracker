@@ -1,4 +1,4 @@
-import { chromium, type Page, type ElementHandle } from 'playwright';
+import { chromium, type Page } from 'playwright';
 import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
@@ -19,37 +19,6 @@ async function checkDatabaseConnection(): Promise<void> {
   }
 }
 
-export async function scrapeExecutiveOrders(): Promise<void> {
-  await checkDatabaseConnection();
-  
-  const browser = await chromium.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
-  
-  const context = await browser.newContext({
-    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
-    viewport: { width: 375, height: 667 },
-    deviceScaleFactor: 2,
-    isMobile: true,
-    hasTouch: true
-  });
-  
-  const page = await context.newPage();
-  
-  try {
-    logger.info('Starting presidential actions scrape');
-    await scrapeOrdersFromPage(page, 'https://www.whitehouse.gov/briefing-room/presidential-actions/');
-    logger.info('Completed presidential actions scrape');
-  } catch (error) {
-    logger.error('Error scraping presidential actions:', error instanceof Error ? error.stack : error);
-    throw error;
-  } finally {
-    await browser.close();
-    await prisma.$disconnect();
-  }
-}
-
 async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
   logger.info(`Scraping orders from ${url}`);
   
@@ -59,47 +28,66 @@ async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
       waitUntil: 'networkidle'
     });
     
+    // Add random delay to avoid detection
+    await page.waitForTimeout(Math.random() * 2000 + 1000);
+    
     const pageContent = await page.content();
     logger.info(`Page content length: ${pageContent.length}`);
     
     if (pageContent.length < 1000) {
+      logger.error('Page content suspiciously short');
+      await page.screenshot({ path: 'short-content.png', fullPage: true });
       throw new Error('Page content too short - possible bot detection');
     }
     
     const title = await page.title();
     logger.info(`Page title: ${title}`);
     
-    await page.waitForSelector('.listing-items article, article.briefing-statement', { timeout: 30000 });
+    await page.waitForSelector('.article-items article, article.briefing-statement', { 
+      timeout: 30000,
+      state: 'attached'
+    });
     
-    const articleElements = await page.$$('article');
+    const articleElements = await page.$$('.article-items article, article.briefing-statement');
     logger.info(`Found ${articleElements.length} articles`);
+
+    if (articleElements.length === 0) {
+      logger.error('No articles found - possible selector mismatch');
+      await page.screenshot({ path: 'no-articles.png', fullPage: true });
+      throw new Error('No articles found on page');
+    }
 
     const orders: RawOrder[] = [];
     
     for (const article of articleElements) {
-      const titleEl = await article.$('h2');
-      const dateEl = await article.$('time, .meta-date');
-      const linkEl = await article.$('a');
-      
-      const title = await titleEl?.textContent() || '';
-      const dateStr = await dateEl?.getAttribute('datetime') || await dateEl?.textContent() || '';
-      const href = await linkEl?.getAttribute('href');
-      
-      if (title && dateStr && href) {
-        const isEO = title.toLowerCase().includes('executive order');
-        const type = isEO ? 'Executive Order' : 'Memorandum';
-        const orderNumber = isEO ? title.match(/Executive Order (\d+)/)?.[1] : undefined;
-        const date = new Date(dateStr);
+      try {
+        const titleEl = await article.$('h3, h2');
+        const dateEl = await article.$('time');
+        const linkEl = await article.$('h3 a, h2 a');
         
-        if (date.getFullYear() >= 2025) {
-          orders.push({
-            type,
-            orderNumber,
-            title,
-            date: dateStr,
-            url: href
-          });
+        const title = await titleEl?.textContent() || '';
+        const dateStr = await dateEl?.getAttribute('datetime') || await dateEl?.textContent() || '';
+        const href = await linkEl?.getAttribute('href');
+        
+        if (title && dateStr && href) {
+          const isEO = title.toLowerCase().includes('executive order');
+          const type = isEO ? 'Executive Order' : 'Memorandum';
+          const orderNumber = isEO ? title.match(/Executive Order (\d+)/)?.[1] : undefined;
+          const date = new Date(dateStr);
+          
+          if (!isNaN(date.getTime()) && date.getFullYear() >= 2025) {
+            const fullUrl = href.startsWith('http') ? href : `https://www.whitehouse.gov${href}`;
+            orders.push({
+              type,
+              orderNumber,
+              title: title.trim(),
+              date: dateStr,
+              url: fullUrl
+            });
+          }
         }
+      } catch (error) {
+        logger.error('Error extracting article data:', error);
       }
     }
 
@@ -107,7 +95,18 @@ async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
 
     for (const order of orders) {
       try {
-        await page.goto(order.url, { timeout: 30000 });
+        logger.info(`Processing order: ${order.title}`);
+        
+        // Add random delay between processing orders
+        await page.waitForTimeout(Math.random() * 3000 + 2000);
+        
+        await page.goto(order.url, { 
+          timeout: 30000,
+          waitUntil: 'networkidle' 
+        });
+        
+        // Wait for article content
+        await page.waitForSelector('article', { timeout: 30000 });
         
         const summary = await page.$eval('article p', 
           (el) => el?.textContent?.trim() || ''
@@ -116,6 +115,11 @@ async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
         const content = await page.$eval('article', 
           (el) => el?.textContent?.trim() || ''
         ).catch(() => '');
+
+        if (!content) {
+          logger.warn({ url: order.url }, 'No content found for order');
+          continue;
+        }
 
         const scrapedOrder: ScrapedOrder = {
           type: order.type,
@@ -129,9 +133,14 @@ async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
         };
 
         await saveOrder(scrapedOrder);
-        logger.info({ title: order.title }, 'Processed order');
+        logger.info({ 
+          title: order.title,
+          agencies: scrapedOrder.agencies.length,
+          categories: scrapedOrder.categories.length
+        }, 'Processed order successfully');
       } catch (error) {
         logger.error({ error, order }, 'Error processing individual order');
+        // Continue with next order
       }
     }
   } catch (error) {
@@ -172,7 +181,7 @@ async function saveOrder(order: ScrapedOrder): Promise<void> {
       ? { id: existingOrder.id }
       : order.orderNumber
         ? { orderNumber: order.orderNumber }
-        : { id: '' };
+        : { id: '' }; // Fallback for new non-EO items
 
     await prisma.executiveOrder.upsert({
       where,
@@ -194,7 +203,10 @@ async function saveOrder(order: ScrapedOrder): Promise<void> {
       }
     });
 
-    logger.info({ title: order.title }, 'Saved order successfully');
+    logger.info({ 
+      title: order.title,
+      orderNumber: order.orderNumber 
+    }, 'Saved order successfully');
   } catch (error) {
     logger.error({ 
       error, 
@@ -206,6 +218,44 @@ async function saveOrder(order: ScrapedOrder): Promise<void> {
   }
 }
 
+async function scrapeExecutiveOrders(): Promise<void> {
+  await checkDatabaseConnection();
+  
+  const browser = await chromium.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-web-security',
+      '--disable-features=IsolateOrigins,site-per-process'
+    ]
+  });
+  
+  const context = await browser.newContext({
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+    viewport: { width: 375, height: 667 },
+    deviceScaleFactor: 2,
+    isMobile: true,
+    hasTouch: true
+  });
+  
+  const page = await context.newPage();
+  
+  try {
+    logger.info('Starting presidential actions scrape');
+    await scrapeOrdersFromPage(page, 'https://www.whitehouse.gov/briefing-room/presidential-actions/');
+    logger.info('Completed presidential actions scrape');
+  } catch (error) {
+    logger.error('Error scraping presidential actions:', error instanceof Error ? error.stack : error);
+    await page.screenshot({ path: 'error-screenshot.png', fullPage: true });
+    throw error;
+  } finally {
+    await browser.close();
+    await prisma.$disconnect();
+  }
+}
+
+// Auto-execute if run directly
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   scrapeExecutiveOrders()
     .catch(error => {
@@ -213,3 +263,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       process.exit(1);
     });
 }
+
+// Single export at the end
+export { scrapeExecutiveOrders };

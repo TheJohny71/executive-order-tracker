@@ -2,15 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { 
-  Search, 
-  Filter, 
-  BarChart2, 
-  List, 
-  Grid, 
-  ArrowUp 
+  Search, Filter, BarChart2, List, Grid, ArrowUp 
 } from 'lucide-react';
-
-// UI Components
 import {
   Card,
   CardContent,
@@ -28,18 +21,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-// Executive Order Components - update paths to match src structure
 import { LoadingSkeleton } from '@/components/executive-orders/loading-skeleton';
 import { TimelineChart } from '@/components/executive-orders/timeline-chart';
 import { OrderCard } from '@/components/executive-orders/order-card';
 import { ComparisonView } from '@/components/executive-orders/comparison-view';
 import { Pagination } from '@/components/executive-orders/pagination';
 
-// Hooks and Types
 import { useOrders } from '@/hooks/useOrders';
-import type { Order, FilterType } from '@/types';
+import type { Order, FilterType, OrderFilters } from '@/types';
 
-const DEFAULT_FILTERS = {
+const DEFAULT_FILTERS: OrderFilters = {
   type: 'all',
   category: 'all',
   agency: 'all',
@@ -50,9 +41,73 @@ const DEFAULT_FILTERS = {
   limit: 10
 };
 
+interface FilterPanelProps {
+  filters: OrderFilters;
+  onFilterChange: (type: FilterType, value: string) => void;
+  metadata?: {
+    categories: string[];
+    agencies: string[];
+  };
+}
+
+const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange, metadata }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+    <div className="relative lg:col-span-2">
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+      <Input 
+        className="pl-10"
+        placeholder="Search orders... (Press '/' to focus)"
+        value={filters.search}
+        onChange={(e) => onFilterChange('search', e.target.value)}
+      />
+    </div>
+    
+    <Select value={filters.type} onValueChange={(v) => onFilterChange('type', v)}>
+      <SelectTrigger>
+        <SelectValue placeholder="Type" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="all">All Types</SelectItem>
+        <SelectItem value="Executive Order">Executive Order</SelectItem>
+        <SelectItem value="Memorandum">Memorandum</SelectItem>
+      </SelectContent>
+    </Select>
+
+    <Select value={filters.category} onValueChange={(v) => onFilterChange('category', v)}>
+      <SelectTrigger>
+        <SelectValue placeholder="Category" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="all">All Categories</SelectItem>
+        {metadata?.categories.map(category => (
+          <SelectItem key={category} value={category}>{category}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+
+    <Select value={filters.agency} onValueChange={(v) => onFilterChange('agency', v)}>
+      <SelectTrigger>
+        <SelectValue placeholder="Agency" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="all">All Agencies</SelectItem>
+        {metadata?.agencies.map(agency => (
+          <SelectItem key={agency} value={agency}>{agency}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+
+    <Input
+      type="date"
+      value={filters.dateFrom}
+      onChange={(e) => onFilterChange('dateFrom', e.target.value)}
+      className="w-full"
+    />
+  </div>
+);
+
 export function ExecutiveOrderTracker() {
-  // State Management
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [filters, setFilters] = useState<OrderFilters>(DEFAULT_FILTERS);
   const [viewMode, setViewMode] = useState<'expanded' | 'compact'>('expanded');
   const [recentlyViewed, setRecentlyViewed] = useState<Order[]>([]);
   const [showTimeline, setShowTimeline] = useState(true);
@@ -62,7 +117,6 @@ export function ExecutiveOrderTracker() {
 
   const { data, error, loading } = useOrders(filters);
 
-  // Load recently viewed from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem('recentlyViewed');
     if (stored) {
@@ -75,7 +129,11 @@ export function ExecutiveOrderTracker() {
   }, []);
 
   const handleFilterChange = (filterType: FilterType, value: string) => {
-    setFilters(prev => ({ ...prev, [filterType]: value, page: 1 }));
+    setFilters(prev => ({ 
+      ...prev, 
+      [filterType]: value,
+      page: filterType === 'page' ? Number(value) : 1
+    }));
   };
 
   const addToRecentlyViewed = (order: Order) => {
@@ -105,10 +163,7 @@ export function ExecutiveOrderTracker() {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900">Error Loading Orders</h2>
           <p className="mt-2 text-gray-600">{error.message}</p>
-          <Button 
-            className="mt-4"
-            onClick={() => setFilters(prev => ({ ...prev }))}
-          >
+          <Button onClick={() => setFilters(prev => ({ ...prev }))}>
             Retry
           </Button>
         </div>
@@ -134,14 +189,12 @@ export function ExecutiveOrderTracker() {
               <Button 
                 variant="outline" 
                 onClick={() => setViewMode(viewMode === 'expanded' ? 'compact' : 'expanded')}
-                title={viewMode === 'expanded' ? 'Switch to compact view' : 'Switch to expanded view'}
               >
                 {viewMode === 'expanded' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
               </Button>
               <Button 
                 variant="outline" 
                 onClick={() => setShowTimeline(!showTimeline)}
-                title={showTimeline ? 'Hide timeline' : 'Show timeline'}
               >
                 <BarChart2 className="h-4 w-4" />
               </Button>
@@ -165,6 +218,19 @@ export function ExecutiveOrderTracker() {
           </div>
         </div>
       )}
+
+      {/* Filters */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <FilterPanel 
+          filters={filters} 
+          onFilterChange={handleFilterChange} 
+          metadata={data?.metadata}
+        />
+        {/* Filter results count */}
+        <div className="mt-4 text-sm text-gray-500">
+          Showing {data?.orders.length || 0} of {data?.pagination.total || 0} orders
+        </div>
+      </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -204,6 +270,17 @@ export function ExecutiveOrderTracker() {
 
       {/* Mobile Actions */}
       <div className="md:hidden fixed bottom-6 right-6 flex flex-col gap-2">
+        {mobileFiltersVisible && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50" onClick={() => setMobileFiltersVisible(false)}>
+            <div className="absolute right-0 top-0 h-full w-80 bg-white p-4" onClick={e => e.stopPropagation()}>
+              <FilterPanel 
+                filters={filters} 
+                onFilterChange={handleFilterChange}
+                metadata={data?.metadata}
+              />
+            </div>
+          </div>
+        )}
         <Button
           className="rounded-full h-12 w-12 shadow-lg"
           onClick={() => setMobileFiltersVisible(!mobileFiltersVisible)}

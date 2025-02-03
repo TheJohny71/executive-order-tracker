@@ -1,3 +1,4 @@
+//src/components/executive-orders/timeline-chart.tsx
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import type { Order } from '@/types';
@@ -8,7 +9,7 @@ interface TimelineChartProps {
 
 export const TimelineChart = ({ orders }: TimelineChartProps) => {
   const timelineData = React.useMemo(() => {
-    if (!orders) return [];
+    if (!orders?.length) return [];
     
     const ordersByMonth: Record<string, number> = {};
     orders.forEach(order => {
@@ -21,6 +22,8 @@ export const TimelineChart = ({ orders }: TimelineChartProps) => {
       .map(([month, count]) => ({ month, count }))
       .sort((a, b) => a.month.localeCompare(b.month));
   }, [orders]);
+
+  if (!orders?.length) return null;
 
   return (
     <div className="h-48 bg-gray-50 rounded-lg p-4">

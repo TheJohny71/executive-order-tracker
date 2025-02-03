@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { 
   Search, Filter, BarChart2, List, Grid, ArrowUp 
@@ -9,23 +10,23 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from "../ui/select";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
-import { LoadingSkeleton } from '@/components/executive-orders/loading-skeleton';
-import { TimelineChart } from '@/components/executive-orders/timeline-chart';
-import { OrderCard } from '@/components/executive-orders/order-card';
-import { ComparisonView } from '@/components/executive-orders/comparison-view';
-import { Pagination } from '@/components/executive-orders/pagination';
+import { LoadingSkeleton } from './loading-skeleton';
+import { TimelineChart } from './timeline-chart';
+import { OrderCard } from './order-card';
+import { ComparisonView } from './comparison-view';
+import { Pagination } from './pagination';
 
 import { useOrders } from '@/hooks/useOrders';
 import type { Order, FilterType, OrderFilters } from '@/types';

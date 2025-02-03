@@ -28,7 +28,11 @@ export async function scrapeExecutiveOrders(): Promise<void> {
   });
   
   const context = await browser.newContext({
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+    viewport: { width: 375, height: 667 },
+    deviceScaleFactor: 2,
+    isMobile: true,
+    hasTouch: true
   });
   
   const page = await context.newPage();
@@ -65,7 +69,7 @@ async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
     const title = await page.title();
     logger.info(`Page title: ${title}`);
     
-    await page.waitForSelector('article', { timeout: 10000 });
+    await page.waitForSelector('.listing-items article, article.briefing-statement', { timeout: 30000 });
     
     const articleElements = await page.$$('article');
     logger.info(`Found ${articleElements.length} articles`);

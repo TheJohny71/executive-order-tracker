@@ -11,11 +11,11 @@ const prisma = new PrismaClient();
 
 const SELECTORS = {
   ARTICLES: [
+    '.archive-grid article',
+    '.archive-content article',
+    'main article',
     '.article-items article',
-    'article.briefing-statement',
-    '.presidential-actions article',
-    '.listing-items article',
-    '.post-listing article'
+    'div[role="main"] article'
   ],
   TITLE: ['h3', 'h2', '.article-title', '.entry-title'],
   DATE: ['time', '.meta-date', '.post-date', '.entry-date'],
@@ -113,6 +113,19 @@ async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
       timeout: 60000,
       waitUntil: 'networkidle'
     });
+
+    // Debug: Save the page content and take a screenshot
+    const content = await page.content();
+    await page.evaluate(() => {
+      console.log('Available article elements:', document.querySelectorAll('article').length);
+      console.log('Document structure:', document.body.innerHTML.substring(0, 1000));
+    });
+    
+    // Save debug files
+    await page.screenshot({ path: 'debug-page.png', fullPage: true });
+    require('fs').writeFileSync('debug-content.html', content);
+
+    logger.info('Debug files saved: debug-page.png and debug-content.html');
 
     // Random delay between 2-5 seconds
     await page.waitForTimeout(2000 + Math.random() * 3000);
@@ -304,7 +317,7 @@ async function scrapeExecutiveOrders(): Promise<void> {
   try {
     await prisma.$connect();
     logger.info('Starting presidential actions scrape');
-    await scrapeWithRetry('https://www.whitehouse.gov/briefing-room/presidential-actions/');
+    await scrapeWithRetry('https://www.whitehouse.gov/briefing-room/presidential-actions/?post_type=presidential-actions');
     logger.info('Completed presidential actions scrape');
   } catch (error) {
     logger.error('Error scraping presidential actions:', error instanceof Error ? error.stack : error);

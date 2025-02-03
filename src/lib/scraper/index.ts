@@ -37,7 +37,7 @@ export async function scrapeExecutiveOrders(): Promise<void> {
     await scrapeOrdersFromPage(page, 'https://www.whitehouse.gov/briefing-room/presidential-actions/');
     logger.info('Completed presidential actions scrape');
   } catch (error) {
-    logger.error('Error scraping presidential actions:', error);
+    logger.error('Error scraping presidential actions:', error instanceof Error ? error.stack : error);
     throw error;
   } finally {
     await browser.close();

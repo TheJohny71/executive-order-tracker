@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 import { fileURLToPath } from 'url';
+import { XMLParser } from 'fast-xml-parser';
+import fetch from 'node-fetch';
 import type { ScrapedOrder, RawOrder } from './types';
 import { determineCategories, determineAgencies } from './utils';
 
@@ -10,84 +12,143 @@ const logger = pino(pretty({ colorize: true }));
 const prisma = new PrismaClient();
 
 const RSS_URL = 'https://www.whitehouse.gov/feed/';
+const BACKUP_URL = 'https://www.federalregister.gov/api/v1/documents.json?conditions[type]=PRESDOCU';
 
 async function fetchRSSFeed(): Promise<string> {
-  const browser = await chromium.launch({
-    headless: true,
-    args: ['--no-sandbox']
-  });
-
-  const context = await browser.newContext({
-    userAgent: 'RSS Reader/1.0',
-    extraHTTPHeaders: {
-      'Accept': 'application/rss+xml,application/xml;q=0.9',
-      'Accept-Language': 'en-US,en;q=0.5'
-    }
-  });
-
-  const page = await context.newPage();
-  
   try {
-    const response = await page.goto(RSS_URL, {
-      timeout: 30000,
-      waitUntil: 'networkidle'
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+    const response = await fetch(RSS_URL, {
+      headers: {
+        'User-Agent': 'RSS Reader/1.0',
+        'Accept': 'application/rss+xml,application/xml;q=0.9',
+        'Accept-Language': 'en-US,en;q=0.5'
+      },
+      signal: controller.signal
     });
 
-    if (!response) {
-      throw new Error('No response received');
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const content = await response.text();
-    return content;
-  } finally {
-    await browser.close();
+    return await response.text();
+  } catch (error: unknown) {
+    logger.warn('RSS feed failed, trying Federal Register API', { 
+      error: error instanceof Error ? error.message : String(error) 
+    });
+    
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      
+      const response = await fetch(BACKUP_URL, {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`Backup API failed! status: ${response.status}`);
+      }
+      return await response.text();
+    } catch (backupError: unknown) {
+      throw new Error(
+        `Both primary and backup feeds failed: ${
+          backupError instanceof Error ? backupError.message : String(backupError)
+        }`
+      );
+    }
   }
 }
 
-async function parseRSSContent(content: string): Promise<RawOrder[]> {
+async function parseRSSContent(content: string, isBackup = false): Promise<RawOrder[]> {
   const orders: RawOrder[] = [];
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(content, 'text/xml');
   
-  const items = doc.querySelectorAll('item');
+  if (isBackup) {
+    try {
+      const data = JSON.parse(content);
+      return data.results.map((item: any) => ({
+        type: item.presidential_document_type === 'executive_order' ? 'Executive Order' : 'Memorandum',
+        orderNumber: item.executive_order_number,
+        title: item.title,
+        date: item.publication_date,
+        url: item.html_url
+      }));
+    } catch (error: unknown) {
+      logger.error('Error parsing backup JSON:', { 
+        error: error instanceof Error ? error.message : String(error) 
+      });
+      throw error;
+    }
+  }
+
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: "@_",
+    parseAttributeValue: true,
+    trimValues: true
+  });
   
-  for (const item of items) {
-    const title = item.querySelector('title')?.textContent || '';
-    const link = item.querySelector('link')?.textContent || '';
-    const pubDate = item.querySelector('pubDate')?.textContent || '';
-    const category = item.querySelector('category')?.textContent || '';
+  try {
+    const result = parser.parse(content);
+    const items = result.rss?.channel?.item;
     
-    if (category.includes('Presidential Actions')) {
-      const isEO = title.toLowerCase().includes('executive order');
-      const type = isEO ? 'Executive Order' : 'Memorandum';
-      const orderNumber = isEO ? title.match(/Executive Order (\d+)/)?.[1] : undefined;
-      const date = new Date(pubDate);
+    if (!items) {
+      throw new Error('No items found in RSS feed');
+    }
+
+    for (const item of Array.isArray(items) ? items : [items]) {
+      const title = item.title;
+      const category = item.category;
       
-      if (date.getFullYear() >= 2025) {
-        orders.push({
-          type,
-          orderNumber,
-          title: title.trim(),
-          date: pubDate,
-          url: link
-        });
+      if (Array.isArray(category) ? category.includes('Presidential Actions') : category === 'Presidential Actions') {
+        const isEO = title.toLowerCase().includes('executive order');
+        const type = isEO ? 'Executive Order' : 'Memorandum';
+        const orderNumber = isEO ? title.match(/Executive Order (\d+)/)?.[1] : undefined;
+        const date = new Date(item.pubDate);
+        
+        if (date.getFullYear() >= 2025) {
+          orders.push({
+            type,
+            orderNumber,
+            title: title.trim(),
+            date: item.pubDate,
+            url: item.link
+          });
+        }
       }
     }
+  } catch (error: unknown) {
+    logger.error('Error parsing RSS content:', { 
+      error: error instanceof Error ? error.message : String(error) 
+    });
+    throw error;
   }
   
   return orders;
 }
 
 async function scrapeOrderContent(page: Page, url: string): Promise<string> {
-  await page.goto(url, { 
-    timeout: 30000,
-    waitUntil: 'networkidle'
-  });
-  
-  const content = await page.$eval('article', el => el.textContent || '')
-    .catch(() => '');
+  try {
+    await page.goto(url, { 
+      timeout: 30000,
+      waitUntil: 'networkidle'
+    });
     
-  return content;
+    const content = await page.$eval('article', el => el.textContent || '')
+      .catch(() => '');
+      
+    return content;
+  } catch (error: unknown) {
+    logger.error('Error scraping order content:', { 
+      error: error instanceof Error ? error.message : String(error),
+      url 
+    });
+    return '';
+  }
 }
 
 async function scrapeExecutiveOrders(): Promise<void> {
@@ -109,8 +170,9 @@ async function scrapeExecutiveOrders(): Promise<void> {
     const rssContent = await fetchRSSFeed();
     logger.info('RSS feed fetched successfully');
     
-    const orders = await parseRSSContent(rssContent);
-    logger.info(`Found ${orders.length} orders in RSS feed`);
+    const isBackup = rssContent.includes('"results":'); // Simple check if we got JSON from backup
+    const orders = await parseRSSContent(rssContent, isBackup);
+    logger.info(`Found ${orders.length} orders in ${isBackup ? 'Federal Register' : 'RSS feed'}`);
     
     for (const order of orders) {
       try {
@@ -137,14 +199,19 @@ async function scrapeExecutiveOrders(): Promise<void> {
         
         // Add delay between requests
         await page.waitForTimeout(2000 + Math.random() * 3000);
-      } catch (error) {
-        logger.error({ error, order }, 'Error processing individual order');
+      } catch (error: unknown) {
+        logger.error('Error processing individual order:', { 
+          error: error instanceof Error ? error.message : String(error),
+          order 
+        });
       }
     }
     
     logger.info('Completed presidential actions scrape');
-  } catch (error) {
-    logger.error('Error scraping presidential actions:', error);
+  } catch (error: unknown) {
+    logger.error('Error scraping presidential actions:', { 
+      error: error instanceof Error ? error.message : String(error) 
+    });
     throw error;
   } finally {
     await browser.close();
@@ -210,13 +277,13 @@ async function saveOrder(order: ScrapedOrder): Promise<void> {
       title: order.title,
       orderNumber: order.orderNumber 
     }, 'Saved order successfully');
-  } catch (error) {
-    logger.error({ 
-      error, 
+  } catch (error: unknown) {
+    logger.error('Error saving order:', { 
+      error: error instanceof Error ? error.message : String(error),
       orderTitle: order.title,
       orderNumber: order.orderNumber,
       url: order.url 
-    }, 'Error saving order');
+    });
     throw error;
   }
 }
@@ -224,8 +291,10 @@ async function saveOrder(order: ScrapedOrder): Promise<void> {
 // Run if called directly
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   scrapeExecutiveOrders()
-    .catch(error => {
-      logger.error('Fatal error:', error);
+    .catch((error: unknown) => {
+      logger.error('Fatal error:', { 
+        error: error instanceof Error ? error.message : String(error) 
+      });
       process.exit(1);
     });
 }

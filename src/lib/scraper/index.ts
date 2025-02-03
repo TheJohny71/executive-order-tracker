@@ -1,14 +1,10 @@
-import { chromium, type Page } from 'playwright';
+import { chromium, type Page, type ElementHandle } from 'playwright';
 import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 import { fileURLToPath } from 'url';
-import path from 'path';
 import type { ScrapedOrder, RawOrder } from './types';
 import { determineCategories, determineAgencies } from './utils';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const logger = pino(pretty({ colorize: true }));
 const prisma = new PrismaClient();
@@ -30,9 +26,11 @@ export async function scrapeExecutiveOrders(): Promise<void> {
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
+  
   const context = await browser.newContext({
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
   });
+  
   const page = await context.newPage();
   
   try {
@@ -48,8 +46,9 @@ export async function scrapeExecutiveOrders(): Promise<void> {
   }
 }
 
-  async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
+async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
   logger.info(`Scraping orders from ${url}`);
+  
   try {
     await page.goto(url, { 
       timeout: 60000,
@@ -57,78 +56,73 @@ export async function scrapeExecutiveOrders(): Promise<void> {
     });
     
     await page.waitForSelector('article', { timeout: 10000 });
-
-    // Add debug screenshot
-    await page.screenshot({ path: 'debug.png' });
     
-    const content = await page.content();
-    logger.info(`Page content length: ${content.length}`);
+    const articleElements = await page.$$('article');
+    logger.info(`Found ${articleElements.length} articles`);
 
-    const articles = await page.$('article');
-    logger.info(`Found ${articles.length} articles`);
-
-
-  const orders = await page.evaluate(() => {
-    const orderElements = document.querySelectorAll('article');
-    return Array.from(orderElements)
-      .map(element => {
-        const titleEl = element.querySelector('h2');
-        const dateEl = element.querySelector('time, .meta-date');
-        const linkEl = element.querySelector('a');
-        const title = titleEl?.textContent?.trim() || '';
-        
+    const orders: RawOrder[] = [];
+    
+    for (const article of articleElements) {
+      const titleEl = await article.$('h2');
+      const dateEl = await article.$('time, .meta-date');
+      const linkEl = await article.$('a');
+      
+      const title = await titleEl?.textContent() || '';
+      const dateStr = await dateEl?.getAttribute('datetime') || await dateEl?.textContent() || '';
+      const href = await linkEl?.getAttribute('href');
+      
+      if (title && dateStr && href) {
         const isEO = title.toLowerCase().includes('executive order');
         const type = isEO ? 'Executive Order' : 'Memorandum';
         const orderNumber = isEO ? title.match(/Executive Order (\d+)/)?.[1] : undefined;
-        
-        const dateStr = dateEl?.getAttribute('datetime') || dateEl?.textContent?.trim() || '';
         const date = new Date(dateStr);
         
-        if (date.getFullYear() >= 2025 && linkEl?.href) {
-          return {
+        if (date.getFullYear() >= 2025) {
+          orders.push({
             type,
             orderNumber,
             title,
             date: dateStr,
-            url: linkEl.href
-          };
+            url: href
+          });
         }
-        return undefined;
-      })
-      .filter((order): order is RawOrder => order !== undefined)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  });
-
-  logger.info(`Found ${orders.length} orders from 2025 onwards`);
-
-  for (const order of orders) {
-    try {
-      await page.goto(order.url);
-      
-      const summary = await page.$eval('article p', 
-        (el) => el?.textContent?.trim() || ''
-      ).catch(() => '');
-
-      const content = await page.$eval('article', 
-        (el) => el?.textContent?.trim() || ''
-      ).catch(() => '');
-
-      const scrapedOrder: ScrapedOrder = {
-        type: order.type,
-        orderNumber: order.orderNumber,
-        title: order.title,
-        date: new Date(order.date),
-        url: order.url,
-        summary,
-        agencies: determineAgencies(content),
-        categories: determineCategories(content)
-      };
-
-      await saveOrder(scrapedOrder);
-      logger.info({ title: order.title }, 'Processed order');
-    } catch (error) {
-      logger.error({ error, order }, 'Error processing individual order');
+      }
     }
+
+    logger.info(`Found ${orders.length} orders from 2025 onwards`);
+
+    for (const order of orders) {
+      try {
+        await page.goto(order.url, { timeout: 30000 });
+        
+        const summary = await page.$eval('article p', 
+          (el) => el?.textContent?.trim() || ''
+        ).catch(() => '');
+
+        const content = await page.$eval('article', 
+          (el) => el?.textContent?.trim() || ''
+        ).catch(() => '');
+
+        const scrapedOrder: ScrapedOrder = {
+          type: order.type,
+          orderNumber: order.orderNumber,
+          title: order.title,
+          date: new Date(order.date),
+          url: order.url,
+          summary,
+          agencies: determineAgencies(content),
+          categories: determineCategories(content)
+        };
+
+        await saveOrder(scrapedOrder);
+        logger.info({ title: order.title }, 'Processed order');
+      } catch (error) {
+        logger.error({ error, order }, 'Error processing individual order');
+      }
+    }
+  } catch (error) {
+    logger.error('Error in scrapeOrdersFromPage:', error);
+    throw error;
   }
 }
 

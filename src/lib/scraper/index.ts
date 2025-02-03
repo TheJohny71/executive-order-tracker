@@ -48,10 +48,25 @@ export async function scrapeExecutiveOrders(): Promise<void> {
   }
 }
 
-async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
+  async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
   logger.info(`Scraping orders from ${url}`);
-  await page.goto(url, { timeout: 60000, waitUntil: 'networkidle' });
-  await page.waitForSelector('article');
+  try {
+    await page.goto(url, { 
+      timeout: 60000,
+      waitUntil: 'networkidle'
+    });
+    
+    await page.waitForSelector('article', { timeout: 10000 });
+
+    // Add debug screenshot
+    await page.screenshot({ path: 'debug.png' });
+    
+    const content = await page.content();
+    logger.info(`Page content length: ${content.length}`);
+
+    const articles = await page.$('article');
+    logger.info(`Found ${articles.length} articles`);
+
 
   const orders = await page.evaluate(() => {
     const orderElements = document.querySelectorAll('article');

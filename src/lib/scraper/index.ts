@@ -55,6 +55,16 @@ async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
       waitUntil: 'networkidle'
     });
     
+    const pageContent = await page.content();
+    logger.info(`Page content length: ${pageContent.length}`);
+    
+    if (pageContent.length < 1000) {
+      throw new Error('Page content too short - possible bot detection');
+    }
+    
+    const title = await page.title();
+    logger.info(`Page title: ${title}`);
+    
     await page.waitForSelector('article', { timeout: 10000 });
     
     const articleElements = await page.$$('article');

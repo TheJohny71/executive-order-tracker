@@ -10,7 +10,7 @@ import {
   ArrowUp 
 } from 'lucide-react';
 
-// UI Components from src/components/ui
+// UI Components
 import {
   Card,
   CardContent,
@@ -28,14 +28,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-// Local component imports using relative paths
-import { LoadingSkeleton } from './executive-orders/loading-skeleton';
-import { TimelineChart } from './executive-orders/timeline-chart';
-import { OrderCard } from './executive-orders/order-card';
-import { ComparisonView } from './executive-orders/comparison-view';
-import { Pagination } from './executive-orders/pagination';
+// Executive Order Components - update paths to match src structure
+import { LoadingSkeleton } from '@/components/executive-orders/loading-skeleton';
+import { TimelineChart } from '@/components/executive-orders/timeline-chart';
+import { OrderCard } from '@/components/executive-orders/order-card';
+import { ComparisonView } from '@/components/executive-orders/comparison-view';
+import { Pagination } from '@/components/executive-orders/pagination';
 
-// Hooks and types from src
+// Hooks and Types
 import { useOrders } from '@/hooks/useOrders';
 import type { Order, FilterType } from '@/types';
 
@@ -72,22 +72,6 @@ export function ExecutiveOrderTracker() {
         console.error('Failed to parse recently viewed orders:', e);
       }
     }
-  }, []);
-
-  // Keyboard shortcut for search
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === '/' && e.target === document.body) {
-        e.preventDefault();
-        const searchInput = document.querySelector('input[type="text"]');
-        if (searchInput instanceof HTMLInputElement) {
-          searchInput.focus();
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyPress);
-    return () => document.removeEventListener('keydown', handleKeyPress);
   }, []);
 
   const handleFilterChange = (filterType: FilterType, value: string) => {

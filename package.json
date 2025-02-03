@@ -7,7 +7,8 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "scrape": "ts-node src/lib/scraper/index.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",
@@ -28,7 +29,8 @@
     "react-dom": "^18.2.0",
     "recharts": "^2.15.1",
     "shadcn-ui": "^0.9.4",
-    "tailwind-merge": "^3.0.1"
+    "tailwind-merge": "^3.0.1",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.0",

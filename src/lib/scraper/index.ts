@@ -7,9 +7,20 @@ import pretty from 'pino-pretty';
 const logger = pino(pretty({ colorize: true }));
 const prisma = new PrismaClient();
 
+// Add a check for the database connection
+async function checkDatabaseConnection() {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    logger.info('Database connection successful');
+  } catch (error) {
+    logger.error('Database connection failed:', error);
+    throw error;
+  }
+}
+
 interface ScrapedOrder {
   type: string;
-  orderNumber?: string;
+  orderNumber: string | undefined;
   title: string;
   date: Date;
   url: string;
@@ -20,13 +31,16 @@ interface ScrapedOrder {
 
 interface RawOrder {
   type: string;
-  orderNumber?: string;
+  orderNumber: string | undefined;
   title: string;
   date: string;
   url: string;
 }
 
 export async function scrapeExecutiveOrders() {
+  // Check database connection first
+  await checkDatabaseConnection();
+  
   const browser = await chromium.launch();
   const page = await browser.newPage();
   
@@ -48,12 +62,13 @@ export async function scrapeExecutiveOrders() {
 }
 
 async function scrapeOrdersFromPage(page: Page, url: string) {
+  logger.info(`Scraping orders from ${url}`);
   await page.goto(url);
   await page.waitForSelector('article');
 
-  const orders: RawOrder[] = await page.evaluate(() => {
+  const orders = await page.evaluate(() => {
     const orderElements = document.querySelectorAll('article');
-    return Array.from(orderElements).map(element => {
+    const orders = Array.from(orderElements).map(element => {
       const titleEl = element.querySelector('h2');
       const dateEl = element.querySelector('time, .meta-date');
       const linkEl = element.querySelector('a');
@@ -62,23 +77,33 @@ async function scrapeOrdersFromPage(page: Page, url: string) {
       const isEO = title.toLowerCase().includes('executive order');
       const type = isEO ? 'Executive Order' : 'Memorandum';
       const orderNumber = isEO ? title.match(/Executive Order (\d+)/)?.[1] : undefined;
-
-      return {
-        type,
-        orderNumber,
-        title,
-        date: (dateEl?.getAttribute('datetime') || dateEl?.textContent?.trim() || ''),
-        url: linkEl?.href || ''
-      };
+      
+      const dateStr = dateEl?.getAttribute('datetime') || dateEl?.textContent?.trim() || '';
+      const date = new Date(dateStr);
+      
+      // Only include items from 2025 onwards
+      if (date.getFullYear() >= 2025 && linkEl?.href) {
+        const order: RawOrder = {
+          type,
+          orderNumber,
+          title,
+          date: dateStr,
+          url: linkEl.href
+        };
+        return order;
+      }
+      return undefined;
     });
+    
+    // Filter out undefined values and sort by date (newest first)
+    return orders
+      .filter((order): order is RawOrder => order !== undefined)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   });
 
+  logger.info(`Found ${orders.length} orders from 2025 onwards`);
+
   for (const order of orders) {
-    if (!order.url) {
-      logger.warn({ order }, 'Skipping order without URL');
-      continue;
-    }
-    
     try {
       await page.goto(order.url);
       
@@ -228,4 +253,13 @@ async function saveOrder(order: ScrapedOrder) {
     }, 'Error saving order');
     throw error;
   }
+}
+
+// Run the scraper if this file is executed directly
+if (require.main === module) {
+  scrapeExecutiveOrders()
+    .catch(error => {
+      logger.error('Fatal error:', error);
+      process.exit(1);
+    });
 }

@@ -6,12 +6,10 @@ import pretty from 'pino-pretty';
 const prisma = new PrismaClient();
 const logger = pino(pretty({ colorize: true }));
 
-// Add these export configurations
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 export const preferredRegion = 'auto';
 
-// Rest of your code remains the same...
 type WhereClause = {
   type?: string;
   date?: {
@@ -40,6 +38,7 @@ interface Agency {
 
 export async function GET(request: Request) {
   try {
+    logger.info('Starting GET request for orders');
     const { searchParams } = new URL(request.url);
     
     const type = searchParams.get('type');
@@ -50,6 +49,11 @@ export async function GET(request: Request) {
     const dateTo = searchParams.get('dateTo');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
+
+    logger.info({ 
+      type, category, agency, search, 
+      dateFrom, dateTo, page, limit 
+    }, 'Query parameters');
 
     const where: WhereClause = {};
 
@@ -86,45 +90,57 @@ export async function GET(request: Request) {
       if (dateTo) where.date.lte = new Date(dateTo);
     }
 
-    const total = await prisma.executiveOrder.count({ where });
+    logger.info({ where }, 'Constructed where clause');
 
-    const orders = await prisma.executiveOrder.findMany({
-      where,
-      include: {
-        categories: true,
-        agencies: true
-      },
-      orderBy: {
-        date: 'desc'
-      },
-      skip: (page - 1) * limit,
-      take: limit
-    });
+    try {
+      const total = await prisma.executiveOrder.count({ where });
+      logger.info({ total }, 'Got total count');
 
-    const [categories, agencies] = await Promise.all([
-      prisma.category.findMany(),
-      prisma.agency.findMany()
-    ]);
+      const orders = await prisma.executiveOrder.findMany({
+        where,
+        include: {
+          categories: true,
+          agencies: true
+        },
+        orderBy: {
+          date: 'desc'
+        },
+        skip: (page - 1) * limit,
+        take: limit
+      });
+      logger.info(`Retrieved ${orders.length} orders`);
 
-    return NextResponse.json({
-      orders,
-      metadata: {
-        categories: categories.map((c: Category) => c.name),
-        agencies: agencies.map((a: Agency) => a.name)
-      },
-      pagination: {
-        total,
-        pages: Math.ceil(total / limit),
-        currentPage: page,
-        limit
-      }
-    });
+      const [categories, agencies] = await Promise.all([
+        prisma.category.findMany(),
+        prisma.agency.findMany()
+      ]);
+      logger.info('Retrieved categories and agencies');
 
+      return NextResponse.json({
+        orders,
+        metadata: {
+          categories: categories.map((c: Category) => c.name),
+          agencies: agencies.map((a: Agency) => a.name)
+        },
+        filteredCount: total,
+        pagination: {
+          total,
+          pages: Math.ceil(total / limit),
+          currentPage: page,
+          limit
+        }
+      });
+    } catch (dbError) {
+      logger.error({ error: dbError }, 'Database operation failed');
+      throw dbError;
+    }
   } catch (error) {
-    logger.error({ error }, 'Error fetching orders');
+    logger.error({ error }, 'Error in GET /api/orders');
     return NextResponse.json(
-      { error: 'Failed to fetch orders' },
+      { error: 'Failed to fetch orders', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }

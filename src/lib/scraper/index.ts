@@ -1,14 +1,18 @@
-// src/lib/scraper/index.ts
 import { chromium, type Page } from 'playwright';
 import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const logger = pino(pretty({ colorize: true }));
 const prisma = new PrismaClient();
 
 // Add a check for the database connection
-async function checkDatabaseConnection() {
+async function checkDatabaseConnection(): Promise<void> {
   try {
     await prisma.$queryRaw`SELECT 1`;
     logger.info('Database connection successful');
@@ -24,7 +28,7 @@ interface ScrapedOrder {
   title: string;
   date: Date;
   url: string;
-  summary?: string;
+  summary: string;
   agencies: string[];
   categories: string[];
 }
@@ -37,8 +41,7 @@ interface RawOrder {
   url: string;
 }
 
-export async function scrapeExecutiveOrders() {
-  // Check database connection first
+export async function scrapeExecutiveOrders(): Promise<void> {
   await checkDatabaseConnection();
   
   const browser = await chromium.launch();
@@ -46,11 +49,8 @@ export async function scrapeExecutiveOrders() {
   
   try {
     logger.info('Starting presidential actions scrape');
-    // Start with executive orders
     await scrapeOrdersFromPage(page, 'https://www.whitehouse.gov/briefing-room/presidential-actions/executive-orders/');
-    // Then scrape presidential memoranda
     await scrapeOrdersFromPage(page, 'https://www.whitehouse.gov/briefing-room/presidential-actions/presidential-memoranda/');
-    
     logger.info('Completed presidential actions scrape');
   } catch (error) {
     logger.error('Error scraping presidential actions:', error);
@@ -61,7 +61,7 @@ export async function scrapeExecutiveOrders() {
   }
 }
 
-async function scrapeOrdersFromPage(page: Page, url: string) {
+async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
   logger.info(`Scraping orders from ${url}`);
   await page.goto(url);
   await page.waitForSelector('article');
@@ -81,7 +81,6 @@ async function scrapeOrdersFromPage(page: Page, url: string) {
       const dateStr = dateEl?.getAttribute('datetime') || dateEl?.textContent?.trim() || '';
       const date = new Date(dateStr);
       
-      // Only include items from 2025 onwards
       if (date.getFullYear() >= 2025 && linkEl?.href) {
         const order: RawOrder = {
           type,
@@ -95,7 +94,6 @@ async function scrapeOrdersFromPage(page: Page, url: string) {
       return undefined;
     });
     
-    // Filter out undefined values and sort by date (newest first)
     return orders
       .filter((order): order is RawOrder => order !== undefined)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -140,7 +138,7 @@ async function scrapeOrdersFromPage(page: Page, url: string) {
 function determineCategories(content: string): string[] {
   const categories = new Set<string>();
   
-  const categoryKeywords = {
+  const categoryKeywords: Record<string, string[]> = {
     'Education': ['education', 'school', 'student', 'learning'],
     'Military': ['military', 'defense', 'veteran', 'armed forces'],
     'Economy': ['economy', 'economic', 'financial', 'treasury'],
@@ -164,7 +162,7 @@ function determineCategories(content: string): string[] {
 function determineAgencies(content: string): string[] {
   const agencies = new Set<string>();
   
-  const agencyKeywords = {
+  const agencyKeywords: Record<string, string[]> = {
     'Department of Education': ['department of education', 'education department'],
     'Department of Defense': ['department of defense', 'defense department', 'pentagon'],
     'Department of State': ['department of state', 'state department'],
@@ -183,7 +181,7 @@ function determineAgencies(content: string): string[] {
   return Array.from(agencies);
 }
 
-async function saveOrder(order: ScrapedOrder) {
+async function saveOrder(order: ScrapedOrder): Promise<void> {
   try {
     const categoryConnects = await Promise.all(
       order.categories.map(async (name) => {
@@ -215,7 +213,7 @@ async function saveOrder(order: ScrapedOrder) {
       ? { id: existingOrder.id }
       : order.orderNumber
         ? { orderNumber: order.orderNumber }
-        : { id: '' }; // This will trigger a create operation
+        : { id: '' };
 
     await prisma.executiveOrder.upsert({
       where,
@@ -256,7 +254,7 @@ async function saveOrder(order: ScrapedOrder) {
 }
 
 // Run the scraper if this file is executed directly
-if (require.main === module) {
+if (import.meta.url === fileURLToPath(import.meta.url)) {
   scrapeExecutiveOrders()
     .catch(error => {
       logger.error('Fatal error:', error);

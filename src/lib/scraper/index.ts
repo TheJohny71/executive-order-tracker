@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);

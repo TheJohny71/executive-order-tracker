@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "scrape": "NODE_OPTIONS='--loader ts-node/esm' node src/lib/scraper/index.ts"
+    "scrape": "NODE_OPTIONS='--loader ts-node/esm' node src/lib/scraper/index.ts",
+    "scheduler": "NODE_OPTIONS='--loader ts-node/esm' node src/lib/scheduler/index.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

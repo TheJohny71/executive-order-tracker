@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
 import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,6 +11,7 @@ const __dirname = path.dirname(__filename);
 const logger = pino(pretty({ colorize: true }));
 const prisma = new PrismaClient();
 
+// Rest of the code remains exactly the same...
 // Add a check for the database connection
 async function checkDatabaseConnection(): Promise<void> {
   try {
@@ -256,7 +255,7 @@ async function saveOrder(order: ScrapedOrder): Promise<void> {
 }
 
 // Run the scraper if this file is executed directly
-if (import.meta.url === fileURLToPath(import.meta.url)) {
+if (process.argv[1] === import.meta.url) {
   scrapeExecutiveOrders()
     .catch(error => {
       logger.error('Fatal error:', error);

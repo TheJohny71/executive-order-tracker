@@ -9,228 +9,146 @@ import { determineCategories, determineAgencies } from './utils';
 const logger = pino(pretty({ colorize: true }));
 const prisma = new PrismaClient();
 
-const SELECTORS = {
-  ARTICLES: [
-    '.archive-grid article',
-    '.archive-content article',
-    'main article',
-    '.article-items article',
-    'div[role="main"] article'
-  ],
-  TITLE: ['h3', 'h2', '.article-title', '.entry-title'],
-  DATE: ['time', '.meta-date', '.post-date', '.entry-date'],
-  LINK: ['h3 a', 'h2 a', '.article-title a', '.entry-title a']
-};
+const RSS_URL = 'https://www.whitehouse.gov/feed/';
 
-async function waitForAnySelector(page: Page, selectors: string[], timeout = 30000): Promise<string> {
-  const selectorsString = selectors.join(', ');
-  try {
-    await page.waitForSelector(selectorsString, { timeout });
-    for (const selector of selectors) {
-      const element = await page.$(selector);
-      if (element) {
-        return selector;
-      }
+async function fetchRSSFeed(): Promise<string> {
+  const browser = await chromium.launch({
+    headless: true,
+    args: ['--no-sandbox']
+  });
+
+  const context = await browser.newContext({
+    userAgent: 'RSS Reader/1.0',
+    extraHTTPHeaders: {
+      'Accept': 'application/rss+xml,application/xml;q=0.9',
+      'Accept-Language': 'en-US,en;q=0.5'
     }
-    throw new Error('No matching selector found');
-  } catch (error) {
-    logger.error(`Failed to find any of these selectors: ${selectorsString}`);
-    throw error;
-  }
-}
+  });
 
-async function extractTextContent(element: any, selectors: string[]): Promise<string> {
-  for (const selector of selectors) {
-    try {
-      const el = await element.$(selector);
-      if (el) {
-        return (await el.textContent() || '').trim();
-      }
-    } catch (error) {
-      continue;
-    }
-  }
-  return '';
-}
-
-async function scrapeWithRetry(url: string, maxRetries = 3): Promise<void> {
-  let lastError: Error | null = null;
-  
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const browser = await chromium.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-web-security',
-        '--disable-features=IsolateOrigins,site-per-process',
-        '--disable-site-isolation-trials'
-      ]
-    });
-
-    try {
-      const context = await browser.newContext({
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-        viewport: { width: 1920, height: 1080 },
-        deviceScaleFactor: 1,
-        isMobile: false,
-        hasTouch: false,
-        bypassCSP: true,
-        extraHTTPHeaders: {
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.5',
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
-        }
-      });
-
-      const page = await context.newPage();
-      await page.setExtraHTTPHeaders({
-        'Referer': 'https://www.google.com/',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
-      });
-
-      logger.info(`Attempt ${attempt} of ${maxRetries}`);
-      await scrapeOrdersFromPage(page, url);
-      return;
-    } catch (error) {
-      lastError = error as Error;
-      logger.error(`Attempt ${attempt} failed:`, error);
-      await new Promise(resolve => setTimeout(resolve, attempt * 5000));
-    } finally {
-      await browser.close();
-    }
-  }
-
-  throw lastError || new Error('All retry attempts failed');
-}
-
-async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
-  logger.info(`Scraping orders from ${url}`);
+  const page = await context.newPage();
   
   try {
-    await page.goto(url, { 
-      timeout: 60000,
+    const response = await page.goto(RSS_URL, {
+      timeout: 30000,
       waitUntil: 'networkidle'
     });
 
-    // Debug: Save the page content and take a screenshot
-    const content = await page.content();
-    await page.evaluate(() => {
-      console.log('Available article elements:', document.querySelectorAll('article').length);
-      console.log('Document structure:', document.body.innerHTML.substring(0, 1000));
-    });
-    
-    // Save debug files
-    await page.screenshot({ path: 'debug-page.png', fullPage: true });
-    require('fs').writeFileSync('debug-content.html', content);
-
-    logger.info('Debug files saved: debug-page.png and debug-content.html');
-
-    // Random delay between 2-5 seconds
-    await page.waitForTimeout(2000 + Math.random() * 3000);
-
-    const pageContent = await page.content();
-    logger.info(`Page content length: ${pageContent.length}`);
-    
-    if (pageContent.length < 1000) {
-      await page.screenshot({ path: 'debug/short-content.png', fullPage: true });
-      throw new Error('Page content too short - possible bot detection');
+    if (!response) {
+      throw new Error('No response received');
     }
 
-    const title = await page.title();
-    logger.info(`Page title: ${title}`);
+    const content = await response.text();
+    return content;
+  } finally {
+    await browser.close();
+  }
+}
 
-    // Try each article selector until one works
-    const articleSelector = await waitForAnySelector(page, SELECTORS.ARTICLES);
-    const articleElements = await page.$$(articleSelector);
-    logger.info(`Found ${articleElements.length} articles using selector: ${articleSelector}`);
-
-    if (articleElements.length === 0) {
-      await page.screenshot({ path: 'debug/no-articles.png', fullPage: true });
-      throw new Error('No articles found on page');
-    }
-
-    const orders: RawOrder[] = [];
+async function parseRSSContent(content: string): Promise<RawOrder[]> {
+  const orders: RawOrder[] = [];
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(content, 'text/xml');
+  
+  const items = doc.querySelectorAll('item');
+  
+  for (const item of items) {
+    const title = item.querySelector('title')?.textContent || '';
+    const link = item.querySelector('link')?.textContent || '';
+    const pubDate = item.querySelector('pubDate')?.textContent || '';
+    const category = item.querySelector('category')?.textContent || '';
     
-    for (const article of articleElements) {
-      try {
-        const title = await extractTextContent(article, SELECTORS.TITLE);
-        const dateStr = await extractTextContent(article, SELECTORS.DATE);
-        const href = await article.$eval(SELECTORS.LINK[0], (el: any) => el.getAttribute('href'))
-          .catch(() => null);
-        
-        if (title && dateStr && href) {
-          const isEO = title.toLowerCase().includes('executive order');
-          const type = isEO ? 'Executive Order' : 'Memorandum';
-          const orderNumber = isEO ? title.match(/Executive Order (\d+)/)?.[1] : undefined;
-          const date = new Date(dateStr);
-          
-          if (!isNaN(date.getTime()) && date.getFullYear() >= 2025) {
-            const fullUrl = href.startsWith('http') ? href : `https://www.whitehouse.gov${href}`;
-            orders.push({
-              type,
-              orderNumber,
-              title: title.trim(),
-              date: dateStr,
-              url: fullUrl
-            });
-          }
-        }
-      } catch (error) {
-        logger.error('Error extracting article data:', error);
+    if (category.includes('Presidential Actions')) {
+      const isEO = title.toLowerCase().includes('executive order');
+      const type = isEO ? 'Executive Order' : 'Memorandum';
+      const orderNumber = isEO ? title.match(/Executive Order (\d+)/)?.[1] : undefined;
+      const date = new Date(pubDate);
+      
+      if (date.getFullYear() >= 2025) {
+        orders.push({
+          type,
+          orderNumber,
+          title: title.trim(),
+          date: pubDate,
+          url: link
+        });
       }
     }
+  }
+  
+  return orders;
+}
 
-    logger.info(`Found ${orders.length} orders from 2025 onwards`);
+async function scrapeOrderContent(page: Page, url: string): Promise<string> {
+  await page.goto(url, { 
+    timeout: 30000,
+    waitUntil: 'networkidle'
+  });
+  
+  const content = await page.$eval('article', el => el.textContent || '')
+    .catch(() => '');
+    
+  return content;
+}
 
+async function scrapeExecutiveOrders(): Promise<void> {
+  const browser = await chromium.launch({
+    headless: true,
+    args: ['--no-sandbox']
+  });
+  
+  const context = await browser.newContext({
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/121.0.0.0',
+  });
+  
+  const page = await context.newPage();
+  
+  try {
+    await prisma.$connect();
+    logger.info('Starting presidential actions scrape');
+    
+    const rssContent = await fetchRSSFeed();
+    logger.info('RSS feed fetched successfully');
+    
+    const orders = await parseRSSContent(rssContent);
+    logger.info(`Found ${orders.length} orders in RSS feed`);
+    
     for (const order of orders) {
       try {
-        logger.info(`Processing order: ${order.title}`);
-        await page.waitForTimeout(2000 + Math.random() * 3000);
+        const content = await scrapeOrderContent(page, order.url);
         
-        await page.goto(order.url, { 
-          timeout: 30000,
-          waitUntil: 'networkidle' 
-        });
-        
-        await page.waitForSelector('article', { timeout: 30000 });
-        
-        const summary = await page.$eval('article p', el => el.textContent?.trim() || '')
-          .catch(() => '');
-
-        const content = await page.$eval('article', el => el.textContent?.trim() || '')
-          .catch(() => '');
-
         if (!content) {
           logger.warn({ url: order.url }, 'No content found for order');
           continue;
         }
-
+        
         const scrapedOrder: ScrapedOrder = {
           type: order.type,
           orderNumber: order.orderNumber,
           title: order.title,
           date: new Date(order.date),
           url: order.url,
-          summary,
+          summary: content.split('\n')[0]?.trim() || '',
           agencies: determineAgencies(content),
           categories: determineCategories(content)
         };
-
+        
         await saveOrder(scrapedOrder);
-        logger.info({ 
-          title: order.title,
-          agencies: scrapedOrder.agencies.length,
-          categories: scrapedOrder.categories.length
-        }, 'Processed order successfully');
+        logger.info({ title: order.title }, 'Processed order successfully');
+        
+        // Add delay between requests
+        await page.waitForTimeout(2000 + Math.random() * 3000);
       } catch (error) {
         logger.error({ error, order }, 'Error processing individual order');
       }
     }
+    
+    logger.info('Completed presidential actions scrape');
   } catch (error) {
-    logger.error('Error in scrapeOrdersFromPage:', error);
+    logger.error('Error scraping presidential actions:', error);
     throw error;
+  } finally {
+    await browser.close();
+    await prisma.$disconnect();
   }
 }
 
@@ -300,30 +218,6 @@ async function saveOrder(order: ScrapedOrder): Promise<void> {
       url: order.url 
     }, 'Error saving order');
     throw error;
-  }
-}
-
-async function checkDatabaseConnection(): Promise<void> {
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-    logger.info('Database connection successful');
-  } catch (error) {
-    logger.error('Database connection failed:', error);
-    throw error;
-  }
-}
-
-async function scrapeExecutiveOrders(): Promise<void> {
-  try {
-    await prisma.$connect();
-    logger.info('Starting presidential actions scrape');
-    await scrapeWithRetry('https://www.whitehouse.gov/briefing-room/presidential-actions/?post_type=presidential-actions');
-    logger.info('Completed presidential actions scrape');
-  } catch (error) {
-    logger.error('Error scraping presidential actions:', error instanceof Error ? error.stack : error);
-    throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 }
 

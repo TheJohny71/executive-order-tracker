@@ -26,7 +26,10 @@ async function checkDatabaseConnection(): Promise<void> {
 export async function scrapeExecutiveOrders(): Promise<void> {
   await checkDatabaseConnection();
   
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
   const context = await browser.newContext({
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
   });
@@ -47,7 +50,7 @@ export async function scrapeExecutiveOrders(): Promise<void> {
 
 async function scrapeOrdersFromPage(page: Page, url: string): Promise<void> {
   logger.info(`Scraping orders from ${url}`);
-  await page.goto(url);
+  await page.goto(url, { timeout: 60000, waitUntil: 'networkidle' });
   await page.waitForSelector('article');
 
   const orders = await page.evaluate(() => {

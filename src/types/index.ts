@@ -1,3 +1,4 @@
+// src/types/index.ts
 export interface Order {
   id: number;
   orderNumber?: string;
@@ -18,6 +19,7 @@ export interface OrdersResponse {
     categories: string[];
     agencies: string[];
   };
+  filteredCount: number;
   pagination: {
     total: number;
     pages: number;
@@ -26,7 +28,7 @@ export interface OrdersResponse {
   };
 }
 
-export type FilterType = 'type' | 'category' | 'agency' | 'search' | 'dateFrom' | 'dateTo' | 'page' | 'limit';
+export type FilterType = keyof OrderFilters;
 
 export interface OrderFilters {
   type: string;

@@ -14,6 +14,38 @@ const prisma = new PrismaClient();
 const RSS_URL = 'https://www.whitehouse.gov/feed/';
 const BACKUP_URL = 'https://www.federalregister.gov/api/v1/documents.json?conditions[type]=PRESDOCU';
 
+interface FederalRegisterResponse {
+  results: Array<{
+    presidential_document_type: string;
+    executive_order_number?: string;
+    title: string;
+    publication_date: string;
+    html_url: string;
+    body?: string;
+    abstract?: string;
+  }>;
+}
+
+interface FederalRegisterDocument {
+  body?: string;
+  abstract?: string;
+}
+
+interface XMLItem {
+  title: string;
+  link: string;
+  pubDate: string;
+  category: string | string[];
+}
+
+interface XMLResponse {
+  rss: {
+    channel: {
+      item: XMLItem | XMLItem[];
+    };
+  };
+}
+
 async function fetchRSSFeed(): Promise<string> {
   try {
     const controller = new AbortController();
@@ -69,13 +101,15 @@ async function parseRSSContent(content: string, isBackup = false): Promise<RawOr
   
   if (isBackup) {
     try {
-      const data = JSON.parse(content);
-      return data.results.map((item: any) => ({
+      const data = JSON.parse(content) as FederalRegisterResponse;
+      return data.results.map((item) => ({
         type: item.presidential_document_type === 'executive_order' ? 'Executive Order' : 'Memorandum',
         orderNumber: item.executive_order_number,
         title: item.title,
         date: item.publication_date,
-        url: item.html_url
+        url: item.html_url,
+        apiUrl: `${item.html_url}.json`,
+        content: item.body || item.abstract
       }));
     } catch (error: unknown) {
       logger.error('Error parsing backup JSON:', { 
@@ -93,7 +127,7 @@ async function parseRSSContent(content: string, isBackup = false): Promise<RawOr
   });
   
   try {
-    const result = parser.parse(content);
+    const result = parser.parse(content) as XMLResponse;
     const items = result.rss?.channel?.item;
     
     if (!items) {
@@ -131,17 +165,74 @@ async function parseRSSContent(content: string, isBackup = false): Promise<RawOr
   return orders;
 }
 
-async function scrapeOrderContent(page: Page, url: string): Promise<string> {
+async function scrapeOrderContent(page: Page, url: string, apiUrl?: string): Promise<string> {
   try {
-    await page.goto(url, { 
-      timeout: 30000,
-      waitUntil: 'networkidle'
-    });
-    
-    const content = await page.$eval('article', el => el.textContent || '')
-      .catch(() => '');
+    if (url.includes('federalregister.gov')) {
+      // Try API first if available
+      if (apiUrl) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 30000);
+          
+          const response = await fetch(apiUrl, {
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (response.ok) {
+            const data = await response.json() as FederalRegisterDocument;
+            if (data.body || data.abstract) {
+              return data.body || data.abstract || '';
+            }
+          }
+        } catch (error: unknown) {
+          logger.warn('API fetch failed, falling back to page scraping', {
+            error: error instanceof Error ? error.message : String(error),
+            url: apiUrl
+          });
+        }
+      }
       
-    return content;
+      // Fall back to page scraping
+      await page.goto(url, { 
+        timeout: 30000,
+        waitUntil: 'networkidle'
+      });
+      
+      // Try multiple possible selectors for Federal Register
+      const selectors = [
+        '.document-content',
+        '#fulltext_content_area',
+        '.body-content'
+      ];
+      
+      for (const selector of selectors) {
+        try {
+          const content = await page.$eval(selector, el => el.textContent || '');
+          if (content) {
+            return content;
+          }
+        } catch {
+          continue;
+        }
+      }
+      
+      logger.warn('No matching selectors found for Federal Register page', { url });
+      return '';
+      
+    } else {
+      // White House website
+      await page.goto(url, { 
+        timeout: 30000,
+        waitUntil: 'networkidle'
+      });
+      
+      const content = await page.$eval('article', el => el.textContent || '')
+        .catch(() => '');
+        
+      return content;
+    }
   } catch (error: unknown) {
     logger.error('Error scraping order content:', { 
       error: error instanceof Error ? error.message : String(error),
@@ -170,13 +261,13 @@ async function scrapeExecutiveOrders(): Promise<void> {
     const rssContent = await fetchRSSFeed();
     logger.info('RSS feed fetched successfully');
     
-    const isBackup = rssContent.includes('"results":'); // Simple check if we got JSON from backup
+    const isBackup = rssContent.includes('"results":');
     const orders = await parseRSSContent(rssContent, isBackup);
     logger.info(`Found ${orders.length} orders in ${isBackup ? 'Federal Register' : 'RSS feed'}`);
     
     for (const order of orders) {
       try {
-        const content = await scrapeOrderContent(page, order.url);
+        const content = await scrapeOrderContent(page, order.url, order.apiUrl);
         
         if (!content) {
           logger.warn({ url: order.url }, 'No content found for order');

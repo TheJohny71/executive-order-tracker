@@ -296,3 +296,4 @@ export function ExecutiveOrderTracker() {
     </div>
   );
 }
+export default ExecutiveOrderTracker;

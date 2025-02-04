@@ -3,16 +3,9 @@ const config = {
   images: {
     domains: ['www.whitehouse.gov'],
   },
-  // Add development settings
   reactStrictMode: true,
-  // Remove serverActions as it's enabled by default now
   experimental: {
-    // Add any future experimental features here
-  },
-  // Prevent excessive caching during development
-  onDemandEntries: {
-    maxInactiveAge: 60 * 1000,
-    pagesBufferLength: 2,
+    serverActions: true,
   },
   async headers() {
     return [

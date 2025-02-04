@@ -1,3 +1,4 @@
+// src/lib/scraper/types.ts
 import type { Category, Agency, OrderType } from '@/types';
 
 export interface ScrapedOrder {
@@ -23,4 +24,9 @@ export interface SpawResponse {
       type?: string;
     };
   }[];
+}
+
+// This matches the structure used in your utils.ts file
+export interface CategoryKeywords {
+  [key: string]: string[];
 }

@@ -8,3 +8,13 @@ export interface ScrapedOrder {
   agencies: string[];
   categories: string[];
 }
+
+export interface CategoryKeywords {
+  [key: string]: string[];
+}
+
+export interface RetryOptions {
+  retries?: number;
+  delay?: number;
+  backoff?: number;
+}

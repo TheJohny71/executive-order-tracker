@@ -3,11 +3,24 @@ import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 import type { ScrapedOrder } from './types';
-import { determineCategories, determineAgencies } from './utils';
+import { determineCategories, determineAgencies, retry } from './utils';
 
 const logger = pino(pretty({ colorize: true }));
 const prisma = new PrismaClient();
 const WH_ACTIONS_URL = 'https://www.whitehouse.gov/briefing-room/presidential-actions/';
+
+const SELECTORS = {
+  ARTICLE: [
+    '.news-item',
+    'article',
+    '.briefing-room__content article',
+    '[data-component="briefing-room"] article'
+  ].join(','),
+  TITLE: 'h2,h3,.title',
+  DATE: 'time,date,.date,.published-date',
+  LINK: 'a[href*="/briefing-room/"]',
+  CONTENT: 'article,.article-content,.content'
+};
 
 async function scrapeExecutiveOrders(): Promise<void> {
   const browser = await chromium.launch({ 
@@ -16,33 +29,72 @@ async function scrapeExecutiveOrders(): Promise<void> {
   });
   
   const context = await browser.newContext({
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/121.0.0.0'
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/121.0.0.0',
+    viewport: { width: 1920, height: 1080 }
   });
   
   const page = await context.newPage();
   
   try {
     logger.info('Starting White House actions scrape');
-    await page.goto(WH_ACTIONS_URL, { waitUntil: 'networkidle' });
-    await page.waitForSelector('.news-item');
+    
+    await retry(async () => {
+      await page.goto(WH_ACTIONS_URL, { 
+        waitUntil: 'networkidle',
+        timeout: 60000 
+      });
+      
+      const element = await page.waitForSelector(SELECTORS.ARTICLE, {
+        timeout: 60000,
+        state: 'visible'
+      });
+      
+      if (!element) throw new Error('No articles found');
+      
+      const parentClass = await element.evaluate(el => el.parentElement?.className);
+      logger.info(`Found articles container: ${parentClass}`);
+    });
 
-    const actions = await page.$$eval('.news-item', items => {
-      return items.map(item => ({
-        title: item.querySelector('h2')?.textContent?.trim() || '',
-        date: item.querySelector('time')?.getAttribute('datetime') || '',
-        url: item.querySelector('a')?.href || '',
-        type: item.querySelector('h2')?.textContent?.toLowerCase().includes('executive order') 
-          ? 'Executive Order' 
-          : 'Memorandum'
-      }));
+    // Debug logging
+    const pageTitle = await page.title();
+    logger.info(`Page title: ${pageTitle}`);
+    
+    const actions = await retry(async () => {
+      return page.$$eval(SELECTORS.ARTICLE, (items, selectors) => {
+        return items.map(item => ({
+          title: item.querySelector(selectors.TITLE)?.textContent?.trim() || '',
+          date: item.querySelector(selectors.DATE)?.getAttribute('datetime') || 
+                item.querySelector(selectors.DATE)?.textContent?.trim() || '',
+          url: item.querySelector(selectors.LINK)?.href || '',
+          type: item.querySelector(selectors.TITLE)?.textContent?.toLowerCase().includes('executive order') 
+            ? 'Executive Order' 
+            : 'Memorandum'
+        }));
+      }, SELECTORS);
     });
 
     logger.info(`Found ${actions.length} presidential actions`);
 
     for (const action of actions) {
+      if (!action.url) {
+        logger.warn('Skipping action with no URL:', action);
+        continue;
+      }
+
       try {
-        await page.goto(action.url, { waitUntil: 'networkidle' });
-        const content = await page.$eval('article', el => el.textContent || '');
+        await retry(async () => {
+          await page.goto(action.url, { 
+            waitUntil: 'networkidle',
+            timeout: 60000 
+          });
+          
+          await page.waitForSelector(SELECTORS.CONTENT, {
+            timeout: 60000,
+            state: 'visible'
+          });
+        });
+
+        const content = await page.$eval(SELECTORS.CONTENT, el => el.textContent || '');
         
         if (!content) {
           logger.warn('No content found for action:', action.url);
@@ -66,7 +118,9 @@ async function scrapeExecutiveOrders(): Promise<void> {
 
         await saveOrder(scrapedOrder);
         logger.info(`Processed: ${action.title}`);
-        await page.waitForTimeout(2000);
+        
+        // Respect rate limits
+        await page.waitForTimeout(3000);
       } catch (error) {
         logger.error('Error processing action:', { 
           error: error instanceof Error ? error.message : String(error),
@@ -74,6 +128,9 @@ async function scrapeExecutiveOrders(): Promise<void> {
         });
       }
     }
+  } catch (error) {
+    logger.error('Fatal scraping error:', error);
+    throw error;
   } finally {
     await browser.close();
     await prisma.$disconnect();
@@ -151,7 +208,10 @@ async function saveOrder(order: ScrapedOrder): Promise<void> {
 
 if (import.meta.url === new URL(import.meta.resolve('.')).href) {
   scrapeExecutiveOrders()
-    .catch(console.error);
+    .catch(error => {
+      logger.error('Scraping failed:', error);
+      process.exit(1);
+    });
 }
 
 export { scrapeExecutiveOrders };

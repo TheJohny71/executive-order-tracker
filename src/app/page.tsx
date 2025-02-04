@@ -1,6 +1,11 @@
 'use client';
 
-import { ExecutiveOrderTracker } from '@/components/executive-orders/ExecutiveOrderTracker';
+import dynamic from 'next/dynamic';
+
+const ExecutiveOrderTracker = dynamic(
+  () => import('@/components/executive-orders/ExecutiveOrderTracker'),
+  { ssr: false }
+);
 
 export default function Page() {
   return (

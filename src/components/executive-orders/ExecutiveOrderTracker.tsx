@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  Search, Filter, Calendar, Building2, ChevronDown, 
-  ChevronRight, BarChart2, List, Grid, ArrowUp 
+  Search, Filter, BarChart2, List, Grid, ArrowUp 
 } from 'lucide-react';
 import {
   Card,
@@ -18,11 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,7 +26,7 @@ import { useOrders } from '@/hooks/useOrders';
 import type { Order, FilterType, OrderFilters } from '@/types';
 import { LoadingSkeleton } from './loading-skeleton';
 
-export function ExecutiveOrderTracker() {
+const ExecutiveOrderTracker = () => {
   const [filters, setFilters] = useState<OrderFilters>({
     type: 'all',
     category: 'all',
@@ -53,12 +47,14 @@ export function ExecutiveOrderTracker() {
   const { data, error, loading } = useOrders(filters);
 
   useEffect(() => {
-    const stored = localStorage.getItem('recentlyViewed');
-    if (stored) {
-      try {
-        setRecentlyViewed(JSON.parse(stored));
-      } catch (e) {
-        console.error('Failed to parse recently viewed orders:', e);
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('recentlyViewed');
+      if (stored) {
+        try {
+          setRecentlyViewed(JSON.parse(stored));
+        } catch (e) {
+          console.error('Failed to parse recently viewed orders:', e);
+        }
       }
     }
   }, []);
@@ -74,8 +70,10 @@ export function ExecutiveOrderTracker() {
       }
     };
 
-    document.addEventListener('keydown', handleKeyPress);
-    return () => document.removeEventListener('keydown', handleKeyPress);
+    if (typeof window !== 'undefined') {
+      document.addEventListener('keydown', handleKeyPress);
+      return () => document.removeEventListener('keydown', handleKeyPress);
+    }
   }, []);
 
   const handleFilterChange = useCallback((filterType: FilterType, value: string) => {
@@ -86,20 +84,21 @@ export function ExecutiveOrderTracker() {
     }));
   }, []);
 
-  const addToRecentlyViewed = (order: Order) => {
+  const addToRecentlyViewed = useCallback((order: Order) => {
     setRecentlyViewed(prev => {
       const newRecent = [order, ...prev.filter(o => o.id !== order.id)].slice(0, 5);
-      localStorage.setItem('recentlyViewed', JSON.stringify(newRecent));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('recentlyViewed', JSON.stringify(newRecent));
+      }
       return newRecent;
     });
-  };
+  }, []);
 
-  const scrollToTop = () => {
+  const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, []);
 
   if (error) {
-    // Fix TypeScript error by converting error to string
     const errorMessage = typeof error === 'object' && error !== null 
       ? error.toString()
       : String(error);
@@ -295,5 +294,6 @@ export function ExecutiveOrderTracker() {
       </div>
     </div>
   );
-}
+};
+
 export default ExecutiveOrderTracker;

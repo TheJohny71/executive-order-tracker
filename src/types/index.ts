@@ -23,14 +23,17 @@ export interface Agency {
 
 export interface Order {
   id: string;
+  identifier: string;  // New field for unique document identification
   orderNumber: string | null;
-  type: 'Executive Order' | 'Memorandum';
+  type: OrderType;
   title: string;
   date: string;
   url: string;
   summary: string | null;
   notes: string | null;
+  content: string | null;  // New field for full document content
   isNew: boolean;
+  status: OrderStatus;  // New field for document status
   createdAt: string;
   updatedAt: string;
   categories: Category[];
@@ -62,18 +65,59 @@ export interface TimelineData {
   count: number;
 }
 
+// New status enum for documents
+export const OrderStatus = {
+  ACTIVE: 'Active',
+  REVOKED: 'Revoked',
+  SUPERSEDED: 'Superseded',
+  AMENDED: 'Amended'
+} as const;
+
+export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
+
+export const OrderTypes = {
+  EXECUTIVE_ORDER: 'Executive Order',
+  MEMORANDUM: 'Memorandum',
+} as const;
+
+export type OrderType = typeof OrderTypes[keyof typeof OrderTypes];
+
+// New interfaces for scheduler
+export interface SchedulerConfig {
+  intervalMinutes: number;
+  retryAttempts: number;
+  retryDelay: number;
+}
+
+export interface ScrapedOrder {
+  identifier: string;
+  orderNumber: string | null;
+  type: OrderType;
+  title: string;
+  date: Date;
+  url: string;
+  summary: string | null;
+  notes: string | null;
+  content?: string | null;
+  categories: Category[];
+  agencies: Agency[];
+  isNew: boolean;
+}
+
 // Type guard helpers
 export function isValidOrder(order: unknown): order is Order {
   return (
     typeof order === 'object' &&
     order !== null &&
     typeof (order as Order).id === 'string' &&
+    typeof (order as Order).identifier === 'string' &&
     typeof (order as Order).title === 'string' &&
     typeof (order as Order).date === 'string' &&
     typeof (order as Order).url === 'string' &&
     Array.isArray((order as Order).categories) &&
     Array.isArray((order as Order).agencies) &&
-    ((order as Order).type === 'Executive Order' || (order as Order).type === 'Memorandum')
+    ((order as Order).type === OrderTypes.EXECUTIVE_ORDER || 
+     (order as Order).type === OrderTypes.MEMORANDUM)
   );
 }
 
@@ -100,9 +144,12 @@ export type PartialOrder = Partial<Order>;
 export type CreateOrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
 export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>;
 
-export const OrderTypes = {
-  EXECUTIVE_ORDER: 'Executive Order',
-  MEMORANDUM: 'Memorandum',
-} as const;
+// New scheduler types
+export type SchedulerStatus = 'running' | 'stopped' | 'error';
+export type SchedulerEvent = 'check.start' | 'check.complete' | 'check.error' | 'document.new';
 
-export type OrderType = typeof OrderTypes[keyof typeof OrderTypes];
+export interface SchedulerEventData {
+  timestamp: string;
+  type: SchedulerEvent;
+  data?: any;
+}

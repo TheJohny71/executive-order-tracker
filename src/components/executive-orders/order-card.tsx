@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from 'lucide-react';
-import type { Order, FilterType } from '@/types';
+import type { Order, FilterType, OrderStatus } from '@/types';
 
 interface OrderCardProps {
   order: Order;
@@ -22,6 +22,21 @@ interface OrderCardProps {
   onRecentlyViewed: (order: Order) => void;
   onFilterChange: (filterType: FilterType, value: string) => void;
 }
+
+const getStatusColor = (status: OrderStatus) => {
+  switch (status) {
+    case 'Active':
+      return 'bg-green-100 text-green-800';
+    case 'Revoked':
+      return 'bg-red-100 text-red-800';
+    case 'Superseded':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'Amended':
+      return 'bg-blue-100 text-blue-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};
 
 export const OrderCard: React.FC<OrderCardProps> = ({
   order,
@@ -54,13 +69,16 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         <CardHeader className="p-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant={order.type === 'Executive Order' ? 'default' : 'secondary'}>
                   {order.type}
                 </Badge>
                 {order.orderNumber && (
                   <Badge variant="outline">#{order.orderNumber}</Badge>
                 )}
+                <Badge className={getStatusColor(order.status)}>
+                  {order.status}
+                </Badge>
                 {order.isNew && (
                   <Badge variant="destructive">New</Badge>
                 )}
@@ -75,6 +93,11 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                 <h3 className="text-xl font-semibold">{order.title}</h3>
                 <ChevronDown className="h-4 w-4" />
               </CollapsibleTrigger>
+              {order.identifier && (
+                <div className="text-sm text-gray-500">
+                  ID: {order.identifier}
+                </div>
+              )}
             </div>
             {isComparing && (
               <Button
@@ -95,6 +118,14 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   <h3 className="font-medium text-gray-900">Summary</h3>
                   <p className="mt-1 text-gray-600">{order.summary}</p>
                 </div>
+                {order.content && (
+                  <div>
+                    <h3 className="font-medium text-gray-900">Full Content</h3>
+                    <div className="mt-1 max-h-48 overflow-y-auto text-gray-600">
+                      {order.content}
+                    </div>
+                  </div>
+                )}
                 <div>
                   <h3 className="font-medium text-gray-900">Categories</h3>
                   <div className="mt-1 flex flex-wrap gap-2">

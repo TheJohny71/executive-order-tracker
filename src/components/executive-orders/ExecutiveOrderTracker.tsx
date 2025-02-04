@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  Search, Filter, BarChart2, List, Grid, ArrowUp 
+  Search, Filter, BarChart2, List, Grid, ArrowUp, RefreshCw
 } from 'lucide-react';
 import {
   Card,
@@ -43,8 +43,9 @@ const ExecutiveOrderTracker = () => {
   const [isComparing, setIsComparing] = useState(false);
   const [compareItems, setCompareItems] = useState<Order[]>([]);
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   
-  const { data, error, loading } = useOrders(filters);
+  const { data, error, loading, refresh, lastUpdate } = useOrders(filters);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -75,6 +76,15 @@ const ExecutiveOrderTracker = () => {
       return () => document.removeEventListener('keydown', handleKeyPress);
     }
   }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await refresh();
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   const handleFilterChange = useCallback((filterType: FilterType, value: string) => {
     setFilters(prev => ({
@@ -120,6 +130,20 @@ const ExecutiveOrderTracker = () => {
     );
   }
 
+  const renderStatusCounts = () => {
+    if (!data?.orders) return null;
+    const counts = data.orders.reduce((acc, order) => {
+      acc[order.status] = (acc[order.status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return Object.entries(counts).map(([status, count]) => (
+      <Badge key={status} variant="secondary">
+        {status}: {count}
+      </Badge>
+    ));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -130,12 +154,22 @@ const ExecutiveOrderTracker = () => {
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">Executive Order Tracker</h1>
                 <div className="mt-2 flex items-center text-sm text-gray-500">
-                  <span>Last Updated: {new Date().toLocaleDateString()}</span>
+                  <span>Last Updated: {lastUpdate?.toLocaleString() || 'Never'}</span>
                   <span className="mx-2">•</span>
                   <span>Track and analyze White House executive orders and memoranda</span>
                 </div>
+                <div className="mt-2 flex gap-2">
+                  {renderStatusCounts()}
+                </div>
               </div>
               <div className="flex gap-2">
+                <Button 
+                  variant="outline"
+                  onClick={handleRefresh}
+                  disabled={isRefreshing}
+                >
+                  <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                </Button>
                 <Button 
                   variant="outline" 
                   onClick={() => setViewMode(viewMode === 'expanded' ? 'compact' : 'expanded')}

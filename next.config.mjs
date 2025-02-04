@@ -4,9 +4,6 @@ const config = {
     domains: ['www.whitehouse.gov'],
   },
   reactStrictMode: true,
-  experimental: {
-    serverActions: true,
-  },
   async headers() {
     return [
       {

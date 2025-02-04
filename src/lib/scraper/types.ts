@@ -1,20 +1,26 @@
+import type { Category, Agency, OrderType } from '@/types';
+
 export interface ScrapedOrder {
-  type: string;
-  orderNumber: string | undefined;
+  orderNumber: string | null;
+  type: OrderType;
   title: string;
   date: Date;
   url: string;
-  summary: string;
-  agencies: string[];
-  categories: string[];
+  summary: string | null;
+  notes: string | null;
+  categories: Category[];
+  agencies: Agency[];
 }
 
-export interface CategoryKeywords {
-  [key: string]: string[];
-}
-
-export interface RetryOptions {
-  retries?: number;
-  delay?: number;
-  backoff?: number;
+export interface SpawResponse {
+  data: {
+    title: string;
+    text: string;
+    date: string;
+    url: string;
+    metadata: {
+      orderNumber?: string;
+      type?: string;
+    };
+  }[];
 }

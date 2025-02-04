@@ -9,7 +9,6 @@ const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 
 interface SpawConfig {
-  apiKey: string;
   url: string;
   options?: {
     waitForSelector?: string;

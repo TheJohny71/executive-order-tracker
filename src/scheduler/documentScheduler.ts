@@ -2,7 +2,7 @@
 import { PrismaClient } from '@prisma/client';
 import { logger } from '../utils/logger';
 import { fetchExecutiveOrders } from '@/lib/api/whitehouse';
-import type { ScrapedOrder } from '@/types';
+import type { ScrapedOrder, OrderType } from '@/types';
 
 const prisma = new PrismaClient();
 
@@ -61,6 +61,7 @@ export class DocumentScheduler {
       for (const doc of newDocuments) {
         await prisma.executiveOrder.create({
           data: {
+            identifier: doc.identifier,
             orderNumber: doc.orderNumber,
             type: doc.type,
             title: doc.title,
@@ -68,7 +69,6 @@ export class DocumentScheduler {
             url: doc.url,
             summary: doc.summary,
             isNew: true,
-            status: 'Active',
             categories: {
               connectOrCreate: doc.categories.map(cat => ({
                 where: { name: cat.name },
@@ -90,6 +90,7 @@ export class DocumentScheduler {
       
     } catch (error) {
       logger.error('Error checking for new documents:', error);
+      throw error; // Re-throw to allow handling by caller
     }
   }
 
@@ -102,6 +103,7 @@ export class DocumentScheduler {
       
     } catch (error) {
       logger.error('Error sending notifications:', error);
+      throw error; // Re-throw to allow handling by caller
     }
   }
 

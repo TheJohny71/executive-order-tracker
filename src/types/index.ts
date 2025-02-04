@@ -1,5 +1,9 @@
-export type FilterType = 'type' | 'category' | 'agency' | 'search' | 'dateFrom' | 'dateTo' | 'page';
+// src/types/index.ts
 
+// Extend FilterType to include status and sorting
+export type FilterType = 'type' | 'category' | 'agency' | 'search' | 'dateFrom' | 'dateTo' | 'page' | 'status' | 'sort';
+
+// Update OrderFilters to include new fields
 export interface OrderFilters {
   type: string;
   category: string;
@@ -9,6 +13,8 @@ export interface OrderFilters {
   dateTo: string;
   page: number;
   limit: number;
+  status?: OrderStatus;
+  sort?: 'date' | 'title' | 'type' | '-date' | '-title' | '-type';
 }
 
 export interface Category {
@@ -21,9 +27,10 @@ export interface Agency {
   name: string;
 }
 
+// Update Order interface with stricter types
 export interface Order {
   id: string;
-  identifier: string;  // New field for unique document identification
+  identifier: string;
   orderNumber: string | null;
   type: OrderType;
   title: string;
@@ -31,9 +38,9 @@ export interface Order {
   url: string;
   summary: string | null;
   notes: string | null;
-  content: string | null;  // New field for full document content
+  content: string | null;
   isNew: boolean;
-  status: OrderStatus;  // New field for document status
+  status: OrderStatus;
   createdAt: string;
   updatedAt: string;
   categories: Category[];
@@ -51,6 +58,7 @@ export interface OrdersResponse {
   metadata: {
     categories: string[];
     agencies: string[];
+    statuses: OrderStatus[];  // Added to support status filtering
   };
 }
 
@@ -58,19 +66,23 @@ export interface UseOrdersReturn {
   data: OrdersResponse | null;
   error: string | null;
   loading: boolean;
+  lastUpdate?: Date;  // Added to track last fetch time
+  refresh: () => Promise<void>;  // Added manual refresh function
 }
 
 export interface TimelineData {
   month: string;
   count: number;
+  byType?: Record<OrderType, number>;  // Added to support type breakdown
 }
 
-// New status enum for documents
+// Update OrderStatus to be more type-safe
 export const OrderStatus = {
   ACTIVE: 'Active',
   REVOKED: 'Revoked',
   SUPERSEDED: 'Superseded',
-  AMENDED: 'Amended'
+  AMENDED: 'Amended',
+  PENDING: 'Pending'  // Added for newly scraped orders pending review
 } as const;
 
 export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
@@ -82,13 +94,20 @@ export const OrderTypes = {
 
 export type OrderType = typeof OrderTypes[keyof typeof OrderTypes];
 
-// New interfaces for scheduler
+// Enhanced scheduler configuration
 export interface SchedulerConfig {
   intervalMinutes: number;
   retryAttempts: number;
   retryDelay: number;
+  maxConcurrent?: number;  // Added to limit concurrent operations
+  notificationConfig?: {
+    email?: string[];
+    webhook?: string;
+    slackWebhook?: string;
+  };
 }
 
+// Update ScrapedOrder to match Order interface more closely
 export interface ScrapedOrder {
   identifier: string;
   orderNumber: string | null;
@@ -99,57 +118,78 @@ export interface ScrapedOrder {
   summary: string | null;
   notes: string | null;
   content?: string | null;
-  categories: Category[];
-  agencies: Agency[];
+  categories: Pick<Category, 'name'>[];
+  agencies: Pick<Agency, 'name'>[];
   isNew: boolean;
+  status?: OrderStatus;  // Optional as it might be set later
 }
 
-// Type guard helpers
+// Enhanced type guards
 export function isValidOrder(order: unknown): order is Order {
+  if (!order || typeof order !== 'object') return false;
+  
+  const o = order as Order;
   return (
-    typeof order === 'object' &&
-    order !== null &&
-    typeof (order as Order).id === 'string' &&
-    typeof (order as Order).identifier === 'string' &&
-    typeof (order as Order).title === 'string' &&
-    typeof (order as Order).date === 'string' &&
-    typeof (order as Order).url === 'string' &&
-    Array.isArray((order as Order).categories) &&
-    Array.isArray((order as Order).agencies) &&
-    ((order as Order).type === OrderTypes.EXECUTIVE_ORDER || 
-     (order as Order).type === OrderTypes.MEMORANDUM)
+    typeof o.id === 'string' &&
+    typeof o.identifier === 'string' &&
+    typeof o.title === 'string' &&
+    typeof o.date === 'string' &&
+    typeof o.url === 'string' &&
+    Array.isArray(o.categories) &&
+    Array.isArray(o.agencies) &&
+    Object.values(OrderTypes).includes(o.type) &&
+    Object.values(OrderStatus).includes(o.status) &&
+    o.categories.every(isValidCategory) &&
+    o.agencies.every(isValidAgency)
   );
 }
 
 export function isValidCategory(category: unknown): category is Category {
-  return (
-    typeof category === 'object' &&
-    category !== null &&
-    typeof (category as Category).id === 'string' &&
-    typeof (category as Category).name === 'string'
-  );
+  if (!category || typeof category !== 'object') return false;
+  
+  const c = category as Category;
+  return typeof c.id === 'string' && typeof c.name === 'string';
 }
 
-export function isValidAgency(agency: unknown): agency is Agency {
-  return (
-    typeof agency === 'object' &&
-    agency !== null &&
-    typeof (agency as Agency).id === 'string' &&
-    typeof (agency as Agency).name === 'string'
-  );
+export function isValidAgency(agency: unknown): category is Agency {
+  if (!agency || typeof agency !== 'object') return false;
+  
+  const a = agency as Agency;
+  return typeof a.id === 'string' && typeof a.name === 'string';
 }
 
-// Helper types for operations
+// Enhanced operation types
 export type PartialOrder = Partial<Order>;
 export type CreateOrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
 export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>;
 
-// New scheduler types
-export type SchedulerStatus = 'running' | 'stopped' | 'error';
-export type SchedulerEvent = 'check.start' | 'check.complete' | 'check.error' | 'document.new';
+// Enhanced scheduler types
+export type SchedulerStatus = 'running' | 'stopped' | 'error' | 'paused';
+export type SchedulerEvent = 
+  | 'check.start' 
+  | 'check.complete' 
+  | 'check.error' 
+  | 'document.new'
+  | 'document.update'
+  | 'scheduler.start'
+  | 'scheduler.stop'
+  | 'scheduler.error';
 
 export interface SchedulerEventData {
   timestamp: string;
   type: SchedulerEvent;
-  data?: any;
+  data?: {
+    documentIds?: string[];
+    error?: Error;
+    status?: SchedulerStatus;
+    message?: string;
+  };
+}
+
+// Added utility type for API responses
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  metadata?: Record<string, unknown>;
 }

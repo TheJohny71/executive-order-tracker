@@ -14,12 +14,13 @@ const SELECTORS = {
     '.news-item',
     'article',
     '.briefing-room__content article',
-    '[data-component="briefing-room"] article'
+    '[data-component="briefing-room"] article',
+    '.entry-content'
   ].join(','),
-  TITLE: 'h2,h3,.title',
-  DATE: 'time,date,.date,.published-date',
-  LINK: 'a[href*="/briefing-room/"]',
-  CONTENT: 'article,.article-content,.content'
+  TITLE: 'h2,h3,.title,.entry-title',
+  DATE: 'time,date,.date,.published-date,.entry-date',
+  LINK: 'a[href*="/briefing-room/"],a[href*="/presidential-actions/"]',
+  CONTENT: 'article,.article-content,.content,.entry-content'
 };
 
 async function scrapeExecutiveOrders(): Promise<void> {
@@ -61,19 +62,25 @@ async function scrapeExecutiveOrders(): Promise<void> {
     
     const actions = await retry(async () => {
       return page.$$eval(SELECTORS.ARTICLE, (items, selectors) => {
-        return items.map(item => ({
-          title: item.querySelector(selectors.TITLE)?.textContent?.trim() || '',
-          date: item.querySelector(selectors.DATE)?.getAttribute('datetime') || 
-                item.querySelector(selectors.DATE)?.textContent?.trim() || '',
-          url: item.querySelector(selectors.LINK)?.href || '',
-          type: item.querySelector(selectors.TITLE)?.textContent?.toLowerCase().includes('executive order') 
-            ? 'Executive Order' 
-            : 'Memorandum'
-        }));
+        return items.map(item => {
+          const link = item.querySelector(selectors.LINK);
+          return {
+            title: item.querySelector(selectors.TITLE)?.textContent?.trim() || '',
+            date: item.querySelector(selectors.DATE)?.getAttribute('datetime') || 
+                  item.querySelector(selectors.DATE)?.textContent?.trim() || '',
+            url: link instanceof HTMLAnchorElement ? link.href : '',
+            type: item.querySelector(selectors.TITLE)?.textContent?.toLowerCase().includes('executive order') 
+              ? 'Executive Order' 
+              : 'Memorandum'
+          };
+        });
       }, SELECTORS);
     });
 
     logger.info(`Found ${actions.length} presidential actions`);
+
+    // Additional debug logging
+    logger.info('First action found:', actions[0]);
 
     for (const action of actions) {
       if (!action.url) {

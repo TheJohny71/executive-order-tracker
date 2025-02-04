@@ -5,9 +5,9 @@ const config = {
   },
   // Add development settings
   reactStrictMode: true,
-  // Force dynamic rendering for development
+  // Remove serverActions as it's enabled by default now
   experimental: {
-    serverActions: true,
+    // Add any future experimental features here
   },
   // Prevent excessive caching during development
   onDemandEntries: {

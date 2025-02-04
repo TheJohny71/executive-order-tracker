@@ -1,5 +1,3 @@
-// src/types/index.ts
-
 export type FilterType = 'type' | 'category' | 'agency' | 'search' | 'dateFrom' | 'dateTo' | 'page';
 
 export interface OrderFilters {
@@ -65,32 +63,35 @@ export interface TimelineData {
 }
 
 // Type guard helpers
-export function isValidOrder(order: any): order is Order {
+export function isValidOrder(order: unknown): order is Order {
   return (
     typeof order === 'object' &&
-    typeof order.id === 'string' &&
-    typeof order.title === 'string' &&
-    typeof order.date === 'string' &&
-    typeof order.url === 'string' &&
-    Array.isArray(order.categories) &&
-    Array.isArray(order.agencies) &&
-    (order.type === 'Executive Order' || order.type === 'Memorandum')
+    order !== null &&
+    typeof (order as Order).id === 'string' &&
+    typeof (order as Order).title === 'string' &&
+    typeof (order as Order).date === 'string' &&
+    typeof (order as Order).url === 'string' &&
+    Array.isArray((order as Order).categories) &&
+    Array.isArray((order as Order).agencies) &&
+    ((order as Order).type === 'Executive Order' || (order as Order).type === 'Memorandum')
   );
 }
 
-export function isValidCategory(category: any): category is Category {
+export function isValidCategory(category: unknown): category is Category {
   return (
     typeof category === 'object' &&
-    typeof category.id === 'string' &&
-    typeof category.name === 'string'
+    category !== null &&
+    typeof (category as Category).id === 'string' &&
+    typeof (category as Category).name === 'string'
   );
 }
 
-export function isValidAgency(agency: any): agency is Agency {
+export function isValidAgency(agency: unknown): agency is Agency {
   return (
     typeof agency === 'object' &&
-    typeof agency.id === 'string' &&
-    typeof agency.name === 'string'
+    agency !== null &&
+    typeof (agency as Agency).id === 'string' &&
+    typeof (agency as Agency).name === 'string'
   );
 }
 

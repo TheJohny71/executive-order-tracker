@@ -39,6 +39,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     onFilterChange('agency', agency);
   };
 
+  const handleDownloadPDF = async () => {
+    // TODO: Implement PDF download functionality
+  };
+
   return (
     <Card 
       key={order.id}
@@ -142,10 +146,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => {
-                      // Add any additional action handlers here
-                      console.log('Download PDF clicked');
-                    }}
+                    onClick={handleDownloadPDF}
                   >
                     Download PDF
                   </Button>

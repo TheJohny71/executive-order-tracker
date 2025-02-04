@@ -1,7 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { 
+  Search, Filter, Calendar, Building2, ChevronDown, 
+  ChevronRight, BarChart2, List, Grid, ArrowUp 
+} from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -15,92 +18,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-import { LoadingSkeleton } from './loading-skeleton';
-import { TimelineChart } from './timeline-chart';
 import { OrderCard } from './order-card';
-import { Pagination } from './pagination';
-
+import { TimelineChart } from './timeline-chart';
 import { useOrders } from '@/hooks/useOrders';
 import type { Order, FilterType, OrderFilters } from '@/types';
-
-const DEFAULT_FILTERS: OrderFilters = {
-  type: 'all',
-  category: 'all',
-  agency: 'all',
-  search: '',
-  dateFrom: '',
-  dateTo: '',
-  page: 1,
-  limit: 10
-};
-
-interface FilterPanelProps {
-  filters: OrderFilters;
-  onFilterChange: (type: FilterType, value: string) => void;
-  metadata?: {
-    categories: string[];
-    agencies: string[];
-  };
-}
-
-const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange, metadata }) => (
-  <div className="flex flex-wrap gap-4">
-    <div className="relative flex-grow min-w-[300px]">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-      <Input 
-        className="pl-10 w-full"
-        placeholder="Search orders..."
-        value={filters.search}
-        onChange={(e) => onFilterChange('search', e.target.value)}
-      />
-    </div>
-    
-    <Select value={filters.type} onValueChange={(v) => onFilterChange('type', v)}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Type" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="all">All Types</SelectItem>
-        <SelectItem value="Executive Order">Executive Order</SelectItem>
-        <SelectItem value="Memorandum">Memorandum</SelectItem>
-      </SelectContent>
-    </Select>
-
-    <Select value={filters.category} onValueChange={(v) => onFilterChange('category', v)}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Category" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="all">All Categories</SelectItem>
-        {metadata?.categories.map(category => (
-          <SelectItem key={category} value={category}>{category}</SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-
-    <Select value={filters.agency} onValueChange={(v) => onFilterChange('agency', v)}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Agency" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="all">All Agencies</SelectItem>
-        {metadata?.agencies.map(agency => (
-          <SelectItem key={agency} value={agency}>{agency}</SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  </div>
-);
+import { LoadingSkeleton } from './loading-skeleton';
 
 export function ExecutiveOrderTracker() {
-  const [filters, setFilters] = useState<OrderFilters>(DEFAULT_FILTERS);
+  const [filters, setFilters] = useState<OrderFilters>({
+    type: 'all',
+    category: 'all',
+    agency: 'all',
+    search: '',
+    dateFrom: '',
+    dateTo: '',
+    page: 1,
+    limit: 10
+  });
+  const [viewMode, setViewMode] = useState<'expanded' | 'compact'>('expanded');
   const [recentlyViewed, setRecentlyViewed] = useState<Order[]>([]);
+  const [showTimeline, setShowTimeline] = useState(true);
   const [isComparing, setIsComparing] = useState(false);
   const [compareItems, setCompareItems] = useState<Order[]>([]);
+  const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
+  
   const { data, error, loading } = useOrders(filters);
 
   useEffect(() => {
@@ -114,13 +63,28 @@ export function ExecutiveOrderTracker() {
     }
   }, []);
 
-  const handleFilterChange = (filterType: FilterType, value: string) => {
-    setFilters(prev => ({ 
-      ...prev, 
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === '/' && e.target === document.body) {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[type="search"]');
+        if (searchInput instanceof HTMLInputElement) {
+          searchInput.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
+  const handleFilterChange = useCallback((filterType: FilterType, value: string) => {
+    setFilters(prev => ({
+      ...prev,
       [filterType]: value,
       page: filterType === 'page' ? Number(value) : 1
     }));
-  };
+  }, []);
 
   const addToRecentlyViewed = (order: Order) => {
     setRecentlyViewed(prev => {
@@ -130,16 +94,16 @@ export function ExecutiveOrderTracker() {
     });
   };
 
-  const handleCompareToggle = (order: Order) => {
-    setCompareItems(prev => {
-      if (prev.find(o => o.id === order.id)) {
-        return prev.filter(o => o.id !== order.id);
-      }
-      return [...prev, order].slice(0, 2);
-    });
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (error) {
+    // Fix TypeScript error by converting error to string
+    const errorMessage = typeof error === 'object' && error !== null 
+      ? error.toString()
+      : String(error);
+
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <Card className="w-full max-w-md">
@@ -147,7 +111,7 @@ export function ExecutiveOrderTracker() {
             <CardTitle>Error Loading Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600 mb-4">{error.message}</p>
+            <p className="text-gray-600 mb-4">{errorMessage}</p>
             <Button onClick={() => setFilters(prev => ({ ...prev }))}>
               Retry
             </Button>
@@ -158,80 +122,176 @@ export function ExecutiveOrderTracker() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-                {/* Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Executive Order Tracker</h1>
-              <p className="mt-2 text-gray-600">
-                Track and analyze White House executive orders and memoranda
-              </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="space-y-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Executive Order Tracker</h1>
+                <div className="mt-2 flex items-center text-sm text-gray-500">
+                  <span>Last Updated: {new Date().toLocaleDateString()}</span>
+                  <span className="mx-2">•</span>
+                  <span>Track and analyze White House executive orders and memoranda</span>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setViewMode(viewMode === 'expanded' ? 'compact' : 'expanded')}
+                >
+                  {viewMode === 'expanded' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowTimeline(!showTimeline)}
+                >
+                  <BarChart2 className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="md:flex hidden items-center gap-2"
+                  onClick={() => setIsComparing(!isComparing)}
+                >
+                  Compare {isComparing && `(${compareItems.length}/2)`}
+                </Button>
+              </div>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setIsComparing(!isComparing)}
-              className="hidden md:flex items-center gap-2"
-            >
-              Compare {isComparing && `(${compareItems.length}/2)`}
-            </Button>
           </div>
         </div>
       </div>
 
       {/* Timeline Chart */}
-      {data?.orders && (
-        <div className="bg-white border-b">
+      {showTimeline && data?.orders && (
+        <div className="bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <TimelineChart orders={data.orders} />
           </div>
         </div>
       )}
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Filters */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Filters</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <FilterPanel 
-              filters={filters} 
-              onFilterChange={handleFilterChange} 
-              metadata={data?.metadata}
-            />
-          </CardContent>
-        </Card>
+      {/* Recently Viewed */}
+      {recentlyViewed.length > 0 && (
+        <div className="bg-gray-50 border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h2 className="text-sm font-medium text-gray-500">Recently Viewed</h2>
+            <div className="mt-2 flex gap-2 overflow-x-auto">
+              {recentlyViewed.map(order => (
+                <Button key={order.id} variant="outline" size="sm">
+                  {order.title}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
+      {/* Filters */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+          <div className="relative lg:col-span-2">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input 
+              type="search"
+              className="pl-10"
+              placeholder="Search orders... (Press '/' to focus)"
+              value={filters.search}
+              onChange={(e) => handleFilterChange('search', e.target.value)}
+            />
+          </div>
+          
+          <Select value={filters.type} onValueChange={(v) => handleFilterChange('type', v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="Executive Order">Executive Order</SelectItem>
+              <SelectItem value="Memorandum">Memorandum</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={filters.category} onValueChange={(v) => handleFilterChange('category', v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {data?.metadata.categories.map(category => (
+                <SelectItem key={category} value={category}>{category}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={filters.agency} onValueChange={(v) => handleFilterChange('agency', v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Agency" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Agencies</SelectItem>
+              {data?.metadata.agencies.map(agency => (
+                <SelectItem key={agency} value={agency}>{agency}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Input
+            type="date"
+            value={filters.dateFrom}
+            onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+            className="w-full"
+          />
+        </div>
+
+        {/* Filter results count */}
+        <div className="mt-4 text-sm text-gray-500">
+          Showing {data?.orders.length || 0} of {data?.pagination.total || 0} orders
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {loading ? (
           <LoadingSkeleton />
         ) : (
           <div className="space-y-4">
-            {/* Order Cards */}
             {data?.orders.map((order) => (
               <OrderCard
                 key={order.id}
                 order={order}
-                isComparing={false}
-                compareItems={[]}
-                onCompareToggle={() => {}}
+                isComparing={isComparing}
+                compareItems={compareItems}
+                onCompareToggle={(order) => {
+                  const isCompared = compareItems.find(i => i.id === order.id);
+                  if (isCompared) {
+                    setCompareItems(compareItems.filter(i => i.id !== order.id));
+                  } else if (compareItems.length < 2) {
+                    setCompareItems([...compareItems, order]);
+                  }
+                }}
                 onRecentlyViewed={addToRecentlyViewed}
                 onFilterChange={handleFilterChange}
               />
             ))}
-
-            {/* Pagination */}
-            {!loading && data?.pagination && data.pagination.pages > 1 && (
-              <Pagination
-                currentPage={data.pagination.currentPage}
-                totalPages={data.pagination.pages}
-                onPageChange={(page) => handleFilterChange('page', page.toString())}
-              />
-            )}
           </div>
         )}
+      </div>
+
+      {/* Mobile floating action buttons */}
+      <div className="md:hidden fixed bottom-6 right-6 flex flex-col gap-2">
+        <Button
+          className="rounded-full h-12 w-12 shadow-lg"
+          onClick={() => setMobileFiltersVisible(!mobileFiltersVisible)}
+        >
+          <Filter className="h-6 w-6" />
+        </Button>
+        <Button
+          className="rounded-full h-12 w-12 shadow-lg"
+          onClick={scrollToTop}
+        >
+          <ArrowUp className="h-6 w-6" />
+        </Button>
       </div>
     </div>
   );

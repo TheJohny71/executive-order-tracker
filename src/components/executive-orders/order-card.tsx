@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from 'lucide-react';
-import type { Order, FilterType } from '@/types';  // Added FilterType import
+import type { Order, FilterType } from '@/types';
 
 interface OrderCardProps {
   order: Order;
@@ -20,7 +20,7 @@ interface OrderCardProps {
   compareItems: Order[];
   onCompareToggle: (order: Order) => void;
   onRecentlyViewed: (order: Order) => void;
-  onFilterChange: (filterType: FilterType, value: string) => void;  // Updated type
+  onFilterChange: (filterType: FilterType, value: string) => void;
 }
 
 export const OrderCard: React.FC<OrderCardProps> = ({
@@ -138,6 +138,18 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   View on whitehouse.gov
                 </a>
                 <span className="text-sm text-gray-500 mt-2">Official Source</span>
+                <div className="mt-4">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      // Add any additional action handlers here
+                      console.log('Download PDF clicked');
+                    }}
+                  >
+                    Download PDF
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>

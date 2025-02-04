@@ -1,4 +1,5 @@
-// src/app/page.tsx
+'use client';
+
 import { ExecutiveOrderTracker } from '@/components/executive-orders/ExecutiveOrderTracker';
 
 export default function Page() {

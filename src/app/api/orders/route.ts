@@ -103,11 +103,15 @@ export async function GET(request: NextRequest) {
       }
     });
 
-  } catch (error) {
-    logger.error({ error }, 'Error fetching orders');
-    if (error instanceof Error) {
-      return Response.json({ error: error.message }, { status: 500 });
-    }
-    return Response.json({ error: 'Failed to fetch orders' }, { status: 500 });
+  } catch (err) {
+    const error = err as Error;
+    logger.error('Error fetching orders:', { 
+      message: error.message,
+      stack: error.stack 
+    });
+    return Response.json(
+      { error: 'Failed to fetch orders' }, 
+      { status: 500 }
+    );
   }
 }

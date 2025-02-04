@@ -3,15 +3,16 @@
 import { PrismaClient, DocumentType } from '@prisma/client';
 import { type NextRequest } from 'next/server';
 import { logger } from '@/utils/logger';
-import { OrderFilters } from '@/types';
+import { OrderFilters, WhereClause } from '@/types';
 
 const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
+  const typeParam = searchParams.get('type');
   
   const filters: OrderFilters = {
-    type: searchParams.get('type') ? searchParams.get('type') as DocumentType : '',
+    type: typeParam ? typeParam as DocumentType : '',
     category: searchParams.get('category') || '',
     agency: searchParams.get('agency') || '',
     search: searchParams.get('search') || '',
@@ -19,13 +20,13 @@ export async function GET(request: NextRequest) {
     dateTo: searchParams.get('dateTo') || '',
     page: parseInt(searchParams.get('page') || '1', 10),
     limit: parseInt(searchParams.get('limit') || '10', 10),
-    statusId: searchParams.get('statusId') || undefined
+    statusId: searchParams.get('statusId') || undefined,
+    sort: (searchParams.get('sort') as OrderFilters['sort']) || undefined
   };
 
-  const where: any = {}; // We'll type this properly after setting the conditions
+  const where: WhereClause = {};
 
-  // Only add type filter if a valid type is provided
-  if (filters.type && Object.values(DocumentType).includes(filters.type as DocumentType)) {
+  if (filters.type && Object.values(DocumentType).includes(filters.type)) {
     where.type = filters.type;
   }
 
@@ -65,24 +66,23 @@ export async function GET(request: NextRequest) {
   const skip = (filters.page - 1) * filters.limit;
 
   try {
-    const total = await prisma.executiveOrder.count({ where });
-
-    const orders = await prisma.executiveOrder.findMany({
-      where,
-      include: {
-        status: true,
-        categories: true,
-        agencies: true,
-        citations: true,
-        amendments: true
-      },
-      skip,
-      take: filters.limit,
-      orderBy: { date: 'desc' }
-    });
-
-    // Fetch metadata in parallel
-    const [categories, agencies, statuses] = await Promise.all([
+    const [total, orders, categories, agencies, statuses] = await Promise.all([
+      prisma.executiveOrder.count({ where }),
+      prisma.executiveOrder.findMany({
+        where,
+        include: {
+          status: true,
+          categories: true,
+          agencies: true,
+          citations: true,
+          amendments: true
+        },
+        skip,
+        take: filters.limit,
+        orderBy: filters.sort ? {
+          [filters.sort.replace(/^-/, '')]: filters.sort.startsWith('-') ? 'desc' : 'asc'
+        } : { date: 'desc' }
+      }),
       prisma.category.findMany({ select: { name: true } }),
       prisma.agency.findMany({ select: { name: true } }),
       prisma.status.findMany({ select: { id: true, name: true } })

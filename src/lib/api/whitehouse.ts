@@ -1,7 +1,9 @@
+// src/lib/api/whitehouse.ts
+
+import { DocumentType } from '@prisma/client';
 import { fetchWithSpaw } from './spaw';
-import type { ScrapedOrder } from '../scraper/types';
+import type { ScrapedOrder } from '@/types';
 import { determineCategories, determineAgencies } from '../scraper/utils';
-import { OrderTypes } from '@/types';
 import { logger } from '@/utils/logger';
 
 const WH_URL = 'https://www.whitehouse.gov/briefing-room/presidential-actions/';
@@ -33,29 +35,28 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
 
       // Determine type based on content
       const type = item.title.toLowerCase().includes('memorandum') 
-        ? OrderTypes.MEMORANDUM 
-        : OrderTypes.EXECUTIVE_ORDER;
+        ? DocumentType.MEMORANDUM 
+        : DocumentType.EXECUTIVE_ORDER;
 
       // Generate a unique identifier
       const identifier = orderNumber 
-        ? `${type === OrderTypes.EXECUTIVE_ORDER ? 'EO' : 'PM'}-${orderNumber}`
+        ? `${type === DocumentType.EXECUTIVE_ORDER ? 'EO' : 'PM'}-${orderNumber}`
         : `${type}-${new Date(item.date).toISOString().split('T')[0]}`;
 
       return {
         identifier,
-        orderNumber,
         type,
         title: item.title,
         date: new Date(item.date),
         url: item.url,
         summary: item.text.split('\n')[0] || null,
         notes: null,
+        content: item.text || null,
+        statusId: 'default-status-id', // You'll need to set this based on your status table
         categories: determineCategories(item.text).map(name => ({
-          id: name.toLowerCase().replace(/\s+/g, '-'),
           name
         })),
         agencies: determineAgencies(item.text).map(name => ({
-          id: name.toLowerCase().replace(/\s+/g, '-'),
           name
         })),
         isNew: true
@@ -67,18 +68,16 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
   }
 }
 
-// Add a helper function to validate document before processing
 export function validateDocument(doc: ScrapedOrder): boolean {
-  if (!doc.title || !doc.date || !doc.url) {
+  if (!doc.title || !doc.date || !doc.url || !doc.identifier || !doc.type) {
     logger.warn('Invalid document found:', {
       title: !!doc.title,
       date: !!doc.date,
-      url: !!doc.url
+      url: !!doc.url,
+      identifier: !!doc.identifier,
+      type: !!doc.type
     });
     return false;
   }
   return true;
 }
-
-// Export types that scheduler needs
-export type { ScrapedOrder };

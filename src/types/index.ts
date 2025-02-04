@@ -1,13 +1,15 @@
 // src/types/index.ts
 
-// Import Prisma types
-import { Prisma } from '@prisma/client';
+import { Prisma, DocumentType as PrismaDocumentType } from '@prisma/client';
 
-// Use enum from Prisma schema
-export enum DocumentType {
-  EXECUTIVE_ORDER = 'EXECUTIVE_ORDER',
-  MEMORANDUM = 'MEMORANDUM'
-}
+// Use Prisma's DocumentType
+export type DocumentType = PrismaDocumentType;
+
+// Keep OrderTypes for backward compatibility
+export const OrderTypes = {
+  EXECUTIVE_ORDER: PrismaDocumentType.EXECUTIVE_ORDER,
+  MEMORANDUM: PrismaDocumentType.MEMORANDUM,
+} as const;
 
 export interface OrderFilters {
   type: DocumentType | '';

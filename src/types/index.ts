@@ -58,7 +58,7 @@ export interface OrdersResponse {
   metadata: {
     categories: string[];
     agencies: string[];
-    statuses: OrderStatus[];  // Added to support status filtering
+    statuses: OrderStatus[];
   };
 }
 
@@ -66,23 +66,23 @@ export interface UseOrdersReturn {
   data: OrdersResponse | null;
   error: string | null;
   loading: boolean;
-  lastUpdate?: Date;  // Added to track last fetch time
-  refresh: () => Promise<void>;  // Added manual refresh function
+  lastUpdate?: Date;
+  refresh: () => Promise<void>;
 }
 
 export interface TimelineData {
   month: string;
   count: number;
-  byType?: Record<OrderType, number>;  // Added to support type breakdown
+  byType?: Record<OrderType, number>;
 }
 
-// Update OrderStatus to be more type-safe
+// Order Status definition
 export const OrderStatus = {
   ACTIVE: 'Active',
   REVOKED: 'Revoked',
   SUPERSEDED: 'Superseded',
   AMENDED: 'Amended',
-  PENDING: 'Pending'  // Added for newly scraped orders pending review
+  PENDING: 'Pending'
 } as const;
 
 export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
@@ -99,7 +99,7 @@ export interface SchedulerConfig {
   intervalMinutes: number;
   retryAttempts: number;
   retryDelay: number;
-  maxConcurrent?: number;  // Added to limit concurrent operations
+  maxConcurrent?: number;
   notificationConfig?: {
     email?: string[];
     webhook?: string;
@@ -107,7 +107,7 @@ export interface SchedulerConfig {
   };
 }
 
-// Update ScrapedOrder to match Order interface more closely
+// Updated ScrapedOrder to match Order interface more closely
 export interface ScrapedOrder {
   identifier: string;
   orderNumber: string | null;
@@ -118,13 +118,13 @@ export interface ScrapedOrder {
   summary: string | null;
   notes: string | null;
   content?: string | null;
-  categories: Pick<Category, 'name'>[];
-  agencies: Pick<Agency, 'name'>[];
+  categories: { name: string }[];
+  agencies: { name: string }[];
   isNew: boolean;
-  status?: OrderStatus;  // Optional as it might be set later
+  status?: OrderStatus;
 }
 
-// Enhanced type guards
+// Enhanced type guards with better validation
 export function isValidOrder(order: unknown): order is Order {
   if (!order || typeof order !== 'object') return false;
   
@@ -137,8 +137,8 @@ export function isValidOrder(order: unknown): order is Order {
     typeof o.url === 'string' &&
     Array.isArray(o.categories) &&
     Array.isArray(o.agencies) &&
-    Object.values(OrderTypes).includes(o.type) &&
-    Object.values(OrderStatus).includes(o.status) &&
+    isValidOrderType(o.type) &&
+    isValidOrderStatus(o.status) &&
     o.categories.every(isValidCategory) &&
     o.agencies.every(isValidAgency)
   );
@@ -151,14 +151,22 @@ export function isValidCategory(category: unknown): category is Category {
   return typeof c.id === 'string' && typeof c.name === 'string';
 }
 
-export function isValidAgency(agency: unknown): category is Agency {
+export function isValidAgency(agency: unknown): agency is Agency {
   if (!agency || typeof agency !== 'object') return false;
   
   const a = agency as Agency;
   return typeof a.id === 'string' && typeof a.name === 'string';
 }
 
-// Enhanced operation types
+export function isValidOrderType(type: unknown): type is OrderType {
+  return typeof type === 'string' && Object.values(OrderTypes).includes(type as OrderType);
+}
+
+export function isValidOrderStatus(status: unknown): status is OrderStatus {
+  return typeof status === 'string' && Object.values(OrderStatus).includes(status as OrderStatus);
+}
+
+// Helper types for operations
 export type PartialOrder = Partial<Order>;
 export type CreateOrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
 export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>;
@@ -186,7 +194,7 @@ export interface SchedulerEventData {
   };
 }
 
-// Added utility type for API responses
+// API response type
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;

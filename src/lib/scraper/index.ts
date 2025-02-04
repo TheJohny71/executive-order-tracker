@@ -114,12 +114,4 @@ async function saveOrder(order: ScrapedOrder): Promise<void> {
  }
 }
 
-if (import.meta.url === new URL(import.meta.resolve('.')).href) {
- scrapeExecutiveOrders()
-   .catch(error => {
-     logger.error('Scraping failed:', error);
-     process.exit(1);
-   });
-}
-
 export { scrapeExecutiveOrders };

@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { OrderCard } from './order-card';
 import { TimelineChart } from './timeline-chart';
 import { useOrders } from '@/hooks/useOrders';
-import { Pagination } from "@/components/ui/pagination";
+import { Pagination } from "./pagination";
 import type { Order, FilterType, OrderFilters } from '@/types';
 import { LoadingSkeleton } from './loading-skeleton';
 

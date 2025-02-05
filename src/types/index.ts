@@ -1,15 +1,13 @@
-// src/types/index.ts
-
 import { Prisma, DocumentType as PrismaDocumentType } from '@prisma/client';
 
-// Use Prisma's DocumentType
 export type DocumentType = PrismaDocumentType;
 
-// Keep OrderTypes for backward compatibility
 export const OrderTypes = {
   EXECUTIVE_ORDER: PrismaDocumentType.EXECUTIVE_ORDER,
   MEMORANDUM: PrismaDocumentType.MEMORANDUM,
 } as const;
+
+export type FilterType = keyof OrderFilters;
 
 export interface OrderFilters {
   type: DocumentType | '';
@@ -102,7 +100,6 @@ export interface UseOrdersReturn {
   refresh: () => Promise<void>;
 }
 
-// Type guards
 export function isValidOrder(order: unknown): order is Order {
   if (!order || typeof order !== 'object') return false;
   
@@ -145,11 +142,9 @@ export function isValidAgency(agency: unknown): agency is Agency {
   );
 }
 
-// Prisma-specific types
 export type WhereClause = Prisma.ExecutiveOrderWhereInput;
 export type OrderByClause = Prisma.ExecutiveOrderOrderByWithRelationInput;
 
-// Scraper types
 export interface ScrapedOrder {
   identifier: string;
   type: DocumentType;
@@ -171,7 +166,6 @@ export interface TimelineData {
   byType?: Record<DocumentType, number>;
 }
 
-// Helper types for operations
 export type PartialOrder = Partial<Order>;
 export type CreateOrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
 export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>;

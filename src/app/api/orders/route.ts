@@ -1,5 +1,3 @@
-// src/app/api/orders/route.ts
-
 import { PrismaClient, DocumentType } from '@prisma/client';
 import { type NextRequest } from 'next/server';
 import { logger } from '@/utils/logger';
@@ -8,110 +6,92 @@ import { OrderFilters, WhereClause } from '@/types';
 const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const typeParam = searchParams.get('type');
-  
-  const filters: OrderFilters = {
-    type: typeParam ? typeParam as DocumentType : '',
-    category: searchParams.get('category') || '',
-    agency: searchParams.get('agency') || '',
-    search: searchParams.get('search') || '',
-    dateFrom: searchParams.get('dateFrom') || '',
-    dateTo: searchParams.get('dateTo') || '',
-    page: parseInt(searchParams.get('page') || '1', 10),
-    limit: parseInt(searchParams.get('limit') || '10', 10),
-    statusId: searchParams.get('statusId') || undefined,
-    sort: (searchParams.get('sort') as OrderFilters['sort']) || undefined
-  };
-
-  const where: WhereClause = {};
-
-  if (filters.type && Object.values(DocumentType).includes(filters.type)) {
-    where.type = filters.type;
-  }
-
-  if (filters.category) {
-    where.categories = {
-      some: { name: filters.category }
-    };
-  }
-
-  if (filters.agency) {
-    where.agencies = {
-      some: { name: filters.agency }
-    };
-  }
-
-  if (filters.search) {
-    where.title = {
-      contains: filters.search,
-      mode: 'insensitive'
-    };
-  }
-
-  if (filters.statusId) {
-    where.statusId = filters.statusId;
-  }
-
-  if (filters.dateFrom || filters.dateTo) {
-    where.date = {};
-    if (filters.dateFrom) {
-      where.date.gte = new Date(filters.dateFrom);
-    }
-    if (filters.dateTo) {
-      where.date.lte = new Date(filters.dateTo);
-    }
-  }
-
-  const skip = (filters.page - 1) * filters.limit;
-
   try {
-    const [total, orders, categories, agencies, statuses] = await Promise.all([
-      prisma.executiveOrder.count({ where }),
-      prisma.executiveOrder.findMany({
+    const searchParams = request.nextUrl.searchParams;
+    const type = searchParams.get('type') as DocumentType | '';
+    
+    const filters: OrderFilters = {
+      type: type || '',
+      category: searchParams.get('category') || '',
+      agency: searchParams.get('agency') || '',
+      search: searchParams.get('search') || '',
+      dateFrom: searchParams.get('dateFrom') || '',
+      dateTo: searchParams.get('dateTo') || '',
+      page: parseInt(searchParams.get('page') || '1', 10),
+      limit: parseInt(searchParams.get('limit') || '10', 10)
+    };
+
+    const where: WhereClause = {};
+
+    if (filters.type) {
+      where.type = filters.type;
+    }
+
+    if (filters.category) {
+      where.category = filters.category;
+    }
+
+    if (filters.agency) {
+      where.agency = filters.agency;
+    }
+
+    if (filters.dateFrom || filters.dateTo) {
+      where.datePublished = {};
+      if (filters.dateFrom) {
+        where.datePublished.gte = new Date(filters.dateFrom);
+      }
+      if (filters.dateTo) {
+        where.datePublished.lte = new Date(filters.dateTo);
+      }
+    }
+
+    if (filters.search) {
+      where.OR = [
+        { title: { contains: filters.search, mode: 'insensitive' } },
+        { summary: { contains: filters.search, mode: 'insensitive' } }
+      ];
+    }
+
+    const [total, orders] = await Promise.all([
+      prisma.order.count({ where }),
+      prisma.order.findMany({
         where,
-        include: {
-          status: true,
-          categories: true,
-          agencies: true,
-          citations: true,
-          amendments: true
-        },
-        skip,
+        orderBy: { datePublished: 'desc' },
+        skip: (filters.page - 1) * filters.limit,
         take: filters.limit,
-        orderBy: filters.sort ? {
-          [filters.sort.replace(/^-/, '')]: filters.sort.startsWith('-') ? 'desc' : 'asc'
-        } : { date: 'desc' }
-      }),
-      prisma.category.findMany({ select: { name: true } }),
-      prisma.agency.findMany({ select: { name: true } }),
-      prisma.status.findMany({ select: { id: true, name: true } })
+        include: {
+          status: true
+        }
+      })
     ]);
 
-    return Response.json({
+    const metadata = await Promise.all([
+      prisma.category.findMany(),
+      prisma.agency.findMany(),
+      prisma.status.findMany()
+    ]);
+
+    return new Response(JSON.stringify({
       orders,
       pagination: {
         total,
         page: filters.page,
         limit: filters.limit,
-        hasMore: total > skip + orders.length
+        hasMore: total > filters.page * filters.limit
       },
       metadata: {
-        categories: categories.map(c => c.name),
-        agencies: agencies.map(a => a.name),
-        statuses
+        categories: metadata[0].map(c => c.name),
+        agencies: metadata[1].map(a => a.name),
+        statuses: metadata[2].map(s => ({ id: s.id, name: s.name }))
       }
+    }), {
+      headers: { 'Content-Type': 'application/json' }
     });
-
-  } catch (err) {
-    const error = err as Error;
-    logger.error('Error fetching orders:', { 
-      message: error.message,
-      stack: error.stack 
+  } catch (error) {
+    logger.error('Error fetching orders:', error);
+    return new Response(JSON.stringify({ error: 'Failed to fetch orders' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
     });
-    return Response.json(
-      { error: 'Failed to fetch orders' }, 
-      { status: 500 }
-    );
   }
 }

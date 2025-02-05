@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button } from "@/components/ui/button";
+import { Button } from "./button";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PaginationProps {
   currentPage: number;
@@ -12,25 +13,60 @@ export const Pagination: React.FC<PaginationProps> = ({
   totalPages, 
   onPageChange 
 }) => {
+  if (totalPages <= 1) return null;
+  
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    let start = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let end = Math.min(totalPages, start + maxVisiblePages - 1);
+
+    if (end - start + 1 < maxVisiblePages) {
+      start = Math.max(1, end - maxVisiblePages + 1);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  };
+
   return (
-    <div className="mt-8 flex justify-center gap-2">
+    <nav className="flex items-center justify-center space-x-2 mt-8" aria-label="Pagination">
       <Button
         variant="outline"
+        size="icon"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
+        aria-label="Previous page"
       >
-        Previous
+        <ChevronLeft className="h-4 w-4" />
       </Button>
-      <span className="flex items-center px-4 py-2 text-sm text-gray-700">
-        Page {currentPage} of {totalPages}
-      </span>
+
+      {getPageNumbers().map((pageNumber) => (
+        <Button
+          key={pageNumber}
+          variant={pageNumber === currentPage ? "default" : "outline"}
+          size="sm"
+          onClick={() => onPageChange(pageNumber)}
+          className="min-w-[40px]"
+          aria-label={`Page ${pageNumber}`}
+          aria-current={pageNumber === currentPage ? 'page' : undefined}
+        >
+          {pageNumber}
+        </Button>
+      ))}
+
       <Button
         variant="outline"
+        size="icon"
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
+        aria-label="Next page"
       >
-        Next
+        <ChevronRight className="h-4 w-4" />
       </Button>
-    </div>
+    </nav>
   );
 };

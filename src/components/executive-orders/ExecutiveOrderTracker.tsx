@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { OrderCard } from './order-card';
 import { TimelineChart } from './timeline-chart';
 import { useOrders } from '@/hooks/useOrders';
+import { Pagination } from "@/components/ui/pagination";
 import type { Order, FilterType, OrderFilters } from '@/types';
 import { LoadingSkeleton } from './loading-skeleton';
 
@@ -77,6 +78,24 @@ const ExecutiveOrderTracker = () => {
     }
   }, []);
 
+  const handlePdfDownload = async (order: Order) => {
+    try {
+      const response = await fetch(order.pdfUrl);
+      if (!response.ok) throw new Error('PDF not found');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${order.identifier}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+    }
+  };
+
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
@@ -109,10 +128,6 @@ const ExecutiveOrderTracker = () => {
   }, []);
 
   if (error) {
-    const errorMessage = typeof error === 'object' && error !== null 
-      ? error.toString()
-      : String(error);
-
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <Card className="w-full max-w-md">
@@ -120,7 +135,7 @@ const ExecutiveOrderTracker = () => {
             <CardTitle>Error Loading Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600 mb-4">{errorMessage}</p>
+            <p className="text-gray-600 mb-4">{error.toString()}</p>
             <Button onClick={() => setFilters(prev => ({ ...prev }))}>
               Retry
             </Button>
@@ -146,7 +161,6 @@ const ExecutiveOrderTracker = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="space-y-4">
@@ -195,7 +209,6 @@ const ExecutiveOrderTracker = () => {
         </div>
       </div>
 
-      {/* Timeline Chart */}
       {showTimeline && data?.orders && (
         <div className="bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -204,7 +217,6 @@ const ExecutiveOrderTracker = () => {
         </div>
       )}
 
-      {/* Recently Viewed */}
       {recentlyViewed.length > 0 && (
         <div className="bg-gray-50 border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -220,7 +232,6 @@ const ExecutiveOrderTracker = () => {
         </div>
       )}
 
-      {/* Filters */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
           <div className="relative lg:col-span-2">
@@ -277,13 +288,11 @@ const ExecutiveOrderTracker = () => {
           />
         </div>
 
-        {/* Filter results count */}
         <div className="mt-4 text-sm text-gray-500">
           Showing {data?.orders.length || 0} of {data?.pagination.total || 0} orders
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {loading ? (
           <LoadingSkeleton />
@@ -305,13 +314,21 @@ const ExecutiveOrderTracker = () => {
                 }}
                 onRecentlyViewed={addToRecentlyViewed}
                 onFilterChange={handleFilterChange}
+                onPdfDownload={handlePdfDownload}
               />
             ))}
+
+            {data?.pagination && (
+              <Pagination
+                currentPage={filters.page}
+                totalPages={Math.ceil(data.pagination.total / filters.limit)}
+                onPageChange={(page) => handleFilterChange('page', page.toString())}
+              />
+            )}
           </div>
         )}
       </div>
 
-      {/* Mobile floating action buttons */}
       <div className="md:hidden fixed bottom-6 right-6 flex flex-col gap-2">
         <Button
           className="rounded-full h-12 w-12 shadow-lg"

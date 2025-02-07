@@ -1,7 +1,7 @@
 import { PrismaClient, DocumentType } from '@prisma/client';
 import { type NextRequest } from 'next/server';
 import { logger } from '@/utils/logger';
-import { OrderFilters, WhereClause } from '@/types';
+import { OrderFilters, WhereClause, OrderByClause } from '@/types';
 
 const prisma = new PrismaClient();
 
@@ -18,49 +18,85 @@ export async function GET(request: NextRequest) {
       dateFrom: searchParams.get('dateFrom') || '',
       dateTo: searchParams.get('dateTo') || '',
       page: parseInt(searchParams.get('page') || '1', 10),
-      limit: parseInt(searchParams.get('limit') || '10', 10)
+      limit: parseInt(searchParams.get('limit') || '10', 10),
+      statusId: searchParams.get('statusId') || undefined,
+      sort: searchParams.get('sort') as OrderFilters['sort'] || undefined
     };
 
     const where: WhereClause = {};
+    const orderBy: OrderByClause = {};
+
+    // Handle sorting
+    if (filters.sort) {
+      const [field, direction] = filters.sort.startsWith('-') 
+        ? [filters.sort.slice(1), 'desc' as const] 
+        : [filters.sort, 'asc' as const];
+      orderBy[field as keyof OrderByClause] = direction;
+    } else {
+      orderBy.date = 'desc';
+    }
 
     if (filters.type) {
       where.type = filters.type;
     }
 
     if (filters.category) {
-      where.category = filters.category;
+      where.categories = {
+        some: {
+          name: {
+            equals: filters.category,
+            mode: 'insensitive'
+          }
+        }
+      };
     }
 
     if (filters.agency) {
-      where.agency = filters.agency;
+      where.agencies = {
+        some: {
+          name: {
+            equals: filters.agency,
+            mode: 'insensitive'
+          }
+        }
+      };
+    }
+
+    if (filters.statusId) {
+      where.statusId = filters.statusId;
     }
 
     if (filters.dateFrom || filters.dateTo) {
-      where.datePublished = {};
+      where.date = {};
       if (filters.dateFrom) {
-        where.datePublished.gte = new Date(filters.dateFrom);
+        where.date.gte = new Date(filters.dateFrom);
       }
       if (filters.dateTo) {
-        where.datePublished.lte = new Date(filters.dateTo);
+        where.date.lte = new Date(filters.dateTo);
       }
     }
 
     if (filters.search) {
       where.OR = [
         { title: { contains: filters.search, mode: 'insensitive' } },
-        { summary: { contains: filters.search, mode: 'insensitive' } }
+        { summary: { contains: filters.search, mode: 'insensitive' } },
+        { identifier: { contains: filters.search, mode: 'insensitive' } }
       ];
     }
 
     const [total, orders] = await Promise.all([
-      prisma.order.count({ where }),
-      prisma.order.findMany({
+      prisma.executiveOrder.count({ where }),
+      prisma.executiveOrder.findMany({
         where,
-        orderBy: { datePublished: 'desc' },
+        orderBy,
         skip: (filters.page - 1) * filters.limit,
         take: filters.limit,
         include: {
-          status: true
+          status: true,
+          categories: true,
+          agencies: true,
+          citations: true,
+          amendments: true
         }
       })
     ]);

@@ -1,16 +1,64 @@
-import { Prisma, DocumentType as PrismaDocumentType } from '@prisma/client';
+import { DocumentType } from '@prisma/client';
 
-export type DocumentType = PrismaDocumentType;
+export interface Category {
+  id: string;
+  name: string;
+}
 
-export const OrderTypes = {
-  EXECUTIVE_ORDER: PrismaDocumentType.EXECUTIVE_ORDER,
-  MEMORANDUM: PrismaDocumentType.MEMORANDUM,
-} as const;
+export interface Agency {
+  id: string;
+  name: string;
+  abbreviation?: string;
+}
 
-export type FilterType = keyof OrderFilters;
+export interface Amendment {
+  id: string;
+  dateAmended: Date | string;
+  description: string;
+}
+
+export interface Citation {
+  id: string;
+  description: string;
+}
+
+export interface Status {
+  id: string;
+  name: string;
+}
+
+export interface Order {
+  id: string;
+  identifier: string;
+  type: DocumentType;
+  title: string;
+  date: Date | string;
+  url: string;
+  summary: string | null;
+  notes: string | null;
+  content: string | null;
+  isNew: boolean;
+  status: Status;
+  categories: Category[];
+  agencies: Agency[];
+  amendments: Amendment[];
+  citations: Citation[];
+}
+
+export type FilterType = 
+  | 'type'
+  | 'category'
+  | 'agency'
+  | 'search'
+  | 'dateFrom'
+  | 'dateTo'
+  | 'page'
+  | 'limit'
+  | 'statusId'
+  | 'sort';
 
 export interface OrderFilters {
-  type: DocumentType | '';
+  type: string;
   category: string;
   agency: string;
   search: string;
@@ -19,153 +67,22 @@ export interface OrderFilters {
   page: number;
   limit: number;
   statusId?: string;
-  sort?: 'date' | 'title' | 'type' | '-date' | '-title' | '-type';
+  sort?: string;
 }
 
-export interface Status {
-  id: string;
-  name: string;
-  description: string | null;
+export interface PaginationInfo {
+  total: number;
+  page: number;
+  limit: number;
 }
 
-export interface Category {
-  id: string;
-  name: string;
-  description: string | null;
-}
-
-export interface Agency {
-  id: string;
-  name: string;
-  abbreviation: string | null;
-  description: string | null;
-}
-
-export interface Citation {
-  id: string;
-  sourceId: string;
-  targetId: string;
-  description: string | null;
-}
-
-export interface Amendment {
-  id: string;
-  orderId: string;
-  amendedText: string;
-  description: string | null;
-  dateAmended: string;
-}
-
-export interface Order {
-  id: string;
-  identifier: string;
-  type: DocumentType;
-  title: string;
-  date: string;
-  url: string;
-  summary: string | null;
-  notes: string | null;
-  content: string | null;
-  statusId: string;
-  isNew: boolean;
-  createdAt: string;
-  updatedAt: string;
-  status: Status;
-  categories: Category[];
-  agencies: Agency[];
-  citations: Citation[];
-  amendments: Amendment[];
+export interface OrdersMetadata {
+  categories: string[];
+  agencies: string[];
 }
 
 export interface OrdersResponse {
   orders: Order[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    hasMore: boolean;
-  };
-  metadata: {
-    categories: string[];
-    agencies: string[];
-    statuses: { id: string; name: string }[];
-  };
+  pagination: PaginationInfo;
+  metadata: OrdersMetadata;
 }
-
-export interface UseOrdersReturn {
-  data: OrdersResponse | null;
-  error: string | null;
-  loading: boolean;
-  lastUpdate?: Date;
-  refresh: () => Promise<void>;
-}
-
-export function isValidOrder(order: unknown): order is Order {
-  if (!order || typeof order !== 'object') return false;
-  
-  const o = order as Order;
-  return (
-    typeof o.id === 'string' &&
-    typeof o.identifier === 'string' &&
-    typeof o.title === 'string' &&
-    typeof o.date === 'string' &&
-    typeof o.url === 'string' &&
-    typeof o.statusId === 'string' &&
-    Array.isArray(o.categories) &&
-    Array.isArray(o.agencies) &&
-    o.type in DocumentType &&
-    o.categories.every(isValidCategory) &&
-    o.agencies.every(isValidAgency)
-  );
-}
-
-export function isValidCategory(category: unknown): category is Category {
-  if (!category || typeof category !== 'object') return false;
-  
-  const c = category as Category;
-  return (
-    typeof c.id === 'string' &&
-    typeof c.name === 'string' &&
-    (c.description === null || typeof c.description === 'string')
-  );
-}
-
-export function isValidAgency(agency: unknown): agency is Agency {
-  if (!agency || typeof agency !== 'object') return false;
-  
-  const a = agency as Agency;
-  return (
-    typeof a.id === 'string' &&
-    typeof a.name === 'string' &&
-    (a.abbreviation === null || typeof a.abbreviation === 'string') &&
-    (a.description === null || typeof a.description === 'string')
-  );
-}
-
-export type WhereClause = Prisma.ExecutiveOrderWhereInput;
-export type OrderByClause = Prisma.ExecutiveOrderOrderByWithRelationInput;
-
-export interface ScrapedOrder {
-  identifier: string;
-  type: DocumentType;
-  title: string;
-  date: Date;
-  url: string;
-  summary: string | null;
-  notes: string | null;
-  content?: string | null;
-  statusId: string;
-  categories: { name: string }[];
-  agencies: { name: string }[];
-  isNew: boolean;
-}
-
-export interface TimelineData {
-  month: string;
-  count: number;
-  byType?: Record<DocumentType, number>;
-}
-
-export type PartialOrder = Partial<Order>;
-export type CreateOrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
-export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>;

@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from 'lucide-react';
-import type { Order, FilterType, OrderStatus } from '@/types';
+import type { Order, FilterType } from '@/types';
 
 interface OrderCardProps {
   order: Order;
@@ -21,17 +21,18 @@ interface OrderCardProps {
   onCompareToggle: (order: Order) => void;
   onRecentlyViewed: (order: Order) => void;
   onFilterChange: (filterType: FilterType, value: string) => void;
+  onPdfDownload?: (order: Order) => Promise<void>;
 }
 
-const getStatusColor = (status: OrderStatus) => {
-  switch (status) {
-    case 'Active':
+const getStatusColor = (statusName: string) => {
+  switch (statusName.toLowerCase()) {
+    case 'active':
       return 'bg-green-100 text-green-800';
-    case 'Revoked':
+    case 'revoked':
       return 'bg-red-100 text-red-800';
-    case 'Superseded':
+    case 'superseded':
       return 'bg-yellow-100 text-yellow-800';
-    case 'Amended':
+    case 'amended':
       return 'bg-blue-100 text-blue-800';
     default:
       return 'bg-gray-100 text-gray-800';
@@ -45,6 +46,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   onCompareToggle,
   onRecentlyViewed,
   onFilterChange,
+  onPdfDownload
 }) => {
   const handleCategoryClick = (category: string) => {
     onFilterChange('category', category);
@@ -55,29 +57,31 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   };
 
   const handleDownloadPDF = async () => {
-    // TODO: Implement PDF download functionality
+    if (onPdfDownload) {
+      await onPdfDownload(order);
+    }
   };
+
+  const mainCategory = order.categories[0]?.name.toLowerCase() || '';
 
   return (
     <Card 
       key={order.id}
       id={`order-${order.id}`} 
       className={`transform transition-all duration-200 hover:shadow-lg
-        border-l-4 ${order.categories[0]?.name.toLowerCase() || ''}`}
+        border-l-4 ${mainCategory}`}
     >
       <Collapsible>
         <CardHeader className="p-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <Badge variant={order.type === 'Executive Order' ? 'default' : 'secondary'}>
-                  {order.type}
+                <Badge variant={order.type === 'EXECUTIVE_ORDER' ? 'default' : 'secondary'}>
+                  {order.type === 'EXECUTIVE_ORDER' ? 'Executive Order' : 'Memorandum'}
                 </Badge>
-                {order.orderNumber && (
-                  <Badge variant="outline">#{order.orderNumber}</Badge>
-                )}
-                <Badge className={getStatusColor(order.status)}>
-                  {order.status}
+                <Badge variant="outline">#{order.identifier}</Badge>
+                <Badge className={getStatusColor(order.status.name)}>
+                  {order.status.name}
                 </Badge>
                 {order.isNew && (
                   <Badge variant="destructive">New</Badge>
@@ -93,11 +97,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                 <h3 className="text-xl font-semibold">{order.title}</h3>
                 <ChevronDown className="h-4 w-4" />
               </CollapsibleTrigger>
-              {order.identifier && (
-                <div className="text-sm text-gray-500">
-                  ID: {order.identifier}
-                </div>
-              )}
             </div>
             {isComparing && (
               <Button
@@ -114,10 +113,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({
           <CardContent className="px-6 pb-6 pt-0">
             <div className="flex justify-between items-start">
               <div className="space-y-4 flex-1">
-                <div>
-                  <h3 className="font-medium text-gray-900">Summary</h3>
-                  <p className="mt-1 text-gray-600">{order.summary}</p>
-                </div>
+                {order.summary && (
+                  <div>
+                    <h3 className="font-medium text-gray-900">Summary</h3>
+                    <p className="mt-1 text-gray-600">{order.summary}</p>
+                  </div>
+                )}
                 {order.content && (
                   <div>
                     <h3 className="font-medium text-gray-900">Full Content</h3>
@@ -131,7 +132,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   <div className="mt-1 flex flex-wrap gap-2">
                     {order.categories.map((category) => (
                       <Badge 
-                        key={category.name} 
+                        key={category.id} 
                         variant="outline"
                         className="cursor-pointer hover:bg-gray-100"
                         onClick={() => handleCategoryClick(category.name)}
@@ -141,25 +142,54 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     ))}
                   </div>
                 </div>
-                <div>
-                  <h3 className="font-medium text-gray-900">Key Agencies</h3>
-                  <div className="mt-1 flex flex-wrap gap-2">
-                    {order.agencies.map((agency) => (
-                      <Badge 
-                        key={agency.name} 
-                        variant="outline"
-                        className="cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleAgencyClick(agency.name)}
-                      >
-                        {agency.name}
-                      </Badge>
-                    ))}
+                {order.agencies.length > 0 && (
+                  <div>
+                    <h3 className="font-medium text-gray-900">Key Agencies</h3>
+                    <div className="mt-1 flex flex-wrap gap-2">
+                      {order.agencies.map((agency) => (
+                        <Badge 
+                          key={agency.id} 
+                          variant="outline"
+                          className="cursor-pointer hover:bg-gray-100"
+                          onClick={() => handleAgencyClick(agency.name)}
+                        >
+                          {agency.abbreviation || agency.name}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
                 {order.notes && (
                   <div>
                     <h3 className="font-medium text-gray-900">Notes</h3>
                     <p className="mt-1 text-gray-600">{order.notes}</p>
+                  </div>
+                )}
+                {order.amendments.length > 0 && (
+                  <div>
+                    <h3 className="font-medium text-gray-900">Amendments</h3>
+                    <div className="mt-1 space-y-2">
+                      {order.amendments.map((amendment) => (
+                        <div key={amendment.id} className="text-sm text-gray-600">
+                          <div className="font-medium">
+                            {new Date(amendment.dateAmended).toLocaleDateString()}
+                          </div>
+                          <p>{amendment.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {order.citations.length > 0 && (
+                  <div>
+                    <h3 className="font-medium text-gray-900">Citations</h3>
+                    <div className="mt-1 space-y-2">
+                      {order.citations.map((citation) => (
+                        <div key={citation.id} className="text-sm text-gray-600">
+                          {citation.description}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -173,15 +203,17 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   View on whitehouse.gov
                 </a>
                 <span className="text-sm text-gray-500 mt-2">Official Source</span>
-                <div className="mt-4">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={handleDownloadPDF}
-                  >
-                    Download PDF
-                  </Button>
-                </div>
+                {onPdfDownload && (
+                  <div className="mt-4">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleDownloadPDF}
+                    >
+                      Download PDF
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>

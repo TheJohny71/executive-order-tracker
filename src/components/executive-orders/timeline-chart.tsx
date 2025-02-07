@@ -1,16 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  Legend
 } from 'recharts';
 import type { Order } from '@/types';
+import { DocumentType } from '@prisma/client';
 
 interface TimelineChartProps {
   orders: Order[];
@@ -18,22 +20,35 @@ interface TimelineChartProps {
 
 interface TimelineDataPoint {
   month: string;
-  count: number;
+  total: number;
+  [DocumentType.EXECUTIVE_ORDER]: number;
+  [DocumentType.MEMORANDUM]: number;
 }
 
 export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
-  const timelineData = React.useMemo(() => {
+  const timelineData = useMemo(() => {
     if (!orders?.length) return [];
     
-    const ordersByMonth: Record<string, number> = {};
+    const ordersByMonth: Record<string, TimelineDataPoint> = {};
+    
     orders.forEach(order => {
       const date = new Date(order.date);
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      ordersByMonth[monthKey] = (ordersByMonth[monthKey] || 0) + 1;
+      
+      if (!ordersByMonth[monthKey]) {
+        ordersByMonth[monthKey] = {
+          month: monthKey,
+          total: 0,
+          [DocumentType.EXECUTIVE_ORDER]: 0,
+          [DocumentType.MEMORANDUM]: 0
+        };
+      }
+      
+      ordersByMonth[monthKey].total += 1;
+      ordersByMonth[monthKey][order.type] += 1;
     });
 
-    return Object.entries(ordersByMonth)
-      .map(([month, count]): TimelineDataPoint => ({ month, count }))
+    return Object.values(ordersByMonth)
       .sort((a, b) => a.month.localeCompare(b.month));
   }, [orders]);
 
@@ -42,7 +57,7 @@ export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
   return (
     <div className="h-64 w-full bg-white rounded-lg shadow-sm">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart 
+        <BarChart 
           data={timelineData} 
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
@@ -67,7 +82,10 @@ export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
                 year: 'numeric' 
               })}`;
             }}
-            formatter={(value: number) => [`${value} orders`, 'Count']}
+            formatter={(value: number, name: string) => {
+              const label = name === DocumentType.EXECUTIVE_ORDER ? 'Executive Orders' : 'Memoranda';
+              return [`${value} ${label}`, ''];
+            }}
             contentStyle={{
               backgroundColor: 'white',
               border: '1px solid #e5e7eb',
@@ -75,15 +93,20 @@ export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
               padding: '0.5rem'
             }}
           />
-          <Line 
-            type="monotone" 
-            dataKey="count" 
-            stroke="#2563eb"
-            strokeWidth={2}
-            dot={{ r: 4, fill: '#2563eb' }}
-            activeDot={{ r: 6, fill: '#2563eb' }}
+          <Legend />
+          <Bar 
+            name="Executive Orders"
+            dataKey={DocumentType.EXECUTIVE_ORDER}
+            stackId="a"
+            fill="#2563eb"
           />
-        </LineChart>
+          <Bar 
+            name="Memoranda"
+            dataKey={DocumentType.MEMORANDUM}
+            stackId="a"
+            fill="#60a5fa"
+          />
+        </BarChart>
       </ResponsiveContainer>
     </div>
   );

@@ -1,85 +1,171 @@
-// src/lib/scraper/index.ts
-import { prisma } from '@/lib/prisma';
-import { fetchExecutiveOrders } from '@/lib/api/whitehouse';
-import type { ScrapedOrder } from './types';
-import pino from 'pino';
-import pretty from 'pino-pretty';
+import { Prisma, DocumentType as PrismaDocumentType } from '@prisma/client';
 
-const logger = pino(pretty({ colorize: true }));
+export type DocumentType = PrismaDocumentType;
 
-export async function scrapeExecutiveOrders() {
-  try {
-    const orders = await fetchExecutiveOrders();
-    
-    for (const order of orders) {
-      // First, create or update categories
-      const categoryPromises = order.categories.map(async (category) => {
-        const upsertedCategory = await prisma.category.upsert({
-          where: { name: category.name },
-          create: { name: category.name },
-          update: {}
-        });
-        return { id: upsertedCategory.id };
-      });
+export const OrderTypes = {
+  EXECUTIVE_ORDER: PrismaDocumentType.EXECUTIVE_ORDER,
+  MEMORANDUM: PrismaDocumentType.MEMORANDUM,
+} as const;
 
-      // Then, create or update agencies
-      const agencyPromises = order.agencies.map(async (agency) => {
-        const upsertedAgency = await prisma.agency.upsert({
-          where: { name: agency.name },
-          create: { name: agency.name },
-          update: {}
-        });
-        return { id: upsertedAgency.id };
-      });
+export type FilterType = keyof OrderFilters;
 
-      const [categories, agencies] = await Promise.all([
-        Promise.all(categoryPromises),
-        Promise.all(agencyPromises)
-      ]);
-
-      // Create or update the executive order
-      await prisma.executiveOrder.upsert({
-        where: { 
-          // Since orderNumber is optional, use URL as fallback unique identifier
-          url: order.url 
-        },
-        create: {
-          orderNumber: order.orderNumber,
-          type: order.type,
-          title: order.title,
-          date: order.date,
-          url: order.url,
-          summary: order.summary,
-          notes: order.notes,
-          isNew: true,
-          categories: {
-            connect: categories
-          },
-          agencies: {
-            connect: agencies
-          }
-        },
-        update: {
-          orderNumber: order.orderNumber,
-          type: order.type,
-          title: order.title,
-          date: order.date,
-          summary: order.summary,
-          notes: order.notes,
-          isNew: false,
-          categories: {
-            set: categories
-          },
-          agencies: {
-            set: agencies
-          }
-        }
-      });
-    }
-
-    logger.info('Successfully scraped and updated executive orders');
-  } catch (error) {
-    logger.error({ error }, 'Error in scrapeExecutiveOrders');
-    throw error;
-  }
+export interface OrderFilters {
+  type: DocumentType | '';
+  category: string;
+  agency: string;
+  search: string;
+  dateFrom: string;
+  dateTo: string;
+  page: number;
+  limit: number;
+  statusId?: string;
+  sort?: 'date' | 'title' | 'type' | '-date' | '-title' | '-type';
 }
+
+export interface Status {
+  id: string;
+  name: string;
+  description: string | null;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  description: string | null;
+}
+
+export interface Agency {
+  id: string;
+  name: string;
+  abbreviation: string | null;
+  description: string | null;
+}
+
+export interface Citation {
+  id: string;
+  sourceId: string;
+  targetId: string;
+  description: string | null;
+}
+
+export interface Amendment {
+  id: string;
+  orderId: string;
+  amendedText: string;
+  description: string | null;
+  dateAmended: string;
+}
+
+export interface Order {
+  id: string;
+  identifier: string;
+  type: DocumentType;
+  title: string;
+  date: string;
+  url: string;
+  summary: string | null;
+  notes: string | null;
+  content: string | null;
+  statusId: string;
+  isNew: boolean;
+  createdAt: string;
+  updatedAt: string;
+  status: Status;
+  categories: Category[];
+  agencies: Agency[];
+  citations: Citation[];
+  amendments: Amendment[];
+}
+
+export interface OrdersResponse {
+  orders: Order[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    hasMore: boolean;
+  };
+  metadata: {
+    categories: string[];
+    agencies: string[];
+    statuses: { id: string; name: string }[];
+  };
+}
+
+export interface UseOrdersReturn {
+  data: OrdersResponse | null;
+  error: string | null;
+  loading: boolean;
+  lastUpdate?: Date;
+  refresh: () => Promise<void>;
+}
+
+export function isValidOrder(order: unknown): order is Order {
+  if (!order || typeof order !== 'object') return false;
+  
+  const o = order as Order;
+  return (
+    typeof o.id === 'string' &&
+    typeof o.identifier === 'string' &&
+    typeof o.title === 'string' &&
+    typeof o.date === 'string' &&
+    typeof o.url === 'string' &&
+    typeof o.statusId === 'string' &&
+    Array.isArray(o.categories) &&
+    Array.isArray(o.agencies) &&
+    o.type in DocumentType &&
+    o.categories.every(isValidCategory) &&
+    o.agencies.every(isValidAgency)
+  );
+}
+
+export function isValidCategory(category: unknown): category is Category {
+  if (!category || typeof category !== 'object') return false;
+  
+  const c = category as Category;
+  return (
+    typeof c.id === 'string' &&
+    typeof c.name === 'string' &&
+    (c.description === null || typeof c.description === 'string')
+  );
+}
+
+export function isValidAgency(agency: unknown): agency is Agency {
+  if (!agency || typeof agency !== 'object') return false;
+  
+  const a = agency as Agency;
+  return (
+    typeof a.id === 'string' &&
+    typeof a.name === 'string' &&
+    (a.abbreviation === null || typeof a.abbreviation === 'string') &&
+    (a.description === null || typeof a.description === 'string')
+  );
+}
+
+export type WhereClause = Prisma.ExecutiveOrderWhereInput;
+export type OrderByClause = Prisma.ExecutiveOrderOrderByWithRelationInput;
+
+export interface ScrapedOrder {
+  identifier: string;
+  type: DocumentType;
+  title: string;
+  date: Date;
+  url: string;
+  summary: string | null;
+  notes: string | null;
+  content?: string | null;
+  statusId: string;
+  categories: { name: string }[];
+  agencies: { name: string }[];
+  isNew: boolean;
+}
+
+export interface TimelineData {
+  month: string;
+  count: number;
+  byType?: Record<DocumentType, number>;
+}
+
+export type PartialOrder = Partial<Order>;
+export type CreateOrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
+export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>;

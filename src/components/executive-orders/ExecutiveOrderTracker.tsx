@@ -20,23 +20,64 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { OrderCard } from './order-card';
 import { TimelineChart } from './timeline-chart';
 import { useOrders } from '@/hooks/useOrders';
 import { Pagination } from "./pagination";
+import { DocumentType } from '@prisma/client';
 import type { Order, FilterType, OrderFilters } from '@/types';
-import { LoadingSkeleton } from './loading-skeleton';
+
+const LoadingSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <Card key={i}>
+          <CardHeader className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="space-y-4 w-full">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-6 w-20" />
+                  <Skeleton className="h-6 w-32" />
+                </div>
+                <Skeleton className="h-8 w-3/4" />
+                <Skeleton className="h-4 w-1/4" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 pt-0">
+            <div className="space-y-4">
+              <div>
+                <Skeleton className="h-4 w-24 mb-2" />
+                <Skeleton className="h-16 w-full" />
+              </div>
+              <div>
+                <Skeleton className="h-4 w-24 mb-2" />
+                <div className="flex gap-2">
+                  <Skeleton className="h-6 w-24" />
+                  <Skeleton className="h-6 w-24" />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+};
 
 const ExecutiveOrderTracker = () => {
   const [filters, setFilters] = useState<OrderFilters>({
-    type: 'all',
-    category: 'all',
-    agency: 'all',
+    type: '',
+    category: '',
+    agency: '',
     search: '',
     dateFrom: '',
     dateTo: '',
     page: 1,
-    limit: 10
+    limit: 10,
+    statusId: undefined,
+    sort: undefined
   });
   const [viewMode, setViewMode] = useState<'expanded' | 'compact'>('expanded');
   const [recentlyViewed, setRecentlyViewed] = useState<Order[]>([]);
@@ -80,7 +121,7 @@ const ExecutiveOrderTracker = () => {
 
   const handlePdfDownload = async (order: Order) => {
     try {
-      const response = await fetch(order.pdfUrl);
+      const response = await fetch(order.url);
       if (!response.ok) throw new Error('PDF not found');
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -135,7 +176,7 @@ const ExecutiveOrderTracker = () => {
             <CardTitle>Error Loading Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600 mb-4">{error.toString()}</p>
+            <p className="text-gray-600 mb-4">{error}</p>
             <Button onClick={() => setFilters(prev => ({ ...prev }))}>
               Retry
             </Button>
@@ -148,7 +189,9 @@ const ExecutiveOrderTracker = () => {
   const renderStatusCounts = () => {
     if (!data?.orders) return null;
     const counts = data.orders.reduce((acc, order) => {
-      acc[order.status] = (acc[order.status] || 0) + 1;
+      if (order.status?.name) {
+        acc[order.status.name] = (acc[order.status.name] || 0) + 1;
+      }
       return acc;
     }, {} as Record<string, number>);
 
@@ -245,14 +288,14 @@ const ExecutiveOrderTracker = () => {
             />
           </div>
           
-          <Select value={filters.type} onValueChange={(v) => handleFilterChange('type', v)}>
+          <Select value={filters.type || ''} onValueChange={(v) => handleFilterChange('type', v)}>
             <SelectTrigger>
               <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="Executive Order">Executive Order</SelectItem>
-              <SelectItem value="Memorandum">Memorandum</SelectItem>
+              <SelectItem value="">All Types</SelectItem>
+              <SelectItem value={DocumentType.EXECUTIVE_ORDER}>Executive Order</SelectItem>
+              <SelectItem value={DocumentType.MEMORANDUM}>Memorandum</SelectItem>
             </SelectContent>
           </Select>
 
@@ -261,7 +304,7 @@ const ExecutiveOrderTracker = () => {
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="">All Categories</SelectItem>
               {data?.metadata.categories.map(category => (
                 <SelectItem key={category} value={category}>{category}</SelectItem>
               ))}
@@ -273,7 +316,7 @@ const ExecutiveOrderTracker = () => {
               <SelectValue placeholder="Agency" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Agencies</SelectItem>
+              <SelectItem value="">All Agencies</SelectItem>
               {data?.metadata.agencies.map(agency => (
                 <SelectItem key={agency} value={agency}>{agency}</SelectItem>
               ))}

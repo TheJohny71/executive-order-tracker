@@ -1,16 +1,19 @@
-// src/lib/scraper/types.ts
-import type { Category, Agency, OrderType } from '@/types';
+import { DocumentType } from '@prisma/client';
+import type { Category, Agency } from '@/types';
 
 export interface ScrapedOrder {
-  orderNumber: string | null;
-  type: OrderType;
+  identifier: string;
+  type: DocumentType;
   title: string;
   date: Date;
   url: string;
   summary: string | null;
   notes: string | null;
-  categories: Category[];
-  agencies: Agency[];
+  content: string | null;
+  statusId: string;
+  categories: { name: string }[];
+  agencies: { name: string }[];
+  isNew: boolean;
 }
 
 export interface SpawResponse {
@@ -20,13 +23,41 @@ export interface SpawResponse {
     date: string;
     url: string;
     metadata: {
-      orderNumber?: string;
+      identifier?: string;
       type?: string;
+      summary?: string;
+      notes?: string;
     };
   }[];
 }
 
-// This matches the structure used in your utils.ts file
 export interface CategoryKeywords {
   [key: string]: string[];
+}
+
+export interface AgencyKeywords {
+  [key: string]: string[];
+}
+
+export interface ScraperConfig {
+  baseUrl: string;
+  startYear: number;
+  endYear: number;
+  batchSize: number;
+  delayBetweenRequests: number;
+}
+
+export interface ScraperResult {
+  success: boolean;
+  ordersScraped: number;
+  errors: string[];
+  newOrders: ScrapedOrder[];
+  updatedOrders: ScrapedOrder[];
+}
+
+export interface ProcessingOptions {
+  extractCategories?: boolean;
+  extractAgencies?: boolean;
+  parseContent?: boolean;
+  defaultStatusId?: string;
 }

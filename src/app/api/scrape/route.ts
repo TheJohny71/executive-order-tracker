@@ -1,24 +1,24 @@
-import { NextResponse } from 'next/server';
+// src/app/api/scrape/route.ts
+import { PrismaClient, DocumentType } from '@prisma/client';
 import { scrapeExecutiveOrders } from '@/lib/scraper';
-import pino from 'pino';
-import pretty from 'pino-pretty';
+import { type NextRequest } from 'next/server';
+import { logger } from '@/utils/logger';
 
-const logger = pino(pretty({ colorize: true }));
+const prisma = new PrismaClient();
 
-// Add dynamic export
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
-export const preferredRegion = 'auto';
-
-export async function GET() {
+export async function POST(request: NextRequest) {
   try {
-    await scrapeExecutiveOrders();
-    return NextResponse.json({ status: 'success' });
-  } catch (error) {
-    logger.error({ error }, 'Error in scrape API route');
-    return NextResponse.json(
-      { status: 'error', message: 'Failed to scrape executive orders' },
-      { status: 500 }
-    );
+    const orders = await scrapeExecutiveOrders();
+    // Process orders...
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (error: unknown) {
+    logger.error('Error scraping orders:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to scrape orders';
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }

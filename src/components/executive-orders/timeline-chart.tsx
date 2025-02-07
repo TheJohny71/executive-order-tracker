@@ -23,6 +23,7 @@ interface TimelineDataPoint {
   total: number;
   [DocumentType.EXECUTIVE_ORDER]: number;
   [DocumentType.MEMORANDUM]: number;
+  [DocumentType.PROCLAMATION]: number; // Added to match DocumentType enum
 }
 
 export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
@@ -32,7 +33,7 @@ export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
     const ordersByMonth: Record<string, TimelineDataPoint> = {};
     
     orders.forEach(order => {
-      const date = new Date(order.date);
+      const date = new Date(order.datePublished); // Changed from order.date to order.datePublished
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       
       if (!ordersByMonth[monthKey]) {
@@ -40,7 +41,8 @@ export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
           month: monthKey,
           total: 0,
           [DocumentType.EXECUTIVE_ORDER]: 0,
-          [DocumentType.MEMORANDUM]: 0
+          [DocumentType.MEMORANDUM]: 0,
+          [DocumentType.PROCLAMATION]: 0 // Initialize PROCLAMATION count
         };
       }
       
@@ -83,8 +85,16 @@ export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
               })}`;
             }}
             formatter={(value: number, name: string) => {
-              const label = name === DocumentType.EXECUTIVE_ORDER ? 'Executive Orders' : 'Memoranda';
-              return [`${value} ${label}`, ''];
+              switch (name) {
+                case DocumentType.EXECUTIVE_ORDER:
+                  return [`${value} Executive Orders`, ''];
+                case DocumentType.MEMORANDUM:
+                  return [`${value} Memoranda`, ''];
+                case DocumentType.PROCLAMATION:
+                  return [`${value} Proclamations`, ''];
+                default:
+                  return [`${value}`, name];
+              }
             }}
             contentStyle={{
               backgroundColor: 'white',
@@ -105,6 +115,12 @@ export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
             dataKey={DocumentType.MEMORANDUM}
             stackId="a"
             fill="#60a5fa"
+          />
+          <Bar 
+            name="Proclamations"
+            dataKey={DocumentType.PROCLAMATION}
+            stackId="a"
+            fill="#93c5fd"
           />
         </BarChart>
       </ResponsiveContainer>

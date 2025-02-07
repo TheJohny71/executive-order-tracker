@@ -3,14 +3,10 @@
 import dynamic from 'next/dynamic';
 
 const ExecutiveOrderTracker = dynamic(
-  () => import('@/components/executive-orders/ExecutiveOrderTracker'),
+  () => import('@/components/executive-orders/ExecutiveOrderTracker').then(mod => mod.default),
   { ssr: false }
 );
 
-export default function Page() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <ExecutiveOrderTracker />
-    </div>
-  );
+export default function Home() {
+  return <ExecutiveOrderTracker />;
 }

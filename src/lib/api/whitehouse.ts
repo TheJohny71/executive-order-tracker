@@ -1,4 +1,3 @@
-// src/lib/api/whitehouse.ts
 import { DocumentType } from '@prisma/client';
 import { fetchWithSpaw } from './spaw';
 import type { ScrapedOrder } from '@/types';
@@ -34,17 +33,15 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
     logger.info(`Processing ${spawResponse.data.length} documents`);
     
     return spawResponse.data.map(item => {
-      const orderNumber = item.metadata?.orderNumber || 
-        item.title.match(/Executive Order (\d+)/)?.[1] || 
-        item.title.match(/Presidential Memorandum[- ](\d+)/)?.[1] || 
-        null;
+      const orderNumberMatch = item.title.match(/Executive Order (\d+)/)?.[1] || 
+                             item.title.match(/Presidential Memorandum[- ](\d+)/)?.[1];
 
       const type = item.title.toLowerCase().includes('memorandum') 
         ? DocumentType.MEMORANDUM 
         : DocumentType.EXECUTIVE_ORDER;
 
-      const identifier = orderNumber 
-        ? `${type === DocumentType.EXECUTIVE_ORDER ? 'EO' : 'PM'}-${orderNumber}`
+      const identifier = orderNumberMatch 
+        ? `${type === DocumentType.EXECUTIVE_ORDER ? 'EO' : 'PM'}-${orderNumberMatch}`
         : `${type}-${new Date(item.date).toISOString().split('T')[0]}`;
 
       const documentUrl = getDocumentUrl(type, identifier);
@@ -56,7 +53,7 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
         date: new Date(item.date),
         url: documentUrl,
         pdfUrl: getPdfUrl(identifier),
-        summary: item.text.split('\n')[0] || null,
+        summary: item.text?.split('\n')[0] || null,
         notes: null,
         content: item.text || null,
         statusId: 'default-status-id',
@@ -64,7 +61,7 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
         agencies: determineAgencies(item.text).map(name => ({ name })),
         isNew: true,
         metadata: {
-          orderNumber,
+          orderNumber: orderNumberMatch || null,
           citations: [],
           amendments: []
         }

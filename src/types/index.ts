@@ -1,4 +1,4 @@
-import { Prisma, DocumentType } from '@prisma/client';
+import { DocumentType } from '@prisma/client';
 
 export { DocumentType };
 
@@ -24,13 +24,41 @@ export interface Order {
   title: string;
   summary: string;
   datePublished: Date | string;
-  category: string;          // Changed to string to match schema
-  agency: string | null;     // Changed to string to match schema
+  category: string;
+  agency: string | null;
   statusId: number;
   link: string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
-  status: Status;           // Only including status relation as it exists in schema
+  status: Status;
+}
+
+export interface ScrapedOrder {
+  identifier: string;
+  type: DocumentType;
+  title: string;
+  date: Date;
+  url: string;
+  pdfUrl: string;
+  summary: string | null;
+  notes: string | null;
+  content: string | null;
+  statusId: string;
+  categories: { name: string }[];
+  agencies: { name: string }[];
+  isNew: boolean;
+  metadata: {
+    orderNumber: string | null;
+    citations: Array<{
+      id: string;
+      description: string;
+    }>;
+    amendments: Array<{
+      id: string;
+      dateAmended: Date;
+      description: string;
+    }>;
+  };
 }
 
 export type FilterType = 
@@ -73,7 +101,6 @@ export interface OrdersResponse {
   };
 }
 
-// Updated to match actual schema structure
 export type WhereClause = {
   type?: DocumentType;
   number?: string | { contains: string; mode: 'insensitive' };
@@ -91,7 +118,6 @@ export type WhereClause = {
   }>;
 };
 
-// Updated to match actual schema structure
 export type OrderByClause = {
   id?: 'asc' | 'desc';
   type?: 'asc' | 'desc';

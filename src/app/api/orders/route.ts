@@ -6,7 +6,7 @@ const db = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
+    const { searchParams } = new URL(request.url);
     
     // Simple parameter extraction with defaults
     const page = Math.max(1, Number(searchParams.get('page')) || 1);
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     };
 
     // Execute queries
-    const [total, orders, categories, agencies, statuses] = await Promise.all([
+    const [totalCount, ordersResult, categoriesResult, agenciesResult, statusesResult] = await Promise.all([
       db.order.count({ where }),
       db.order.findMany({
         where,
@@ -80,17 +80,17 @@ export async function GET(request: NextRequest) {
     ]);
 
     return Response.json({
-      orders,
+      orders: ordersResult,
       pagination: {
-        total,
+        total: totalCount,
         page,
         limit,
-        hasMore: total > page * limit
+        hasMore: totalCount > page * limit
       },
       metadata: {
-        categories: categories.map(c => c.name),
-        agencies: agencies.map(a => a.name),
-        statuses
+        categories: categoriesResult.map(c => c.name),
+        agencies: agenciesResult.map(a => a.name),
+        statuses: statusesResult
       }
     });
 

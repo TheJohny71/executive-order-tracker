@@ -1,5 +1,4 @@
 import { DocumentType } from '@prisma/client';
-import type { Category, Agency } from '@/types';
 
 export interface ScrapedOrder {
   identifier: string;

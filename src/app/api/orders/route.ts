@@ -107,10 +107,12 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     logger.error('Error in GET /api/orders:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    
     return Response.json(
       { 
         error: 'Failed to fetch orders',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined 
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined 
       }, 
       { status: 500 }
     );

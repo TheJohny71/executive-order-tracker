@@ -181,7 +181,7 @@ const ExecutiveOrderTracker = () => {
             <CardTitle>Error Loading Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600 mb-4">{error}</p>
+            <p className="text-gray-600 mb-4">{error.message || 'An error occurred'}</p>
             <Button onClick={() => setFilters(prev => ({ ...prev }))}>
               Retry
             </Button>

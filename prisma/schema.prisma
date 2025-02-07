@@ -1,3 +1,5 @@
+// prisma/schema.prisma
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -18,29 +20,40 @@ model Order {
   type          DocumentType
   number        String       @unique
   title         String
-  summary       String
+  summary       String       @db.Text
   datePublished DateTime
   category      String
   agency        String?
   status        Status       @relation(fields: [statusId], references: [id])
   statusId      Int
-  link          String?
+  link          String?      @db.Text
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
+
+  @@index([category])
+  @@index([agency])
+  @@index([datePublished])
+  @@index([statusId])
 }
 
 model Category {
   id   Int    @id @default(autoincrement())
   name String @unique
+
+  @@index([name])
 }
 
 model Agency {
   id   Int    @id @default(autoincrement())
   name String @unique
+
+  @@index([name])
 }
 
 model Status {
   id     Int     @id @default(autoincrement())
   name   String  @unique
   orders Order[]
+
+  @@index([name])
 }

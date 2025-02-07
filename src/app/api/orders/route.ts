@@ -1,3 +1,4 @@
+// src/app/api/orders/route.ts
 import { PrismaClient, DocumentType } from '@prisma/client';
 import { type NextRequest } from 'next/server';
 import { logger } from '@/utils/logger';
@@ -36,10 +37,12 @@ export async function GET(request: NextRequest) {
       orderBy.datePublished = 'desc';
     }
 
-    if (filters.type) {
-      where.type = filters.type;
+    // Apply type filter if provided and valid
+    if (filters.type && Object.values(DocumentType).includes(filters.type as DocumentType)) {
+      where.type = filters.type as DocumentType;
     }
 
+    // Apply category filter
     if (filters.category) {
       where.category = {
         equals: filters.category,
@@ -47,6 +50,7 @@ export async function GET(request: NextRequest) {
       };
     }
 
+    // Apply agency filter
     if (filters.agency) {
       where.agency = {
         equals: filters.agency,
@@ -54,10 +58,12 @@ export async function GET(request: NextRequest) {
       };
     }
 
+    // Apply status filter
     if (filters.statusId) {
       where.statusId = filters.statusId;
     }
 
+    // Apply date filters
     if (filters.dateFrom || filters.dateTo) {
       where.datePublished = {};
       if (filters.dateFrom) {
@@ -68,6 +74,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Apply search filter
     if (filters.search) {
       where.OR = [
         { title: { contains: filters.search, mode: 'insensitive' } },
@@ -76,7 +83,8 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const [total, orders] = await Promise.all([
+    // Execute database queries in parallel
+    const [total, orders, categories, agencies, statuses] = await Promise.all([
       prisma.order.count({ where }),
       prisma.order.findMany({
         where,
@@ -86,13 +94,10 @@ export async function GET(request: NextRequest) {
         include: {
           status: true
         }
-      })
-    ]);
-
-    const [categories, agencies, statuses] = await Promise.all([
-      prisma.category.findMany(),
-      prisma.agency.findMany(),
-      prisma.status.findMany()
+      }),
+      prisma.category.findMany({ orderBy: { name: 'asc' } }),
+      prisma.agency.findMany({ orderBy: { name: 'asc' } }),
+      prisma.status.findMany({ orderBy: { name: 'asc' } })
     ]);
 
     return new Response(JSON.stringify({
@@ -109,11 +114,17 @@ export async function GET(request: NextRequest) {
         statuses: statuses.map(s => ({ id: s.id, name: s.name }))
       }
     }), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=59'
+      }
     });
   } catch (error) {
     logger.error('Error fetching orders:', error);
-    return new Response(JSON.stringify({ error: 'Failed to fetch orders' }), {
+    return new Response(JSON.stringify({ 
+      error: 'Failed to fetch orders',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined 
+    }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });

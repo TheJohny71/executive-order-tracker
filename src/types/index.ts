@@ -1,5 +1,15 @@
 import { DocumentType } from '@prisma/client';
 
+export interface OrderFilters {
+  startDate?: string;
+  endDate?: string;
+  category?: string;
+  agency?: string;
+  status?: string;
+  search?: string;
+  type?: DocumentType;
+}
+
 export interface Order {
   id: number;
   number: string;
@@ -43,6 +53,16 @@ export interface OrdersResponse {
   orders: Order[];
   metadata: OrderMetadata;
   pagination: PaginationData;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+}
+
+export interface Agency {
+  id: number;
+  name: string;
 }
 
 export type WhereClause = {

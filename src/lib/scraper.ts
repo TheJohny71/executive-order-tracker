@@ -1,18 +1,18 @@
 import { PrismaClient } from '@prisma/client';
 import { logger } from '@/utils/logger';
-import type { ScrapedOrder } from './index';
-import { OrderTypes } from './index';
+import type { ScrapedOrder } from '@/types';
+import { OrderTypes } from '@/types';
 
 export async function scrapeExecutiveOrders(): Promise<{ 
   success: boolean; 
   message: string;
   data?: ScrapedOrder[];
 }> {
+  const prisma = new PrismaClient();
+  
   try {
-    const prisma = new PrismaClient();
     logger.info('Starting executive order scraping');
     
-    // Example scraped order using your existing types
     const mockScrapedOrder: ScrapedOrder = {
       identifier: "E.O. 14100",
       type: OrderTypes.EXECUTIVE_ORDER,
@@ -22,13 +22,13 @@ export async function scrapeExecutiveOrders(): Promise<{
       summary: "Example summary",
       notes: null,
       content: "Example content",
-      statusId: "active", // Replace with actual status ID
+      statusId: "active",
       categories: [{ name: "Example Category" }],
       agencies: [{ name: "Example Agency" }],
       isNew: true
     };
 
-    logger.info('Scraping completed successfully');
+    await prisma.$connect();
     
     return {
       success: true,
@@ -42,5 +42,7 @@ export async function scrapeExecutiveOrders(): Promise<{
       success: false,
       message: 'Failed to scrape executive orders'
     };
+  } finally {
+    await prisma.$disconnect();
   }
 }

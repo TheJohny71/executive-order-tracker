@@ -1,11 +1,13 @@
-import { PrismaClient } from '@prisma/client';
+// app/api/scrape/route.ts
+import { DatabaseClient } from '@/lib/db';
 import { scrapeExecutiveOrders } from '@/lib/scraper';
 import { logger } from '@/utils/logger';
 
-const db = new PrismaClient();
-
 export async function GET() {
+  let prisma = null;
+  
   try {
+    prisma = await DatabaseClient.getInstance();
     const result = await scrapeExecutiveOrders();
     
     if (!result.success || !result.data) {
@@ -29,7 +31,9 @@ export async function GET() {
       error: process.env.NODE_ENV === 'development' ? String(error) : undefined
     }, { status: 500 });
   } finally {
-    await db.$disconnect();
+    if (prisma) {
+      await DatabaseClient.disconnect();
+    }
   }
 }
 

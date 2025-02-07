@@ -18,14 +18,14 @@ export interface Order {
   type: DocumentType;
   datePublished: Date;
   category: string;
-  agency?: string;
+  agency: string | null;  // Changed from optional string to nullable string
   statusId: number;
   status: {
     id: number;
     name: string;
     color?: string;
   };
-  link?: string;
+  link: string | null;    // Changed from optional string to nullable string
   createdAt: Date;
   updatedAt: Date;
 }

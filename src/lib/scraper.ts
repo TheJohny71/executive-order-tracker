@@ -1,7 +1,20 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, DocumentType } from '@prisma/client';
 import { logger } from '@/utils/logger';
-import type { ScrapedOrder } from '@/types';
-import { OrderTypes } from '@/types';
+
+interface ScrapedOrder {
+  identifier: string;
+  type: DocumentType;
+  title: string;
+  date: Date;
+  url: string;
+  summary: string | null;
+  notes: string | null;
+  content?: string | null;
+  statusId: string;
+  categories: { name: string }[];
+  agencies: { name: string }[];
+  isNew: boolean;
+}
 
 export async function scrapeExecutiveOrders(): Promise<{ 
   success: boolean; 
@@ -15,7 +28,7 @@ export async function scrapeExecutiveOrders(): Promise<{
     
     const mockScrapedOrder: ScrapedOrder = {
       identifier: "E.O. 14100",
-      type: OrderTypes.EXECUTIVE_ORDER,
+      type: DocumentType.EXECUTIVE_ORDER,
       title: "Example Executive Order",
       date: new Date(),
       url: "https://example.com/eo/14100",

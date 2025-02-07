@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { OrderFilters, OrdersResponse, Order } from '@/types';
+import type { OrderFilters, OrdersResponse } from '@/types';
 
 interface UseOrdersReturn {
   data: OrdersResponse | null;
@@ -39,25 +39,15 @@ export function useOrders(filters: OrderFilters): UseOrdersReturn {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = (await response.json()) as Partial<OrdersResponse>;
+      const result = await response.json() as OrdersResponse;
       
       // Validate response structure
       if (!result.orders || !Array.isArray(result.orders)) {
         throw new Error('Invalid response format');
       }
 
-      // Transform dates from strings to Date objects
-      const transformedOrders = result.orders.map((order: Partial<Order>) => ({
-        ...order,
-        date: order.datePublished ? new Date(order.datePublished) : new Date(),
-      }));
-
-      setData({
-        orders: transformedOrders as Order[],
-        total: result.total ?? 0,
-        page: result.page ?? 1,
-        pageSize: result.pageSize ?? 10,
-      });
+      // Set the data directly since it matches our OrdersResponse type
+      setData(result);
       setLastUpdate(new Date().toISOString());
     } catch (err) {
       console.error('Error fetching orders:', err);

@@ -10,7 +10,18 @@
     "lint": "next lint",
     "postinstall": "prisma generate",
     "scrape": "tsx src/lib/scraper/index.ts",
-    "scheduler": "tsx src/lib/scheduler/index.ts"
+    "scheduler": "tsx src/lib/scheduler/index.ts",
+    "analyze": "ANALYZE=true next build",
+    "type-check": "tsc --noEmit",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "validate": "npm run lint && npm run type-check",
+    "prepare": "husky install",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "clean": "rimraf .next out"
   },
   "dependencies": {
     "@prisma/client": "6.3.1",
@@ -20,8 +31,10 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
+    "@tanstack/react-query": "^5.17.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "date-fns": "^2.30.0",
     "fast-xml-parser": "^4.3.2",
     "lucide-react": "^0.314.0",
     "next": "^14.2.23",
@@ -32,12 +45,20 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "recharts": "^2.10.4",
+    "swr": "^2.2.4",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "tsx": "^4.7.0"
+    "tsx": "^4.7.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "@next/bundle-analyzer": "^15.1.6",
     "@shadcn/ui": "^0.0.4",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@types/jest": "^29.5.11",
     "@types/node": "^20.11.10",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
@@ -46,8 +67,14 @@
     "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.2.0",
     "postcss": "^8.4.33",
+    "prettier": "^3.1.1",
     "prisma": "6.3.1",
+    "rimraf": "^5.0.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
   },
@@ -55,5 +82,18 @@
     "string-width": "^4.2.0",
     "strip-ansi": "^6.0.1",
     "wrap-ansi": "^7.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    }
   }
 }

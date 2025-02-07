@@ -1,18 +1,28 @@
 import React from 'react';
 import { 
-  Card,
-  CardContent,
-  CardHeader,
+  Card as CardComponent,
+  CardContent as CardContentComponent,
+  CardHeader as CardHeaderComponent,
 } from "@/components/ui/card";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+  Collapsible as CollapsibleComponent,
+  CollapsibleContent as CollapsibleContentComponent,
+  CollapsibleTrigger as CollapsibleTriggerComponent,
 } from "@/components/ui/collapsible";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge as BadgeComponent } from "@/components/ui/badge";
+import { Button as ButtonComponent } from "@/components/ui/button";
 import { ChevronDown } from 'lucide-react';
 import type { Order, FilterType } from '@/types';
+
+// Rename components to match imports
+const Card = CardComponent;
+const CardContent = CardContentComponent;
+const CardHeader = CardHeaderComponent;
+const Collapsible = CollapsibleComponent;
+const CollapsibleContent = CollapsibleContentComponent;
+const CollapsibleTrigger = CollapsibleTriggerComponent;
+const Badge = BadgeComponent;
+const Button = ButtonComponent;
 
 interface OrderCardProps {
   order: Order;
@@ -48,12 +58,16 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   onFilterChange,
   onPdfDownload
 }) => {
-  const handleCategoryClick = (category: string) => {
-    onFilterChange('category', category);
+  const handleCategoryClick = (category: string | null) => {
+    if (category) {
+      onFilterChange('category', category);
+    }
   };
 
-  const handleAgencyClick = (agency: string) => {
-    onFilterChange('agency', agency);
+  const handleAgencyClick = (agency: string | null) => {
+    if (agency) {
+      onFilterChange('agency', agency);
+    }
   };
 
   const handleDownloadPDF = async () => {
@@ -62,14 +76,15 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     }
   };
 
-  const mainCategory = order.categories[0]?.name.toLowerCase() || '';
+  // Use optional chaining for status name
+  const statusName = order.status?.name;
 
   return (
     <Card 
       key={order.id}
       id={`order-${order.id}`} 
       className={`transform transition-all duration-200 hover:shadow-lg
-        border-l-4 ${mainCategory}`}
+        border-l-4 ${order.category?.toLowerCase() || ''}`}
     >
       <Collapsible>
         <CardHeader className="p-6">
@@ -79,15 +94,14 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                 <Badge variant={order.type === 'EXECUTIVE_ORDER' ? 'default' : 'secondary'}>
                   {order.type === 'EXECUTIVE_ORDER' ? 'Executive Order' : 'Memorandum'}
                 </Badge>
-                <Badge variant="outline">#{order.identifier}</Badge>
-                <Badge className={getStatusColor(order.status.name)}>
-                  {order.status.name}
-                </Badge>
-                {order.isNew && (
-                  <Badge variant="destructive">New</Badge>
+                <Badge variant="outline">#{order.number}</Badge>
+                {statusName && (
+                  <Badge className={getStatusColor(statusName)}>
+                    {statusName}
+                  </Badge>
                 )}
                 <span className="text-sm text-gray-500">
-                  {new Date(order.date).toLocaleDateString()}
+                  {new Date(order.datePublished).toLocaleDateString()}
                 </span>
               </div>
               <CollapsibleTrigger 
@@ -119,91 +133,47 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     <p className="mt-1 text-gray-600">{order.summary}</p>
                   </div>
                 )}
-                {order.content && (
-                  <div>
-                    <h3 className="font-medium text-gray-900">Full Content</h3>
-                    <div className="mt-1 max-h-48 overflow-y-auto text-gray-600">
-                      {order.content}
-                    </div>
-                  </div>
-                )}
                 <div>
-                  <h3 className="font-medium text-gray-900">Categories</h3>
+                  <h3 className="font-medium text-gray-900">Category</h3>
                   <div className="mt-1 flex flex-wrap gap-2">
-                    {order.categories.map((category) => (
+                    {order.category && (
                       <Badge 
-                        key={category.id} 
                         variant="outline"
                         className="cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleCategoryClick(category.name)}
+                        onClick={() => handleCategoryClick(order.category)}
                       >
-                        {category.name}
+                        {order.category}
                       </Badge>
-                    ))}
+                    )}
                   </div>
                 </div>
-                {order.agencies.length > 0 && (
+                {order.agency && (
                   <div>
-                    <h3 className="font-medium text-gray-900">Key Agencies</h3>
+                    <h3 className="font-medium text-gray-900">Agency</h3>
                     <div className="mt-1 flex flex-wrap gap-2">
-                      {order.agencies.map((agency) => (
-                        <Badge 
-                          key={agency.id} 
-                          variant="outline"
-                          className="cursor-pointer hover:bg-gray-100"
-                          onClick={() => handleAgencyClick(agency.name)}
-                        >
-                          {agency.abbreviation || agency.name}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {order.notes && (
-                  <div>
-                    <h3 className="font-medium text-gray-900">Notes</h3>
-                    <p className="mt-1 text-gray-600">{order.notes}</p>
-                  </div>
-                )}
-                {order.amendments.length > 0 && (
-                  <div>
-                    <h3 className="font-medium text-gray-900">Amendments</h3>
-                    <div className="mt-1 space-y-2">
-                      {order.amendments.map((amendment) => (
-                        <div key={amendment.id} className="text-sm text-gray-600">
-                          <div className="font-medium">
-                            {new Date(amendment.dateAmended).toLocaleDateString()}
-                          </div>
-                          <p>{amendment.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {order.citations.length > 0 && (
-                  <div>
-                    <h3 className="font-medium text-gray-900">Citations</h3>
-                    <div className="mt-1 space-y-2">
-                      {order.citations.map((citation) => (
-                        <div key={citation.id} className="text-sm text-gray-600">
-                          {citation.description}
-                        </div>
-                      ))}
+                      <Badge 
+                        variant="outline"
+                        className="cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleAgencyClick(order.agency)}
+                      >
+                        {order.agency}
+                      </Badge>
                     </div>
                   </div>
                 )}
               </div>
               <div className="ml-6 flex flex-col items-end">
-                <a
-                  href={order.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                >
-                  View on whitehouse.gov
-                </a>
-                <span className="text-sm text-gray-500 mt-2">Official Source</span>
-                {onPdfDownload && (
+                {order.link && (
+                  <a
+                    href={order.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  >
+                    View on whitehouse.gov
+                  </a>
+                )}
+                {onPdfDownload && order.link && (
                   <div className="mt-4">
                     <Button 
                       variant="outline" 

@@ -48,7 +48,6 @@
     "swr": "^2.2.4",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "tsx": "^4.7.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -76,12 +75,13 @@
     "prisma": "6.3.1",
     "rimraf": "^5.0.5",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.19.2",
     "typescript": "^5.3.3"
   },
   "resolutions": {
     "string-width": "^4.2.0",
     "strip-ansi": "^6.0.1",
-    "wrap-ansi": "^7.0.0"  
+    "wrap-ansi": "^7.0.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -91,7 +91,9 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.ts"
+    ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     }

@@ -1,15 +1,13 @@
-import { PrismaClient, Prisma, DocumentType } from '@prisma/client';
+import { Prisma, DocumentType } from '@prisma/client';
 import { type NextRequest } from 'next/server';
 import { logger } from '@/utils/logger';
 import type { OrdersResponse, WhereClause, OrderByClause } from '@/types';
-
-const db = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     
-    // Parameter extraction with type safety
     const page = Math.max(1, Number(searchParams.get('page')) || 1);
     const limit = Math.max(1, Math.min(50, Number(searchParams.get('limit')) || 10));
     const search = searchParams.get('search') || '';
@@ -21,13 +19,22 @@ export async function GET(request: NextRequest) {
     const dateFrom = searchParams.get('dateFrom');
     const dateTo = searchParams.get('dateTo');
 
-    // Build where clause using the WhereClause type
     const where: WhereClause = {};
     
     if (type) where.type = type;
     if (statusId) where.statusId = statusId;
-    if (category) where.category = category;
-    if (agency) where.agency = agency;
+    if (category) {
+      where.category = {
+        equals: category,
+        mode: 'insensitive'
+      };
+    }
+    if (agency) {
+      where.agency = {
+        equals: agency,
+        mode: 'insensitive'
+      };
+    }
     
     if (dateFrom || dateTo) {
       where.datePublished = {
@@ -44,15 +51,13 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Build order by using the OrderByClause type
     const sortField = sort.startsWith('-') ? sort.slice(1) : sort;
     const sortDirection = sort.startsWith('-') ? 'desc' as const : 'asc' as const;
     const orderBy: OrderByClause = { [sortField]: sortDirection };
 
-    // Execute queries with proper typing
     const [totalCount, ordersResult, categories, agencies, statuses] = await Promise.all([
-      db.order.count({ where: where as Prisma.OrderWhereInput }),
-      db.order.findMany({
+      prisma.order.count({ where: where as Prisma.OrderWhereInput }),
+      prisma.order.findMany({
         where: where as Prisma.OrderWhereInput,
         orderBy: orderBy as Prisma.OrderOrderByWithRelationInput,
         skip: (page - 1) * limit,
@@ -66,15 +71,15 @@ export async function GET(request: NextRequest) {
           }
         }
       }),
-      db.category.findMany({
+      prisma.category.findMany({
         select: { name: true },
         orderBy: { name: 'asc' }
       }),
-      db.agency.findMany({
+      prisma.agency.findMany({
         select: { name: true },
         orderBy: { name: 'asc' }
       }),
-      db.status.findMany({
+      prisma.status.findMany({
         select: {
           id: true,
           name: true
@@ -103,11 +108,12 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error('Error in GET /api/orders:', error);
     return Response.json(
-      { error: 'Failed to fetch orders' },
+      { 
+        error: 'Failed to fetch orders',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined 
+      }, 
       { status: 500 }
     );
-  } finally {
-    await db.$disconnect();
   }
 }
 

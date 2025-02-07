@@ -1,83 +1,122 @@
-// src/hooks/useOrders.ts
-import { useState, useEffect } from 'react';
-import type { OrdersResponse, OrderFilters } from '@/types';
+import { useState, useEffect, useCallback } from 'react';
+import type { OrderFilters, OrdersResponse } from '@/types';
 
-export function useOrders(filters: OrderFilters) {
+interface UseOrdersReturn {
+  data: OrdersResponse | null;
+  error: string | null;
+  loading: boolean;
+  refresh: () => Promise<void>;
+  lastUpdate: string | null;
+}
+
+export function useOrders(filters: OrderFilters): UseOrdersReturn {
   const [data, setData] = useState<OrdersResponse | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        const queryParams = new URLSearchParams(
-          Object.entries(filters)
-            .filter(([, v]) => v != null && v !== 'all')
-            .map(([k, v]) => [k, String(v)])
-        );
-
-        const response = await fetch(`/api/orders?${queryParams}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const jsonData = await response.json();
-        setData(jsonData);
-        setLastUpdate(new Date());
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error('An error occurred'));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrders();
-
-    // Set up polling for new orders every 5 minutes
-    const pollInterval = setInterval(fetchOrders, 5 * 60 * 1000);
-
-    return () => clearInterval(pollInterval);
-  }, [filters]);
-
-  // Manual refresh function
-  const refresh = async () => {
-    setLoading(true);
+  const fetchOrders = useCallback(async () => {
     try {
-      const response = await fetch('/api/orders/refresh', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+      setLoading(true);
+      setError(null);
+
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== '') {
+          queryParams.append(key, value.toString());
         }
       });
+
+      // Fetch data
+      const response = await fetch(`/api/orders?${queryParams.toString()}`, {
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
       
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      
-      // Fetch updated orders after refresh
-      const queryParams = new URLSearchParams(
-        Object.entries(filters)
-          .filter(([, v]) => v != null && v !== 'all')
-          .map(([k, v]) => [k, String(v)])
-      );
-      
-      const ordersResponse = await fetch(`/api/orders?${queryParams}`);
-      if (!ordersResponse.ok) throw new Error(`HTTP error! status: ${ordersResponse.status}`);
-      
-      const jsonData = await ordersResponse.json();
-      setData(jsonData);
-      setLastUpdate(new Date());
+      // Validate response structure
+      if (!result.orders || !Array.isArray(result.orders)) {
+        throw new Error('Invalid response format');
+      }
+
+      // Transform dates from strings to Date objects
+      const transformedOrders = result.orders.map((order: any) => ({
+        ...order,
+        date: new Date(order.date),
+      }));
+
+      setData({
+        ...result,
+        orders: transformedOrders,
+      });
+      setLastUpdate(new Date().toISOString());
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('An error occurred'));
+      console.error('Error fetching orders:', err);
+      setError(err instanceof Error ? err.message : 'An error occurred while fetching orders');
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
-  return { 
-    data, 
-    error, 
-    loading, 
+  const refresh = useCallback(async () => {
+    await fetchOrders();
+  }, [fetchOrders]);
+
+  // Fetch data when filters change
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setData(null);
+      setError(null);
+      setLoading(false);
+    };
+  }, []);
+
+  return {
+    data,
+    error,
+    loading,
     refresh,
-    lastUpdate 
+    lastUpdate,
+  };
+}
+
+// Optional: Add additional hooks if needed
+export function useRecentlyViewed() {
+  const [recentlyViewed, setRecentlyViewed] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('recentlyViewed');
+      if (stored) {
+        setRecentlyViewed(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error('Failed to load recently viewed items:', e);
+    }
+  }, []);
+
+  const addToRecentlyViewed = useCallback((id: string) => {
+    setRecentlyViewed(prev => {
+      const newRecent = [id, ...prev.filter(i => i !== id)].slice(0, 5);
+      localStorage.setItem('recentlyViewed', JSON.stringify(newRecent));
+      return newRecent;
+    });
+  }, []);
+
+  return {
+    recentlyViewed,
+    addToRecentlyViewed,
   };
 }

@@ -29,5 +29,9 @@
     "pm2:start": "pm2 start npm --name 'eo-scheduler' -- run scheduler:prod",
     "pm2:stop": "pm2 stop eo-scheduler",
     "pm2:logs": "pm2 logs eo-scheduler"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0"
   }
 }

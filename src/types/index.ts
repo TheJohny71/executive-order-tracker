@@ -1,48 +1,36 @@
-import { DocumentType } from '@prisma/client';
+import { Prisma, DocumentType } from '@prisma/client';
+
+export { DocumentType };
+
+export interface Status {
+  id: number;
+  name: string;
+}
 
 export interface Category {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface Agency {
-  id: string;
-  name: string;
-  abbreviation?: string;
-}
-
-export interface Amendment {
-  id: string;
-  dateAmended: Date | string;
-  description: string;
-}
-
-export interface Citation {
-  id: string;
-  description: string;
-}
-
-export interface Status {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface Order {
-  id: string;
-  identifier: string;
+  id: number;
   type: DocumentType;
+  number: string;
   title: string;
-  date: Date | string;
-  url: string;
-  summary: string | null;
-  notes: string | null;
-  content: string | null;
-  isNew: boolean;
-  status: Status;
-  categories: Category[];
-  agencies: Agency[];
-  amendments: Amendment[];
-  citations: Citation[];
+  summary: string;
+  datePublished: Date | string;
+  category: string;          // Changed to string to match schema
+  agency: string | null;     // Changed to string to match schema
+  statusId: number;
+  link: string | null;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  status: Status;           // Only including status relation as it exists in schema
 }
 
 export type FilterType = 
@@ -58,7 +46,7 @@ export type FilterType =
   | 'sort';
 
 export interface OrderFilters {
-  type: string;
+  type: DocumentType | '';
   category: string;
   agency: string;
   search: string;
@@ -66,23 +54,63 @@ export interface OrderFilters {
   dateTo: string;
   page: number;
   limit: number;
-  statusId?: string;
-  sort?: string;
-}
-
-export interface PaginationInfo {
-  total: number;
-  page: number;
-  limit: number;
-}
-
-export interface OrdersMetadata {
-  categories: string[];
-  agencies: string[];
+  statusId?: number;
+  sort?: 'datePublished' | 'title' | 'type' | '-datePublished' | '-title' | '-type';
 }
 
 export interface OrdersResponse {
   orders: Order[];
-  pagination: PaginationInfo;
-  metadata: OrdersMetadata;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    hasMore: boolean;
+  };
+  metadata: {
+    categories: string[];
+    agencies: string[];
+    statuses: { id: number; name: string }[];
+  };
+}
+
+// Updated to match actual schema structure
+export type WhereClause = {
+  type?: DocumentType;
+  number?: string | { contains: string; mode: 'insensitive' };
+  title?: string | { contains: string; mode: 'insensitive' };
+  summary?: string | { contains: string; mode: 'insensitive' };
+  datePublished?: { gte?: Date; lte?: Date };
+  category?: string | { equals: string; mode: 'insensitive' };
+  agency?: string | { equals: string; mode: 'insensitive' };
+  statusId?: number;
+  link?: string;
+  OR?: Array<{
+    title?: { contains: string; mode: 'insensitive' };
+    summary?: { contains: string; mode: 'insensitive' };
+    number?: { contains: string; mode: 'insensitive' };
+  }>;
+};
+
+// Updated to match actual schema structure
+export type OrderByClause = {
+  id?: 'asc' | 'desc';
+  type?: 'asc' | 'desc';
+  number?: 'asc' | 'desc';
+  title?: 'asc' | 'desc';
+  summary?: 'asc' | 'desc';
+  datePublished?: 'asc' | 'desc';
+  category?: 'asc' | 'desc';
+  agency?: 'asc' | 'desc';
+  statusId?: 'asc' | 'desc';
+  link?: 'asc' | 'desc';
+  createdAt?: 'asc' | 'desc';
+  updatedAt?: 'asc' | 'desc';
+};
+
+export interface UseOrdersReturn {
+  data: OrdersResponse | null;
+  error: string | null;
+  loading: boolean;
+  lastUpdate?: Date;
+  refresh: () => Promise<void>;
 }

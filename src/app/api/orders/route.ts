@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       dateTo: searchParams.get('dateTo') || '',
       page: parseInt(searchParams.get('page') || '1', 10),
       limit: parseInt(searchParams.get('limit') || '10', 10),
-      statusId: searchParams.get('statusId') || undefined,
+      statusId: searchParams.get('statusId') ? parseInt(searchParams.get('statusId')!, 10) : undefined,
       sort: searchParams.get('sort') as OrderFilters['sort'] || undefined
     };
 
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
         : [filters.sort, 'asc' as const];
       orderBy[field as keyof OrderByClause] = direction;
     } else {
-      orderBy.date = 'desc';
+      orderBy.datePublished = 'desc';
     }
 
     if (filters.type) {
@@ -41,24 +41,16 @@ export async function GET(request: NextRequest) {
     }
 
     if (filters.category) {
-      where.categories = {
-        some: {
-          name: {
-            equals: filters.category,
-            mode: 'insensitive'
-          }
-        }
+      where.category = {
+        equals: filters.category,
+        mode: 'insensitive'
       };
     }
 
     if (filters.agency) {
-      where.agencies = {
-        some: {
-          name: {
-            equals: filters.agency,
-            mode: 'insensitive'
-          }
-        }
+      where.agency = {
+        equals: filters.agency,
+        mode: 'insensitive'
       };
     }
 
@@ -67,12 +59,12 @@ export async function GET(request: NextRequest) {
     }
 
     if (filters.dateFrom || filters.dateTo) {
-      where.date = {};
+      where.datePublished = {};
       if (filters.dateFrom) {
-        where.date.gte = new Date(filters.dateFrom);
+        where.datePublished.gte = new Date(filters.dateFrom);
       }
       if (filters.dateTo) {
-        where.date.lte = new Date(filters.dateTo);
+        where.datePublished.lte = new Date(filters.dateTo);
       }
     }
 
@@ -80,28 +72,24 @@ export async function GET(request: NextRequest) {
       where.OR = [
         { title: { contains: filters.search, mode: 'insensitive' } },
         { summary: { contains: filters.search, mode: 'insensitive' } },
-        { identifier: { contains: filters.search, mode: 'insensitive' } }
+        { number: { contains: filters.search, mode: 'insensitive' } }
       ];
     }
 
     const [total, orders] = await Promise.all([
-      prisma.executiveOrder.count({ where }),
-      prisma.executiveOrder.findMany({
+      prisma.order.count({ where }),
+      prisma.order.findMany({
         where,
         orderBy,
         skip: (filters.page - 1) * filters.limit,
         take: filters.limit,
         include: {
-          status: true,
-          categories: true,
-          agencies: true,
-          citations: true,
-          amendments: true
+          status: true
         }
       })
     ]);
 
-    const metadata = await Promise.all([
+    const [categories, agencies, statuses] = await Promise.all([
       prisma.category.findMany(),
       prisma.agency.findMany(),
       prisma.status.findMany()
@@ -116,9 +104,9 @@ export async function GET(request: NextRequest) {
         hasMore: total > filters.page * filters.limit
       },
       metadata: {
-        categories: metadata[0].map(c => c.name),
-        agencies: metadata[1].map(a => a.name),
-        statuses: metadata[2].map(s => ({ id: s.id, name: s.name }))
+        categories: categories.map(c => c.name),
+        agencies: agencies.map(a => a.name),
+        statuses: statuses.map(s => ({ id: s.id, name: s.name }))
       }
     }), {
       headers: { 'Content-Type': 'application/json' }

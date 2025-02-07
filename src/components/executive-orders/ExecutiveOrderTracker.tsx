@@ -120,14 +120,19 @@ const ExecutiveOrderTracker = () => {
   }, []);
 
   const handlePdfDownload = async (order: Order) => {
+    if (!order.link) {
+      console.error('No PDF link available');
+      return;
+    }
+
     try {
-      const response = await fetch(order.url);
+      const response = await fetch(order.link);
       if (!response.ok) throw new Error('PDF not found');
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${order.identifier}.pdf`;
+      a.download = `${order.number}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -201,7 +206,6 @@ const ExecutiveOrderTracker = () => {
       </Badge>
     ));
   };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b sticky top-0 z-50">
@@ -296,6 +300,7 @@ const ExecutiveOrderTracker = () => {
               <SelectItem value="">All Types</SelectItem>
               <SelectItem value={DocumentType.EXECUTIVE_ORDER}>Executive Order</SelectItem>
               <SelectItem value={DocumentType.MEMORANDUM}>Memorandum</SelectItem>
+              <SelectItem value={DocumentType.PROCLAMATION}>Proclamation</SelectItem>
             </SelectContent>
           </Select>
 

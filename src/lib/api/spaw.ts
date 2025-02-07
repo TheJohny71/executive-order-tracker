@@ -1,4 +1,3 @@
-// src/lib/api/spaw.ts
 import pino from 'pino';
 import pretty from 'pino-pretty';
 import type { SpawResponse } from '../scraper/types';
@@ -8,12 +7,18 @@ const SPAW_API_URL = 'https://api.spaw.com/v1';
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 
-interface SpawConfig {
+export interface SpawConfig {
   url: string;
   options?: {
     waitForSelector?: string;
     javascript?: boolean;
   };
+}
+
+interface SpawApiError {
+  error: string;
+  message: string;
+  statusCode: number;
 }
 
 async function delay(ms: number): Promise<void> {
@@ -22,7 +27,7 @@ async function delay(ms: number): Promise<void> {
 
 export async function fetchWithSpaw(config: SpawConfig, retryCount = 0): Promise<SpawResponse> {
   if (!process.env.SPAW_API_KEY) {
-    throw new Error('SPAW API key not found in environment variables');
+    throw new Error('SPAW_API_KEY not found in environment variables');
   }
 
   try {
@@ -35,22 +40,35 @@ export async function fetchWithSpaw(config: SpawConfig, retryCount = 0): Promise
       body: JSON.stringify({
         url: config.url,
         options: {
-          javascript: true,
-          ...config.options
+          javascript: config.options?.javascript ?? true,
+          waitForSelector: config.options?.waitForSelector
         }
       })
     });
 
     if (!response.ok) {
       const errorBody = await response.text();
-      throw new Error(`SPAW API request failed: ${response.statusText} - ${errorBody}`);
+      let errorMessage: string;
+      
+      try {
+        const errorJson = JSON.parse(errorBody) as SpawApiError;
+        errorMessage = errorJson.message || errorJson.error;
+      } catch {
+        errorMessage = errorBody;
+      }
+      
+      throw new Error(`SPAW API request failed (${response.status}): ${errorMessage}`);
     }
 
     const data = await response.json();
     return data as SpawResponse;
 
   } catch (error) {
-    logger.error({ error, retryCount }, 'Error fetching data with SPAW');
+    logger.error({
+      error: error instanceof Error ? error.message : String(error),
+      retryCount,
+      url: config.url
+    }, 'Error fetching data with SPAW');
 
     if (retryCount < MAX_RETRIES) {
       await delay(RETRY_DELAY * Math.pow(2, retryCount)); // Exponential backoff

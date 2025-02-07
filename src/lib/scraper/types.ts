@@ -1,5 +1,6 @@
 import { DocumentType } from '@prisma/client';
 
+// Single export for each interface
 export interface ScrapedOrder {
   identifier: string;
   type: DocumentType;
@@ -60,3 +61,5 @@ export interface ProcessingOptions {
   parseContent?: boolean;
   defaultStatusId?: string;
 }
+
+// Remove the duplicate type exports at the bottom

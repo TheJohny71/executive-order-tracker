@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import type { ReactNode } from 'react';
 import { 
   Search, 
   Filter, 
@@ -10,8 +9,6 @@ import {
   Grid, 
   ArrowUp, 
   RefreshCw,
-  Download,
-  Calendar,
   SlidersHorizontal
 } from 'lucide-react';
 import {
@@ -33,7 +30,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -45,14 +41,6 @@ import { DocumentType } from '@prisma/client';
 import type { Order, FilterType, OrderFilters, OrderMetadata } from '@/types';
 import { cn } from "@/lib/utils";
 import { format } from 'date-fns';
-
-interface ErrorBoundaryProps {
-  children: ReactNode;
-}
-
-interface LoadingSkeletonProps {
-  count?: number;
-}
 
 interface FilterBarProps {
   filters: OrderFilters;
@@ -66,9 +54,9 @@ interface MobileFiltersProps extends FilterBarProps {
 }
 
 // Loading Skeleton Component
-const LoadingSkeleton = ({ count = 3 }: LoadingSkeletonProps) => (
+const LoadingSkeleton = () => (
   <div className="space-y-4">
-    {Array.from({ length: count }, (_, i) => (
+    {Array.from({ length: 3 }, (_, i) => (
       <Card key={i}>
         <CardHeader className="p-6">
           <div className="flex items-start justify-between">
@@ -190,7 +178,6 @@ const ExecutiveOrderTracker = () => {
   });
 
   const [viewMode, setViewMode] = useState<'expanded' | 'compact'>('expanded');
-  const [recentlyViewed, setRecentlyViewed] = useState<Order[]>([]);
   const [showTimeline, setShowTimeline] = useState(true);
   const [isComparing, setIsComparing] = useState(false);
   const [compareItems, setCompareItems] = useState<Order[]>([]);
@@ -234,14 +221,6 @@ const ExecutiveOrderTracker = () => {
     }));
   }, []);
 
-  const addToRecentlyViewed = useCallback((order: Order) => {
-    setRecentlyViewed(prev => {
-      const newRecent = [order, ...prev.filter(o => o.id !== order.id)].slice(0, 5);
-      localStorage.setItem('recentlyViewed', JSON.stringify(newRecent));
-      return newRecent;
-    });
-  }, []);
-
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
     try {
@@ -253,17 +232,6 @@ const ExecutiveOrderTracker = () => {
 
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
-
-  useEffect(() => {
-    const stored = localStorage.getItem('recentlyViewed');
-    if (stored) {
-      try {
-        setRecentlyViewed(JSON.parse(stored));
-      } catch (e) {
-        console.error('Failed to parse recently viewed orders:', e);
-      }
-    }
   }, []);
 
   useEffect(() => {
@@ -363,7 +331,7 @@ const ExecutiveOrderTracker = () => {
 
         <div className="mt-6">
           {loading ? (
-            <LoadingSkeleton count={5} />
+            <LoadingSkeleton />
           ) : (
             <div className="space-y-4">
               {orders.map((order) => (
@@ -380,7 +348,9 @@ const ExecutiveOrderTracker = () => {
                         : [...prev, order].slice(-2)
                     );
                   }}
-                  onRecentlyViewed={addToRecentlyViewed}
+                  onRecentlyViewed={(order) => {
+                    // Handle recently viewed functionality if needed
+                  }}
                   onFilterChange={handleFilterChange}
                   onPdfDownload={handlePdfDownload}
                 />

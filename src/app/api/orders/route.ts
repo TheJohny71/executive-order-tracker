@@ -1,164 +1,113 @@
-// src/app/api/orders/route.ts
-import { PrismaClient, DocumentType } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { type NextRequest } from 'next/server';
 import { logger } from '@/utils/logger';
-import { OrderFilters, WhereClause, OrderByClause } from '@/types';
-import type { Prisma } from '@prisma/client';
 
-const prisma = new PrismaClient();
+const db = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const typeParam = searchParams.get('type');
-    const type = typeParam && Object.values(DocumentType).includes(typeParam as DocumentType) 
-      ? typeParam as DocumentType 
-      : '';
     
-    const filters: OrderFilters = {
-      type,
-      category: searchParams.get('category') || '',
-      agency: searchParams.get('agency') || '',
-      search: searchParams.get('search') || '',
-      dateFrom: searchParams.get('dateFrom') || '',
-      dateTo: searchParams.get('dateTo') || '',
-      page: parseInt(searchParams.get('page') || '1', 10),
-      limit: parseInt(searchParams.get('limit') || '10', 10),
-      statusId: searchParams.get('statusId') ? parseInt(searchParams.get('statusId')!, 10) : undefined,
-      sort: searchParams.get('sort') as OrderFilters['sort'] || undefined
-    };
+    // Simple parameter extraction with defaults
+    const page = Math.max(1, Number(searchParams.get('page')) || 1);
+    const limit = Math.max(1, Math.min(50, Number(searchParams.get('limit')) || 10));
+    const search = searchParams.get('search') || '';
+    const type = searchParams.get('type') || undefined;
+    const category = searchParams.get('category') || undefined;
+    const agency = searchParams.get('agency') || undefined;
+    const statusId = searchParams.get('statusId') || undefined;
+    const sort = searchParams.get('sort') || '-date';
 
-    const where: Prisma.OrderWhereInput = {};
-    const orderBy: Prisma.OrderOrderByWithRelationInput = {};
-
-    // Handle sorting
-    if (filters.sort) {
-      const [field, direction] = filters.sort.startsWith('-') 
-        ? [filters.sort.slice(1), 'desc' as const] 
-        : [filters.sort, 'asc' as const];
-      
-      // Validate the field is a valid Order property
-      const validFields = ['datePublished', 'number', 'title', 'createdAt', 'updatedAt'];
-      if (validFields.includes(field)) {
-        orderBy[field as keyof typeof orderBy] = direction;
-      }
-    } else {
-      orderBy.datePublished = 'desc';
-    }
-
-    // Apply type filter
-    if (filters.type) {
-      where.type = filters.type;
-    }
-
-    // Apply category filter
-    if (filters.category) {
+    // Build where clause
+    const where: Record<string, unknown> = {};
+    
+    if (type) where.type = type;
+    if (statusId) where.statusId = statusId;
+    
+    if (category) {
       where.category = {
-        equals: filters.category,
-        mode: 'insensitive'
+        some: { name: { equals: category, mode: 'insensitive' } }
       };
     }
-
-    // Apply agency filter
-    if (filters.agency) {
+    
+    if (agency) {
       where.agency = {
-        equals: filters.agency,
-        mode: 'insensitive'
+        some: { name: { equals: agency, mode: 'insensitive' } }
       };
     }
-
-    // Apply status filter
-    if (filters.statusId) {
-      where.statusId = filters.statusId;
-    }
-
-    // Apply date filters
-    if (filters.dateFrom || filters.dateTo) {
-      where.datePublished = {};
-      if (filters.dateFrom) {
-        where.datePublished.gte = new Date(filters.dateFrom);
-      }
-      if (filters.dateTo) {
-        where.datePublished.lte = new Date(filters.dateTo);
-      }
-    }
-
-    // Apply search filter
-    if (filters.search) {
+    
+    if (search) {
       where.OR = [
-        { title: { contains: filters.search, mode: 'insensitive' } },
-        { summary: { contains: filters.search, mode: 'insensitive' } },
-        { number: { contains: filters.search, mode: 'insensitive' } }
+        { title: { contains: search, mode: 'insensitive' } },
+        { summary: { contains: search, mode: 'insensitive' } },
+        { identifier: { contains: search, mode: 'insensitive' } }
       ];
     }
 
-    try {
-      // Execute database queries in parallel
-      const [total, orders, categories, agencies, statuses] = await Promise.all([
-        prisma.order.count({ where }),
-        prisma.order.findMany({
-          where,
-          orderBy,
-          skip: (filters.page - 1) * filters.limit,
-          take: filters.limit,
-          include: {
-            status: true
-          }
-        }),
-        prisma.category.findMany({ 
-          orderBy: { name: 'asc' },
-          select: { name: true }
-        }),
-        prisma.agency.findMany({ 
-          orderBy: { name: 'asc' },
-          select: { name: true }
-        }),
-        prisma.status.findMany({ 
-          orderBy: { name: 'asc' },
-          select: { id: true, name: true }
-        })
-      ]);
+    // Build order by
+    const [sortField, sortDirection] = sort.startsWith('-') 
+      ? [sort.slice(1), 'desc'] 
+      : [sort, 'asc'];
 
-      return new Response(JSON.stringify({
-        orders,
-        pagination: {
-          total,
-          page: filters.page,
-          limit: filters.limit,
-          hasMore: total > filters.page * filters.limit
-        },
-        metadata: {
-          categories: categories.map(c => c.name),
-          agencies: agencies.map(a => a.name),
-          statuses: statuses
+    const orderBy: Record<string, string> = {
+      [sortField === 'date' ? 'date' : 'createdAt']: sortDirection
+    };
+
+    // Execute queries
+    const [total, orders, categories, agencies, statuses] = await Promise.all([
+      db.order.count({ where }),
+      db.order.findMany({
+        where,
+        orderBy,
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          status: true
         }
-      }), {
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=59'
-        }
-      });
-    } catch (dbError) {
-      logger.error('Database query error:', dbError);
-      throw new Error('Database query failed');
-    }
-  } catch (error) {
-    logger.error('Error fetching orders:', error);
-    return new Response(JSON.stringify({ 
-      error: 'Failed to fetch orders',
-      details: process.env.NODE_ENV === 'development' ? error instanceof Error ? error.message : 'Unknown error' : undefined 
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      }),
+      db.category.findMany({
+        select: { name: true },
+        orderBy: { name: 'asc' }
+      }),
+      db.agency.findMany({
+        select: { name: true },
+        orderBy: { name: 'asc' }
+      }),
+      db.status.findMany({
+        select: { id: true, name: true },
+        orderBy: { name: 'asc' }
+      })
+    ]);
+
+    return Response.json({
+      orders,
+      pagination: {
+        total,
+        page,
+        limit,
+        hasMore: total > page * limit
+      },
+      metadata: {
+        categories: categories.map(c => c.name),
+        agencies: agencies.map(a => a.name),
+        statuses
+      }
     });
+
+  } catch (error) {
+    logger.error('Error in GET /api/orders:', error);
+    return Response.json(
+      { error: 'Failed to fetch orders' },
+      { status: 500 }
+    );
   } finally {
-    await prisma.$disconnect();
+    await db.$disconnect();
   }
 }
 
-export async function POST(request: NextRequest) {
-  return new Response(JSON.stringify({ error: 'Method not implemented' }), {
-    status: 501,
-    headers: { 'Content-Type': 'application/json' }
-  });
+export async function POST() {
+  return Response.json(
+    { error: 'Method not implemented' },
+    { status: 501 }
+  );
 }

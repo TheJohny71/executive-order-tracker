@@ -14,11 +14,19 @@ export type WhereClause = {
   statusId?: string;
   createdAt?: { gte?: Date; lte?: Date };
   title?: { contains?: string };
-  [key: string]: any;
+  identifier?: { contains?: string };
+  content?: { contains?: string };
+  summary?: { contains?: string };
+  categories?: { some: { name: { in: string[] } } };
+  agencies?: { some: { name: { in: string[] } } };
 };
 
 export type OrderByClause = {
-  [key: string]: 'asc' | 'desc';
+  date?: 'asc' | 'desc';
+  title?: 'asc' | 'desc';
+  type?: 'asc' | 'desc';
+  createdAt?: 'asc' | 'desc';
+  updatedAt?: 'asc' | 'desc';
 };
 
 export interface Status {

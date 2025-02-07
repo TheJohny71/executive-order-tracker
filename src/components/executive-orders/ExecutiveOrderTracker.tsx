@@ -12,12 +12,6 @@ import {
   SlidersHorizontal
 } from 'lucide-react';
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -30,6 +24,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -41,6 +41,17 @@ import { DocumentType } from '@prisma/client';
 import type { Order, FilterType, OrderFilters, OrderMetadata } from '@/types';
 import { cn } from "@/lib/utils";
 import { format } from 'date-fns';
+
+interface OrderCardProps {
+  order: Order;
+  viewMode: 'expanded' | 'compact';
+  isComparing: boolean;
+  compareItems: Order[];
+  onCompareToggle: (order: Order) => void;
+  onRecentlyViewed: (order: Order) => void;
+  onFilterChange: (type: FilterType, value: string) => void;
+  onPdfDownload: (order: Order) => void;
+}
 
 interface FilterBarProps {
   filters: OrderFilters;
@@ -183,6 +194,7 @@ const ExecutiveOrderTracker = () => {
   const [compareItems, setCompareItems] = useState<Order[]>([]);
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [recentlyViewed, setRecentlyViewed] = useState<Order[]>([]);
 
   const { data, error, loading, refresh, lastUpdate } = useOrders(filters);
 
@@ -192,7 +204,7 @@ const ExecutiveOrderTracker = () => {
     agencies: data?.metadata?.agencies || [],
     statuses: data?.metadata?.statuses || []
   };
-  const pagination = data?.pagination || { total: 0, page: 1, limit: 10 };
+  const pagination = data?.pagination;
 
   const handlePdfDownload = useCallback(async (order: Order) => {
     if (!order.link) return;
@@ -249,6 +261,17 @@ const ExecutiveOrderTracker = () => {
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, []);
 
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('recentlyViewed');
+      if (stored) {
+        setRecentlyViewed(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error('Failed to load recently viewed items:', e);
+    }
+  }, []);
+
   if (error) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -276,21 +299,21 @@ const ExecutiveOrderTracker = () => {
                 size="icon"
                 onClick={() => setViewMode(prev => prev === 'expanded' ? 'compact' : 'expanded')}
               >
-                {viewMode === 'expanded' ? <List /> : <Grid />}
+                {viewMode === 'expanded' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
               </Button>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => setShowTimeline(!showTimeline)}
               >
-                <BarChart2 />
+                <BarChart2 className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => setIsComparing(!isComparing)}
               >
-                <SlidersHorizontal />
+                <SlidersHorizontal className="h-4 w-4" />
               </Button>
             </div>
             <div className="flex items-center space-x-4">
@@ -349,7 +372,12 @@ const ExecutiveOrderTracker = () => {
                     );
                   }}
                   onRecentlyViewed={(order) => {
-                    // Handle recently viewed functionality if needed
+                    const newRecentlyViewed = [
+                      order,
+                      ...recentlyViewed.filter(o => o.id !== order.id)
+                    ].slice(0, 5);
+                    setRecentlyViewed(newRecentlyViewed);
+                    localStorage.setItem('recentlyViewed', JSON.stringify(newRecentlyViewed));
                   }}
                   onFilterChange={handleFilterChange}
                   onPdfDownload={handlePdfDownload}

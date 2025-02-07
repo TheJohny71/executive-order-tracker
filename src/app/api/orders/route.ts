@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma, DocumentType } from '@prisma/client';
 import { type NextRequest } from 'next/server';
 import { logger } from '@/utils/logger';
 
@@ -12,45 +12,35 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, Number(searchParams.get('page')) || 1);
     const limit = Math.max(1, Math.min(50, Number(searchParams.get('limit')) || 10));
     const search = searchParams.get('search') || '';
-    const type = searchParams.get('type') || undefined;
+    const type = searchParams.get('type') as DocumentType | undefined;
     const category = searchParams.get('category') || undefined;
     const agency = searchParams.get('agency') || undefined;
     const statusId = searchParams.get('statusId') || undefined;
-    const sort = searchParams.get('sort') || '-date';
+    const sort = searchParams.get('sort') || '-datePublished';
 
     // Build where clause
-    const where: Record<string, unknown> = {};
+    const where: Prisma.OrderWhereInput = {};
     
     if (type) where.type = type;
-    if (statusId) where.statusId = statusId;
-    
-    if (category) {
-      where.category = {
-        some: { name: { equals: category, mode: 'insensitive' } }
-      };
-    }
-    
-    if (agency) {
-      where.agency = {
-        some: { name: { equals: agency, mode: 'insensitive' } }
-      };
-    }
+    if (statusId) where.statusId = Number(statusId);
+    if (category) where.category = category;
+    if (agency) where.agency = agency;
     
     if (search) {
       where.OR = [
         { title: { contains: search, mode: 'insensitive' } },
         { summary: { contains: search, mode: 'insensitive' } },
-        { identifier: { contains: search, mode: 'insensitive' } }
+        { number: { contains: search, mode: 'insensitive' } }
       ];
     }
 
     // Build order by
     const [sortField, sortDirection] = sort.startsWith('-') 
-      ? [sort.slice(1), 'desc'] 
-      : [sort, 'asc'];
+      ? [sort.slice(1), 'desc' as const] 
+      : [sort, 'asc' as const];
 
-    const orderBy: Record<string, string> = {
-      [sortField === 'date' ? 'date' : 'createdAt']: sortDirection
+    const orderBy: Prisma.OrderOrderByWithRelationInput = {
+      [sortField === 'date' ? 'datePublished' : 'createdAt']: sortDirection
     };
 
     // Execute queries

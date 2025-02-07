@@ -1,4 +1,4 @@
-import { Prisma, DocumentType as PrismaDocumentType } from '@prisma/client';
+import { DocumentType as PrismaDocumentType } from '@prisma/client';
 
 // Document Types
 export type DocumentType = PrismaDocumentType;
@@ -8,7 +8,19 @@ export const OrderTypes = {
   MEMORANDUM: PrismaDocumentType.MEMORANDUM,
 } as const;
 
-// Base interfaces
+// Simplified Query Types
+export type WhereClause = {
+  type?: DocumentType;
+  statusId?: string;
+  createdAt?: { gte?: Date; lte?: Date };
+  title?: { contains?: string };
+  [key: string]: any;
+};
+
+export type OrderByClause = {
+  [key: string]: 'asc' | 'desc';
+};
+
 export interface Status {
   id: string;
   name: string;
@@ -64,12 +76,6 @@ export interface Order {
   amendments: Amendment[];
 }
 
-// Prisma Query Types
-export type WhereClause = Prisma.ExecutiveOrderWhereInput;
-export type OrderByClause = Prisma.ExecutiveOrderOrderByWithRelationInput;
-export type ExecutiveOrderSelect = Prisma.ExecutiveOrderSelect;
-export type ExecutiveOrderInclude = Prisma.ExecutiveOrderInclude;
-
 export interface OrderFilters {
   type: DocumentType | '';
   category: string;
@@ -101,8 +107,6 @@ export interface OrdersResponse {
 export interface QueryOptions {
   where?: WhereClause;
   orderBy?: OrderByClause;
-  select?: ExecutiveOrderSelect;
-  include?: ExecutiveOrderInclude;
   skip?: number;
   take?: number;
 }
@@ -141,7 +145,6 @@ export interface UseOrdersReturn {
   refresh: () => Promise<void>;
 }
 
-// Type guards
 export function isValidOrder(order: unknown): order is Order {
   if (!order || typeof order !== 'object') return false;
   
@@ -184,7 +187,6 @@ export function isValidAgency(agency: unknown): agency is Agency {
   );
 }
 
-// Utility types
 export type PartialOrder = Partial<Order>;
 export type CreateOrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
 export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>;

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { OrderFilters, OrdersResponse } from '@/types';
+import type { OrderFilters, OrdersResponse, Order } from '@/types';
 
 interface UseOrdersReturn {
   data: OrdersResponse | null;
@@ -39,7 +39,7 @@ export function useOrders(filters: OrderFilters): UseOrdersReturn {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as Partial<OrdersResponse>;
       
       // Validate response structure
       if (!result.orders || !Array.isArray(result.orders)) {
@@ -47,14 +47,16 @@ export function useOrders(filters: OrderFilters): UseOrdersReturn {
       }
 
       // Transform dates from strings to Date objects
-      const transformedOrders = result.orders.map((order: any) => ({
+      const transformedOrders = result.orders.map((order: Partial<Order>) => ({
         ...order,
-        date: new Date(order.date),
+        date: order.datePublished ? new Date(order.datePublished) : new Date(),
       }));
 
       setData({
-        ...result,
-        orders: transformedOrders,
+        orders: transformedOrders as Order[],
+        total: result.total ?? 0,
+        page: result.page ?? 1,
+        pageSize: result.pageSize ?? 10,
       });
       setLastUpdate(new Date().toISOString());
     } catch (err) {

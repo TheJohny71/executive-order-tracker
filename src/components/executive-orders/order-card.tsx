@@ -1,36 +1,27 @@
 import React from 'react';
 import { 
-  Card as CardComponent,
-  CardContent as CardContentComponent,
-  CardHeader as CardHeaderComponent,
+  Card,
+  CardContent,
+  CardHeader,
 } from "@/components/ui/card";
 import {
-  Collapsible as CollapsibleComponent,
-  CollapsibleContent as CollapsibleContentComponent,
-  CollapsibleTrigger as CollapsibleTriggerComponent,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Badge as BadgeComponent } from "@/components/ui/badge";
-import { Button as ButtonComponent } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ChevronDown } from 'lucide-react';
 import type { Order, FilterType } from '@/types';
 
-// Rename components to match imports
-const Card = CardComponent;
-const CardContent = CardContentComponent;
-const CardHeader = CardHeaderComponent;
-const Collapsible = CollapsibleComponent;
-const CollapsibleContent = CollapsibleContentComponent;
-const CollapsibleTrigger = CollapsibleTriggerComponent;
-const Badge = BadgeComponent;
-const Button = ButtonComponent;
-
 interface OrderCardProps {
   order: Order;
+  viewMode: 'expanded' | 'compact';
   isComparing: boolean;
   compareItems: Order[];
   onCompareToggle: (order: Order) => void;
   onRecentlyViewed: (order: Order) => void;
-  onFilterChange: (filterType: FilterType, value: string) => void;
+  onFilterChange: (type: FilterType, value: string) => void;
   onPdfDownload?: (order: Order) => Promise<void>;
 }
 
@@ -51,6 +42,7 @@ const getStatusColor = (statusName: string) => {
 
 export const OrderCard: React.FC<OrderCardProps> = ({
   order,
+  viewMode,
   isComparing,
   compareItems,
   onCompareToggle,
@@ -76,15 +68,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     }
   };
 
-  // Use optional chaining for status name
-  const statusName = order.status?.name;
-
   return (
     <Card 
       key={order.id}
       id={`order-${order.id}`} 
       className={`transform transition-all duration-200 hover:shadow-lg
-        border-l-4 ${order.category?.toLowerCase() || ''}`}
+        ${viewMode === 'compact' ? 'border-l-4' : ''} ${order.category?.toLowerCase() || ''}`}
     >
       <Collapsible>
         <CardHeader className="p-6">
@@ -95,9 +84,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   {order.type === 'EXECUTIVE_ORDER' ? 'Executive Order' : 'Memorandum'}
                 </Badge>
                 <Badge variant="outline">#{order.number}</Badge>
-                {statusName && (
-                  <Badge className={getStatusColor(statusName)}>
-                    {statusName}
+                {order.status?.name && (
+                  <Badge className={getStatusColor(order.status.name)}>
+                    {order.status.name}
                   </Badge>
                 )}
                 <span className="text-sm text-gray-500">

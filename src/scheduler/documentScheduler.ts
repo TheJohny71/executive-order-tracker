@@ -38,17 +38,13 @@ export class DocumentScheduler {
     try {
       logger.info('Starting document check');
       
-      // Fetch latest documents
       const latestDocuments = await fetchExecutiveOrders();
       
-      // Get existing document URLs
       const existingDocuments = await prisma.order.findMany({
         select: { link: true }
       });
       
       const existingUrls = new Set(existingDocuments.map(doc => doc.link));
-      
-      // Filter new documents
       const newDocuments = latestDocuments.filter(doc => !existingUrls.has(doc.url));
       
       if (newDocuments.length === 0) {
@@ -56,7 +52,6 @@ export class DocumentScheduler {
         return;
       }
       
-      // Add new documents to database
       for (const newDoc of newDocuments) {
         const orderData: Prisma.OrderCreateInput = {
           type: newDoc.type,
@@ -93,15 +88,12 @@ export class DocumentScheduler {
       const documentsList = documents.map(d => `${d.type}: ${d.title}`).join('\n');
       logger.info('New documents found:\n' + documentsList);
       
-      // TODO: Implement notification system (email, webhook, etc.)
-      
     } catch (error) {
       logger.error('Error sending notifications:', error);
       throw error;
     }
   }
 
-  // Method to manually trigger a check
   public async manualCheck(): Promise<void> {
     await this.checkNewDocuments();
   }

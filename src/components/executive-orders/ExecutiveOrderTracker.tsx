@@ -42,17 +42,6 @@ import type { Order, FilterType, OrderFilters, OrderMetadata } from '@/types';
 import { cn } from "@/lib/utils";
 import { format } from 'date-fns';
 
-interface OrderCardProps {
-  order: Order;
-  viewMode: 'expanded' | 'compact';
-  isComparing: boolean;
-  compareItems: Order[];
-  onCompareToggle: (order: Order) => void;
-  onRecentlyViewed: (order: Order) => void;
-  onFilterChange: (type: FilterType, value: string) => void;
-  onPdfDownload: (order: Order) => void;
-}
-
 interface FilterBarProps {
   filters: OrderFilters;
   metadata: OrderMetadata;

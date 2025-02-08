@@ -1,4 +1,3 @@
-// app/api/scrape/route.ts
 import { DatabaseClient } from '@/lib/db';
 import { scrapeExecutiveOrders } from '@/lib/scraper';
 import { logger } from '@/utils/logger';
@@ -25,10 +24,11 @@ export async function GET() {
 
   } catch (error) {
     logger.error('Error in GET /api/scrape:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return Response.json({
       success: false,
       message: 'Failed to scrape orders',
-      error: process.env.NODE_ENV === 'development' ? String(error) : undefined
+      error: process.env.NODE_ENV === 'development' ? errorMessage : undefined
     }, { status: 500 });
   } finally {
     if (prisma) {

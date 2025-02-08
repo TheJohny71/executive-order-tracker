@@ -9,6 +9,8 @@ interface UseOrdersReturn {
   lastUpdate: string | null;
 }
 
+const cache: { [key: string]: OrdersResponse } = {};
+
 export function useOrders(filters: OrderFilters): UseOrdersReturn {
   const [data, setData] = useState<OrdersResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +29,14 @@ export function useOrders(filters: OrderFilters): UseOrdersReturn {
           queryParams.append(key, value.toString());
         }
       });
+
+      const cacheKey = queryParams.toString();
+      if (cache[cacheKey]) {
+        setData(cache[cacheKey]);
+        setLastUpdate(new Date().toISOString());
+        setLoading(false);
+        return;
+      }
 
       // Fetch data
       const response = await fetch(`/api/orders?${queryParams.toString()}`, {
@@ -48,6 +58,7 @@ export function useOrders(filters: OrderFilters): UseOrdersReturn {
 
       // Set the data directly since it matches our OrdersResponse type
       setData(result);
+      cache[cacheKey] = result;
       setLastUpdate(new Date().toISOString());
     } catch (err) {
       console.error('Error fetching orders:', err);

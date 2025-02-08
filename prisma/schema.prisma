@@ -7,101 +7,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum DocumentType {
-  EXECUTIVE_ORDER
-  PROCLAMATION
-  MEMORANDUM
-}
-
 model Order {
   id            Int          @id @default(autoincrement())
   type          DocumentType
   number        String       @unique
   title         String
-  summary       String       @db.Text
+  summary       String
   datePublished DateTime
   category      String
   agency        String?
-  status        Status       @relation(fields: [statusId], references: [id])
   statusId      Int
-  link          String?      @db.Text
-  content       String?      @db.Text
-  metadata      Json?        @default("{}")
+  link          String?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  citations     Citation[]   @relation("CitingOrders")
-  citedBy       Citation[]   @relation("CitedByOrders")
-  tags          Tag[]        @relation("OrderTags")
+  status        Status       @relation(fields: [statusId], references: [id])
 
   @@index([category])
   @@index([agency])
   @@index([datePublished])
   @@index([statusId])
-  @@index([type])
-  @@index([number])
-  @@index([title])
-  @@index([title, summary]) // Combined index for text search
 }
 
 model Status {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  description String?  @db.Text
-  color       String?  @db.VarChar(7)
-  orders      Order[]
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  orders Order[]
 
   @@index([name])
-  @@index([isActive])
 }
 
 model Category {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  description String?  @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
   @@index([name])
 }
 
 model Agency {
-  id           Int      @id @default(autoincrement())
-  name         String   @unique
-  abbreviation String?  @db.VarChar(10)
-  description  String?  @db.Text
-  website      String?  @db.Text
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
   @@index([name])
-  @@index([abbreviation])
 }
 
-model Citation {
-  id          Int      @id @default(autoincrement())
-  sourceOrder Order    @relation("CitingOrders", fields: [sourceId], references: [id], onDelete: Cascade)
-  sourceId    Int
-  targetOrder Order    @relation("CitedByOrders", fields: [targetId], references: [id], onDelete: Cascade)
-  targetId    Int
-  context     String?  @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@unique([sourceId, targetId])
-  @@index([sourceId])
-  @@index([targetId])
-}
-
-model Tag {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  description String?  @db.Text
-  orders      Order[]  @relation("OrderTags")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([name])
+enum DocumentType {
+  EXECUTIVE_ORDER
+  PROCLAMATION
+  MEMORANDUM
 }

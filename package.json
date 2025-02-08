@@ -51,7 +51,7 @@
     "recharts": "^2.15.1",
     "sanitize-html": "^2.14.0",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss": "^4.0.5",
+    "tailwindcss-animate": "^1.0.7",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
   },
@@ -66,14 +66,19 @@
     "@types/tailwindcss": "^3.0.11",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "autoprefixer": "^10.4.16",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.0.4",
     "husky": "^8.0.0",
     "jest": "^29.7.0",
     "pm2": "^5.3.0",
+    "postcss": "^8.4.31",
+    "postcss-import": "^15.1.0",
+    "postcss-nesting": "^12.0.1",
     "prettier": "^3.1.0",
     "prisma": "^6.3.1",
     "rimraf": "^5.0.0",
+    "tailwindcss": "^3.3.5",
     "tsx": "^4.7.0",
     "typescript": "^5.3.0"
   }

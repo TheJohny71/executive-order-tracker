@@ -1,13 +1,17 @@
 import { DocumentType } from '@prisma/client';
 
+export type FilterType = 'type' | 'category' | 'agency' | 'dateFrom' | 'dateTo' | 'search' | 'page' | 'limit';
+
 export interface OrderFilters {
-  startDate?: string;
-  endDate?: string;
-  category?: string;
-  agency?: string;
-  status?: string;
-  search?: string;
-  type?: DocumentType;
+  type: DocumentType | '';
+  category: string;
+  agency: string;
+  dateFrom?: string;
+  dateTo?: string;
+  search: string;
+  page: number;
+  limit: number;
+  statusId?: number;
 }
 
 export interface Order {
@@ -55,14 +59,23 @@ export interface OrdersResponse {
   pagination: PaginationData;
 }
 
-export interface Category {
-  id: number;
-  name: string;
-}
-
-export interface Agency {
-  id: number;
-  name: string;
+export interface ScrapedOrder {
+  identifier: string;
+  type: DocumentType;
+  title: string;
+  datePublished: Date;
+  category: string;
+  agency: string | null;
+  link: string;
+  number: string;
+  summary: string | null;
+  content?: string | null;
+  metadata: {
+    orderNumber?: string;
+    categories?: Array<{ name: string }>;
+    agencies?: Array<{ name: string }>;
+  };
+  statusId: number;
 }
 
 export type WhereClause = {
@@ -98,18 +111,6 @@ export interface QueryResult<T> {
   message?: string;
 }
 
-export interface ScrapedOrder {
-  number: string;
-  type: DocumentType;
-  title: string;
-  summary: string;
-  datePublished: Date;
-  category: string;
-  agency: string | null;
-  link: string | null;
-  statusId: number;
-}
-
 // Type guard functions
 export function isValidOrder(order: unknown): order is Order {
   if (!order || typeof order !== 'object') return false;
@@ -130,28 +131,21 @@ export function isValidOrder(order: unknown): order is Order {
   );
 }
 
-export function isValidCategory(category: unknown): category is Category {
-  if (!category || typeof category !== 'object') return false;
-  
-  const c = category as Category;
-  return (
-    typeof c.id === 'number' &&
-    typeof c.name === 'string'
-  );
+export interface Category {
+  id: number;
+  name: string;
+  description?: string;
 }
 
-export function isValidAgency(agency: unknown): agency is Agency {
-  if (!agency || typeof agency !== 'object') return false;
-  
-  const a = agency as Agency;
-  return (
-    typeof a.id === 'number' &&
-    typeof a.name === 'string'
-  );
+export interface Agency {
+  id: number;
+  name: string;
+  abbreviation?: string;
+  description?: string;
 }
 
 export type CreateOrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'> & {
   statusId: number;
 };
 
-export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>;
+export type UpdateOrderInput = Partial<CreateOrderInput>;

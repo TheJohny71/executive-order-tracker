@@ -55,21 +55,35 @@
   }
   
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Improve default focus styles */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
   }
 }
 
 @layer components {
   .bg-background {
-    background-color: hsl(var(--background));
+    @apply bg-[hsl(var(--background))] transition-colors duration-200;
   }
   
   .text-foreground {
-    color: hsl(var(--foreground));
+    @apply text-[hsl(var(--foreground))] transition-colors duration-200;
   }
   
   .border-border {
-    border-color: hsl(var(--border));
+    @apply border-[hsl(var(--border))] transition-colors duration-200;
   }
+}
+
+/* Prevent FOUC (Flash of Unstyled Content) */
+.prevent-fouc {
+  @apply invisible;
+}
+
+.fouc-ready {
+  @apply visible;
 }

@@ -3,6 +3,7 @@ import { type NextRequest } from 'next/server';
 import { logger } from '@/utils/logger';
 import type { OrdersResponse, WhereClause, OrderByClause } from '@/types';
 import { prisma } from '@/lib/prisma';
+import sanitize from 'sanitize-html';
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,10 +11,10 @@ export async function GET(request: NextRequest) {
     
     const page = Math.max(1, Number(searchParams.get('page')) || 1);
     const limit = Math.max(1, Math.min(50, Number(searchParams.get('limit')) || 10));
-    const search = searchParams.get('search') || '';
+    const search = sanitize(searchParams.get('search') || '');
     const type = searchParams.get('type') as DocumentType | undefined;
-    const category = searchParams.get('category') || undefined;
-    const agency = searchParams.get('agency') || undefined;
+    const category = sanitize(searchParams.get('category') || '');
+    const agency = sanitize(searchParams.get('agency') || '');
     const statusId = searchParams.get('statusId') ? Number(searchParams.get('statusId')) : undefined;
     const sort = searchParams.get('sort') || '-datePublished';
     const dateFrom = searchParams.get('dateFrom');

@@ -1,37 +1,119 @@
-// lib/db.ts
 import { PrismaClient } from '@prisma/client';
 import { logger } from '@/utils/logger';
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
+const CONNECTION_TIMEOUT = 5000; // 5 seconds
 
 export class DatabaseClient {
   private static instance: PrismaClient;
   private static retryCount = 0;
+  private static isConnecting = false;
+  private static connectionPromise: Promise<void> | null = null;
 
   static async getInstance(): Promise<PrismaClient> {
     if (!this.instance) {
-      this.instance = new PrismaClient({
-        log: ['error', 'warn'],
-        errorFormat: 'minimal',
-      });
-
-      // Add middleware for connection error handling
-      this.instance.$use(async (params, next) => {
-        try {
-          return await next(params);
-        } catch (error) {
-          if (error?.message?.includes('Connection closed')) {
-            logger.warn('Database connection closed, attempting to reconnect...');
-            await this.reconnect();
-            // Retry the operation
-            return await next(params);
-          }
-          throw error;
-        }
-      });
+      await this.initialize();
     }
     return this.instance;
+  }
+
+  private static async initialize(): Promise<void> {
+    if (this.isConnecting) {
+      if (this.connectionPromise) {
+        await this.connectionPromise;
+        return;
+      }
+    }
+
+    this.isConnecting = true;
+    this.connectionPromise = this.initializeClient();
+
+    try {
+      await Promise.race([
+        this.connectionPromise,
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Connection timeout')), CONNECTION_TIMEOUT)
+        )
+      ]);
+    } catch (error) {
+      this.isConnecting = false;
+      this.connectionPromise = null;
+      throw error;
+    }
+
+    this.isConnecting = false;
+    this.connectionPromise = null;
+  }
+
+  private static async initializeClient(): Promise<void> {
+    this.instance = new PrismaClient({
+      log: [
+        { level: 'query', emit: 'event' },
+        { level: 'error', emit: 'event' },
+        { level: 'warn', emit: 'event' },
+      ],
+      errorFormat: 'minimal',
+    });
+
+    // Add logging middleware
+    this.instance.$on('query', (e) => {
+      logger.debug('Query: ' + e.query);
+      logger.debug('Duration: ' + e.duration + 'ms');
+    });
+
+    this.instance.$on('error', (e) => {
+      logger.error('Prisma Error:', e);
+    });
+
+    this.instance.$on('warn', (e) => {
+      logger.warn('Prisma Warning:', e);
+    });
+
+    // Add error handling middleware
+    this.instance.$use(async (params, next) => {
+      const startTime = Date.now();
+      try {
+        const result = await next(params);
+        const duration = Date.now() - startTime;
+        
+        if (duration > 1000) { // Log slow queries (>1s)
+          logger.warn('Slow query detected:', {
+            model: params.model,
+            action: params.action,
+            duration,
+          });
+        }
+        
+        return result;
+      } catch (error) {
+        if (this.isConnectionError(error)) {
+          logger.warn('Database connection error, attempting to reconnect...');
+          await this.reconnect();
+          return next(params);
+        }
+        throw error;
+      }
+    });
+
+    try {
+      await this.instance.$connect();
+      logger.info('Successfully connected to database');
+    } catch (error) {
+      logger.error('Failed to connect to database:', error);
+      throw error;
+    }
+  }
+
+  private static isConnectionError(error: any): boolean {
+    const errorMessage = error?.message?.toLowerCase() || '';
+    return (
+      errorMessage.includes('connection') ||
+      errorMessage.includes('timeout') ||
+      errorMessage.includes('closed') ||
+      errorMessage.includes('ended') ||
+      errorMessage.includes('terminated')
+    );
   }
 
   static async reconnect(): Promise<void> {
@@ -45,17 +127,16 @@ export class DatabaseClient {
         await this.instance.$disconnect();
       }
       
-      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * Math.pow(2, this.retryCount)));
       
-      this.instance = new PrismaClient();
-      await this.instance.$connect();
+      await this.initialize();
       
       this.retryCount = 0;
       logger.info('Successfully reconnected to database');
     } catch (error) {
       this.retryCount++;
       logger.error(`Reconnection attempt ${this.retryCount} failed:`, error);
-      await this.reconnect();
+      throw error;
     }
   }
 
@@ -63,6 +144,20 @@ export class DatabaseClient {
     if (this.instance) {
       await this.instance.$disconnect();
       this.instance = null;
+      this.isConnecting = false;
+      this.connectionPromise = null;
+    }
+  }
+
+  // Utility method to check database health
+  static async healthCheck(): Promise<boolean> {
+    try {
+      const instance = await this.getInstance();
+      await instance.$queryRaw`SELECT 1`;
+      return true;
+    } catch (error) {
+      logger.error('Database health check failed:', error);
+      return false;
     }
   }
 }

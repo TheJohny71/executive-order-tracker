@@ -29,7 +29,6 @@
         "name": "next"
       }
     ],
-    // Enhanced type checking
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "noImplicitAny": true,
@@ -37,13 +36,11 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    // Additional strict checks
     "strictBindCallApply": true,
     "strictPropertyInitialization": true,
     "noImplicitThis": true,
     "useUnknownInCatchVariables": true,
     "alwaysStrict": true,
-    // Module resolution
     "allowArbitraryExtensions": true,
     "verbatimModuleSyntax": true
   },

@@ -111,7 +111,7 @@ const config = {
   },
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    NODE_ENV: process.env.NODE_ENV,
+    // Removed NODE_ENV from here as it's handled by Next.js
   }
 };
 

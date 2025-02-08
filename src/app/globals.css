@@ -55,11 +55,10 @@
   }
   
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased min-h-screen;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Improve default focus styles */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
   }
@@ -79,11 +78,13 @@
   }
 }
 
-/* Prevent FOUC (Flash of Unstyled Content) */
-.prevent-fouc {
-  @apply invisible;
-}
+/* FOUC Prevention */
+@layer utilities {
+  .prevent-fouc {
+    @apply invisible;
+  }
 
-.fouc-ready {
-  @apply visible;
+  .fouc-ready {
+    @apply visible;
+  }
 }

@@ -18,7 +18,11 @@
       "@/*": ["./src/*"],
       "@/lib/*": ["./src/lib/*"],
       "@/types/*": ["./src/types/*"],
-      "@/utils/*": ["./src/utils/*"]
+      "@/utils/*": ["./src/utils/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/styles/*": ["./src/styles/*"],
+      "@/config/*": ["./src/config/*"],
+      "@/hooks/*": ["./src/hooks/*"]
     },
     "plugins": [
       {
@@ -32,7 +36,16 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    // Additional strict checks
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    // Module resolution
+    "allowArbitraryExtensions": true,
+    "verbatimModuleSyntax": true
   },
   "ts-node": {
     "esm": true,
@@ -49,7 +62,23 @@
     ".next/types/**/*.ts",
     "src/types/**/*.d.ts",
     "src/lib/**/*.ts",
-    "src/utils/**/*.ts"
+    "src/utils/**/*.ts",
+    "src/components/**/*.ts",
+    "src/components/**/*.tsx",
+    "src/app/**/*.ts",
+    "src/app/**/*.tsx",
+    "src/config/**/*.ts",
+    "src/hooks/**/*.ts",
+    "src/hooks/**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    ".next",
+    "out",
+    "build",
+    "dist",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
 }

@@ -1,68 +1,98 @@
 import { Prisma, DocumentType } from '@prisma/client';
 import { type NextRequest } from 'next/server';
+import { z } from 'zod';
 import { logger } from '@/utils/logger';
 import type { OrdersResponse, WhereClause, OrderByClause } from '@/types';
 import { prisma } from '@/lib/prisma';
 import sanitize from 'sanitize-html';
 
+// Input validation schema
+const querySchema = z.object({
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(50).default(10),
+  search: z.string().trim().optional(),
+  type: z.nativeEnum(DocumentType).optional(),
+  category: z.string().trim().optional(),
+  agency: z.string().trim().optional(),
+  statusId: z.coerce.number().optional(),
+  sort: z.string().regex(/^-?(datePublished|title|type|createdAt)$/).default('-datePublished'),
+  dateFrom: z.string().datetime().optional(),
+  dateTo: z.string().datetime().optional(),
+});
+
+const sanitizeOptions = {
+  allowedTags: [],
+  allowedAttributes: {},
+};
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
+    const params = Object.fromEntries(searchParams.entries());
     
-    const page = Math.max(1, Number(searchParams.get('page')) || 1);
-    const limit = Math.max(1, Math.min(50, Number(searchParams.get('limit')) || 10));
-    const search = sanitize(searchParams.get('search') || '');
-    const type = searchParams.get('type') as DocumentType | undefined;
-    const category = sanitize(searchParams.get('category') || '');
-    const agency = sanitize(searchParams.get('agency') || '');
-    const statusId = searchParams.get('statusId') ? Number(searchParams.get('statusId')) : undefined;
-    const sort = searchParams.get('sort') || '-datePublished';
-    const dateFrom = searchParams.get('dateFrom');
-    const dateTo = searchParams.get('dateTo');
-
+    // Validate and parse query parameters
+    const validatedParams = querySchema.parse(params);
+    
+    // Build the where clause
     const where: WhereClause = {};
     
-    if (type) where.type = type;
-    if (statusId) where.statusId = statusId;
-    if (category) {
+    if (validatedParams.type) {
+      where.type = validatedParams.type;
+    }
+    
+    if (validatedParams.statusId) {
+      where.statusId = validatedParams.statusId;
+    }
+    
+    if (validatedParams.category) {
+      const sanitizedCategory = sanitize(validatedParams.category, sanitizeOptions);
       where.category = {
-        equals: category,
+        equals: sanitizedCategory,
         mode: 'insensitive'
       };
     }
-    if (agency) {
+    
+    if (validatedParams.agency) {
+      const sanitizedAgency = sanitize(validatedParams.agency, sanitizeOptions);
       where.agency = {
-        equals: agency,
+        equals: sanitizedAgency,
         mode: 'insensitive'
       };
     }
     
-    if (dateFrom || dateTo) {
+    if (validatedParams.dateFrom || validatedParams.dateTo) {
       where.datePublished = {
-        ...(dateFrom && { gte: new Date(dateFrom) }),
-        ...(dateTo && { lte: new Date(dateTo) })
+        ...(validatedParams.dateFrom && { gte: new Date(validatedParams.dateFrom) }),
+        ...(validatedParams.dateTo && { lte: new Date(validatedParams.dateTo) })
       };
     }
     
-    if (search) {
+    if (validatedParams.search) {
+      const sanitizedSearch = sanitize(validatedParams.search, sanitizeOptions);
       where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { summary: { contains: search, mode: 'insensitive' } },
-        { number: { contains: search, mode: 'insensitive' } }
+        { title: { contains: sanitizedSearch, mode: 'insensitive' } },
+        { summary: { contains: sanitizedSearch, mode: 'insensitive' } },
+        { number: { contains: sanitizedSearch, mode: 'insensitive' } }
       ];
     }
 
-    const sortField = sort.startsWith('-') ? sort.slice(1) : sort;
-    const sortDirection = sort.startsWith('-') ? 'desc' as const : 'asc' as const;
+    // Build the order by clause
+    const sortField = validatedParams.sort.startsWith('-') 
+      ? validatedParams.sort.slice(1) 
+      : validatedParams.sort;
+    const sortDirection = validatedParams.sort.startsWith('-') ? 'desc' : 'asc';
     const orderBy: OrderByClause = { [sortField]: sortDirection };
 
+    // Execute database queries in parallel
     const [totalCount, ordersResult, categories, agencies, statuses] = await Promise.all([
-      prisma.order.count({ where: where as Prisma.OrderWhereInput }),
+      prisma.order.count({ 
+        where: where as Prisma.OrderWhereInput 
+      }),
       prisma.order.findMany({
         where: where as Prisma.OrderWhereInput,
         orderBy: orderBy as Prisma.OrderOrderByWithRelationInput,
-        skip: (page - 1) * limit,
-        take: limit,
+        skip: (validatedParams.page - 1) * validatedParams.limit,
+        take: validatedParams.limit,
         include: {
           status: {
             select: {
@@ -89,13 +119,14 @@ export async function GET(request: NextRequest) {
       })
     ]);
 
+    // Prepare the response
     const response: OrdersResponse = {
       orders: ordersResult,
       pagination: {
         total: totalCount,
-        page,
-        limit,
-        hasMore: totalCount > page * limit
+        page: validatedParams.page,
+        limit: validatedParams.limit,
+        hasMore: totalCount > validatedParams.page * validatedParams.limit
       },
       metadata: {
         categories: categories.map(c => c.name),
@@ -108,8 +139,18 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     logger.error('Error in GET /api/orders:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     
+    if (error instanceof z.ZodError) {
+      return Response.json(
+        { 
+          error: 'Invalid query parameters',
+          details: error.errors 
+        }, 
+        { status: 400 }
+      );
+    }
+    
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return Response.json(
       { 
         error: 'Failed to fetch orders',
@@ -120,6 +161,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// Since we're not using the request parameter in POST, we can remove it
 export async function POST() {
   return Response.json(
     { error: 'Method not implemented' },

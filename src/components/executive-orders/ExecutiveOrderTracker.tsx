@@ -98,12 +98,12 @@ const FilterBar = ({ filters, metadata, onFilterChange }: FilterBarProps) => (
       />
     </div>
     
-    <Select value={filters.type} onValueChange={(v) => onFilterChange('type', v)}>
+    <Select value={filters.type || "all"} onValueChange={(v) => onFilterChange('type', v === "all" ? "" : v)}>
       <SelectTrigger>
         <SelectValue placeholder="Type" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="">All Types</SelectItem>
+        <SelectItem value="all">All Types</SelectItem>
         {Object.values(DocumentType).map(type => (
           <SelectItem key={type} value={type}>
             {type.replace('_', ' ')}
@@ -112,24 +112,24 @@ const FilterBar = ({ filters, metadata, onFilterChange }: FilterBarProps) => (
       </SelectContent>
     </Select>
 
-    <Select value={filters.category} onValueChange={(v) => onFilterChange('category', v)}>
+    <Select value={filters.category || "all"} onValueChange={(v) => onFilterChange('category', v === "all" ? "" : v)}>
       <SelectTrigger>
         <SelectValue placeholder="Category" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="">All Categories</SelectItem>
+        <SelectItem value="all">All Categories</SelectItem>
         {metadata.categories.map(category => (
           <SelectItem key={category} value={category}>{category}</SelectItem>
         ))}
       </SelectContent>
     </Select>
 
-    <Select value={filters.agency} onValueChange={(v) => onFilterChange('agency', v)}>
+    <Select value={filters.agency || "all"} onValueChange={(v) => onFilterChange('agency', v === "all" ? "" : v)}>
       <SelectTrigger>
         <SelectValue placeholder="Agency" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="">All Agencies</SelectItem>
+        <SelectItem value="all">All Agencies</SelectItem>
         {metadata.agencies.map(agency => (
           <SelectItem key={agency} value={agency}>{agency}</SelectItem>
         ))}

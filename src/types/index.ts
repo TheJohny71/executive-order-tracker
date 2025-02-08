@@ -12,6 +12,7 @@ export interface OrderFilters {
   page: number;
   limit: number;
   statusId?: number;
+  sort?: string;
 }
 
 export interface Order {
@@ -60,22 +61,18 @@ export interface OrdersResponse {
 }
 
 export interface ScrapedOrder {
-  identifier: string;
   type: DocumentType;
   title: string;
-  datePublished: Date;
-  category: string;
-  agency: string | null;
-  link: string;
-  number: string;
-  summary: string | null;
-  content?: string | null;
   metadata: {
     orderNumber?: string;
-    categories?: Array<{ name: string }>;
-    agencies?: Array<{ name: string }>;
+    categories: Array<{ name: string }>;
+    agencies: Array<{ name: string }>;
   };
-  statusId: number;
+  summary?: string;
+  date: Date;
+  url: string;
+  categories: Array<{ name: string }>;
+  agencies: Array<{ name: string }>;
 }
 
 export type WhereClause = {
@@ -130,22 +127,3 @@ export function isValidOrder(order: unknown): order is Order {
     typeof o.status.name === 'string'
   );
 }
-
-export interface Category {
-  id: number;
-  name: string;
-  description?: string;
-}
-
-export interface Agency {
-  id: number;
-  name: string;
-  abbreviation?: string;
-  description?: string;
-}
-
-export type CreateOrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'status'> & {
-  statusId: number;
-};
-
-export type UpdateOrderInput = Partial<CreateOrderInput>;

@@ -69,13 +69,13 @@ export class DocumentScheduler {
         select: { link: true, number: true }
       });
       
-      const existingLinks = new Set(existingDocuments.map(doc => doc.link));
-      const existingNumbers = new Set(existingDocuments.map(doc => doc.number));
+      const existingLinks = new Set(existingDocuments.map(doc => doc.link ?? ''));
+      const existingNumbers = new Set(existingDocuments.map(doc => doc.number ?? ''));
       
       // Filter new documents
       const newDocuments = latestDocuments.filter(doc => 
         !existingLinks.has(doc.url) && 
-        !existingNumbers.has(doc.metadata.orderNumber)
+        !existingNumbers.has(doc.metadata.orderNumber ?? '')
       );
       
       if (newDocuments.length === 0) {
@@ -91,12 +91,12 @@ export class DocumentScheduler {
             data: {
               type: newDoc.type,
               number: newDoc.metadata.orderNumber || 'UNKNOWN',
-              title: newDoc.title,
+              title: newDoc.title || 'Untitled Document',
               summary: newDoc.summary || '',
               datePublished: newDoc.date,
               category: newDoc.metadata.categories[0]?.name || 'Uncategorized',
               agency: newDoc.metadata.agencies[0]?.name || null,
-              link: newDoc.url,
+              link: newDoc.url || '',
               statusId: 1, // Default status
               createdAt: new Date(),
               updatedAt: new Date()
@@ -125,8 +125,8 @@ export class DocumentScheduler {
     try {
       const documentsList = documents.map(d => ({
         type: d.type,
-        title: d.title,
-        number: d.metadata.orderNumber,
+        title: d.title || 'Untitled',
+        number: d.metadata.orderNumber || 'N/A',
         date: d.date
       }));
       

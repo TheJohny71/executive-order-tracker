@@ -23,9 +23,7 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
       url: BASE_ACTIONS_URL,
       options: {
         waitForSelector: '.briefing-room__card',
-        javascript: true,
-        maxRetries: 3,
-        retryDelay: 5000
+        javascript: true
       }
     });
     
@@ -35,47 +33,50 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
 
     logger.info(`Processing ${spawResponse.data.length} documents`);
     
-    return spawResponse.data
-      .map(item => {
-        try {
-          const orderNumberMatch = item.title.match(/Executive Order (\d+)/)?.[1] || 
-                                 item.title.match(/Presidential Memorandum[- ](\d+)/)?.[1];
+    const validDocuments: ScrapedOrder[] = [];
+    
+    for (const item of spawResponse.data) {
+      try {
+        const orderNumberMatch = item.title.match(/Executive Order (\d+)/)?.[1] || 
+                               item.title.match(/Presidential Memorandum[- ](\d+)/)?.[1];
 
-          const type = item.title.toLowerCase().includes('memorandum') 
-            ? DocumentType.MEMORANDUM 
-            : DocumentType.EXECUTIVE_ORDER;
+        const type = item.title.toLowerCase().includes('memorandum') 
+          ? DocumentType.MEMORANDUM 
+          : DocumentType.EXECUTIVE_ORDER;
 
-          const identifier = orderNumberMatch 
-            ? `${type === DocumentType.EXECUTIVE_ORDER ? 'EO' : 'PM'}-${orderNumberMatch}`
-            : `${type}-${new Date(item.date).toISOString().split('T')[0]}`;
+        const identifier = orderNumberMatch 
+          ? `${type === DocumentType.EXECUTIVE_ORDER ? 'EO' : 'PM'}-${orderNumberMatch}`
+          : `${type}-${new Date(item.date).toISOString().split('T')[0]}`;
 
-          const documentUrl = getDocumentUrl(type, identifier);
-          
-          const categories = determineCategories(item.text).map(name => ({ name }));
-          const agencies = determineAgencies(item.text).map(name => ({ name }));
+        const documentUrl = getDocumentUrl(type, identifier);
+        
+        const categories = determineCategories(item.text).map(name => ({ name }));
+        const agencies = determineAgencies(item.text).map(name => ({ name }));
 
-          const doc = {
-            type,
-            title: item.title,
-            metadata: {
-              orderNumber: orderNumberMatch || undefined,
-              categories,
-              agencies
-            },
-            summary: item.text?.split('\n')[0] || undefined,
-            date: new Date(item.date),
-            url: documentUrl,
+        const doc: ScrapedOrder = {
+          type,
+          title: item.title,
+          metadata: {
+            orderNumber: orderNumberMatch || undefined,
             categories,
             agencies
-          } satisfies ScrapedOrder;
+          },
+          summary: item.text?.split('\n')[0] || undefined,
+          date: new Date(item.date),
+          url: documentUrl,
+          categories,
+          agencies
+        };
 
-          return validateDocument(doc) ? doc : null;
-        } catch (error) {
-          logger.error('Error processing document:', { title: item.title, error });
-          return null;
+        if (validateDocument(doc)) {
+          validDocuments.push(doc);
         }
-      })
-      .filter((doc): doc is ScrapedOrder => doc !== null);
+      } catch (error) {
+        logger.error('Error processing document:', { title: item.title, error });
+      }
+    }
+    
+    return validDocuments;
   } catch (error) {
     logger.error('Error fetching executive orders:', error);
     throw error;

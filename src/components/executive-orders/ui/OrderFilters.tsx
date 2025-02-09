@@ -8,16 +8,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { OrderFilters as OrderFiltersType, FilterType } from '@/types';
 
 interface OrderFiltersProps {
@@ -35,10 +25,6 @@ export function OrderFilters({
   agencies,
   statuses = []
 }: OrderFiltersProps) {
-  const handleDateSelect = (type: 'dateFrom' | 'dateTo', date: Date | undefined) => {
-    onFilterChange(type, date ? format(date, 'yyyy-MM-dd') : '');
-  };
-
   return (
     <div className="space-y-4">
       <div className="relative">
@@ -119,51 +105,18 @@ export function OrderFilters({
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "justify-start text-left font-normal w-full sm:w-[240px]",
-                !filters.dateFrom && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {filters.dateFrom ? format(new Date(filters.dateFrom), "PPP") : "From date"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={filters.dateFrom ? new Date(filters.dateFrom) : undefined}
-              onSelect={(date) => handleDateSelect('dateFrom', date)}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "justify-start text-left font-normal w-full sm:w-[240px]",
-                !filters.dateTo && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {filters.dateTo ? format(new Date(filters.dateTo), "PPP") : "To date"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={filters.dateTo ? new Date(filters.dateTo) : undefined}
-              onSelect={(date) => handleDateSelect('dateTo', date)}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
+        <Input
+          type="date"
+          value={filters.dateFrom || ''}
+          onChange={(e) => onFilterChange('dateFrom', e.target.value)}
+          className="w-full sm:w-[240px]"
+        />
+        <Input
+          type="date"
+          value={filters.dateTo || ''}
+          onChange={(e) => onFilterChange('dateTo', e.target.value)}
+          className="w-full sm:w-[240px]"
+        />
       </div>
     </div>
   );

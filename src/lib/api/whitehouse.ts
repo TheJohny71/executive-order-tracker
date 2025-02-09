@@ -57,12 +57,7 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
           type,
           identifier,
           title: item.title,
-          metadata: {
-            orderNumber: orderNumberMatch || undefined,
-            categories,
-            agencies
-          },
-          summary: item.text?.split('\n')[0] || undefined,
+          summary: item.text?.split('\n')[0] || 'No summary available', // Fixed undefined issue
           date: new Date(item.date),
           url: documentUrl,
           content: item.text || null,
@@ -70,7 +65,12 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
           statusId: 'active',
           categories,
           agencies,
-          isNew: true
+          isNew: true,
+          metadata: {
+            orderNumber: orderNumberMatch || undefined,
+            categories,
+            agencies
+          }
         };
 
         if (validateDocument(doc)) {

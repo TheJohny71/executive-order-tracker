@@ -43,17 +43,16 @@ export class DocumentScheduler {
     }
   }
 
-  private async retryWithDelay(fn: () => Promise<void>, retries: number = MAX_RETRIES): Promise<void> {
+  private async retryWithDelay<T>(fn: () => Promise<T>, retries: number = MAX_RETRIES): Promise<T> {
     try {
-      await fn();
+      return await fn();
     } catch (error) {
       if (retries > 0) {
         log.warn(`Retrying operation in ${RETRY_DELAY}ms. Retries left: ${retries - 1}`);
         await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
-        await this.retryWithDelay(fn, retries - 1);
-      } else {
-        throw error;
+        return this.retryWithDelay(fn, retries - 1);
       }
+      throw error;
     }
   }
 
@@ -63,9 +62,7 @@ export class DocumentScheduler {
       consecutiveFailures = 0;
       
       // Fetch latest documents with retry logic
-      const latestDocuments = await this.retryWithDelay(async () => {
-        return await fetchExecutiveOrders();
-      });
+      const latestDocuments = await this.retryWithDelay(() => fetchExecutiveOrders());
       
       // Get existing document links
       const existingDocuments = await prisma.order.findMany({
@@ -119,7 +116,6 @@ export class DocumentScheduler {
       if (consecutiveFailures >= MAX_RETRIES) {
         log.error('Too many consecutive failures. Stopping scheduler.');
         this.stop();
-        // Don't exit process, let the application handle the error
         throw error;
       }
     }
@@ -136,11 +132,8 @@ export class DocumentScheduler {
       
       log.info('New documents found:', { documents: documentsList });
       
-      // TODO: Implement notification system (email, webhook, etc.)
-      
     } catch (error) {
       log.error('Error sending notifications:', error);
-      // Don't throw here, just log the error
     }
   }
 

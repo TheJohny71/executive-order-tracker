@@ -1,5 +1,5 @@
 // src/pages/api/cron/index.ts
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { DocumentScheduler } from '@/lib/scheduler';
 import { logger } from '@/utils/logger';
 

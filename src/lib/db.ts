@@ -5,8 +5,16 @@ const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 const CONNECTION_TIMEOUT = 5000; // 5 seconds
 
+type PrismaEvent = {
+  timestamp: Date;
+  query: string;
+  params: string;
+  duration: number;
+  target: string;
+};
+
 export class DatabaseClient {
-  private static instance: PrismaClient;
+  private static instance: PrismaClient | null = null;
   private static retryCount = 0;
   private static isConnecting = false;
   private static connectionPromise: Promise<void> | null = null;
@@ -15,7 +23,7 @@ export class DatabaseClient {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance;
+    return this.instance!;
   }
 
   private static async initialize(): Promise<void> {
@@ -56,17 +64,17 @@ export class DatabaseClient {
       errorFormat: 'minimal',
     });
 
-    // Add logging middleware
-    this.instance.$on('query', (e) => {
+    // Add event handlers with proper typing
+    (this.instance as any).$on('query', (e: PrismaEvent) => {
       logger.debug('Query: ' + e.query);
       logger.debug('Duration: ' + e.duration + 'ms');
     });
 
-    this.instance.$on('error', (e) => {
+    (this.instance as any).$on('error', (e: Error) => {
       logger.error('Prisma Error:', e);
     });
 
-    this.instance.$on('warn', (e) => {
+    (this.instance as any).$on('warn', (e: Error) => {
       logger.warn('Prisma Warning:', e);
     });
 
@@ -105,8 +113,9 @@ export class DatabaseClient {
     }
   }
 
-  private static isConnectionError(error: any): boolean {
-    const errorMessage = error?.message?.toLowerCase() || '';
+  private static isConnectionError(error: unknown): boolean {
+    if (!(error instanceof Error)) return false;
+    const errorMessage = error.message.toLowerCase();
     return (
       errorMessage.includes('connection') ||
       errorMessage.includes('timeout') ||
@@ -125,6 +134,7 @@ export class DatabaseClient {
     try {
       if (this.instance) {
         await this.instance.$disconnect();
+        this.instance = null;
       }
       
       await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * Math.pow(2, this.retryCount)));
@@ -149,7 +159,6 @@ export class DatabaseClient {
     }
   }
 
-  // Utility method to check database health
   static async healthCheck(): Promise<boolean> {
     try {
       const instance = await this.getInstance();

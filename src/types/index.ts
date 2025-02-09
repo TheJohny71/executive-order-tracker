@@ -1,9 +1,12 @@
 import { DocumentType } from '@prisma/client';
 
-export type FilterType = 'type' | 'category' | 'agency' | 'dateFrom' | 'dateTo' | 'search' | 'page' | 'limit';
+export type FilterType = 'type' | 'category' | 'agency' | 'dateFrom' | 'dateTo' | 'search' | 'page' | 'limit' | 'statusId' | 'sort';
+
+// Enhanced to ensure type safety for select values
+export type SelectableValue = string | number | null;
 
 export interface OrderFilters {
-  type: DocumentType | '';
+  type: DocumentType | 'all' | '';
   category: string;
   agency: string;
   dateFrom?: string;
@@ -12,7 +15,7 @@ export interface OrderFilters {
   page: number;
   limit: number;
   statusId?: number;
-  sort?: string;
+  sort?: 'asc' | 'desc' | string;
 }
 
 export interface Order {
@@ -126,4 +129,8 @@ export function isValidOrder(order: unknown): order is Order {
     o.status && typeof o.status.id === 'number' &&
     typeof o.status.name === 'string'
   );
+}
+
+export function getSelectValue(value: string | null | undefined): string {
+  return value || 'all';
 }

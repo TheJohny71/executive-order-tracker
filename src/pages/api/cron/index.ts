@@ -1,6 +1,6 @@
 // src/pages/api/cron/index.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { documentScheduler } from '@/lib/scheduler'; // Fixed import path
+import { documentScheduler } from '@/lib/scheduler';
 import { logger } from '@/utils/logger';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -34,10 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       message: 'Cron job executed successfully',
       timestamp: new Date().toISOString(),
       status: {
-        isRunning: updatedStatus.isRunning,
-        lastRunTime: updatedStatus.lastRunTime?.toISOString(),
-        errorCount: updatedStatus.errorCount,
-        checkInterval: `${updatedStatus.interval / 60000} minutes`
+        isRunning: updatedStatus.isRunning
       }
     });
   } catch (error) {

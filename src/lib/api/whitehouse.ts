@@ -1,3 +1,4 @@
+// src/lib/api/whitehouse.ts
 import { DocumentType } from '@prisma/client';
 import { fetchWithSpaw } from './spaw';
 import type { ScrapedOrder } from '@/types';
@@ -12,7 +13,6 @@ const getDocumentUrl = (type: DocumentType, identifier: string) => {
   return `${WH_URL}/briefing-room/${path}/${identifier}`;
 };
 
-// Exported to be used by other modules if needed
 export const getPdfUrl = (identifier: string) => `${BASE_ACTIONS_URL}/${identifier}/download`;
 
 export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
@@ -23,7 +23,9 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
       url: BASE_ACTIONS_URL,
       options: {
         waitForSelector: '.briefing-room__card',
-        javascript: true
+        javascript: true,
+        maxRetries: 3,
+        retryDelay: 5000
       }
     });
     
@@ -33,38 +35,47 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
 
     logger.info(`Processing ${spawResponse.data.length} documents`);
     
-    return spawResponse.data.map(item => {
-      const orderNumberMatch = item.title.match(/Executive Order (\d+)/)?.[1] || 
-                             item.title.match(/Presidential Memorandum[- ](\d+)/)?.[1];
+    return spawResponse.data
+      .map(item => {
+        try {
+          const orderNumberMatch = item.title.match(/Executive Order (\d+)/)?.[1] || 
+                                 item.title.match(/Presidential Memorandum[- ](\d+)/)?.[1];
 
-      const type = item.title.toLowerCase().includes('memorandum') 
-        ? DocumentType.MEMORANDUM 
-        : DocumentType.EXECUTIVE_ORDER;
+          const type = item.title.toLowerCase().includes('memorandum') 
+            ? DocumentType.MEMORANDUM 
+            : DocumentType.EXECUTIVE_ORDER;
 
-      const identifier = orderNumberMatch 
-        ? `${type === DocumentType.EXECUTIVE_ORDER ? 'EO' : 'PM'}-${orderNumberMatch}`
-        : `${type}-${new Date(item.date).toISOString().split('T')[0]}`;
+          const identifier = orderNumberMatch 
+            ? `${type === DocumentType.EXECUTIVE_ORDER ? 'EO' : 'PM'}-${orderNumberMatch}`
+            : `${type}-${new Date(item.date).toISOString().split('T')[0]}`;
 
-      const documentUrl = getDocumentUrl(type, identifier);
-      
-      const categories = determineCategories(item.text).map(name => ({ name }));
-      const agencies = determineAgencies(item.text).map(name => ({ name }));
+          const documentUrl = getDocumentUrl(type, identifier);
+          
+          const categories = determineCategories(item.text).map(name => ({ name }));
+          const agencies = determineAgencies(item.text).map(name => ({ name }));
 
-      return {
-        type,
-        title: item.title,
-        metadata: {
-          orderNumber: orderNumberMatch || undefined,
-          categories,
-          agencies
-        },
-        summary: item.text?.split('\n')[0] || undefined,
-        date: new Date(item.date),
-        url: documentUrl,
-        categories,
-        agencies
-      } satisfies ScrapedOrder;
-    });
+          const doc = {
+            type,
+            title: item.title,
+            metadata: {
+              orderNumber: orderNumberMatch || undefined,
+              categories,
+              agencies
+            },
+            summary: item.text?.split('\n')[0] || undefined,
+            date: new Date(item.date),
+            url: documentUrl,
+            categories,
+            agencies
+          } satisfies ScrapedOrder;
+
+          return validateDocument(doc) ? doc : null;
+        } catch (error) {
+          logger.error('Error processing document:', { title: item.title, error });
+          return null;
+        }
+      })
+      .filter((doc): doc is ScrapedOrder => doc !== null);
   } catch (error) {
     logger.error('Error fetching executive orders:', error);
     throw error;

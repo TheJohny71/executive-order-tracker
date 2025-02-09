@@ -28,7 +28,9 @@
     "build:scheduler": "tsc -p tsconfig.scheduler.json",
     "pm2:start": "pm2 start npm --name 'eo-scheduler' -- run scheduler:prod",
     "pm2:stop": "pm2 stop eo-scheduler",
-    "pm2:logs": "pm2 logs eo-scheduler"
+    "pm2:logs": "pm2 logs eo-scheduler",
+    "test-db": "tsx src/scripts/test-db.ts",
+    "test-scraper": "tsx src/scripts/test-scraper.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.3.1",

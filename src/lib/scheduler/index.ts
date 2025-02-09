@@ -28,9 +28,7 @@ export class DocumentScheduler {
       return;
     }
 
-    // Initialize historical data before starting regular checks
     await this.initializeHistoricalData();
-
     this.isRunning = true;
     await this.checkNewDocuments();
     this.intervalId = setInterval(() => this.checkNewDocuments(), this.intervalMs);
@@ -63,7 +61,6 @@ export class DocumentScheduler {
     try {
       log.info('Starting historical data initialization');
       
-      // Check if we already have documents
       const existingCount = await prisma.order.count();
       
       if (existingCount > 0) {
@@ -71,7 +68,6 @@ export class DocumentScheduler {
         return;
       }
 
-      // Fetch historical documents
       const documents = await this.retryWithDelay(() => fetchExecutiveOrders());
       
       if (documents.length === 0) {
@@ -79,20 +75,19 @@ export class DocumentScheduler {
         return;
       }
 
-      // Add historical documents to database
       await prisma.$transaction(async (tx) => {
         for (const doc of documents) {
           await tx.order.create({
             data: {
               type: doc.type,
-              number: doc.metadata.orderNumber || 'UNKNOWN',
+              identifier: doc.metadata?.orderNumber || 'UNKNOWN',
               title: doc.title || 'Untitled Document',
               summary: doc.summary || '',
-              datePublished: doc.date,
-              category: doc.metadata.categories[0]?.name || 'Uncategorized',
-              agency: doc.metadata.agencies[0]?.name || null,
-              link: doc.url || '',
-              statusId: 1, // Default status
+              publishedAt: doc.date,
+              categoryName: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
+              agencyName: doc.metadata?.agencies?.[0]?.name || null,
+              url: doc.url || '',
+              statusId: 1,
               createdAt: new Date(),
               updatedAt: new Date()
             }
@@ -112,22 +107,19 @@ export class DocumentScheduler {
       log.info('Starting document check', { lastCheck: this.lastCheckTime });
       consecutiveFailures = 0;
       
-      // Fetch latest documents with retry logic
       const latestDocuments = await this.retryWithDelay(() => fetchExecutiveOrders());
       
-      // Get existing document links
       const existingDocuments = await prisma.order.findMany({
-        select: { link: true, number: true }
+        select: { url: true, identifier: true }
       });
       
-      const existingLinks = new Set(existingDocuments.map(doc => doc.link ?? ''));
-      const existingNumbers = new Set(existingDocuments.map(doc => doc.number ?? ''));
+      const existingUrls = new Set(existingDocuments.map(doc => doc.url));
+      const existingIdentifiers = new Set(existingDocuments.map(doc => doc.identifier));
       
-      // Filter new documents
-      const newDocuments = latestDocuments.filter(doc => 
-        !existingLinks.has(doc.url) && 
-        !existingNumbers.has(doc.metadata.orderNumber ?? '')
-      );
+      const newDocuments = latestDocuments.filter(doc => {
+        return !existingUrls.has(doc.url) && 
+               !existingIdentifiers.has(doc.metadata?.orderNumber || '');
+      });
       
       if (newDocuments.length === 0) {
         log.info('No new documents found');
@@ -135,20 +127,19 @@ export class DocumentScheduler {
         return;
       }
       
-      // Add new documents to database
       await prisma.$transaction(async (tx) => {
-        for (const newDoc of newDocuments) {
+        for (const doc of newDocuments) {
           await tx.order.create({
             data: {
-              type: newDoc.type,
-              number: newDoc.metadata.orderNumber || 'UNKNOWN',
-              title: newDoc.title || 'Untitled Document',
-              summary: newDoc.summary || '',
-              datePublished: newDoc.date,
-              category: newDoc.metadata.categories[0]?.name || 'Uncategorized',
-              agency: newDoc.metadata.agencies[0]?.name || null,
-              link: newDoc.url || '',
-              statusId: 1, // Default status
+              type: doc.type,
+              identifier: doc.metadata?.orderNumber || 'UNKNOWN',
+              title: doc.title || 'Untitled Document',
+              summary: doc.summary || '',
+              publishedAt: doc.date,
+              categoryName: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
+              agencyName: doc.metadata?.agencies?.[0]?.name || null,
+              url: doc.url || '',
+              statusId: 1,
               createdAt: new Date(),
               updatedAt: new Date()
             }
@@ -177,7 +168,7 @@ export class DocumentScheduler {
       const documentsList = documents.map(d => ({
         type: d.type,
         title: d.title || 'Untitled',
-        number: d.metadata.orderNumber || 'N/A',
+        identifier: d.metadata?.orderNumber || 'N/A',
         date: d.date
       }));
       

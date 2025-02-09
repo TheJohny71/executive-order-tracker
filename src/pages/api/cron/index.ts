@@ -1,10 +1,9 @@
 // src/pages/api/cron/index.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { documentScheduler } from '@/lib/scheduler/documentScheduler';
+import { documentScheduler } from '@/lib/scheduler'; // Fixed import path
 import { logger } from '@/utils/logger';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ 
       error: 'Method not allowed',
@@ -12,27 +11,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-  // Optional: Check for secret token
   const cronSecret = req.headers['x-cron-secret'];
   if (process.env.CRON_SECRET && cronSecret !== process.env.CRON_SECRET) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
-    // Get current scheduler status
     const status = documentScheduler.getStatus();
     
     if (!status.isRunning) {
-      // Start the scheduler if it's not running
       await documentScheduler.start();
       logger.info('Scheduler started successfully');
     } else {
-      // If already running, just trigger a manual check
       await documentScheduler.manualCheck();
       logger.info('Manual check triggered successfully');
     }
     
-    // Get updated status after operations
     const updatedStatus = documentScheduler.getStatus();
     
     return res.status(200).json({ 

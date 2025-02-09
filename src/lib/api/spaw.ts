@@ -1,9 +1,9 @@
 import { logger } from '@/utils/logger';
 import type { SpawResponse } from '../scraper/types';
 
-const SPAW_API_URL = 'https://api.spawapp.com/v1';
+const SPAW_API_URL = 'https://api.scrapingbee.com/v1';  // Updated to correct API endpoint
 const MAX_RETRIES = 3;
-const RETRY_DELAY = 1000; // 1 second
+const RETRY_DELAY = 1000;
 
 export interface SpawConfig {
   url: string;
@@ -34,21 +34,21 @@ export async function fetchWithSpaw(config: SpawConfig, retryCount = 0): Promise
       retryCount
     });
 
-    const response = await fetch(SPAW_API_URL, {
-      method: 'POST',
+    // Construct API URL with parameters
+    const apiUrl = new URL(SPAW_API_URL);
+    apiUrl.searchParams.append('api_key', process.env.SPAW_API_KEY);
+    apiUrl.searchParams.append('url', config.url);
+    apiUrl.searchParams.append('render_js', config.options?.javascript ? '1' : '0');
+    if (config.options?.waitForSelector) {
+      apiUrl.searchParams.append('wait_for', config.options.waitForSelector);
+    }
+
+    const response = await fetch(apiUrl.toString(), {
+      method: 'GET',  // Changed to GET as per ScrapingBee's API
       headers: {
-        'Authorization': `Bearer ${process.env.SPAW_API_KEY}`,
-        'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'User-Agent': 'Executive-Order-Tracker/1.0'
-      },
-      body: JSON.stringify({
-        url: config.url,
-        options: {
-          javascript: config.options?.javascript ?? true,
-          waitForSelector: config.options?.waitForSelector,
-          timeout: 30000
-        }
-      })
+      }
     });
 
     if (!response.ok) {

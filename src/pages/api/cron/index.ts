@@ -1,6 +1,6 @@
 // src/pages/api/cron/index.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { scheduler } from '@/lib/scheduler';
+import { documentScheduler } from '@/lib/scheduler/documentScheduler';
 import { logger } from '@/utils/logger';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -20,20 +20,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Get current scheduler status
-    const status = scheduler.getStatus();
+    const status = documentScheduler.getStatus();
     
     if (!status.isRunning) {
       // Start the scheduler if it's not running
-      await scheduler.start();
+      await documentScheduler.start();
       logger.info('Scheduler started successfully');
     } else {
       // If already running, just trigger a manual check
-      await scheduler.manualCheck();
+      await documentScheduler.manualCheck();
       logger.info('Manual check triggered successfully');
     }
     
     // Get updated status after operations
-    const updatedStatus = scheduler.getStatus();
+    const updatedStatus = documentScheduler.getStatus();
     
     return res.status(200).json({ 
       success: true, 

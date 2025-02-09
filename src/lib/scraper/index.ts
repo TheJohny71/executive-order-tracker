@@ -1,200 +1,139 @@
-import { DocumentType as PrismaDocumentType } from '@prisma/client';
+// src/lib/scraper/index.ts
+import { PrismaClient, DocumentType } from '@prisma/client';
+import { logger } from '@/utils/logger';
+import { fetchExecutiveOrders } from '../api/whitehouse';
+import type { ScrapedOrder } from '@/types';
 
-// Document Types
-export type DocumentType = PrismaDocumentType;
+export class DocumentScraper {
+  private startDate: Date;
+  private prisma: PrismaClient;
 
-export const OrderTypes = {
-  EXECUTIVE_ORDER: PrismaDocumentType.EXECUTIVE_ORDER,
-  MEMORANDUM: PrismaDocumentType.MEMORANDUM,
-} as const;
+  constructor(startDate: Date = new Date('2025-01-01')) {
+    this.startDate = startDate;
+    this.prisma = new PrismaClient({
+      log: ['error', 'warn'],
+    });
+  }
 
-// Simplified Query Types
-export type WhereClause = {
-  type?: DocumentType;
-  statusId?: string;
-  createdAt?: { gte?: Date; lte?: Date };
-  title?: { contains?: string };
-  identifier?: { contains?: string };
-  content?: { contains?: string };
-  summary?: { contains?: string };
-  categories?: { some: { name: { in: string[] } } };
-  agencies?: { some: { name: { in: string[] } } };
-};
+  public async scrapeHistoricalData(): Promise<{
+    success: boolean;
+    ordersScraped: number;
+    errors: string[];
+  }> {
+    const errors: string[] = [];
+    let ordersScraped = 0;
 
-export type OrderByClause = {
-  date?: 'asc' | 'desc';
-  title?: 'asc' | 'desc';
-  type?: 'asc' | 'desc';
-  createdAt?: 'asc' | 'desc';
-  updatedAt?: 'asc' | 'desc';
-};
+    try {
+      logger.info(`Starting historical data scrape from ${this.startDate.toISOString()}`);
+      
+      const orders = await fetchExecutiveOrders();
+      
+      const relevantOrders = orders.filter(order => 
+        new Date(order.date) >= this.startDate
+      );
 
-export interface Status {
-  id: string;
-  name: string;
-  description: string | null;
+      logger.info(`Found ${relevantOrders.length} orders since ${this.startDate.toISOString()}`);
+
+      for (const order of relevantOrders) {
+        try {
+          await this.processOrder(order);
+          ordersScraped++;
+          logger.info(`Processed order: ${order.identifier}`);
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          errors.push(`Failed to process order ${order.identifier}: ${errorMessage}`);
+          logger.error(`Error processing order ${order.identifier}:`, error);
+        }
+      }
+
+      return {
+        success: true,
+        ordersScraped,
+        errors
+      };
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error('Historical scrape failed:', error);
+      return {
+        success: false,
+        ordersScraped,
+        errors: [...errors, `Scrape failed: ${errorMessage}`]
+      };
+    } finally {
+      await this.prisma.$disconnect();
+    }
+  }
+
+  private async processOrder(order: ScrapedOrder): Promise<void> {
+    // Check if order already exists
+    const existingOrder = await this.prisma.order.findFirst({
+      where: { 
+        OR: [
+          { identifier: order.identifier },
+          { 
+            AND: [
+              { title: order.title },
+              { date: order.date }
+            ]
+          }
+        ]
+      }
+    });
+
+    if (!existingOrder) {
+      // Create new order with all related data
+      await this.prisma.order.create({
+        data: {
+          identifier: order.identifier,
+          type: order.type,
+          title: order.title,
+          date: order.date,
+          url: order.url,
+          summary: order.summary,
+          content: order.content,
+          statusId: order.statusId || 'active',
+          categories: {
+            connectOrCreate: order.categories.map(cat => ({
+              where: { name: cat.name },
+              create: { name: cat.name }
+            }))
+          },
+          agencies: {
+            connectOrCreate: order.agencies.map(agency => ({
+              where: { name: agency.name },
+              create: { name: agency.name }
+            }))
+          }
+        }
+      });
+      
+      logger.info(`Created new order: ${order.identifier}`);
+    } else {
+      logger.info(`Order ${order.identifier} already exists, skipping`);
+    }
+  }
+
+  public async checkForUpdates(): Promise<void> {
+    try {
+      logger.info('Starting update check');
+      const latestOrders = await fetchExecutiveOrders();
+      
+      for (const order of latestOrders) {
+        await this.processOrder(order);
+      }
+      
+      logger.info('Update check completed successfully');
+    } catch (error) {
+      logger.error('Error checking for updates:', error);
+      throw error;
+    }
+  }
+
+  public async cleanup(): Promise<void> {
+    await this.prisma.$disconnect();
+  }
 }
 
-export interface Category {
-  id: string;
-  name: string;
-  description: string | null;
-}
-
-export interface Agency {
-  id: string;
-  name: string;
-  abbreviation: string | null;
-  description: string | null;
-}
-
-export interface Citation {
-  id: string;
-  sourceId: string;
-  targetId: string;
-  description: string | null;
-}
-
-export interface Amendment {
-  id: string;
-  orderId: string;
-  amendedText: string;
-  description: string | null;
-  dateAmended: string;
-}
-
-export interface Order {
-  id: string;
-  identifier: string;
-  type: DocumentType;
-  title: string;
-  date: string;
-  url: string;
-  summary: string | null;
-  notes: string | null;
-  content: string | null;
-  statusId: string;
-  isNew: boolean;
-  createdAt: string;
-  updatedAt: string;
-  status: Status;
-  categories: Category[];
-  agencies: Agency[];
-  citations: Citation[];
-  amendments: Amendment[];
-}
-
-export interface OrderFilters {
-  type: DocumentType | '';
-  category: string;
-  agency: string;
-  search: string;
-  dateFrom: string;
-  dateTo: string;
-  page: number;
-  limit: number;
-  statusId?: string;
-  sort?: 'date' | 'title' | 'type' | '-date' | '-title' | '-type';
-}
-
-export interface OrdersResponse {
-  orders: Order[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    hasMore: boolean;
-  };
-  metadata: {
-    categories: string[];
-    agencies: string[];
-    statuses: { id: string; name: string }[];
-  };
-}
-
-export interface QueryOptions {
-  where?: WhereClause;
-  orderBy?: OrderByClause;
-  skip?: number;
-  take?: number;
-}
-
-export interface QueryResult<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  metadata?: {
-    total: number;
-    page: number;
-    limit: number;
-  };
-}
-
-export interface ScrapedOrder {
-  identifier: string;
-  type: DocumentType;
-  title: string;
-  date: Date;
-  url: string;
-  summary: string | null;
-  notes: string | null;
-  content?: string | null;
-  statusId: string;
-  categories: { name: string }[];
-  agencies: { name: string }[];
-  isNew: boolean;
-}
-
-export interface UseOrdersReturn {
-  data: OrdersResponse | null;
-  error: string | null;
-  loading: boolean;
-  lastUpdate?: Date;
-  refresh: () => Promise<void>;
-}
-
-export function isValidOrder(order: unknown): order is Order {
-  if (!order || typeof order !== 'object') return false;
-  
-  const o = order as Order;
-  return (
-    typeof o.id === 'string' &&
-    typeof o.identifier === 'string' &&
-    typeof o.title === 'string' &&
-    typeof o.date === 'string' &&
-    typeof o.url === 'string' &&
-    typeof o.statusId === 'string' &&
-    Array.isArray(o.categories) &&
-    Array.isArray(o.agencies) &&
-    o.type in DocumentType &&
-    o.categories.every(isValidCategory) &&
-    o.agencies.every(isValidAgency)
-  );
-}
-
-export function isValidCategory(category: unknown): category is Category {
-  if (!category || typeof category !== 'object') return false;
-  
-  const c = category as Category;
-  return (
-    typeof c.id === 'string' &&
-    typeof c.name === 'string' &&
-    (c.description === null || typeof c.description === 'string')
-  );
-}
-
-export function isValidAgency(agency: unknown): agency is Agency {
-  if (!agency || typeof agency !== 'object') return false;
-  
-  const a = agency as Agency;
-  return (
-    typeof a.id === 'string' &&
-    typeof a.name === 'string' &&
-    (a.abbreviation === null || typeof a.abbreviation === 'string') &&
-    (a.description === null || typeof a.description === 'string')
-  );
-}
-
-export type PartialOrder = Partial<Order>;
-export type CreateOrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
-export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>;
+// Export an instance for direct use
+export const documentScraper = new DocumentScraper();

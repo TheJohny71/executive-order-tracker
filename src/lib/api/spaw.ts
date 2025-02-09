@@ -3,7 +3,7 @@ import pretty from 'pino-pretty';
 import type { SpawResponse } from '../scraper/types';
 
 const logger = pino(pretty({ colorize: true }));
-const SPAW_API_URL = 'https://api.spaw.com/v1';
+const SPAW_API_URL = 'https://api.spyscape.com/v1'; // or whatever the correct endpoint is
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 

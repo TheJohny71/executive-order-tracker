@@ -28,6 +28,9 @@ export class DocumentScheduler {
       return;
     }
 
+    // Initialize historical data before starting regular checks
+    await this.initializeHistoricalData();
+
     this.isRunning = true;
     await this.checkNewDocuments();
     this.intervalId = setInterval(() => this.checkNewDocuments(), this.intervalMs);
@@ -52,6 +55,54 @@ export class DocumentScheduler {
         await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
         return this.retryWithDelay(fn, retries - 1);
       }
+      throw error;
+    }
+  }
+
+  public async initializeHistoricalData(): Promise<void> {
+    try {
+      log.info('Starting historical data initialization');
+      
+      // Check if we already have documents
+      const existingCount = await prisma.order.count();
+      
+      if (existingCount > 0) {
+        log.info(`Database already contains ${existingCount} documents. Skipping initialization.`);
+        return;
+      }
+
+      // Fetch historical documents
+      const documents = await this.retryWithDelay(() => fetchExecutiveOrders());
+      
+      if (documents.length === 0) {
+        log.info('No historical documents found');
+        return;
+      }
+
+      // Add historical documents to database
+      await prisma.$transaction(async (tx) => {
+        for (const doc of documents) {
+          await tx.order.create({
+            data: {
+              type: doc.type,
+              number: doc.metadata.orderNumber || 'UNKNOWN',
+              title: doc.title || 'Untitled Document',
+              summary: doc.summary || '',
+              datePublished: doc.date,
+              category: doc.metadata.categories[0]?.name || 'Uncategorized',
+              agency: doc.metadata.agencies[0]?.name || null,
+              link: doc.url || '',
+              statusId: 1, // Default status
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }
+          });
+        }
+      });
+
+      log.info(`Added ${documents.length} historical documents`);
+    } catch (error) {
+      log.error('Error initializing historical data:', error);
       throw error;
     }
   }

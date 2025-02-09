@@ -12,7 +12,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Perform an initial check for new documents
+    // Initialize historical data first
+    await scheduler.initializeHistoricalData();
+    
+    // Then perform regular check
     await scheduler.manualCheck();
     
     // Start the scheduler if it's not already running

@@ -2,12 +2,11 @@ import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 import { fetchExecutiveOrders } from '../api/whitehouse';
-import type { ScrapedOrder } from '../types';
+import type { ScrapedOrder } from '@/types';
 
 const prisma = new PrismaClient();
 const log = pino(pretty({ colorize: true }));
 
-const FIFTEEN_MINUTES = 15 * 60 * 1000;
 const MAX_RETRIES = 3;
 let consecutiveFailures = 0;
 
@@ -56,7 +55,7 @@ export class DocumentScheduler {
       const existingLinks = new Set(existingDocuments.map(doc => doc.link));
       
       // Filter new documents
-      const newDocuments = latestDocuments.filter(doc => !existingLinks.has(doc.link));
+      const newDocuments = latestDocuments.filter(doc => !existingLinks.has(doc.url));
       
       if (newDocuments.length === 0) {
         log.info('No new documents found');
@@ -67,15 +66,17 @@ export class DocumentScheduler {
       for (const newDoc of newDocuments) {
         await prisma.order.create({
           data: {
-            number: newDoc.number,
             type: newDoc.type,
+            number: newDoc.metadata.orderNumber || 'UNKNOWN',
             title: newDoc.title,
-            summary: newDoc.summary,
-            datePublished: newDoc.datePublished,
-            category: newDoc.category,
-            agency: newDoc.agency,
-            link: newDoc.link,
-            statusId: newDoc.statusId
+            summary: newDoc.summary || '',
+            datePublished: newDoc.date,
+            category: newDoc.metadata.categories[0]?.name || 'Uncategorized',
+            agency: newDoc.metadata.agencies[0]?.name || null,
+            link: newDoc.url,
+            statusId: 1, // Default status
+            createdAt: new Date(),
+            updatedAt: new Date()
           }
         });
       }
@@ -108,7 +109,6 @@ export class DocumentScheduler {
     }
   }
 
-  // Method to manually trigger a check
   public async manualCheck(): Promise<void> {
     await this.checkNewDocuments();
   }

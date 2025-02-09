@@ -12,7 +12,8 @@ const getDocumentUrl = (type: DocumentType, identifier: string) => {
   return `${WH_URL}/briefing-room/${path}/${identifier}`;
 };
 
-const getPdfUrl = (identifier: string) => `${BASE_ACTIONS_URL}/${identifier}/download`;
+// Exported to be used by other modules if needed
+export const getPdfUrl = (identifier: string) => `${BASE_ACTIONS_URL}/${identifier}/download`;
 
 export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
   try {
@@ -45,27 +46,24 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
         : `${type}-${new Date(item.date).toISOString().split('T')[0]}`;
 
       const documentUrl = getDocumentUrl(type, identifier);
+      
+      const categories = determineCategories(item.text).map(name => ({ name }));
+      const agencies = determineAgencies(item.text).map(name => ({ name }));
 
       return {
-        identifier,
         type,
         title: item.title,
+        metadata: {
+          orderNumber: orderNumberMatch || undefined,
+          categories,
+          agencies
+        },
+        summary: item.text?.split('\n')[0] || undefined,
         date: new Date(item.date),
         url: documentUrl,
-        pdfUrl: getPdfUrl(identifier),
-        summary: item.text?.split('\n')[0] || null,
-        notes: null,
-        content: item.text || null,
-        statusId: 'default-status-id',
-        categories: determineCategories(item.text).map(name => ({ name })),
-        agencies: determineAgencies(item.text).map(name => ({ name })),
-        isNew: true,
-        metadata: {
-          orderNumber: orderNumberMatch || null,
-          citations: [],
-          amendments: []
-        }
-      };
+        categories,
+        agencies
+      } satisfies ScrapedOrder;
     });
   } catch (error) {
     logger.error('Error fetching executive orders:', error);
@@ -74,12 +72,11 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
 }
 
 export function validateDocument(doc: ScrapedOrder): boolean {
-  if (!doc.title || !doc.date || !doc.url || !doc.identifier || !doc.type) {
+  if (!doc.title || !doc.date || !doc.url || !doc.type) {
     logger.warn('Invalid document found:', {
       title: !!doc.title,
       date: !!doc.date,
       url: !!doc.url,
-      identifier: !!doc.identifier,
       type: !!doc.type
     });
     return false;
@@ -89,5 +86,6 @@ export function validateDocument(doc: ScrapedOrder): boolean {
 
 export const whiteHouseApi = {
   fetchExecutiveOrders,
-  validateDocument
+  validateDocument,
+  getPdfUrl
 };

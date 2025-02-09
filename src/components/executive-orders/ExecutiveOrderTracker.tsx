@@ -1,6 +1,6 @@
 // src/components/executive-orders/ExecutiveOrderTracker.tsx
 import React, { useState } from 'react';
-import { Filter, ArrowUp } from 'lucide-react';
+import { Filter, ArrowUp, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { OrderHeader } from './ui/OrderHeader';
 import { OrderFilters } from './ui/OrderFilters';
@@ -42,6 +42,10 @@ export default function ExecutiveOrderTracker() {
       [type]: value,
       page: 1 // Reset page when filters change
     }));
+    // Close mobile filters after selection on mobile
+    if (window.innerWidth < 768) {
+      setMobileFiltersVisible(false);
+    }
   };
 
   const handleCompareToggle = (order: Order) => {
@@ -86,12 +90,41 @@ export default function ExecutiveOrderTracker() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <OrderFilters
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          categories={data?.metadata.categories || []}
-          agencies={data?.metadata.agencies || []}
-        />
+        {/* Mobile Filters Overlay */}
+        {mobileFiltersVisible && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 md:hidden">
+            <div className="fixed inset-0 z-50">
+              <div className="relative h-full bg-white p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-medium">Filters</h2>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setMobileFiltersVisible(false)}
+                  >
+                    <X className="h-6 w-6" />
+                  </Button>
+                </div>
+                <OrderFilters
+                  filters={filters}
+                  onFilterChange={handleFilterChange}
+                  categories={data?.metadata.categories || []}
+                  agencies={data?.metadata.agencies || []}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Desktop Filters */}
+        <div className="hidden md:block">
+          <OrderFilters
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            categories={data?.metadata.categories || []}
+            agencies={data?.metadata.agencies || []}
+          />
+        </div>
 
         <div className="mt-4 text-sm text-gray-500">
           Showing {data?.orders.length || 0} of {data?.pagination.total || 0} orders

@@ -1,127 +1,194 @@
-// src/lib/scraper/index.ts
+// src/lib/scheduler/index.ts
 import { PrismaClient } from '@prisma/client';
-import { logger } from '@/utils/logger';
+import pino from 'pino';
+import pretty from 'pino-pretty';
 import { fetchExecutiveOrders } from '../api/whitehouse';
 import type { ScrapedOrder } from '@/types';
 
-export class DocumentScraper {
-  private startDate: Date;
-  private prisma: PrismaClient;
+const prisma = new PrismaClient();
+const log = pino(pretty({ colorize: true }));
 
-  constructor(startDate: Date = new Date('2025-01-01')) {
-    this.startDate = startDate;
-    this.prisma = new PrismaClient({
-      log: ['error', 'warn'],
-    });
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 5000; // 5 seconds
+let consecutiveFailures = 0;
+
+export class DocumentScheduler {
+  private intervalMs: number;
+  private isRunning: boolean = false;
+  private intervalId?: NodeJS.Timeout;
+  private lastCheckTime?: Date;
+
+  constructor(intervalMinutes: number = 15) {
+    this.intervalMs = intervalMinutes * 60 * 1000;
   }
 
-  public async scrapeHistoricalData(): Promise<{
-    success: boolean;
-    ordersScraped: number;
-    errors: string[];
-  }> {
-    const errors: string[] = [];
-    let ordersScraped = 0;
+  public async start(): Promise<void> {
+    if (this.isRunning) {
+      log.warn('Scheduler is already running');
+      return;
+    }
 
-    try {
-      logger.info(`Starting historical data scrape from ${this.startDate.toISOString()}`);
-      
-      const orders = await fetchExecutiveOrders();
-      
-      const relevantOrders = orders.filter(order => 
-        new Date(order.date) >= this.startDate
-      );
+    await this.initializeHistoricalData();
+    this.isRunning = true;
+    await this.checkNewDocuments();
+    this.intervalId = setInterval(() => this.checkNewDocuments(), this.intervalMs);
+    log.info(`Scheduler started with ${this.intervalMs / 60000} minute interval`);
+  }
 
-      logger.info(`Found ${relevantOrders.length} orders since ${this.startDate.toISOString()}`);
-
-      for (const order of relevantOrders) {
-        try {
-          await this.processOrder(order);
-          ordersScraped++;
-          logger.info(`Processed order: ${order.identifier}`);
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error);
-          errors.push(`Failed to process order ${order.identifier}: ${errorMessage}`);
-          logger.error(`Error processing order ${order.identifier}:`, error);
-        }
-      }
-
-      return {
-        success: true,
-        ordersScraped,
-        errors
-      };
-
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      logger.error('Historical scrape failed:', error);
-      return {
-        success: false,
-        ordersScraped,
-        errors: [...errors, `Scrape failed: ${errorMessage}`]
-      };
-    } finally {
-      await this.prisma.$disconnect();
+  public stop(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.isRunning = false;
+      this.lastCheckTime = undefined;
+      log.info('Scheduler stopped');
     }
   }
 
-  private async processOrder(order: ScrapedOrder): Promise<void> {
-    const existingOrder = await this.prisma.order.findFirst({
-      where: { 
-        OR: [
-          { identifier: order.identifier },
-          { 
-            AND: [
-              { title: order.title },
-              { publishedAt: order.date }
-            ]
-          }
-        ]
-      }
-    });
-
-    if (!existingOrder) {
-      await this.prisma.order.create({
-        data: {
-          identifier: order.identifier,
-          type: order.type,
-          title: order.title,
-          publishedAt: order.date,
-          url: order.url,
-          summary: order.summary,
-          content: order.content,
-          statusId: 1,
-          categoryName: order.metadata?.categories?.[0]?.name || 'Uncategorized',
-          agencyName: order.metadata?.agencies?.[0]?.name || null
-        }
-      });
-      
-      logger.info(`Created new order: ${order.identifier}`);
-    } else {
-      logger.info(`Order ${order.identifier} already exists, skipping`);
-    }
-  }
-
-  public async checkForUpdates(): Promise<void> {
+  private async retryWithDelay<T>(fn: () => Promise<T>, retries: number = MAX_RETRIES): Promise<T> {
     try {
-      logger.info('Starting update check');
-      const latestOrders = await fetchExecutiveOrders();
-      
-      for (const order of latestOrders) {
-        await this.processOrder(order);
-      }
-      
-      logger.info('Update check completed successfully');
+      return await fn();
     } catch (error) {
-      logger.error('Error checking for updates:', error);
+      if (retries > 0) {
+        log.warn(`Retrying operation in ${RETRY_DELAY}ms. Retries left: ${retries - 1}`);
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+        return this.retryWithDelay(fn, retries - 1);
+      }
       throw error;
     }
   }
 
-  public async cleanup(): Promise<void> {
-    await this.prisma.$disconnect();
+  public async initializeHistoricalData(): Promise<void> {
+    try {
+      log.info('Starting historical data initialization');
+      
+      const existingCount = await prisma.order.count();
+      
+      if (existingCount > 0) {
+        log.info(`Database already contains ${existingCount} documents. Skipping initialization.`);
+        return;
+      }
+
+      const documents = await this.retryWithDelay(() => fetchExecutiveOrders());
+      
+      if (documents.length === 0) {
+        log.info('No historical documents found');
+        return;
+      }
+
+      await prisma.$transaction(async (tx) => {
+        for (const doc of documents) {
+          await tx.order.create({
+            data: {
+              type: doc.type,
+              number: doc.metadata?.orderNumber || 'UNKNOWN',
+              title: doc.title || 'Untitled Document',
+              summary: doc.summary || '',
+              datePublished: doc.date,
+              category: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
+              agency: doc.metadata?.agencies?.[0]?.name || null,
+              link: doc.url || '',
+              statusId: 1,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }
+          });
+        }
+      });
+
+      log.info(`Added ${documents.length} historical documents`);
+    } catch (error) {
+      log.error('Error initializing historical data:', error);
+      throw error;
+    }
+  }
+
+  private async checkNewDocuments(): Promise<void> {
+    try {
+      log.info('Starting document check', { lastCheck: this.lastCheckTime });
+      consecutiveFailures = 0;
+      
+      const latestDocuments = await this.retryWithDelay(() => fetchExecutiveOrders());
+      
+      const existingDocuments = await prisma.order.findMany({
+        select: { link: true, number: true }
+      });
+      
+      const existingLinks = new Set(existingDocuments.map(doc => doc.link));
+      const existingNumbers = new Set(existingDocuments.map(doc => doc.number));
+      
+      const newDocuments = latestDocuments.filter(doc => {
+        return !existingLinks.has(doc.url) && 
+               !existingNumbers.has(doc.metadata?.orderNumber || '');
+      });
+      
+      if (newDocuments.length === 0) {
+        log.info('No new documents found');
+        this.lastCheckTime = new Date();
+        return;
+      }
+      
+      await prisma.$transaction(async (tx) => {
+        for (const doc of newDocuments) {
+          await tx.order.create({
+            data: {
+              type: doc.type,
+              number: doc.metadata?.orderNumber || 'UNKNOWN',
+              title: doc.title || 'Untitled Document',
+              summary: doc.summary || '',
+              datePublished: doc.date,
+              category: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
+              agency: doc.metadata?.agencies?.[0]?.name || null,
+              link: doc.url || '',
+              statusId: 1,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }
+          });
+        }
+      });
+      
+      log.info(`Added ${newDocuments.length} new documents`);
+      await this.notifyNewDocuments(newDocuments);
+      this.lastCheckTime = new Date();
+      
+    } catch (error) {
+      consecutiveFailures++;
+      log.error('Error checking for new documents:', error);
+      
+      if (consecutiveFailures >= MAX_RETRIES) {
+        log.error('Too many consecutive failures. Stopping scheduler.');
+        this.stop();
+        throw error;
+      }
+    }
+  }
+
+  private async notifyNewDocuments(documents: ScrapedOrder[]): Promise<void> {
+    try {
+      const documentsList = documents.map(d => ({
+        type: d.type,
+        title: d.title || 'Untitled',
+        number: d.metadata?.orderNumber || 'N/A',
+        date: d.date
+      }));
+      
+      log.info('New documents found:', { documents: documentsList });
+      
+    } catch (error) {
+      log.error('Error sending notifications:', error);
+    }
+  }
+
+  public async manualCheck(): Promise<void> {
+    await this.checkNewDocuments();
+  }
+
+  public getStatus(): { isRunning: boolean } {
+    return {
+      isRunning: this.isRunning
+    };
   }
 }
 
-// Export an instance for direct use
-export const documentScraper = new DocumentScraper();
+// Export singleton instance
+export const documentScheduler = new DocumentScheduler();

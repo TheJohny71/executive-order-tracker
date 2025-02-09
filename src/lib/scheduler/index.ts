@@ -80,13 +80,13 @@ export class DocumentScheduler {
           await tx.order.create({
             data: {
               type: doc.type,
-              identifier: doc.metadata?.orderNumber || 'UNKNOWN',
+              number: doc.metadata?.orderNumber || 'UNKNOWN',
               title: doc.title || 'Untitled Document',
               summary: doc.summary || '',
-              publishedAt: doc.date,
-              categoryName: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
-              agencyName: doc.metadata?.agencies?.[0]?.name || null,
-              url: doc.url || '',
+              datePublished: doc.date,
+              category: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
+              agency: doc.metadata?.agencies?.[0]?.name || null,
+              link: doc.url || '',
               statusId: 1,
               createdAt: new Date(),
               updatedAt: new Date()
@@ -110,15 +110,15 @@ export class DocumentScheduler {
       const latestDocuments = await this.retryWithDelay(() => fetchExecutiveOrders());
       
       const existingDocuments = await prisma.order.findMany({
-        select: { url: true, identifier: true }
+        select: { link: true, number: true }
       });
       
-      const existingUrls = new Set(existingDocuments.map(doc => doc.url));
-      const existingIdentifiers = new Set(existingDocuments.map(doc => doc.identifier));
+      const existingLinks = new Set(existingDocuments.map(doc => doc.link));
+      const existingNumbers = new Set(existingDocuments.map(doc => doc.number));
       
       const newDocuments = latestDocuments.filter(doc => {
-        return !existingUrls.has(doc.url) && 
-               !existingIdentifiers.has(doc.metadata?.orderNumber || '');
+        return !existingLinks.has(doc.url) && 
+               !existingNumbers.has(doc.metadata?.orderNumber || '');
       });
       
       if (newDocuments.length === 0) {
@@ -132,13 +132,13 @@ export class DocumentScheduler {
           await tx.order.create({
             data: {
               type: doc.type,
-              identifier: doc.metadata?.orderNumber || 'UNKNOWN',
+              number: doc.metadata?.orderNumber || 'UNKNOWN',
               title: doc.title || 'Untitled Document',
               summary: doc.summary || '',
-              publishedAt: doc.date,
-              categoryName: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
-              agencyName: doc.metadata?.agencies?.[0]?.name || null,
-              url: doc.url || '',
+              datePublished: doc.date,
+              category: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
+              agency: doc.metadata?.agencies?.[0]?.name || null,
+              link: doc.url || '',
               statusId: 1,
               createdAt: new Date(),
               updatedAt: new Date()
@@ -168,7 +168,7 @@ export class DocumentScheduler {
       const documentsList = documents.map(d => ({
         type: d.type,
         title: d.title || 'Untitled',
-        identifier: d.metadata?.orderNumber || 'N/A',
+        number: d.metadata?.orderNumber || 'N/A',
         date: d.date
       }));
       
@@ -182,4 +182,13 @@ export class DocumentScheduler {
   public async manualCheck(): Promise<void> {
     await this.checkNewDocuments();
   }
+
+  public getStatus(): { isRunning: boolean } {
+    return {
+      isRunning: this.isRunning
+    };
+  }
 }
+
+// Export singleton instance
+export const documentScheduler = new DocumentScheduler();

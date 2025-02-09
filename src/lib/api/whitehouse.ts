@@ -55,6 +55,7 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
 
         const doc: ScrapedOrder = {
           type,
+          identifier,
           title: item.title,
           metadata: {
             orderNumber: orderNumberMatch || undefined,
@@ -64,8 +65,12 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
           summary: item.text?.split('\n')[0] || undefined,
           date: new Date(item.date),
           url: documentUrl,
+          content: item.text || null,
+          notes: null,
+          statusId: 'active',
           categories,
-          agencies
+          agencies,
+          isNew: true
         };
 
         if (validateDocument(doc)) {
@@ -84,12 +89,13 @@ export async function fetchExecutiveOrders(): Promise<ScrapedOrder[]> {
 }
 
 export function validateDocument(doc: ScrapedOrder): boolean {
-  if (!doc.title || !doc.date || !doc.url || !doc.type) {
+  if (!doc.title || !doc.date || !doc.url || !doc.type || !doc.identifier) {
     logger.warn('Invalid document found:', {
       title: !!doc.title,
       date: !!doc.date,
       url: !!doc.url,
-      type: !!doc.type
+      type: !!doc.type,
+      identifier: !!doc.identifier
     });
     return false;
   }

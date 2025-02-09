@@ -1,5 +1,5 @@
 // src/lib/scraper/index.ts
-import { PrismaClient, DocumentType } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { logger } from '@/utils/logger';
 import { fetchExecutiveOrders } from '../api/whitehouse';
 import type { ScrapedOrder } from '@/types';
@@ -66,7 +66,6 @@ export class DocumentScraper {
   }
 
   private async processOrder(order: ScrapedOrder): Promise<void> {
-    // Check if order already exists
     const existingOrder = await this.prisma.order.findFirst({
       where: { 
         OR: [
@@ -74,7 +73,7 @@ export class DocumentScraper {
           { 
             AND: [
               { title: order.title },
-              { date: order.date }
+              { publishedAt: order.date }
             ]
           }
         ]
@@ -82,29 +81,18 @@ export class DocumentScraper {
     });
 
     if (!existingOrder) {
-      // Create new order with all related data
       await this.prisma.order.create({
         data: {
           identifier: order.identifier,
           type: order.type,
           title: order.title,
-          date: order.date,
+          publishedAt: order.date,
           url: order.url,
           summary: order.summary,
           content: order.content,
-          statusId: order.statusId || 'active',
-          categories: {
-            connectOrCreate: order.categories.map(cat => ({
-              where: { name: cat.name },
-              create: { name: cat.name }
-            }))
-          },
-          agencies: {
-            connectOrCreate: order.agencies.map(agency => ({
-              where: { name: agency.name },
-              create: { name: agency.name }
-            }))
-          }
+          statusId: 1,
+          categoryName: order.metadata?.categories?.[0]?.name || 'Uncategorized',
+          agencyName: order.metadata?.agencies?.[0]?.name || null
         }
       });
       

@@ -1,9 +1,7 @@
-import pino from 'pino';
-import pretty from 'pino-pretty';
+import { logger } from '@/utils/logger';
 import type { SpawResponse } from '../scraper/types';
 
-const logger = pino(pretty({ colorize: true }));
-const SPAW_API_URL = 'https://api.spyscape.com/v1'; // or whatever the correct endpoint is
+const SPAW_API_URL = 'https://api.spawapp.com/v1';
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 
@@ -31,17 +29,24 @@ export async function fetchWithSpaw(config: SpawConfig, retryCount = 0): Promise
   }
 
   try {
+    logger.info('Attempting SPAW API request', {
+      url: config.url,
+      retryCount
+    });
+
     const response = await fetch(SPAW_API_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.SPAW_API_KEY}`,
         'Content-Type': 'application/json',
+        'User-Agent': 'Executive-Order-Tracker/1.0'
       },
       body: JSON.stringify({
         url: config.url,
         options: {
           javascript: config.options?.javascript ?? true,
-          waitForSelector: config.options?.waitForSelector
+          waitForSelector: config.options?.waitForSelector,
+          timeout: 30000
         }
       })
     });
@@ -61,17 +66,22 @@ export async function fetchWithSpaw(config: SpawConfig, retryCount = 0): Promise
     }
 
     const data = await response.json();
+    logger.info('SPAW API request successful');
     return data as SpawResponse;
 
   } catch (error) {
-    logger.error({
-      error: error instanceof Error ? error.message : String(error),
-      retryCount,
-      url: config.url
-    }, 'Error fetching data with SPAW');
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
+    logger.error('Error fetching data with SPAW', {
+      error: errorMessage,
+      retryAttempt: retryCount,
+      targetUrl: config.url
+    });
 
     if (retryCount < MAX_RETRIES) {
-      await delay(RETRY_DELAY * Math.pow(2, retryCount)); // Exponential backoff
+      const nextDelay = RETRY_DELAY * Math.pow(2, retryCount);
+      logger.info(`Retrying in ${nextDelay}ms`);
+      await delay(nextDelay);
       return fetchWithSpaw(config, retryCount + 1);
     }
 

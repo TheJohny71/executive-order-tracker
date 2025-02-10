@@ -1,15 +1,13 @@
-// File: src/lib/scraper.ts
-
 import { prisma, DocumentType } from '@/lib/db';
 import { logger } from '@/utils/logger';
 
+/** Example "scrape" function. Insert a new mock record. */
 export async function scrapeExecutiveOrders() {
   try {
     logger.info('Starting executive order scraping…');
 
-    // Example: Hard-coded mock
     const scrapedEO = {
-      type: DocumentType.EXECUTIVE_ORDER, // fixes "string not assignable" issue
+      type: DocumentType.EXECUTIVE_ORDER, // Must match the enum
       title: 'Mock Executive Order from Scraper',
       summary: 'Scraped summary text goes here',
       datePublished: new Date(),
@@ -26,19 +24,22 @@ export async function scrapeExecutiveOrders() {
         summary: scrapedEO.summary,
         datePublished: scrapedEO.datePublished,
         link: scrapedEO.link,
+
+        // M:N for categories & agencies
         categories: {
-          connectOrCreate: scrapedEO.categories.map((c) => ({
-            where: { name: c },
-            create: { name: c },
+          connectOrCreate: scrapedEO.categories.map((cat) => ({
+            where: { name: cat },
+            create: { name: cat },
           })),
         },
         agencies: {
-          connectOrCreate: scrapedEO.agencies.map((a) => ({
-            where: { name: a },
-            create: { name: a },
+          connectOrCreate: scrapedEO.agencies.map((ag) => ({
+            where: { name: ag },
+            create: { name: ag },
           })),
         },
       },
+      // Must match the fields in your schema
       include: {
         categories: true,
         agencies: true,

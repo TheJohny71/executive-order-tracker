@@ -1,11 +1,10 @@
-// File: src/app/api/orders/route.ts
-
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import sanitize from 'sanitize-html';
-import { prisma, DocumentType } from '@/lib/db'; // We'll export DocumentType from db.ts (see below)
+import { prisma, DocumentType } from '@/lib/db'; 
 import { logger } from '@/utils/logger';
 
+// Validate query params
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(50).default(10),
@@ -28,7 +27,7 @@ export async function GET(request: NextRequest) {
     const limit = params.limit;
     const skip = (page - 1) * limit;
 
-    // Build a Prisma where object
+    // Build a 'where' object for Prisma
     const where: any = {};
     if (params.search) {
       const s = sanitize(params.search, sanitizeOptions);
@@ -38,7 +37,6 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Query total count and actual results
     const [totalCount, orders] = await Promise.all([
       prisma.order.count({ where }),
       prisma.order.findMany({
@@ -46,6 +44,7 @@ export async function GET(request: NextRequest) {
         skip,
         take: limit,
         orderBy: { datePublished: 'desc' },
+        // <==== categories & agencies now valid
         include: {
           categories: true,
           agencies: true,
@@ -80,18 +79,21 @@ export async function GET(request: NextRequest) {
 /** POST /api/orders */
 export async function POST(request: NextRequest) {
   try {
-    // Parse JSON body
     const body = await request.json().catch(() => null);
     if (!body || !body.title) {
-      return new Response(JSON.stringify({ error: 'Missing "title" in body' }), { status: 400 });
+      return new Response(
+        JSON.stringify({ error: 'Missing "title" in body' }),
+        { status: 400 }
+      );
     }
 
-    // If the user didn’t provide a valid DocumentType, default to EXECUTIVE_ORDER
+    // If user doesn't provide a valid DocumentType, default to EXECUTIVE_ORDER
     let docType: DocumentType = DocumentType.EXECUTIVE_ORDER;
     if (body.type && Object.values(DocumentType).includes(body.type)) {
       docType = body.type;
     }
 
+    // categories & agencies in create()
     const newOrder = await prisma.order.create({
       data: {
         type: docType,
@@ -100,7 +102,6 @@ export async function POST(request: NextRequest) {
         datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
         link: body.link ?? null,
 
-        // categories: connectOrCreate if provided
         categories: body.categories
           ? {
               connectOrCreate: body.categories.map((catName: string) => ({
@@ -110,7 +111,6 @@ export async function POST(request: NextRequest) {
             }
           : undefined,
 
-        // agencies: connectOrCreate if provided
         agencies: body.agencies
           ? {
               connectOrCreate: body.agencies.map((agencyName: string) => ({
@@ -120,6 +120,7 @@ export async function POST(request: NextRequest) {
             }
           : undefined,
       },
+      // <==== categories & agencies now valid
       include: {
         categories: true,
         agencies: true,
@@ -127,9 +128,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return new Response(JSON.stringify({ success: true, order: newOrder }), {
-      status: 201,
-    });
+    return new Response(
+      JSON.stringify({ success: true, order: newOrder }),
+      { status: 201 }
+    );
   } catch (error) {
     logger.error('Error in POST /api/orders:', error);
     return new Response(
@@ -138,3 +140,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+

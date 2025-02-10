@@ -1,21 +1,32 @@
 // src/scripts/test-api.ts
 import { fetchOrders } from '../lib/api';
-import type { Order } from '../lib/api/types';
+import type { Order, OrderFilters } from '../types';
 import { logger } from '../utils/logger';
-import { fileURLToPath } from 'url';
 
 async function main() {
   try {
     logger.info('Starting API test...');
-    logger.info('API Base URL:', process.env.NEXT_PUBLIC_AWS_API_URL || 'http://localhost:3000');
+    
+    const baseUrl = process.env.NEXT_PUBLIC_AWS_API_URL || 'http://localhost:3000';
+    logger.info('API Base URL:', baseUrl);
     
     logger.info('Fetching orders...');
-    const response = await fetchOrders({
+    
+    // Create params object with correct types from OrderFilters interface
+    const params: Partial<OrderFilters> = {
       page: 1,
-      limit: 10
-    });
+      limit: 10,
+      type: 'all',
+      category: '',
+      agency: '',
+      search: '',
+      sort: 'desc'
+    };
+
+    const response = await fetchOrders(params);
     
     logger.info(`Successfully fetched ${response.orders.length} orders`);
+    logger.info(`Total orders available: ${response.pagination.total}`);
     
     if (response.orders.length > 0) {
       logger.info('Sample of fetched orders:', 
@@ -23,12 +34,17 @@ async function main() {
           id: order.id,
           title: order.title,
           number: order.number,
-          date: order.date,
+          datePublished: order.datePublished,
           type: order.type,
           category: order.category,
-          agency: order.agency || 'N/A'
+          agency: order.agency || 'N/A',
+          status: order.status.name
         }))
       );
+
+      logger.info('Available categories:', response.metadata.categories);
+      logger.info('Available agencies:', response.metadata.agencies);
+      logger.info('Available statuses:', response.metadata.statuses);
     }
 
     logger.info('Test completed successfully');
@@ -39,14 +55,9 @@ async function main() {
   }
 }
 
-// ES Module equivalent of require.main === module check
-const isMainModule = import.meta.url === fileURLToPath(process.argv[1]);
-
-if (isMainModule) {
-  main().catch((error) => {
-    logger.error('Unhandled error:', error);
-    process.exit(1);
-  });
-}
+main().catch((error) => {
+  logger.error('Unhandled error:', error);
+  process.exit(1);
+});
 
 export { main };

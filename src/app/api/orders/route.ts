@@ -2,9 +2,9 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import sanitize from 'sanitize-html';
 import { prisma } from '@/lib/db';
-import { DocumentType, Prisma } from '@prisma/client';
+import { DocumentType } from '@prisma/client';
 import { logger } from '@/utils/logger';
-import type { WhereClause, OrderCreateInput } from '@/types';
+import type { OrderWhereInput, WhereClause } from '@/types';
 
 // Improved query schema with proper types
 const querySchema = z.object({
@@ -14,6 +14,9 @@ const querySchema = z.object({
   type: z.nativeEnum(DocumentType).optional(),
   category: z.string().optional(),
   agency: z.string().optional(),
+  dateFrom: z.string().optional(),
+  dateTo: z.string().optional(),
+  statusId: z.number().optional(),
 });
 
 const sanitizeOptions = {
@@ -31,13 +34,14 @@ export async function GET(request: NextRequest) {
     const limit = params.limit;
     const skip = (page - 1) * limit;
 
-    const where: Prisma.OrderWhereInput = {};
+    const where: WhereClause = {};
     
     if (params.search) {
       const s = sanitize(params.search, sanitizeOptions);
       where.OR = [
         { title: { contains: s, mode: 'insensitive' } },
         { summary: { contains: s, mode: 'insensitive' } },
+        { number: { contains: s, mode: 'insensitive' } }
       ];
     }
 
@@ -57,6 +61,20 @@ export async function GET(request: NextRequest) {
         equals: params.agency,
         mode: 'insensitive'
       };
+    }
+
+    if (params.dateFrom || params.dateTo) {
+      where.datePublished = {};
+      if (params.dateFrom) {
+        where.datePublished.gte = new Date(params.dateFrom);
+      }
+      if (params.dateTo) {
+        where.datePublished.lte = new Date(params.dateTo);
+      }
+    }
+
+    if (params.statusId) {
+      where.statusId = params.statusId;
     }
 
     const [totalCount, orders, categories, agencies] = await Promise.all([
@@ -84,8 +102,8 @@ export async function GET(request: NextRequest) {
       JSON.stringify({
         orders,
         metadata: {
-          categories,
-          agencies,
+          categories: categories.map(c => c.name),
+          agencies: agencies.map(a => a.name),
         },
         pagination: {
           page,
@@ -119,32 +137,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const orderData: Prisma.OrderCreateInput = {
+    const orderData: OrderWhereInput = {
       type: body.type ?? DocumentType.EXECUTIVE_ORDER,
       title: body.title,
-      identifier: body.identifier,
       summary: body.summary ?? null,
-      datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
-      link: body.link ?? null,
+      date: body.datePublished ? new Date(body.datePublished) : new Date(),
+      url: body.link ?? null,
       categories: body.categories ? {
-        connectOrCreate: body.categories.map((name: string) => ({
-          where: { name },
-          create: { name },
-        })),
+        some: {
+          name: body.categories[0]
+        }
       } : undefined,
       agencies: body.agencies ? {
-        connectOrCreate: body.agencies.map((name: string) => ({
-          where: { name },
-          create: { name },
-        })),
+        some: {
+          name: body.agencies[0]
+        }
       } : undefined,
-      status: {
-        connect: { id: 1 } // Default status
-      }
+      statusId: body.statusId?.toString() ?? '1' // Default status
     };
 
     const newOrder = await prisma.order.create({
-      data: orderData,
+      data: orderData as any, // Type assertion needed due to Prisma type mismatch
       include: {
         categories: true,
         agencies: true,

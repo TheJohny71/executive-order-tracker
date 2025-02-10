@@ -1,24 +1,23 @@
 // src/scripts/test-api.ts
-import { whiteHouseApi } from '../lib/api/whitehouse';
+import { api } from '../lib/api';
+import type { Order } from '../lib/api/types';
 
-async function testApi() {
+async function main() {
   try {
-    console.log('Fetching documents from White House API...');
-    const orders = await whiteHouseApi.fetchExecutiveOrders();
+    console.log('Fetching orders...');
+    const response = await api.orders.fetch();
+    const orders = response.orders;
     
-    console.log(`\nFetched ${orders.length} documents`);
-    console.log('\nFirst few documents:');
-    orders.slice(0, 3).forEach(order => {
-      console.log('\n---');
-      console.log('Title:', order.title);
-      console.log('Date:', order.date);
-      console.log('Type:', order.type);
-      console.log('URL:', order.url);
+    console.log('\nFirst 3 orders:');
+    orders.slice(0, 3).forEach((order: Order) => {
+      console.log(`\nTitle: ${order.title}`);
+      console.log(`Number: ${order.number}`);
+      console.log(`Date: ${order.date}`);
+      console.log(`Type: ${order.type}`);
     });
-
   } catch (error) {
-    console.error('Error testing API:', error);
+    console.error('Error:', error);
   }
 }
 
-testApi();
+main();

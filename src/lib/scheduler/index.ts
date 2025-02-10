@@ -1,7 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+// src/lib/scheduler/index.ts
+import { PrismaClient, DocumentType } from '@prisma/client';
+import { api } from '../api';
 import { logger } from '@/utils/logger';
-import { fetchExecutiveOrders } from '../api/whitehouse';
-import type { ScrapedOrder } from '@/types';
+import type { Order } from '../api/types';
 
 const prisma = new PrismaClient();
 
@@ -78,11 +79,12 @@ export class DocumentScheduler {
         return;
       }
 
-      const documents = await this.retryWithDelay(() => fetchExecutiveOrders());
+      const response = await this.retryWithDelay(() => api.orders.fetch());
+      const orders = response.orders;
       
       // Filter for documents since 2025
-      const relevantDocuments = documents.filter(doc => 
-        doc.date >= MIN_DATE
+      const relevantDocuments = orders.filter(doc => 
+        new Date(doc.date) >= MIN_DATE
       );
       
       if (relevantDocuments.length === 0) {
@@ -98,8 +100,8 @@ export class DocumentScheduler {
           const existing = await tx.order.findFirst({
             where: {
               OR: [
-                { link: doc.url },
-                { number: doc.metadata?.orderNumber }
+                { link: doc.link },
+                { number: doc.number }
               ]
             }
           });
@@ -107,15 +109,15 @@ export class DocumentScheduler {
           if (!existing) {
             await tx.order.create({
               data: {
-                type: doc.type,
-                number: doc.metadata?.orderNumber || 'UNKNOWN',
-                title: doc.title || 'Untitled Document',
-                summary: doc.summary || '',
-                datePublished: doc.date,
-                category: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
-                agency: doc.metadata?.agencies?.[0]?.name || null,
-                link: doc.url || '',
-                statusId: 1,
+                type: doc.type as DocumentType,
+                number: doc.number || 'UNKNOWN',
+                title: doc.title,
+                summary: doc.summary,
+                datePublished: new Date(doc.date),
+                category: doc.category || 'Uncategorized',
+                agency: doc.agency,
+                link: doc.link || '',
+                statusId: doc.statusId,
                 createdAt: new Date(),
                 updatedAt: new Date()
               }
@@ -139,11 +141,12 @@ export class DocumentScheduler {
       logger.info('Starting document check', { lastCheck: this.lastCheckTime });
       consecutiveFailures = 0;
       
-      const latestDocuments = await this.retryWithDelay(() => fetchExecutiveOrders());
+      const response = await this.retryWithDelay(() => api.orders.fetch());
+      const latestDocuments = response.orders;
       
       // Filter for recent documents
       const relevantDocuments = latestDocuments.filter(doc => 
-        doc.date >= MIN_DATE
+        new Date(doc.date) >= MIN_DATE
       );
       
       const existingDocuments = await prisma.order.findMany({
@@ -162,8 +165,8 @@ export class DocumentScheduler {
       const existingNumbers = new Set(existingDocuments.map(doc => doc.number));
       
       const newDocuments = relevantDocuments.filter(doc => {
-        return !existingLinks.has(doc.url) && 
-               !existingNumbers.has(doc.metadata?.orderNumber || '');
+        return !existingLinks.has(doc.link || '') && 
+               !existingNumbers.has(doc.number || '');
       });
       
       if (newDocuments.length === 0) {
@@ -180,8 +183,8 @@ export class DocumentScheduler {
           const exists = await tx.order.findFirst({
             where: {
               OR: [
-                { link: doc.url },
-                { number: doc.metadata?.orderNumber }
+                { link: doc.link },
+                { number: doc.number }
               ]
             }
           });
@@ -189,15 +192,15 @@ export class DocumentScheduler {
           if (!exists) {
             await tx.order.create({
               data: {
-                type: doc.type,
-                number: doc.metadata?.orderNumber || 'UNKNOWN',
-                title: doc.title || 'Untitled Document',
-                summary: doc.summary || '',
-                datePublished: doc.date,
-                category: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
-                agency: doc.metadata?.agencies?.[0]?.name || null,
-                link: doc.url || '',
-                statusId: 1,
+                type: doc.type as DocumentType,
+                number: doc.number || 'UNKNOWN',
+                title: doc.title,
+                summary: doc.summary,
+                datePublished: new Date(doc.date),
+                category: doc.category || 'Uncategorized',
+                agency: doc.agency,
+                link: doc.link || '',
+                statusId: doc.statusId,
                 createdAt: new Date(),
                 updatedAt: new Date()
               }
@@ -228,18 +231,16 @@ export class DocumentScheduler {
     }
   }
 
-  private async notifyNewDocuments(documents: ScrapedOrder[]): Promise<void> {
+  private async notifyNewDocuments(documents: Order[]): Promise<void> {
     try {
       const documentsList = documents.map(d => ({
         type: d.type,
-        title: d.title || 'Untitled',
-        number: d.metadata?.orderNumber || 'N/A',
+        title: d.title,
+        number: d.number || 'N/A',
         date: d.date
       }));
       
       logger.info('New documents found:', { documents: documentsList });
-      
-      // Add additional notification methods here (e.g., email, Slack, etc.)
       
     } catch (error) {
       logger.error('Error sending notifications:', error);

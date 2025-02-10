@@ -1,7 +1,8 @@
+// src/scripts/test-scraper.ts
 import { DocumentScheduler } from '../lib/scheduler';
+import { api } from '../lib/api';
 import { logger } from '@/utils/logger';
 import { PrismaClient } from '@prisma/client';
-import { fetchExecutiveOrders } from '../lib/api/whitehouse';
 
 const prisma = new PrismaClient();
 
@@ -11,8 +12,9 @@ async function testScraper() {
 
     // First, let's try to fetch orders directly
     logger.info('Attempting to fetch executive orders...');
-    const orders = await fetchExecutiveOrders();
-    logger.info(`Fetched ${orders.length} orders from White House website`);
+    const response = await api.orders.fetch();
+    const orders = response.orders;
+    logger.info(`Fetched ${orders.length} orders from API`);
     
     if (orders.length > 0) {
       logger.info('Sample of fetched orders:', 
@@ -20,7 +22,7 @@ async function testScraper() {
           title: order.title,
           date: order.date,
           type: order.type,
-          number: order.metadata?.orderNumber
+          number: order.number
         }))
       );
     }

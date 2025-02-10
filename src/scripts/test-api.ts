@@ -2,6 +2,7 @@
 import { fetchOrders } from '../lib/api';
 import type { Order } from '../lib/api/types';
 import { logger } from '../utils/logger';
+import { fileURLToPath } from 'url';
 
 async function main() {
   try {
@@ -38,9 +39,14 @@ async function main() {
   }
 }
 
-if (require.main === module) {
+// ES Module equivalent of require.main === module check
+const isMainModule = import.meta.url === fileURLToPath(process.argv[1]);
+
+if (isMainModule) {
   main().catch((error) => {
     logger.error('Unhandled error:', error);
     process.exit(1);
   });
 }
+
+export { main };

@@ -3,6 +3,7 @@ import { fetchOrders } from '../lib/api';
 import { logger } from '../utils/logger';
 import { PrismaClient } from '@prisma/client';
 import type { OrdersResponse } from '../lib/api/types';
+import { fileURLToPath } from 'url';
 
 const prisma = new PrismaClient();
 
@@ -65,7 +66,10 @@ async function testScraper() {
   }
 }
 
-if (require.main === module) {
+// ES Module equivalent of require.main === module check
+const isMainModule = import.meta.url === fileURLToPath(process.argv[1]);
+
+if (isMainModule) {
   testScraper()
     .catch((error) => {
       logger.error('Unhandled error:', error);

@@ -1,10 +1,4 @@
-// File: scripts/test-scraper.ts
-/* 
-   Run via:
-   npx ts-node scripts/test-scraper.ts
-*/
-
-import fetch from 'node-fetch'; // If on Node < 18
+// src/scripts/test-scraper.ts
 import { logger } from '../utils/logger';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
@@ -31,9 +25,12 @@ async function testScraper() {
   logger.info('TestScraper complete!');
 }
 
-if (require.main === module) {
+// ES Module main check
+if (import.meta.url.endsWith('test-scraper.ts')) {
   testScraper().catch((err) => {
     logger.error('Error running test-scraper:', err);
     process.exit(1);
   });
 }
+
+export { testScraper };

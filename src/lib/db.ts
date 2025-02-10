@@ -1,23 +1,9 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { logger } from '@/utils/logger';
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 const CONNECTION_TIMEOUT = 5000; // 5 seconds
-
-type QueryEvent = {
-  timestamp: Date;
-  query: string;
-  params: string;
-  duration: number;
-  target: string;
-};
-
-type LogEvent = {
-  timestamp: Date;
-  message: string;
-  target?: string;
-};
 
 export class DatabaseClient {
   private static instance: PrismaClient | null = null;
@@ -70,18 +56,27 @@ export class DatabaseClient {
       errorFormat: 'minimal',
     });
 
-    // Type-safe event handlers
-    (this.instance as PrismaClient).$on<'query'>('query', (event: QueryEvent) => {
-      logger.debug('Query: ' + event.query);
-      logger.debug('Duration: ' + event.duration + 'ms');
+    // Event handlers using type assertion
+    (this.instance as any).$on('query', (e: any) => {
+      logger.debug('Query:', {
+        query: e.query,
+        duration: e.duration,
+        timestamp: e.timestamp
+      });
     });
 
-    (this.instance as PrismaClient).$on<'error'>('error', (event: LogEvent) => {
-      logger.error('Prisma Error:', event.message);
+    (this.instance as any).$on('error', (e: any) => {
+      logger.error('Prisma Error:', {
+        message: e.message,
+        target: e.target
+      });
     });
 
-    (this.instance as PrismaClient).$on<'warn'>('warn', (event: LogEvent) => {
-      logger.warn('Prisma Warning:', event.message);
+    (this.instance as any).$on('warn', (e: any) => {
+      logger.warn('Prisma Warning:', {
+        message: e.message,
+        target: e.target
+      });
     });
 
     // Add error handling middleware

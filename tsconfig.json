@@ -29,7 +29,10 @@
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "types": ["node", "react", "react-dom"],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "importsNotUsedAsValues": "error"
   },
   "ts-node": {
     "esm": true,
@@ -41,7 +44,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/**/*.ts",
-    "src/**/*.tsx"
+    "src/**/*.tsx",
+    "src/types/**/*.d.ts"
   ],
-  "exclude": ["node_modules", "dist", ".next", "out"]
+  "exclude": ["node_modules", "dist", ".next", "out", "coverage"]
 }

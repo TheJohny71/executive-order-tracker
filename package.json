@@ -30,7 +30,9 @@
     "pm2:stop": "pm2 stop eo-scheduler",
     "pm2:logs": "pm2 logs eo-scheduler",
     "test-db": "tsx src/scripts/test-db.ts",
-    "test-scraper": "tsx src/scripts/test-scraper.ts"
+    "test-scraper": "tsx src/scripts/test-scraper.ts",
+    "test-api": "tsx src/scripts/test-api.ts",
+    "test-scheduler": "tsx src/scripts/test-api.ts -- --check-scheduler"
   },
   "dependencies": {
     "@prisma/client": "^6.3.1",
@@ -85,6 +87,7 @@
     "rimraf": "^5.0.0",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
+    "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
     "typescript": "^5.3.0"
   }

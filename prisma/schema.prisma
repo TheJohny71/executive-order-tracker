@@ -21,7 +21,7 @@ model Order {
   statusId Int?
   status   Status? @relation(fields: [statusId], references: [id])
 
-  /// M:N relationships to Category and Agency
+  // M:N relationships
   categories Category[] @relation("OrderCategories")
   agencies   Agency[]   @relation("OrderAgencies")
 }

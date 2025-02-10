@@ -1,14 +1,11 @@
-// File: utils/logger.ts
-
-/* A minimal logger wrapper. */
 export const logger = {
-  info: (...args: any[]) => {
+  info: (...args: unknown[]): void => {
     console.log('[INFO]', ...args);
   },
-  warn: (...args: any[]) => {
+  warn: (...args: unknown[]): void => {
     console.warn('[WARN]', ...args);
   },
-  error: (...args: any[]) => {
+  error: (...args: unknown[]): void => {
     console.error('[ERROR]', ...args);
   },
 };

@@ -5,11 +5,29 @@ import { prisma } from '@/lib/db';
 import { DocumentType } from '@prisma/client';
 import { logger } from '@/utils/logger';
 import { 
-  WhereClause, 
   OrderDbRecord, 
   OrdersResponse,
   transformOrderRecord 
 } from '@/types';
+
+interface WhereClause {
+  OR?: Array<{
+    title?: { contains: string; mode: 'insensitive' };
+    summary?: { contains: string; mode: 'insensitive' };
+    number?: { contains: string; mode: 'insensitive' };
+  }>;
+  type?: DocumentType;
+  categories?: {
+    some: {
+      name: string;
+    };
+  };
+  agencies?: {
+    some: {
+      name: string;
+    };
+  };
+}
 
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),

@@ -61,5 +61,3 @@ export interface ProcessingOptions {
   parseContent?: boolean;
   defaultStatusId?: string;
 }
-
-// Remove the duplicate type exports at the bottom

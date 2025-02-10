@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { FC } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 interface Category {
   name: string;
@@ -45,7 +45,7 @@ const ExecutiveOrderTracker: FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedAgency, setSelectedAgency] = useState('');
 
-  const { data, isLoading, error } = useQuery<OrdersResponse>({
+  const { data, isLoading, error }: UseQueryResult<OrdersResponse> = useQuery<OrdersResponse>({
     queryKey: ['orders', page, search, selectedCategory, selectedAgency],
     queryFn: async () => {
       const params = new URLSearchParams({

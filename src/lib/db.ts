@@ -5,13 +5,34 @@ const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 const CONNECTION_TIMEOUT = 5000; // 5 seconds
 
+// Define event interfaces based on Prisma's structure
+interface ExtendedPrismaClient extends PrismaClient {
+  $on(event: 'query', callback: (event: PrismaQueryEvent) => void): void;
+  $on(event: 'warn', callback: (event: PrismaLogEvent) => void): void;
+  $on(event: 'error', callback: (event: PrismaLogEvent) => void): void;
+}
+
+interface PrismaQueryEvent {
+  timestamp: Date;
+  query: string;
+  params: string;
+  duration: number;
+  target: string;
+}
+
+interface PrismaLogEvent {
+  timestamp: Date;
+  message: string;
+  target?: string;
+}
+
 export class DatabaseClient {
-  private static instance: PrismaClient | null = null;
+  private static instance: ExtendedPrismaClient | null = null;
   private static retryCount = 0;
   private static isConnecting = false;
   private static connectionPromise: Promise<void> | null = null;
 
-  static async getInstance(): Promise<PrismaClient> {
+  static async getInstance(): Promise<ExtendedPrismaClient> {
     if (!this.instance) {
       await this.initialize();
     }
@@ -47,7 +68,7 @@ export class DatabaseClient {
   }
 
   private static async initializeClient(): Promise<void> {
-    this.instance = new PrismaClient({
+    const prisma = new PrismaClient({
       log: [
         { level: 'query', emit: 'event' },
         { level: 'error', emit: 'event' },
@@ -56,26 +77,29 @@ export class DatabaseClient {
       errorFormat: 'minimal',
     });
 
-    // Event handlers using type assertion
-    (this.instance as any).$on('query', (e: any) => {
+    this.instance = prisma as ExtendedPrismaClient;
+
+    // Type-safe event handlers
+    this.instance.$on('query', (event: PrismaQueryEvent) => {
       logger.debug('Query:', {
-        query: e.query,
-        duration: e.duration,
-        timestamp: e.timestamp
+        query: event.query,
+        params: event.params,
+        duration: event.duration,
+        timestamp: event.timestamp
       });
     });
 
-    (this.instance as any).$on('error', (e: any) => {
+    this.instance.$on('error', (event: PrismaLogEvent) => {
       logger.error('Prisma Error:', {
-        message: e.message,
-        target: e.target
+        message: event.message,
+        target: event.target
       });
     });
 
-    (this.instance as any).$on('warn', (e: any) => {
+    this.instance.$on('warn', (event: PrismaLogEvent) => {
       logger.warn('Prisma Warning:', {
-        message: e.message,
-        target: e.target
+        message: event.message,
+        target: event.target
       });
     });
 

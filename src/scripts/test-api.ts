@@ -1,4 +1,4 @@
-// src/scripts/test-api.ts
+import { DocumentType } from '@prisma/client';
 import { logger } from '../utils/logger';
 
 interface APIConfig {
@@ -9,27 +9,21 @@ interface APIConfig {
   };
 }
 
-enum DocumentType {
-  EXECUTIVE_ORDER = 'EXECUTIVE_ORDER',
-  PROCLAMATION = 'PROCLAMATION',
-  MEMORANDUM = 'MEMORANDUM'
-}
-
 interface Order {
   id: number;
   type: DocumentType;
-  number?: string;
+  number: string | null;
   title: string;
-  summary?: string;
+  summary: string | null;
   datePublished: string;
-  link?: string;
+  link: string | null;
   createdAt: string;
   updatedAt: string;
-  statusId?: number;
-  status?: {
+  statusId: number;
+  status: {
     id: number;
     name: string;
-  };
+  } | null;
   categories: Array<{
     id: number;
     name: string;
@@ -79,30 +73,34 @@ async function testEndpoint() {
     
     const data = await response.json() as APIResponse;
     
-    // Add detailed logging
     logger.info('Response structure:', {
       totalCount: data.totalCount,
       pagination: data.pagination,
-      orderCount: data.orders?.length ?? 0
+      orderCount: data.orders.length
     });
 
-    if (data.orders?.length > 0) {
+    if (data.orders.length > 0) {
       const firstOrder = data.orders[0];
+      if (!firstOrder) {
+        logger.info('No orders found in response');
+        return true;
+      }
+
       logger.info('First order:', {
         id: firstOrder.id,
         type: firstOrder.type,
         title: firstOrder.title,
-        categoryCount: firstOrder.categories?.length ?? 0,
-        agencyCount: firstOrder.agencies?.length ?? 0
+        categoryCount: firstOrder.categories.length,
+        agencyCount: firstOrder.agencies.length
       });
 
-      if (firstOrder.categories?.length > 0) {
+      if (firstOrder.categories.length > 0) {
         logger.info('Categories:', firstOrder.categories);
       } else {
         logger.info('No categories found for first order');
       }
 
-      if (firstOrder.agencies?.length > 0) {
+      if (firstOrder.agencies.length > 0) {
         logger.info('Agencies:', firstOrder.agencies);
       } else {
         logger.info('No agencies found for first order');
@@ -119,7 +117,17 @@ async function testEndpoint() {
   }
 }
 
-if (import.meta.url === new URL(process.argv[1], 'file://').href) {
+// Safe check for script execution
+const isMainModule = async () => {
+  if (typeof process !== 'undefined' && process.argv.length > 1) {
+    const scriptPath = process.argv[1];
+    const scriptUrl = new URL(scriptPath, 'file://').href;
+    return import.meta.url === scriptUrl;
+  }
+  return false;
+};
+
+if (await isMainModule()) {
   testEndpoint()
     .then(() => process.exit(0))
     .catch(() => process.exit(1));

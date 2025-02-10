@@ -2,14 +2,10 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import sanitize from 'sanitize-html';
 import { prisma } from '@/lib/db';
-import { DocumentType } from '@prisma/client';
+import { DocumentType } from '@prisma/client';  // Remove 'type'
 import { logger } from '@/utils/logger';
-import { 
-  WhereClause, 
-  OrderDbRecord, 
-  OrdersResponse,
-  transformOrderRecord 
-} from '@/types';
+import type { WhereClause, OrderDbRecord, OrdersResponse } from '@/types';
+import { transformOrderRecord } from '@/types';
 
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -47,7 +43,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (params.type) {
-      where.type = params.type as DocumentType;
+      where.type = params.type;
     }
 
     if (params.category) {
@@ -87,8 +83,10 @@ export async function GET(request: NextRequest) {
       }),
     ]);
 
+    const orders = dbOrders.map((order) => transformOrderRecord(order as OrderDbRecord));
+
     const response: OrdersResponse = {
-      orders: dbOrders.map(transformOrderRecord),
+      orders,
       metadata: {
         categories: categories.map(c => c.name),
         agencies: agencies.map(a => a.name),
@@ -104,59 +102,61 @@ export async function GET(request: NextRequest) {
 
     return new Response(JSON.stringify(response), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, max-age=0',
+      },
     });
   } catch (error) {
     logger.error('Error in GET /api/orders:', error);
     return new Response(
       JSON.stringify({ error: 'Failed to fetch orders' }),
-      { status: 500 }
+      { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
     );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json().catch(() => null);
+    const body = await request.json();
+    
     if (!body || !body.title) {
       return new Response(
-        JSON.stringify({ error: 'Missing "title" in body' }),
-        { status: 400 }
+        JSON.stringify({ error: 'Missing required fields' }),
+        { 
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
       );
     }
 
-    let docType: DocumentType = DocumentType.EXECUTIVE_ORDER;
-    if (body.type && Object.values(DocumentType).includes(body.type)) {
-      docType = body.type;
-    }
+    const orderData = {
+      title: body.title,
+      type: body.type ?? DocumentType.EXECUTIVE_ORDER,
+      number: body.number ?? null,
+      summary: body.summary ?? null,
+      datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
+      link: body.link ?? null,
+      statusId: body.statusId ?? 1,
+      categories: body.categories ? {
+        connectOrCreate: body.categories.map((name: string) => ({
+          where: { name },
+          create: { name }
+        }))
+      } : undefined,
+      agencies: body.agencies ? {
+        connectOrCreate: body.agencies.map((name: string) => ({
+          where: { name },
+          create: { name }
+        }))
+      } : undefined,
+    } as const;
 
     const newOrder = await prisma.order.create({
-      data: {
-        type: docType,
-        title: body.title,
-        number: body.number ?? null,
-        summary: body.summary ?? null,
-        datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
-        link: body.link ?? null,
-
-        categories: body.categories
-          ? {
-              connectOrCreate: body.categories.map((catName: string) => ({
-                where: { name: catName },
-                create: { name: catName },
-              })),
-            }
-          : undefined,
-
-        agencies: body.agencies
-          ? {
-              connectOrCreate: body.agencies.map((agencyName: string) => ({
-                where: { name: agencyName },
-                create: { name: agencyName },
-              })),
-            }
-          : undefined,
-      },
+      data: orderData,
       include: {
         categories: true,
         agencies: true,
@@ -164,15 +164,26 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    const transformedOrder = transformOrderRecord(newOrder as OrderDbRecord);
+
     return new Response(
-      JSON.stringify({ success: true, order: newOrder }),
-      { status: 201 }
+      JSON.stringify({ 
+        success: true, 
+        order: transformedOrder 
+      }),
+      { 
+        status: 201,
+        headers: { 'Content-Type': 'application/json' },
+      }
     );
   } catch (error) {
     logger.error('Error in POST /api/orders:', error);
     return new Response(
       JSON.stringify({ error: 'Failed to create order' }),
-      { status: 500 }
+      { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
     );
   }
 }

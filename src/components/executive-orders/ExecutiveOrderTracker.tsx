@@ -1,176 +1,144 @@
-// src/app/api/orders/route.ts
-import { NextRequest } from 'next/server';
-import { z } from 'zod';
-import sanitize from 'sanitize-html';
-import { prisma, DocumentType } from '@/lib/db'; 
-import { logger } from '@/utils/logger';
+'use client';
 
-// Validate query params
-const querySchema = z.object({
-  page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(50).default(10),
-  search: z.string().trim().optional(),
-  type: z.string().optional(),
-  category: z.string().optional(),
-  agency: z.string().optional(),
-});
+import { useState, useEffect } from 'react';
+import type { FC } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
-const sanitizeOptions = {
-  allowedTags: [],
-  allowedAttributes: {},
+interface Order {
+  id: string;
+  title: string;
+  number: string;
+  summary: string;
+  datePublished: string;
+  link: string;
+  type: string;
+  categories: Array<{ name: string }>;
+  agencies: Array<{ name: string }>;
+  status: Array<{ name: string }>;
+}
+
+interface OrdersResponse {
+  orders: Order[];
+  metadata: {
+    categories: Array<{ name: string }>;
+    agencies: Array<{ name: string }>;
+  };
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+  };
+}
+
+const ExecutiveOrderTracker: FC = () => {
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedAgency, setSelectedAgency] = useState('');
+
+  const { data, isLoading, error } = useQuery<OrdersResponse>({
+    queryKey: ['orders', page, search, selectedCategory, selectedAgency],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '10',
+        ...(search && { search }),
+        ...(selectedCategory && { category: selectedCategory }),
+        ...(selectedAgency && { agency: selectedAgency }),
+      });
+
+      const response = await fetch(`/api/orders?${params}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    },
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {(error as Error).message}</div>;
+  if (!data) return null;
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Executive Order Tracker</h1>
+      
+      {/* Search and Filters */}
+      <div className="mb-6 space-y-4">
+        <input
+          type="text"
+          placeholder="Search orders..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+        
+        <div className="flex gap-4">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="p-2 border rounded"
+          >
+            <option value="">All Categories</option>
+            {data.metadata.categories.map((cat) => (
+              <option key={cat.name} value={cat.name}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={selectedAgency}
+            onChange={(e) => setSelectedAgency(e.target.value)}
+            className="p-2 border rounded"
+          >
+            <option value="">All Agencies</option>
+            {data.metadata.agencies.map((agency) => (
+              <option key={agency.name} value={agency.name}>
+                {agency.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Orders List */}
+      <div className="space-y-6">
+        {data.orders.map((order) => (
+          <div key={order.id} className="border p-4 rounded shadow">
+            <h2 className="text-xl font-semibold">{order.title}</h2>
+            <p className="text-gray-600">{order.summary}</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {order.categories.map((cat) => (
+                <span key={cat.name} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
+                  {cat.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-6 flex justify-between">
+        <button
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => setPage((p) => p + 1)}
+          disabled={!data.pagination.hasMore}
+          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
 };
 
-/** GET /api/orders */
-export async function GET(request: NextRequest) {
-  try {
-    const url = new URL(request.url);
-    const rawParams = Object.fromEntries(url.searchParams.entries());
-    const params = querySchema.parse(rawParams);
-
-    const page = params.page;
-    const limit = params.limit;
-    const skip = (page - 1) * limit;
-
-    // Build a 'where' object for Prisma
-    const where: any = {};
-    
-    if (params.search) {
-      const s = sanitize(params.search, sanitizeOptions);
-      where.OR = [
-        { title: { contains: s, mode: 'insensitive' } },
-        { summary: { contains: s, mode: 'insensitive' } },
-      ];
-    }
-
-    if (params.type) {
-      where.type = params.type;
-    }
-
-    if (params.category) {
-      where.categories = {
-        some: {
-          name: params.category
-        }
-      };
-    }
-
-    if (params.agency) {
-      where.agencies = {
-        some: {
-          name: params.agency
-        }
-      };
-    }
-
-    // Fetch all data in parallel
-    const [totalCount, orders, categories, agencies] = await Promise.all([
-      prisma.order.count({ where }),
-      prisma.order.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { datePublished: 'desc' },
-        include: {
-          categories: true,
-          agencies: true,
-          status: true,
-        },
-      }),
-      prisma.category.findMany({
-        orderBy: { name: 'asc' }
-      }),
-      prisma.agency.findMany({
-        orderBy: { name: 'asc' }
-      }),
-    ]);
-
-    const response = {
-      orders,
-      metadata: {
-        categories,
-        agencies,
-      },
-      pagination: {
-        page,
-        limit,
-        total: totalCount,
-        hasMore: totalCount > page * limit,
-      },
-    };
-
-    return new Response(JSON.stringify(response), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  } catch (error) {
-    logger.error('Error in GET /api/orders:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to fetch orders' }),
-      { status: 500 }
-    );
-  }
-}
-
-/** POST /api/orders */
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json().catch(() => null);
-    if (!body || !body.title) {
-      return new Response(
-        JSON.stringify({ error: 'Missing "title" in body' }),
-        { status: 400 }
-      );
-    }
-
-    // If user doesn't provide a valid DocumentType, default to EXECUTIVE_ORDER
-    let docType: DocumentType = DocumentType.EXECUTIVE_ORDER;
-    if (body.type && Object.values(DocumentType).includes(body.type)) {
-      docType = body.type;
-    }
-
-    const newOrder = await prisma.order.create({
-      data: {
-        type: docType,
-        title: body.title,
-        number: body.number ?? null,
-        summary: body.summary ?? null,
-        datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
-        link: body.link ?? null,
-
-        categories: body.categories
-          ? {
-              connectOrCreate: body.categories.map((catName: string) => ({
-                where: { name: catName },
-                create: { name: catName },
-              })),
-            }
-          : undefined,
-
-        agencies: body.agencies
-          ? {
-              connectOrCreate: body.agencies.map((agencyName: string) => ({
-                where: { name: agencyName },
-                create: { name: agencyName },
-              })),
-            }
-          : undefined,
-      },
-      include: {
-        categories: true,
-        agencies: true,
-        status: true,
-      },
-    });
-
-    return new Response(
-      JSON.stringify({ success: true, order: newOrder }),
-      { status: 201 }
-    );
-  } catch (error) {
-    logger.error('Error in POST /api/orders:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to create order' }),
-      { status: 500 }
-    );
-  }
-}
+export default ExecutiveOrderTracker;

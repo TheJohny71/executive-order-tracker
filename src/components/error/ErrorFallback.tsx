@@ -1,29 +1,20 @@
-'use client'
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { FC } from 'react';
 
 interface ErrorFallbackProps {
-  error: Error
+  error: Error;
 }
 
-export function ErrorFallback({ error }: ErrorFallbackProps) {
+export const ErrorFallback: FC<ErrorFallbackProps> = ({ error }) => {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Error Loading Application</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-600">
-            {error.message || 'Something went wrong. Please try again later.'}
-          </p>
-          {process.env.NODE_ENV === 'development' && (
-            <pre className="mt-4 p-4 bg-gray-100 rounded text-sm overflow-auto">
-              {error.stack}
-            </pre>
-          )}
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-red-50 p-4">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-2xl font-bold text-red-800 mb-4">Something went wrong</h1>
+        <pre className="bg-white p-4 rounded-md text-red-600 overflow-auto">
+          {error.message}
+        </pre>
+      </div>
     </div>
-  )
-}
+  );
+};

@@ -1,5 +1,5 @@
 import { DocumentType, PrismaClient } from '@prisma/client';
-import type { ScrapedOrder, AWSApiItem, ScraperResult } from '@/types';
+import type { ScrapedOrder, AWSApiItem, ScraperResult } from '@/lib/scraper/types';
 import { logger } from '@/utils/logger';
 import axios from 'axios';
 

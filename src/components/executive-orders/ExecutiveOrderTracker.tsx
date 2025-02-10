@@ -3,41 +3,7 @@
 import { useState } from 'react';
 import type { FC } from 'react';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-
-interface Category {
-  name: string;
-}
-
-interface Agency {
-  name: string;
-}
-
-interface Order {
-  id: string;
-  title: string;
-  number: string;
-  summary: string;
-  datePublished: string;
-  link: string;
-  type: string;
-  categories: Category[];
-  agencies: Agency[];
-  status: Array<{ name: string }>;
-}
-
-interface OrdersResponse {
-  orders: Order[];
-  metadata: {
-    categories: Category[];
-    agencies: Agency[];
-  };
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    hasMore: boolean;
-  };
-}
+import type { Order, Category, Agency, OrdersResponse } from '@/types';
 
 const ExecutiveOrderTracker: FC = () => {
   const [page, setPage] = useState(1);

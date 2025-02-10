@@ -54,5 +54,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
-// Only export the type, not the interface directly
 export type { ButtonProps }

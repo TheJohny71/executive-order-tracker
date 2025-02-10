@@ -1,4 +1,3 @@
-// src/lib/scraper/index.ts
 import { DocumentType, PrismaClient } from '@prisma/client';
 import type { ScrapedOrder } from '@/types';
 import { logger } from '@/utils/logger';
@@ -9,7 +8,23 @@ const prisma = new PrismaClient();
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 5000; // 5 seconds
 
-// Define ScraperResult interface here since it's specific to the scraper
+// Define interfaces for AWS API response
+interface AWSApiItem {
+  identifier: string;
+  id?: string;
+  type: DocumentType;
+  title: string;
+  date: string;
+  url: string;
+  summary: string;
+  notes?: string;
+  content?: string;
+  statusId: string;
+  orderNumber?: string;
+  categories?: Array<{ name: string }>;
+  agencies?: Array<{ name: string }>;
+}
+
 interface ScraperResult {
   success: boolean;
   ordersScraped: number;
@@ -20,7 +35,6 @@ interface ScraperResult {
 
 /**
  * Fetches executive orders from AWS API
- * @returns Promise<ScrapedOrder[]>
  */
 async function fetchFromAWS(): Promise<ScrapedOrder[]> {
   if (!process.env.AWS_API_ENDPOINT) {
@@ -28,16 +42,16 @@ async function fetchFromAWS(): Promise<ScrapedOrder[]> {
   }
 
   try {
-    const response = await axios.get(process.env.AWS_API_ENDPOINT);
+    const response = await axios.get<AWSApiItem[]>(process.env.AWS_API_ENDPOINT);
     
     if (!response.data) {
       throw new Error('No data received from AWS API');
     }
 
     // Transform the AWS response to match ScrapedOrder type
-    return response.data.map((item: any): ScrapedOrder => ({
+    return response.data.map((item: AWSApiItem): ScrapedOrder => ({
       identifier: item.identifier || item.id || '',
-      type: (item.type as DocumentType) || DocumentType.EXECUTIVE_ORDER,
+      type: item.type || DocumentType.EXECUTIVE_ORDER,
       title: item.title || 'Untitled',
       date: new Date(item.date),
       url: item.url,
@@ -46,8 +60,8 @@ async function fetchFromAWS(): Promise<ScrapedOrder[]> {
       content: item.content || null,
       statusId: String(item.statusId || '1'),
       isNew: true,
-      categories: item.categories?.map((cat: any) => ({ name: cat.name })) || [],
-      agencies: item.agencies?.map((agency: any) => ({ name: agency.name })) || [],
+      categories: item.categories || [],
+      agencies: item.agencies || [],
       metadata: {
         orderNumber: item.orderNumber || item.identifier,
         categories: item.categories,
@@ -78,7 +92,6 @@ async function retryWithDelay<T>(fn: () => Promise<T>, retries = MAX_RETRIES): P
 
 /**
  * Main function to scrape documents
- * @returns Promise<ScraperResult>
  */
 export async function scrapeDocuments(): Promise<ScraperResult> {
   try {
@@ -133,7 +146,7 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
     return {
       success: false,
       ordersScraped: 0,
-      errors: [(error as Error).message],
+      errors: [error instanceof Error ? error.message : 'Unknown error'],
       newOrders: [],
       updatedOrders: []
     };
@@ -142,7 +155,6 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
 
 /**
  * Check for new documents since last check
- * @returns Promise<ScrapedOrder[]>
  */
 export async function checkForNewDocuments(): Promise<ScrapedOrder[]> {
   try {
@@ -158,9 +170,9 @@ export async function checkForNewDocuments(): Promise<ScrapedOrder[]> {
     const existingLinks = new Set(existingOrders.map(o => o.link));
     const existingNumbers = new Set(existingOrders.map(o => o.number));
     
-    const newDocuments = latestDocuments.filter((doc: ScrapedOrder) => {
-      return !existingLinks.has(doc.url) && !existingNumbers.has(doc.identifier);
-    });
+    const newDocuments = latestDocuments.filter(doc => 
+      !existingLinks.has(doc.url) && !existingNumbers.has(doc.identifier)
+    );
 
     if (newDocuments.length > 0) {
       logger.info(`Found ${newDocuments.length} new documents`);
@@ -173,7 +185,6 @@ export async function checkForNewDocuments(): Promise<ScrapedOrder[]> {
   }
 }
 
-// Export any additional utility functions if needed
 export const utils = {
   retryWithDelay,
   fetchFromAWS

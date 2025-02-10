@@ -1,23 +1,15 @@
-import { Prisma, DocumentType } from '@prisma/client';
-import { type NextRequest } from 'next/server';
-import { z } from 'zod';
-import { logger } from '@/utils/logger';
-import type { OrdersResponse, WhereClause, OrderByClause } from '@/types';
-import { prisma } from '@/lib/prisma';
-import sanitize from 'sanitize-html';
+// File: src/app/api/orders/route.ts
 
-// Input validation schema
+import { NextRequest } from 'next/server';
+import { z } from 'zod';
+import sanitize from 'sanitize-html';
+import { prisma, DocumentType } from '@/lib/db'; // We'll export DocumentType from db.ts (see below)
+import { logger } from '@/utils/logger';
+
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(50).default(10),
   search: z.string().trim().optional(),
-  type: z.nativeEnum(DocumentType).optional(),
-  category: z.string().trim().optional(),
-  agency: z.string().trim().optional(),
-  statusId: z.coerce.number().optional(),
-  sort: z.string().regex(/^-?(datePublished|title|type|createdAt)$/).default('-datePublished'),
-  dateFrom: z.string().datetime().optional(),
-  dateTo: z.string().datetime().optional(),
 });
 
 const sanitizeOptions = {
@@ -25,146 +17,124 @@ const sanitizeOptions = {
   allowedAttributes: {},
 };
 
+/** GET /api/orders */
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const params = Object.fromEntries(searchParams.entries());
-    
-    // Validate and parse query parameters
-    const validatedParams = querySchema.parse(params);
-    
-    // Build the where clause
-    const where: WhereClause = {};
-    
-    if (validatedParams.type) {
-      where.type = validatedParams.type;
-    }
-    
-    if (validatedParams.statusId) {
-      where.statusId = validatedParams.statusId;
-    }
-    
-    if (validatedParams.category) {
-      const sanitizedCategory = sanitize(validatedParams.category, sanitizeOptions);
-      where.category = {
-        equals: sanitizedCategory,
-        mode: 'insensitive'
-      };
-    }
-    
-    if (validatedParams.agency) {
-      const sanitizedAgency = sanitize(validatedParams.agency, sanitizeOptions);
-      where.agency = {
-        equals: sanitizedAgency,
-        mode: 'insensitive'
-      };
-    }
-    
-    if (validatedParams.dateFrom || validatedParams.dateTo) {
-      where.datePublished = {
-        ...(validatedParams.dateFrom && { gte: new Date(validatedParams.dateFrom) }),
-        ...(validatedParams.dateTo && { lte: new Date(validatedParams.dateTo) })
-      };
-    }
-    
-    if (validatedParams.search) {
-      const sanitizedSearch = sanitize(validatedParams.search, sanitizeOptions);
+    const url = new URL(request.url);
+    const rawParams = Object.fromEntries(url.searchParams.entries());
+    const params = querySchema.parse(rawParams);
+
+    const page = params.page;
+    const limit = params.limit;
+    const skip = (page - 1) * limit;
+
+    // Build a Prisma where object
+    const where: any = {};
+    if (params.search) {
+      const s = sanitize(params.search, sanitizeOptions);
       where.OR = [
-        { title: { contains: sanitizedSearch, mode: 'insensitive' } },
-        { summary: { contains: sanitizedSearch, mode: 'insensitive' } },
-        { number: { contains: sanitizedSearch, mode: 'insensitive' } }
+        { title: { contains: s, mode: 'insensitive' } },
+        { summary: { contains: s, mode: 'insensitive' } },
       ];
     }
 
-    // Build the order by clause
-    const sortField = validatedParams.sort.startsWith('-') 
-      ? validatedParams.sort.slice(1) 
-      : validatedParams.sort;
-    const sortDirection = validatedParams.sort.startsWith('-') ? 'desc' : 'asc';
-    const orderBy: OrderByClause = { [sortField]: sortDirection };
-
-    // Execute database queries in parallel
-    const [totalCount, ordersResult, categories, agencies, statuses] = await Promise.all([
-      prisma.order.count({ 
-        where: where as Prisma.OrderWhereInput 
-      }),
+    // Query total count and actual results
+    const [totalCount, orders] = await Promise.all([
+      prisma.order.count({ where }),
       prisma.order.findMany({
-        where: where as Prisma.OrderWhereInput,
-        orderBy: orderBy as Prisma.OrderOrderByWithRelationInput,
-        skip: (validatedParams.page - 1) * validatedParams.limit,
-        take: validatedParams.limit,
+        where,
+        skip,
+        take: limit,
+        orderBy: { datePublished: 'desc' },
         include: {
-          status: {
-            select: {
-              id: true,
-              name: true
-            }
-          }
-        }
-      }),
-      prisma.category.findMany({
-        select: { name: true },
-        orderBy: { name: 'asc' }
-      }),
-      prisma.agency.findMany({
-        select: { name: true },
-        orderBy: { name: 'asc' }
-      }),
-      prisma.status.findMany({
-        select: {
-          id: true,
-          name: true
+          categories: true,
+          agencies: true,
+          status: true,
         },
-        orderBy: { name: 'asc' }
-      })
+      }),
     ]);
 
-    // Prepare the response
-    const response: OrdersResponse = {
-      orders: ordersResult,
+    const response = {
+      totalCount,
+      orders,
       pagination: {
-        total: totalCount,
-        page: validatedParams.page,
-        limit: validatedParams.limit,
-        hasMore: totalCount > validatedParams.page * validatedParams.limit
+        page,
+        limit,
+        hasMore: totalCount > page * limit,
       },
-      metadata: {
-        categories: categories.map(c => c.name),
-        agencies: agencies.map(a => a.name),
-        statuses
-      }
     };
 
-    return Response.json(response);
-
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     logger.error('Error in GET /api/orders:', error);
-    
-    if (error instanceof z.ZodError) {
-      return Response.json(
-        { 
-          error: 'Invalid query parameters',
-          details: error.errors 
-        }, 
-        { status: 400 }
-      );
-    }
-    
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    return Response.json(
-      { 
-        error: 'Failed to fetch orders',
-        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined 
-      }, 
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch orders' }),
       { status: 500 }
     );
   }
 }
 
-// Since we're not using the request parameter in POST, we can remove it
-export async function POST() {
-  return Response.json(
-    { error: 'Method not implemented' },
-    { status: 501 }
-  );
+/** POST /api/orders */
+export async function POST(request: NextRequest) {
+  try {
+    // Parse JSON body
+    const body = await request.json().catch(() => null);
+    if (!body || !body.title) {
+      return new Response(JSON.stringify({ error: 'Missing "title" in body' }), { status: 400 });
+    }
+
+    // If the user didn’t provide a valid DocumentType, default to EXECUTIVE_ORDER
+    let docType: DocumentType = DocumentType.EXECUTIVE_ORDER;
+    if (body.type && Object.values(DocumentType).includes(body.type)) {
+      docType = body.type;
+    }
+
+    const newOrder = await prisma.order.create({
+      data: {
+        type: docType,
+        title: body.title,
+        summary: body.summary ?? null,
+        datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
+        link: body.link ?? null,
+
+        // categories: connectOrCreate if provided
+        categories: body.categories
+          ? {
+              connectOrCreate: body.categories.map((catName: string) => ({
+                where: { name: catName },
+                create: { name: catName },
+              })),
+            }
+          : undefined,
+
+        // agencies: connectOrCreate if provided
+        agencies: body.agencies
+          ? {
+              connectOrCreate: body.agencies.map((agencyName: string) => ({
+                where: { name: agencyName },
+                create: { name: agencyName },
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        categories: true,
+        agencies: true,
+        status: true,
+      },
+    });
+
+    return new Response(JSON.stringify({ success: true, order: newOrder }), {
+      status: 201,
+    });
+  } catch (error) {
+    logger.error('Error in POST /api/orders:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to create order' }),
+      { status: 500 }
+    );
+  }
 }

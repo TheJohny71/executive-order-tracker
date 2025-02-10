@@ -4,6 +4,27 @@ import { DocumentType } from '@prisma/client';
 export type FilterType = 'type' | 'category' | 'agency' | 'dateFrom' | 'dateTo' | 'search' | 'page' | 'limit' | 'statusId' | 'sort';
 export type SelectableValue = string | number | null;
 
+// Database Record Type (matches Prisma schema)
+export interface OrderDbRecord {
+  id: number;
+  number: string | null;
+  title: string;
+  summary: string | null;
+  type: DocumentType;
+  datePublished: Date;
+  statusId: number;
+  link: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  categories: Array<{ id: number; name: string; }>;
+  agencies: Array<{ id: number; name: string; }>;
+  status: {
+    id: number;
+    name: string;
+    color?: string;
+  } | null;
+}
+
 // Order Interfaces
 export interface Order {
   id: number;
@@ -91,13 +112,15 @@ export interface WhereClause {
   type?: DocumentType;
   statusId?: number;
   identifier?: string;
-  category?: {
-    equals: string;
-    mode: 'insensitive';
+  categories?: {
+    some: {
+      name: string;
+    };
   };
-  agency?: {
-    equals: string;
-    mode: 'insensitive';
+  agencies?: {
+    some: {
+      name: string;
+    };
   };
   datePublished?: {
     gte?: Date;
@@ -190,6 +213,20 @@ export function isValidOrder(order: unknown): order is Order {
     o.status && typeof o.status.id === 'number' &&
     typeof o.status.name === 'string'
   );
+}
+
+export function transformOrderRecord(record: OrderDbRecord): Order {
+  return {
+    ...record,
+    number: record.number ?? '',
+    summary: record.summary ?? '',
+    category: record.categories[0]?.name ?? '',
+    agency: record.agencies[0]?.name ?? null,
+    status: record.status ?? {
+      id: 1,
+      name: 'Unknown'
+    }
+  };
 }
 
 export function getSelectValue(value: string | null | undefined): string {

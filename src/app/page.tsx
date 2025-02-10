@@ -4,21 +4,20 @@ import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import { ErrorBoundary } from '@/components/error/ErrorBoundary';
 import { LoadingFallback } from '@/components/loading/LoadingFallback';
+import type { FC } from 'react';
 
-const ExecutiveOrderTracker = dynamic(
-  () => import('@/components/executive-orders/ExecutiveOrderTracker')
-    .then((mod) => {
-      const Component = mod.default || mod.ExecutiveOrderTracker;
-      if (!Component) {
-        throw new Error('Failed to load ExecutiveOrderTracker component');
-      }
-      return Component;
-    }),
-  { 
-    loading: () => <LoadingFallback />,
-    ssr: false 
-  }
-);
+// Create a separate loader function to handle the import
+const loadExecutiveOrderTracker = async () => {
+  // Explicitly type the module
+  const mod = await import('@/components/executive-orders/ExecutiveOrderTracker');
+  // Return the component, preferring named export
+  return mod.ExecutiveOrderTracker as FC;
+};
+
+const ExecutiveOrderTracker = dynamic(loadExecutiveOrderTracker, {
+  loading: () => <LoadingFallback />,
+  ssr: false
+});
 
 export default function Home() {
   return (

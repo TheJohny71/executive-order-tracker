@@ -4,6 +4,7 @@ import sanitize from 'sanitize-html';
 import { prisma } from '@/lib/db';
 import { DocumentType } from '@prisma/client';
 import { logger } from '@/utils/logger';
+import { transformOrderRecord } from '@/utils/transformOrderRecord';
 import type { WhereClause, OrderCreateInput, QueryResult, OrdersResponse } from '@/types';
 
 // Validate query params
@@ -85,7 +86,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     const response: OrdersResponse = {
-      orders,
+      orders: orders.map(transformOrderRecord),
       metadata: {
         categories: categories.map(c => c.name),
         agencies: agencies.map(a => a.name),

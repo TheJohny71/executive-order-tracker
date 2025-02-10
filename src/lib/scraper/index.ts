@@ -1,13 +1,22 @@
 // src/lib/scraper/index.ts
 import { DocumentType, PrismaClient } from '@prisma/client';
-import { ScrapedOrder, ScraperResult } from '@/types';
-import { log } from '@/utils/logger';
+import type { ScrapedOrder } from '@/types';
+import { logger } from '@/utils/logger';
 import axios from 'axios';
 
 const prisma = new PrismaClient();
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 5000; // 5 seconds
+
+// Define ScraperResult interface here since it's specific to the scraper
+interface ScraperResult {
+  success: boolean;
+  ordersScraped: number;
+  errors: string[];
+  newOrders: ScrapedOrder[];
+  updatedOrders: ScrapedOrder[];
+}
 
 /**
  * Fetches executive orders from AWS API
@@ -26,22 +35,27 @@ async function fetchFromAWS(): Promise<ScrapedOrder[]> {
     }
 
     // Transform the AWS response to match ScrapedOrder type
-    return response.data.map((item: any) => ({
+    return response.data.map((item: any): ScrapedOrder => ({
       identifier: item.identifier || item.id || '',
       type: (item.type as DocumentType) || DocumentType.EXECUTIVE_ORDER,
       title: item.title || 'Untitled',
       date: new Date(item.date),
       url: item.url,
-      summary: item.summary || null,
+      summary: item.summary || '',
       notes: item.notes || null,
       content: item.content || null,
-      statusId: item.statusId || '1',
-      categories: item.categories || [],
-      agencies: item.agencies || [],
-      isNew: true
+      statusId: String(item.statusId || '1'),
+      isNew: true,
+      categories: item.categories?.map((cat: any) => ({ name: cat.name })) || [],
+      agencies: item.agencies?.map((agency: any) => ({ name: agency.name })) || [],
+      metadata: {
+        orderNumber: item.orderNumber || item.identifier,
+        categories: item.categories,
+        agencies: item.agencies
+      }
     }));
   } catch (error) {
-    log.error('Error fetching from AWS:', error);
+    logger.error('Error fetching from AWS:', error);
     throw error;
   }
 }
@@ -54,7 +68,7 @@ async function retryWithDelay<T>(fn: () => Promise<T>, retries = MAX_RETRIES): P
     return await fn();
   } catch (error) {
     if (retries > 0) {
-      log.warn(`Retrying operation in ${RETRY_DELAY}ms. Retries left: ${retries - 1}`);
+      logger.warn(`Retrying operation in ${RETRY_DELAY}ms. Retries left: ${retries - 1}`);
       await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
       return retryWithDelay(fn, retries - 1);
     }
@@ -71,7 +85,7 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
     const documents: ScrapedOrder[] = await retryWithDelay(() => fetchFromAWS());
 
     if (documents.length === 0) {
-      log.warn('No documents found');
+      logger.warn('No documents found');
       return {
         success: true,
         ordersScraped: 0,
@@ -81,7 +95,7 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
       };
     }
 
-    log.info(`Found ${documents.length} documents`);
+    logger.info(`Found ${documents.length} documents`);
 
     const existingOrders = await prisma.order.findMany({
       select: { 
@@ -104,7 +118,7 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
       }
     }
 
-    log.info(`Found ${newOrders.length} new and ${updatedOrders.length} updated documents`);
+    logger.info(`Found ${newOrders.length} new and ${updatedOrders.length} updated documents`);
 
     return {
       success: true,
@@ -115,7 +129,7 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
     };
 
   } catch (error) {
-    log.error('Error scraping documents:', error);
+    logger.error('Error scraping documents:', error);
     return {
       success: false,
       ordersScraped: 0,
@@ -149,12 +163,12 @@ export async function checkForNewDocuments(): Promise<ScrapedOrder[]> {
     });
 
     if (newDocuments.length > 0) {
-      log.info(`Found ${newDocuments.length} new documents`);
+      logger.info(`Found ${newDocuments.length} new documents`);
     }
 
     return newDocuments;
   } catch (error) {
-    log.error('Error checking for new documents:', error);
+    logger.error('Error checking for new documents:', error);
     throw error;
   }
 }

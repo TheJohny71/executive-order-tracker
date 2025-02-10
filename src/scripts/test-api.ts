@@ -1,36 +1,52 @@
 // src/scripts/test-api.ts
-import { fetchOrders } from '../lib/api';
-import type { Order, OrderFilters } from '../types';
 import { logger } from '../utils/logger';
+import type { Order } from '../types';
 
-async function main() {
+interface APIConfig {
+  baseURL: string;
+  defaultParams: {
+    page: number;
+    limit: number;
+  };
+}
+
+const config: APIConfig = {
+  baseURL: "http://localhost:3000",
+  defaultParams: {
+    page: 1,
+    limit: 10
+  }
+};
+
+async function testEndpoint() {
   try {
     logger.info('Starting API test...');
     
-    const baseUrl = process.env.NEXT_PUBLIC_AWS_API_URL || 'http://localhost:3000';
-    logger.info('API Base URL:', baseUrl);
+    // Construct URL with parameters
+    const params = new URLSearchParams({
+      page: config.defaultParams.page.toString(),
+      limit: config.defaultParams.limit.toString()
+    });
     
-    logger.info('Fetching orders...');
+    const fullURL = new URL(`/api/orders?${params}`, config.baseURL);
+    logger.info('Testing API endpoint:', fullURL.toString());
     
-    // Create params object with correct types from OrderFilters interface
-    const params: Partial<OrderFilters> = {
-      page: 1,
-      limit: 10,
-      type: 'all',
-      category: '',
-      agency: '',
-      search: '',
-      sort: 'desc'
-    };
-
-    const response = await fetchOrders(params);
+    // Make request
+    const response = await fetch(fullURL.toString());
     
-    logger.info(`Successfully fetched ${response.orders.length} orders`);
-    logger.info(`Total orders available: ${response.pagination.total}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+    }
     
-    if (response.orders.length > 0) {
+    const data = await response.json();
+    
+    // Log results
+    if (data.orders && data.orders.length > 0) {
+      logger.info(`Successfully fetched ${data.orders.length} orders`);
+      
+      // Log a sample of the orders
       logger.info('Sample of fetched orders:', 
-        response.orders.slice(0, 3).map((order: Order) => ({
+        data.orders.slice(0, 3).map((order: Order) => ({
           id: order.id,
           title: order.title,
           number: order.number,
@@ -42,22 +58,39 @@ async function main() {
         }))
       );
 
-      logger.info('Available categories:', response.metadata.categories);
-      logger.info('Available agencies:', response.metadata.agencies);
-      logger.info('Available statuses:', response.metadata.statuses);
+      // Log pagination info if available
+      if (data.pagination) {
+        logger.info('Pagination info:', {
+          total: data.pagination.total,
+          currentPage: data.pagination.page,
+          hasMore: data.pagination.hasMore
+        });
+      }
+    } else {
+      logger.info('No orders found in the response');
     }
 
-    logger.info('Test completed successfully');
-    process.exit(0);
+    logger.info('API test completed successfully');
+    return true;
   } catch (error) {
-    logger.error('API test failed:', error instanceof Error ? error.message : 'Unknown error');
-    process.exit(1);
+    if (error instanceof Error) {
+      logger.error('API test failed:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      });
+    } else {
+      logger.error('API test failed with unknown error type:', error);
+    }
+    throw error;
   }
 }
 
-main().catch((error) => {
-  logger.error('Unhandled error:', error);
-  process.exit(1);
-});
+// Execute the test
+if (import.meta.url === new URL(process.argv[1], 'file://').href) {
+  testEndpoint()
+    .then(() => process.exit(0))
+    .catch(() => process.exit(1));
+}
 
-export { main };
+export { testEndpoint };

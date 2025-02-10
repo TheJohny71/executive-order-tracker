@@ -2,10 +2,10 @@
 import { DocumentScheduler } from '../lib/scheduler';
 import { fetchOrders } from '../lib/api';
 import { logger } from '../utils/logger';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';  // Keep only what we need
 import type { Order } from '../lib/api/types';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient();  // We are using this, so keep it
 
 async function testScraper() {
   try {

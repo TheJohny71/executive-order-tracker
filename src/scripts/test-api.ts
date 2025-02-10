@@ -1,36 +1,50 @@
 // src/scripts/test-api.ts
 import { fetchOrders } from '../lib/api';
 import type { Order } from '../lib/api/types';
+import { logger } from '../utils/logger';
 
 async function main() {
   try {
-    console.log('Fetching orders...');
-    const response = await fetchOrders();
-    const orders = response.orders;
+    logger.info('Fetching orders...');
+    const response = await fetchOrders({
+      page: 1,
+      limit: 10,
+      // Remove sort as it's not in OrderFilters type
+    });
     
-    console.log('\nFirst 3 orders:');
-    orders.slice(0, 3).forEach((order: Order) => {
-      console.log('\n----------------------------------------');
-      console.log(`Title: ${order.title}`);
-      console.log(`Number: ${order.number}`);
-      console.log(`Date: ${order.date}`);
-      console.log(`Type: ${order.type}`);
-      console.log(`Category: ${order.category}`);
-      console.log(`Agency: ${order.agency || 'N/A'}`);
-      console.log('----------------------------------------\n');
+    logger.info(`Fetched ${response.orders.length} orders`);
+    
+    if (response.orders.length > 0) {
+      logger.info('First 3 orders:', 
+        response.orders.slice(0, 3).map((order: Order) => ({
+          id: order.id,
+          title: order.title,
+          number: order.number,
+          datePublished: order.date, // Match Prisma schema field
+          type: order.type,
+          category: order.category,
+          agency: order.agency || 'N/A',
+          status: order.status.name
+        }))
+      );
+    }
+
+    logger.info('Metadata:', {
+      categories: response.metadata.categories.length,
+      agencies: response.metadata.agencies.length,
+      statuses: response.metadata.statuses.length
     });
 
-    console.log('Pagination Info:');
-    console.log(`Total: ${response.pagination.total}`);
-    console.log(`Page: ${response.pagination.page}`);
-    console.log(`Limit: ${response.pagination.limit}`);
-    console.log(`Has More: ${response.pagination.hasMore}`);
+    logger.info('Pagination:', response.pagination);
   } catch (error) {
-    console.error('Error testing API:', error);
+    logger.error('Error testing API:', error);
     process.exit(1);
   }
 }
 
 main()
-  .catch(console.error)
-  .finally(() => process.exit());
+  .catch((error) => {
+    logger.error('Unhandled error:', error);
+    process.exit(1);
+  })
+  .finally(() => process.exit(0));

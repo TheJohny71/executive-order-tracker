@@ -1,6 +1,6 @@
 import React from 'react'
 import { Inter } from 'next/font/google'
-import { ThemeProvider } from '@/components/theme-provider'
+import { Providers } from '@/components/providers'
 import './globals.css'
 
 const inter = Inter({
@@ -9,6 +9,11 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
+export const metadata = {
+  title: 'Executive Order Tracker',
+  description: 'Track and monitor executive orders and related documents',
+}
+
 interface RootLayoutProps {
   children: React.ReactNode
 }
@@ -16,17 +21,12 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider 
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+      <body className={`${inter.className} antialiased`}>
+        <Providers>
           <main className="min-h-screen bg-background">
             {children}
           </main>
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   )

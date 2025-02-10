@@ -8,46 +8,40 @@ datasource db {
 }
 
 model Order {
-  id            Int          @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   type          DocumentType
-  number        String       @unique
+  number        String?        @unique
   title         String
-  summary       String
+  summary       String?
   datePublished DateTime
-  category      String
-  agency        String?
-  statusId      Int
   link          String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  status        Status       @relation(fields: [statusId], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
-  @@index([category])
-  @@index([agency])
-  @@index([datePublished])
-  @@index([statusId])
+  statusId Int?
+  status   Status? @relation(fields: [statusId], references: [id])
+
+  /// M:N relationships to Category and Agency
+  categories Category[] @relation("OrderCategories")
+  agencies   Agency[]   @relation("OrderAgencies")
 }
 
 model Status {
-  id     Int     @id @default(autoincrement())
-  name   String  @unique
+  id    Int    @id @default(autoincrement())
+  name  String @unique
   orders Order[]
-
-  @@index([name])
 }
 
 model Category {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-
-  @@index([name])
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  orders Order[] @relation("OrderCategories")
 }
 
 model Agency {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-
-  @@index([name])
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  orders Order[] @relation("OrderAgencies")
 }
 
 enum DocumentType {

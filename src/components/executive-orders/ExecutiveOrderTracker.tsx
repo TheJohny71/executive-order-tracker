@@ -1,8 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { FC } from 'react';
 import { useQuery } from '@tanstack/react-query';
+
+interface Category {
+  name: string;
+}
+
+interface Agency {
+  name: string;
+}
 
 interface Order {
   id: string;
@@ -12,16 +20,16 @@ interface Order {
   datePublished: string;
   link: string;
   type: string;
-  categories: Array<{ name: string }>;
-  agencies: Array<{ name: string }>;
+  categories: Category[];
+  agencies: Agency[];
   status: Array<{ name: string }>;
 }
 
 interface OrdersResponse {
   orders: Order[];
   metadata: {
-    categories: Array<{ name: string }>;
-    agencies: Array<{ name: string }>;
+    categories: Category[];
+    agencies: Agency[];
   };
   pagination: {
     page: number;
@@ -60,6 +68,14 @@ const ExecutiveOrderTracker: FC = () => {
   if (error) return <div>Error: {(error as Error).message}</div>;
   if (!data) return null;
 
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(e.target.value);
+  };
+
+  const handleAgencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedAgency(e.target.value);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Executive Order Tracker</h1>
@@ -77,24 +93,24 @@ const ExecutiveOrderTracker: FC = () => {
         <div className="flex gap-4">
           <select
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={handleCategoryChange}
             className="p-2 border rounded"
           >
             <option value="">All Categories</option>
-            {data.metadata.categories.map((cat) => (
-              <option key={cat.name} value={cat.name}>
-                {cat.name}
+            {data.metadata.categories.map((category: Category) => (
+              <option key={category.name} value={category.name}>
+                {category.name}
               </option>
             ))}
           </select>
 
           <select
             value={selectedAgency}
-            onChange={(e) => setSelectedAgency(e.target.value)}
+            onChange={handleAgencyChange}
             className="p-2 border rounded"
           >
             <option value="">All Agencies</option>
-            {data.metadata.agencies.map((agency) => (
+            {data.metadata.agencies.map((agency: Agency) => (
               <option key={agency.name} value={agency.name}>
                 {agency.name}
               </option>
@@ -105,14 +121,14 @@ const ExecutiveOrderTracker: FC = () => {
 
       {/* Orders List */}
       <div className="space-y-6">
-        {data.orders.map((order) => (
+        {data.orders.map((order: Order) => (
           <div key={order.id} className="border p-4 rounded shadow">
             <h2 className="text-xl font-semibold">{order.title}</h2>
             <p className="text-gray-600">{order.summary}</p>
             <div className="mt-2 flex flex-wrap gap-2">
-              {order.categories.map((cat) => (
-                <span key={cat.name} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
-                  {cat.name}
+              {order.categories.map((category: Category) => (
+                <span key={category.name} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
+                  {category.name}
                 </span>
               ))}
             </div>

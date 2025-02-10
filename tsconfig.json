@@ -30,9 +30,15 @@
     "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true,
     "verbatimModuleSyntax": true,
-    "types": ["node", "react", "react-dom"],
-    "typeRoots": ["./node_modules/@types", "./src/types"],
-    "importsNotUsedAsValues": "error"
+    "types": [
+      "node",
+      "react",
+      "react-dom"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
   },
   "ts-node": {
     "esm": true,
@@ -47,5 +53,11 @@
     "src/**/*.tsx",
     "src/types/**/*.d.ts"
   ],
-  "exclude": ["node_modules", "dist", ".next", "out", "coverage"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next",
+    "out",
+    "coverage"
+  ]
 }

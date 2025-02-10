@@ -1,14 +1,16 @@
-/** @type {import('next').NextConfig} */
+/**
+ * @type {import('next').NextConfig}
+ */
 const config = {
   images: {
     domains: ['www.whitehouse.gov'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    formats: ['image/webp'],
+    formats: ['image/webp', 'image/avif'],
   },
   reactStrictMode: true,
   swcMinify: true,
-  poweredByHeader: false, // Security: Remove X-Powered-By header
+  poweredByHeader: false,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
@@ -39,7 +41,7 @@ const config = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=()'
           },
           {
             key: 'Strict-Transport-Security',
@@ -57,6 +59,7 @@ const config = {
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
+              "object-src 'none'",
               "upgrade-insecure-requests"
             ].join('; ')
           }
@@ -65,7 +68,6 @@ const config = {
     ];
   },
   webpack: (config, { dev, isServer }) => {
-    // Enable tree shaking and dead code elimination
     if (!dev && !isServer) {
       config.optimization = {
         ...config.optimization,
@@ -92,6 +94,12 @@ const config = {
               priority: -10,
               reuseExistingChunk: true,
             },
+            commons: {
+              name: 'commons',
+              chunks: 'initial',
+              minChunks: 2,
+              priority: -30,
+            },
             styles: {
               name: 'styles',
               test: /\.(css|scss)$/,
@@ -107,11 +115,12 @@ const config = {
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
-    optimisticClientCache: true
+    optimisticClientCache: true,
+    serverActions: true,
+    typedRoutes: true
   },
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    // Removed NODE_ENV from here as it's handled by Next.js
   }
 };
 

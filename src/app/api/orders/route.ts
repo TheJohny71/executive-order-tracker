@@ -1,14 +1,19 @@
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import sanitize from 'sanitize-html';
-import { prisma } from '@/lib/db';  // Remove DocumentType since it's not used
+import { prisma } from '@/lib/db';
+import { DocumentType, Prisma } from '@prisma/client';
 import { logger } from '@/utils/logger';
+import type { WhereClause, OrderCreateInput } from '@/types';
 
-// Validate query params
+// Improved query schema with proper types
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(50).default(10),
   search: z.string().trim().optional(),
+  type: z.nativeEnum(DocumentType).optional(),
+  category: z.string().optional(),
+  agency: z.string().optional(),
 });
 
 const sanitizeOptions = {
@@ -16,25 +21,42 @@ const sanitizeOptions = {
   allowedAttributes: {},
 };
 
-/** GET /api/orders */
-export async function GET(req: NextRequest) {  // Changed from request to req since it's used
+export async function GET(request: NextRequest) {
   try {
-    const url = new URL(req.url);
+    const url = new URL(request.url);
     const rawParams = Object.fromEntries(url.searchParams.entries());
+    
     const params = querySchema.parse(rawParams);
-
     const page = params.page;
     const limit = params.limit;
     const skip = (page - 1) * limit;
 
-    // Build a 'where' object for Prisma
-    const where: any = {};
+    const where: Prisma.OrderWhereInput = {};
+    
     if (params.search) {
       const s = sanitize(params.search, sanitizeOptions);
       where.OR = [
         { title: { contains: s, mode: 'insensitive' } },
         { summary: { contains: s, mode: 'insensitive' } },
       ];
+    }
+
+    if (params.type) {
+      where.type = params.type;
+    }
+
+    if (params.category) {
+      where.category = {
+        equals: params.category,
+        mode: 'insensitive'
+      };
+    }
+
+    if (params.agency) {
+      where.agency = {
+        equals: params.agency,
+        mode: 'insensitive'
+      };
     }
 
     const [totalCount, orders, categories, agencies] = await Promise.all([
@@ -58,24 +80,25 @@ export async function GET(req: NextRequest) {  // Changed from request to req si
       }),
     ]);
 
-    const response = {
-      orders,
-      metadata: {
-        categories,
-        agencies,
-      },
-      pagination: {
-        page,
-        limit,
-        total: totalCount,
-        hasMore: totalCount > page * limit,
-      },
-    };
-
-    return new Response(JSON.stringify(response), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        orders,
+        metadata: {
+          categories,
+          agencies,
+        },
+        pagination: {
+          page,
+          limit,
+          total: totalCount,
+          hasMore: totalCount > page * limit,
+        },
+      }),
+      { 
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
   } catch (error) {
     logger.error('Error in GET /api/orders:', error);
     return new Response(
@@ -85,43 +108,43 @@ export async function GET(req: NextRequest) {  // Changed from request to req si
   }
 }
 
-/** POST /api/orders */
-export async function POST(req: NextRequest) {  // Changed from request to req
+export async function POST(request: NextRequest) {
   try {
-    const body = await req.json().catch(() => null);
-    if (!body || !body.title) {
+    const body = await request.json();
+    
+    if (!body?.title) {
       return new Response(
-        JSON.stringify({ error: 'Missing "title" in body' }),
+        JSON.stringify({ error: 'Missing title' }),
         { status: 400 }
       );
     }
 
+    const orderData: Prisma.OrderCreateInput = {
+      type: body.type ?? DocumentType.EXECUTIVE_ORDER,
+      title: body.title,
+      identifier: body.identifier,
+      summary: body.summary ?? null,
+      datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
+      link: body.link ?? null,
+      categories: body.categories ? {
+        connectOrCreate: body.categories.map((name: string) => ({
+          where: { name },
+          create: { name },
+        })),
+      } : undefined,
+      agencies: body.agencies ? {
+        connectOrCreate: body.agencies.map((name: string) => ({
+          where: { name },
+          create: { name },
+        })),
+      } : undefined,
+      status: {
+        connect: { id: 1 } // Default status
+      }
+    };
+
     const newOrder = await prisma.order.create({
-      data: {
-        type: body.type || 'EXECUTIVE_ORDER',  // Simplified type handling
-        title: body.title,
-        summary: body.summary ?? null,
-        datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
-        link: body.link ?? null,
-
-        categories: body.categories
-          ? {
-              connectOrCreate: body.categories.map((catName: string) => ({
-                where: { name: catName },
-                create: { name: catName },
-              })),
-            }
-          : undefined,
-
-        agencies: body.agencies
-          ? {
-              connectOrCreate: body.agencies.map((agencyName: string) => ({
-                where: { name: agencyName },
-                create: { name: agencyName },
-              })),
-            }
-          : undefined,
-      },
+      data: orderData,
       include: {
         categories: true,
         agencies: true,

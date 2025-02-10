@@ -1,194 +1,166 @@
-// src/lib/scheduler/index.ts
-import { PrismaClient } from '@prisma/client';
-import pino from 'pino';
-import pretty from 'pino-pretty';
-import { spaw } from '../api/spaw';  // Updated import
-import type { ScrapedOrder } from '@/types';
+// src/lib/scraper/index.ts
+import { DocumentType, PrismaClient } from '@prisma/client';
+import { ScrapedOrder, ScraperResult } from '@/types';
+import { log } from '@/utils/logger';
+import axios from 'axios';
 
 const prisma = new PrismaClient();
-const log = pino(pretty({ colorize: true }));
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 5000; // 5 seconds
-let consecutiveFailures = 0;
 
-export class DocumentScheduler {
-  private intervalMs: number;
-  private isRunning: boolean = false;
-  private intervalId?: NodeJS.Timeout;
-  private lastCheckTime?: Date;
-
-  constructor(intervalMinutes: number = 15) {
-    this.intervalMs = intervalMinutes * 60 * 1000;
+/**
+ * Fetches executive orders from AWS API
+ * @returns Promise<ScrapedOrder[]>
+ */
+async function fetchFromAWS(): Promise<ScrapedOrder[]> {
+  if (!process.env.AWS_API_ENDPOINT) {
+    throw new Error('AWS_API_ENDPOINT environment variable is not set');
   }
 
-  public async start(): Promise<void> {
-    if (this.isRunning) {
-      log.warn('Scheduler is already running');
-      return;
+  try {
+    const response = await axios.get(process.env.AWS_API_ENDPOINT);
+    
+    if (!response.data) {
+      throw new Error('No data received from AWS API');
     }
 
-    await this.initializeHistoricalData();
-    this.isRunning = true;
-    await this.checkNewDocuments();
-    this.intervalId = setInterval(() => this.checkNewDocuments(), this.intervalMs);
-    log.info(`Scheduler started with ${this.intervalMs / 60000} minute interval`);
+    // Transform the AWS response to match ScrapedOrder type
+    return response.data.map((item: any) => ({
+      identifier: item.identifier || item.id || '',
+      type: (item.type as DocumentType) || DocumentType.EXECUTIVE_ORDER,
+      title: item.title || 'Untitled',
+      date: new Date(item.date),
+      url: item.url,
+      summary: item.summary || null,
+      notes: item.notes || null,
+      content: item.content || null,
+      statusId: item.statusId || '1',
+      categories: item.categories || [],
+      agencies: item.agencies || [],
+      isNew: true
+    }));
+  } catch (error) {
+    log.error('Error fetching from AWS:', error);
+    throw error;
   }
+}
 
-  public stop(): void {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.isRunning = false;
-      this.lastCheckTime = undefined;
-      log.info('Scheduler stopped');
+/**
+ * Retry mechanism for API calls
+ */
+async function retryWithDelay<T>(fn: () => Promise<T>, retries = MAX_RETRIES): Promise<T> {
+  try {
+    return await fn();
+  } catch (error) {
+    if (retries > 0) {
+      log.warn(`Retrying operation in ${RETRY_DELAY}ms. Retries left: ${retries - 1}`);
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+      return retryWithDelay(fn, retries - 1);
     }
+    throw error;
   }
+}
 
-  private async retryWithDelay<T>(fn: () => Promise<T>, retries: number = MAX_RETRIES): Promise<T> {
-    try {
-      return await fn();
-    } catch (error) {
-      if (retries > 0) {
-        log.warn(`Retrying operation in ${RETRY_DELAY}ms. Retries left: ${retries - 1}`);
-        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
-        return this.retryWithDelay(fn, retries - 1);
-      }
-      throw error;
+/**
+ * Main function to scrape documents
+ * @returns Promise<ScraperResult>
+ */
+export async function scrapeDocuments(): Promise<ScraperResult> {
+  try {
+    const documents: ScrapedOrder[] = await retryWithDelay(() => fetchFromAWS());
+
+    if (documents.length === 0) {
+      log.warn('No documents found');
+      return {
+        success: true,
+        ordersScraped: 0,
+        errors: [],
+        newOrders: [],
+        updatedOrders: []
+      };
     }
-  }
 
-  public async initializeHistoricalData(): Promise<void> {
-    try {
-      log.info('Starting historical data initialization');
-      
-      const existingCount = await prisma.order.count();
-      
-      if (existingCount > 0) {
-        log.info(`Database already contains ${existingCount} documents. Skipping initialization.`);
-        return;
+    log.info(`Found ${documents.length} documents`);
+
+    const existingOrders = await prisma.order.findMany({
+      select: { 
+        link: true,
+        number: true 
       }
+    });
+    
+    const existingLinks = new Set(existingOrders.map(o => o.link));
+    const existingNumbers = new Set(existingOrders.map(o => o.number));
 
-      const documents = await this.retryWithDelay(() => spaw.fetchExecutiveOrders());
-      
-      if (documents.length === 0) {
-        log.info('No historical documents found');
-        return;
-      }
+    const newOrders: ScrapedOrder[] = [];
+    const updatedOrders: ScrapedOrder[] = [];
 
-      await prisma.$transaction(async (tx) => {
-        for (const doc of documents) {
-          await tx.order.create({
-            data: {
-              type: doc.type,
-              number: doc.identifier || 'UNKNOWN',  // Updated to use identifier
-              title: doc.title || 'Untitled Document',
-              summary: doc.summary || '',
-              datePublished: doc.date,
-              category: (doc.categories[0]?.name) || 'Uncategorized',  // Updated to use categories array
-              agency: (doc.agencies[0]?.name) || null,  // Updated to use agencies array
-              link: doc.url || '',
-              statusId: doc.statusId,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            }
-          });
-        }
-      });
-
-      log.info(`Added ${documents.length} historical documents`);
-    } catch (error) {
-      log.error('Error initializing historical data:', error);
-      throw error;
-    }
-  }
-
-  private async checkNewDocuments(): Promise<void> {
-    try {
-      log.info('Starting document check', { lastCheck: this.lastCheckTime });
-      consecutiveFailures = 0;
-      
-      const latestDocuments = await this.retryWithDelay(() => spaw.fetchExecutiveOrders());
-      
-      const existingDocuments = await prisma.order.findMany({
-        select: { link: true, number: true }
-      });
-      
-      const existingLinks = new Set(existingDocuments.map(doc => doc.link));
-      const existingNumbers = new Set(existingDocuments.map(doc => doc.number));
-      
-      const newDocuments = latestDocuments.filter(doc => {
-        return !existingLinks.has(doc.url) && 
-               !existingNumbers.has(doc.identifier || '');  // Updated to use identifier
-      });
-      
-      if (newDocuments.length === 0) {
-        log.info('No new documents found');
-        this.lastCheckTime = new Date();
-        return;
-      }
-      
-      await prisma.$transaction(async (tx) => {
-        for (const doc of newDocuments) {
-          await tx.order.create({
-            data: {
-              type: doc.type,
-              number: doc.identifier || 'UNKNOWN',  // Updated to use identifier
-              title: doc.title || 'Untitled Document',
-              summary: doc.summary || '',
-              datePublished: doc.date,
-              category: (doc.categories[0]?.name) || 'Uncategorized',  // Updated to use categories array
-              agency: (doc.agencies[0]?.name) || null,  // Updated to use agencies array
-              link: doc.url || '',
-              statusId: doc.statusId,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            }
-          });
-        }
-      });
-      
-      log.info(`Added ${newDocuments.length} new documents`);
-      await this.notifyNewDocuments(newDocuments);
-      this.lastCheckTime = new Date();
-      
-    } catch (error) {
-      consecutiveFailures++;
-      log.error('Error checking for new documents:', error);
-      
-      if (consecutiveFailures >= MAX_RETRIES) {
-        log.error('Too many consecutive failures. Stopping scheduler.');
-        this.stop();
-        throw error;
+    for (const doc of documents) {
+      if (!existingLinks.has(doc.url) && !existingNumbers.has(doc.identifier)) {
+        newOrders.push(doc);
+      } else {
+        updatedOrders.push(doc);
       }
     }
-  }
 
-  private async notifyNewDocuments(documents: ScrapedOrder[]): Promise<void> {
-    try {
-      const documentsList = documents.map(d => ({
-        type: d.type,
-        title: d.title || 'Untitled',
-        number: d.identifier || 'N/A',  // Updated to use identifier
-        date: d.date
-      }));
-      
-      log.info('New documents found:', { documents: documentsList });
-      
-    } catch (error) {
-      log.error('Error sending notifications:', error);
-    }
-  }
+    log.info(`Found ${newOrders.length} new and ${updatedOrders.length} updated documents`);
 
-  public async manualCheck(): Promise<void> {
-    await this.checkNewDocuments();
-  }
-
-  public getStatus(): { isRunning: boolean } {
     return {
-      isRunning: this.isRunning
+      success: true,
+      ordersScraped: documents.length,
+      errors: [],
+      newOrders,
+      updatedOrders
+    };
+
+  } catch (error) {
+    log.error('Error scraping documents:', error);
+    return {
+      success: false,
+      ordersScraped: 0,
+      errors: [(error as Error).message],
+      newOrders: [],
+      updatedOrders: []
     };
   }
 }
 
-// Export singleton instance
-export const documentScheduler = new DocumentScheduler();
+/**
+ * Check for new documents since last check
+ * @returns Promise<ScrapedOrder[]>
+ */
+export async function checkForNewDocuments(): Promise<ScrapedOrder[]> {
+  try {
+    const latestDocuments: ScrapedOrder[] = await retryWithDelay(() => fetchFromAWS());
+    
+    const existingOrders = await prisma.order.findMany({
+      select: { 
+        link: true,
+        number: true 
+      }
+    });
+    
+    const existingLinks = new Set(existingOrders.map(o => o.link));
+    const existingNumbers = new Set(existingOrders.map(o => o.number));
+    
+    const newDocuments = latestDocuments.filter((doc: ScrapedOrder) => {
+      return !existingLinks.has(doc.url) && !existingNumbers.has(doc.identifier);
+    });
+
+    if (newDocuments.length > 0) {
+      log.info(`Found ${newDocuments.length} new documents`);
+    }
+
+    return newDocuments;
+  } catch (error) {
+    log.error('Error checking for new documents:', error);
+    throw error;
+  }
+}
+
+// Export any additional utility functions if needed
+export const utils = {
+  retryWithDelay,
+  fetchFromAWS
+};

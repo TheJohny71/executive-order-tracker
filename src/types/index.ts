@@ -195,7 +195,7 @@ export interface OrderWhereInput {
   };
 }
 
-// Type Guards and Utility Functions
+// Utility Functions
 export function isValidOrder(order: unknown): order is Order {
   if (!order || typeof order !== 'object') return false;
   
@@ -215,7 +215,7 @@ export function isValidOrder(order: unknown): order is Order {
   );
 }
 
-export function transformOrderRecord(record: OrderDbRecord): Order {
+export const transformOrderRecord = (record: OrderDbRecord): Order => {
   return {
     ...record,
     number: record.number ?? '',
@@ -227,7 +227,7 @@ export function transformOrderRecord(record: OrderDbRecord): Order {
       name: 'Unknown'
     }
   };
-}
+};
 
 export function getSelectValue(value: string | null | undefined): string {
   return value || 'all';

@@ -2,13 +2,14 @@
 
 import * as React from 'react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import type { ThemeProviderProps as NextThemeProviderProps } from 'next-themes/dist/types'
+import type { ThemeProviderProps as NextThemeProviderProps } from 'next-themes'
 
 type Theme = 'light' | 'dark' | 'system'
+type Attribute = 'class' | 'data-theme'
 
 interface ThemeProviderProps extends Partial<NextThemeProviderProps> {
   children: React.ReactNode
-  attribute?: string
+  attribute?: Attribute
   defaultTheme?: Theme
   enableSystem?: boolean
   disableTransitionOnChange?: boolean

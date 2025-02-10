@@ -5,8 +5,8 @@ import { Suspense } from 'react';
 import { ErrorBoundary } from '@/components/error/ErrorBoundary';
 import { LoadingFallback } from '@/components/loading/LoadingFallback';
 
-const ExecutiveOrderTracker = dynamic(
-  () => import('@/components/executive-orders/ExecutiveOrderTracker').then(mod => mod.default),
+const ExecutiveOrderTracker = dynamic<any>(
+  () => import('@/components/executive-orders/ExecutiveOrderTracker').then(mod => mod.default ?? mod),
   { 
     loading: () => <LoadingFallback />,
     ssr: false 

@@ -6,7 +6,6 @@ async function testScraper() {
   
   try {
     const url = `${apiConfig.aws.apiUrl}/api/scrape`;
-    
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -16,19 +15,16 @@ async function testScraper() {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
     logger.info('Scraper response:', data);
     return data;
-  } catch (error) {
-    logger.error('Error running test-scraper:', error);
-    throw error;
+  } catch (err) {
+    logger.error('Error running test-scraper', err);
+    process.exit(1);
   }
 }
 
-testScraper().catch((error) => {
-  process.exit(1);
-});
+testScraper();

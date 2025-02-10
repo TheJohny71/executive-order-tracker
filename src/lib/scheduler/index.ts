@@ -1,5 +1,3 @@
-// src/lib/scheduler/index.ts
-
 import { PrismaClient, DocumentType } from '@prisma/client';
 import { logger } from '@/utils/logger';
 
@@ -11,7 +9,7 @@ async function fetchOrders(): Promise<{ orders: MyOrder[] }> {
 
 // Define a minimal interface for your "Order" from external sources
 interface MyOrder {
-  type?: string;
+  type?: DocumentType;
   number?: string;
   link?: string;
   summary?: string;

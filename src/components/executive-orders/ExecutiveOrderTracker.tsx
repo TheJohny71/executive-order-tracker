@@ -2,42 +2,8 @@
 
 import { useState } from 'react';
 import type { FC } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
-interface Category {
-  name: string;
-}
-
-interface Agency {
-  name: string;
-}
-
-interface Order {
-  id: string;
-  title: string;
-  number: string;
-  summary: string;
-  datePublished: string;
-  link: string;
-  type: string;
-  categories: Category[];
-  agencies: Agency[];
-  status: Array<{ name: string }>;
-}
-
-interface OrdersResponse {
-  orders: Order[];
-  metadata: {
-    categories: Category[];
-    agencies: Agency[];
-  };
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    hasMore: boolean;
-  };
-}
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import type { Order, Category, Agency, OrdersResponse } from '@/types';
 
 const ExecutiveOrderTracker: FC = () => {
   const [page, setPage] = useState(1);
@@ -45,7 +11,7 @@ const ExecutiveOrderTracker: FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedAgency, setSelectedAgency] = useState('');
 
-  const { data, isLoading, error } = useQuery<OrdersResponse>({
+  const { data, isLoading, error }: UseQueryResult<OrdersResponse> = useQuery<OrdersResponse>({
     queryKey: ['orders', page, search, selectedCategory, selectedAgency],
     queryFn: async () => {
       const params = new URLSearchParams({

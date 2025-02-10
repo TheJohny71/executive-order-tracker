@@ -27,7 +27,7 @@ interface TimelineDataPoint {
 }
 
 export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
-  const timelineData = useMemo(() => {
+  const timelineData: TimelineDataPoint[] = useMemo(() => {
     if (!orders?.length) return [];
     
     const ordersByMonth: Record<string, TimelineDataPoint> = {};

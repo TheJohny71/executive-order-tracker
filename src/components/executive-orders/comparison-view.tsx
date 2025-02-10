@@ -51,6 +51,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ orders, onClose 
         {compareField('category', 'Category')}
         {compareField('agency', 'Agency')}
         {compareField('summary', 'Summary')}
+        {compareField('status', 'Status')}
+        {compareField('link', 'Link')}
+        {compareField('createdAt', 'Created At')}
+        {compareField('updatedAt', 'Updated At')}
       </CardContent>
     </Card>
   );

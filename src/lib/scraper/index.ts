@@ -1,5 +1,5 @@
 import { DocumentType, PrismaClient } from '@prisma/client';
-import type { ScrapedOrder } from '@/types';
+import type { ScrapedOrder, AWSApiItem, ScraperResult } from '@/lib/scraper/types';
 import { logger } from '@/utils/logger';
 import axios from 'axios';
 
@@ -7,31 +7,6 @@ const prisma = new PrismaClient();
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 5000; // 5 seconds
-
-// Define interfaces for AWS API response
-interface AWSApiItem {
-  identifier: string;
-  id?: string;
-  type: DocumentType;
-  title: string;
-  date: string;
-  url: string;
-  summary: string;
-  notes?: string;
-  content?: string;
-  statusId: string;
-  orderNumber?: string;
-  categories?: Array<{ name: string }>;
-  agencies?: Array<{ name: string }>;
-}
-
-interface ScraperResult {
-  success: boolean;
-  ordersScraped: number;
-  errors: string[];
-  newOrders: ScrapedOrder[];
-  updatedOrders: ScrapedOrder[];
-}
 
 /**
  * Fetches executive orders from AWS API

@@ -1,5 +1,3 @@
-// File: src/lib/db.ts
-
 import { PrismaClient, DocumentType } from '@prisma/client';
 
 const globalForPrisma = global as unknown as {

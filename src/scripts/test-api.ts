@@ -1,3 +1,4 @@
+// src/scripts/test-api.ts
 import { logger } from '../utils/logger';
 
 interface APIConfig {
@@ -8,8 +9,49 @@ interface APIConfig {
   };
 }
 
+enum DocumentType {
+  EXECUTIVE_ORDER = 'EXECUTIVE_ORDER',
+  PROCLAMATION = 'PROCLAMATION',
+  MEMORANDUM = 'MEMORANDUM'
+}
+
+interface Order {
+  id: number;
+  type: DocumentType;
+  number?: string;
+  title: string;
+  summary?: string;
+  datePublished: string;
+  link?: string;
+  createdAt: string;
+  updatedAt: string;
+  statusId?: number;
+  status?: {
+    id: number;
+    name: string;
+  };
+  categories: Array<{
+    id: number;
+    name: string;
+  }>;
+  agencies: Array<{
+    id: number;
+    name: string;
+  }>;
+}
+
+interface APIResponse {
+  totalCount: number;
+  orders: Order[];
+  pagination: {
+    page: number;
+    limit: number;
+    hasMore: boolean;
+  };
+}
+
 const config: APIConfig = {
-  baseURL: "http://localhost:3003",
+  baseURL: "http://localhost:3000",
   defaultParams: {
     page: 1,
     limit: 10
@@ -31,16 +73,42 @@ async function testEndpoint() {
     const response = await fetch(fullURL.toString());
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
     }
     
-    const data = await response.json();
+    const data = await response.json() as APIResponse;
     
+    // Add detailed logging
+    logger.info('Response structure:', {
+      totalCount: data.totalCount,
+      pagination: data.pagination,
+      orderCount: data.orders?.length ?? 0
+    });
+
     if (data.orders?.length > 0) {
-      logger.info(`Fetched ${data.orders.length} orders`);
-      logger.info('Sample:', data.orders[0]);
+      const firstOrder = data.orders[0];
+      logger.info('First order:', {
+        id: firstOrder.id,
+        type: firstOrder.type,
+        title: firstOrder.title,
+        categoryCount: firstOrder.categories?.length ?? 0,
+        agencyCount: firstOrder.agencies?.length ?? 0
+      });
+
+      if (firstOrder.categories?.length > 0) {
+        logger.info('Categories:', firstOrder.categories);
+      } else {
+        logger.info('No categories found for first order');
+      }
+
+      if (firstOrder.agencies?.length > 0) {
+        logger.info('Agencies:', firstOrder.agencies);
+      } else {
+        logger.info('No agencies found for first order');
+      }
     } else {
-      logger.info('No orders found');
+      logger.info('No orders found in response');
     }
 
     logger.info('Test completed');

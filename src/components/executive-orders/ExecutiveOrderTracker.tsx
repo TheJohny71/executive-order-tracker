@@ -1,181 +1,176 @@
-// src/components/executive-orders/ExecutiveOrderTracker.tsx
-import React, { useState } from 'react';
-import { Filter, ArrowUp, X } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { OrderHeader } from './ui/OrderHeader';
-import { OrderFilters } from './ui/OrderFilters';
-import { OrderCard } from './ui/OrderCard';
-import { useOrders } from '@/hooks/useOrders';
-import type { Order, OrderFilters as OrderFiltersType, FilterType } from '@/types';
+// src/app/api/orders/route.ts
+import { NextRequest } from 'next/server';
+import { z } from 'zod';
+import sanitize from 'sanitize-html';
+import { prisma, DocumentType } from '@/lib/db'; 
+import { logger } from '@/utils/logger';
 
-const LoadingSkeleton = () => (
-  <div className="animate-pulse space-y-4">
-    {[1, 2, 3].map((n) => (
-      <div key={n} className="h-32 bg-gray-200 rounded-lg" />
-    ))}
-  </div>
-);
+// Validate query params
+const querySchema = z.object({
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(50).default(10),
+  search: z.string().trim().optional(),
+  type: z.string().optional(),
+  category: z.string().optional(),
+  agency: z.string().optional(),
+});
 
-export default function ExecutiveOrderTracker() {
-  // State
-  const [filters, setFilters] = useState<OrderFiltersType>({
-    type: '',
-    category: '',
-    agency: '',
-    search: '',
-    page: 1,
-    limit: 10,
-  });
-  const [viewMode, setViewMode] = useState<'expanded' | 'compact'>('expanded');
-  const [isComparing, setIsComparing] = useState(false);
-  const [compareItems, setCompareItems] = useState<Order[]>([]);
-  const [showTimeline, setShowTimeline] = useState(true);
-  const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
+const sanitizeOptions = {
+  allowedTags: [],
+  allowedAttributes: {},
+};
 
-  // Fetch data
-  const { data, loading, error, refresh, lastUpdate } = useOrders(filters);
+/** GET /api/orders */
+export async function GET(request: NextRequest) {
+  try {
+    const url = new URL(request.url);
+    const rawParams = Object.fromEntries(url.searchParams.entries());
+    const params = querySchema.parse(rawParams);
 
-  // Handlers
-  const handleFilterChange = (type: FilterType, value: string) => {
-    setFilters(prev => ({
-      ...prev,
-      [type]: value,
-      page: 1 // Reset page when filters change
-    }));
-    // Close mobile filters after selection on mobile
-    if (window.innerWidth < 768) {
-      setMobileFiltersVisible(false);
+    const page = params.page;
+    const limit = params.limit;
+    const skip = (page - 1) * limit;
+
+    // Build a 'where' object for Prisma
+    const where: any = {};
+    
+    if (params.search) {
+      const s = sanitize(params.search, sanitizeOptions);
+      where.OR = [
+        { title: { contains: s, mode: 'insensitive' } },
+        { summary: { contains: s, mode: 'insensitive' } },
+      ];
     }
-  };
 
-  const handleCompareToggle = (order: Order) => {
-    setCompareItems(prev => {
-      const exists = prev.find(item => item.id === order.id);
-      if (exists) {
-        return prev.filter(item => item.id !== order.id);
-      }
-      if (prev.length >= 2) {
-        return [...prev.slice(1), order];
-      }
-      return [...prev, order];
+    if (params.type) {
+      where.type = params.type;
+    }
+
+    if (params.category) {
+      where.categories = {
+        some: {
+          name: params.category
+        }
+      };
+    }
+
+    if (params.agency) {
+      where.agencies = {
+        some: {
+          name: params.agency
+        }
+      };
+    }
+
+    // Fetch all data in parallel
+    const [totalCount, orders, categories, agencies] = await Promise.all([
+      prisma.order.count({ where }),
+      prisma.order.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { datePublished: 'desc' },
+        include: {
+          categories: true,
+          agencies: true,
+          status: true,
+        },
+      }),
+      prisma.category.findMany({
+        orderBy: { name: 'asc' }
+      }),
+      prisma.agency.findMany({
+        orderBy: { name: 'asc' }
+      }),
+    ]);
+
+    const response = {
+      orders,
+      metadata: {
+        categories,
+        agencies,
+      },
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        hasMore: totalCount > page * limit,
+      },
+    };
+
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
     });
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500">Error: {error}</p>
-        <Button onClick={refresh} className="ml-4">Retry</Button>
-      </div>
+  } catch (error) {
+    logger.error('Error in GET /api/orders:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch orders' }),
+      { status: 500 }
     );
   }
+}
 
-  const formattedLastUpdate = lastUpdate ? new Date(lastUpdate).toISOString() : undefined;
+/** POST /api/orders */
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json().catch(() => null);
+    if (!body || !body.title) {
+      return new Response(
+        JSON.stringify({ error: 'Missing "title" in body' }),
+        { status: 400 }
+      );
+    }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <OrderHeader 
-        viewMode={viewMode}
-        showTimeline={showTimeline}
-        isComparing={isComparing}
-        onViewModeChange={setViewMode}
-        onTimelineToggle={() => setShowTimeline(!showTimeline)}
-        onCompareToggle={() => setIsComparing(!isComparing)}
-        totalOrders={data?.pagination.total}
-        lastUpdate={formattedLastUpdate}
-      />
+    // If user doesn't provide a valid DocumentType, default to EXECUTIVE_ORDER
+    let docType: DocumentType = DocumentType.EXECUTIVE_ORDER;
+    if (body.type && Object.values(DocumentType).includes(body.type)) {
+      docType = body.type;
+    }
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        {/* Mobile Filters Overlay */}
-        {mobileFiltersVisible && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 md:hidden">
-            <div className="fixed inset-0 z-50">
-              <div className="relative h-full bg-white p-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-medium">Filters</h2>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setMobileFiltersVisible(false)}
-                  >
-                    <X className="h-6 w-6" />
-                  </Button>
-                </div>
-                <OrderFilters
-                  filters={filters}
-                  onFilterChange={handleFilterChange}
-                  categories={data?.metadata.categories || []}
-                  agencies={data?.metadata.agencies || []}
-                />
-              </div>
-            </div>
-          </div>
-        )}
+    const newOrder = await prisma.order.create({
+      data: {
+        type: docType,
+        title: body.title,
+        number: body.number ?? null,
+        summary: body.summary ?? null,
+        datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
+        link: body.link ?? null,
 
-        {/* Desktop Filters */}
-        <div className="hidden md:block">
-          <OrderFilters
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            categories={data?.metadata.categories || []}
-            agencies={data?.metadata.agencies || []}
-          />
-        </div>
+        categories: body.categories
+          ? {
+              connectOrCreate: body.categories.map((catName: string) => ({
+                where: { name: catName },
+                create: { name: catName },
+              })),
+            }
+          : undefined,
 
-        <div className="mt-4 text-sm text-gray-500">
-          Showing {data?.orders.length || 0} of {data?.pagination.total || 0} orders
-        </div>
+        agencies: body.agencies
+          ? {
+              connectOrCreate: body.agencies.map((agencyName: string) => ({
+                where: { name: agencyName },
+                create: { name: agencyName },
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        categories: true,
+        agencies: true,
+        status: true,
+      },
+    });
 
-        <div className="space-y-4 mt-4">
-          {loading && !data ? (
-            <LoadingSkeleton />
-          ) : (
-            data?.orders.map((order) => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                viewMode={viewMode}
-                isComparing={isComparing}
-                compareItems={compareItems}
-                onCompareToggle={handleCompareToggle}
-                onRecentlyViewed={() => {}}
-                onFilterChange={handleFilterChange}
-              />
-            ))
-          )}
-        </div>
-
-        {data?.pagination.hasMore && (
-          <div className="mt-4 text-center">
-            <Button 
-              onClick={() => setFilters(prev => ({ ...prev, page: prev.page + 1 }))}
-              variant="outline"
-            >
-              Load More
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* Mobile Actions */}
-      <div className="md:hidden fixed bottom-6 right-6 flex flex-col gap-2">
-        <Button
-          className="rounded-full h-12 w-12 shadow-lg"
-          onClick={() => setMobileFiltersVisible(true)}
-        >
-          <Filter className="h-6 w-6" />
-        </Button>
-        <Button
-          className="rounded-full h-12 w-12 shadow-lg"
-          onClick={scrollToTop}
-        >
-          <ArrowUp className="h-6 w-6" />
-        </Button>
-      </div>
-    </div>
-  );
+    return new Response(
+      JSON.stringify({ success: true, order: newOrder }),
+      { status: 201 }
+    );
+  } catch (error) {
+    logger.error('Error in POST /api/orders:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to create order' }),
+      { status: 500 }
+    );
+  }
 }

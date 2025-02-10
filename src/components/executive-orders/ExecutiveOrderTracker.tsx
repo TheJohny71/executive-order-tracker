@@ -1,11 +1,9 @@
-// src/app/api/orders/route.ts
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import sanitize from 'sanitize-html';
 import { prisma, DocumentType } from '@/lib/db'; 
 import { logger } from '@/utils/logger';
 
-// Validate query params
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(50).default(10),
@@ -20,7 +18,6 @@ const sanitizeOptions = {
   allowedAttributes: {},
 };
 
-/** GET /api/orders */
 export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url);
@@ -31,7 +28,6 @@ export async function GET(request: NextRequest) {
     const limit = params.limit;
     const skip = (page - 1) * limit;
 
-    // Build a 'where' object for Prisma
     const where: any = {};
     
     if (params.search) {
@@ -62,7 +58,6 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // Fetch all data in parallel
     const [totalCount, orders, categories, agencies] = await Promise.all([
       prisma.order.count({ where }),
       prisma.order.findMany({
@@ -111,7 +106,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-/** POST /api/orders */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => null);
@@ -122,7 +116,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // If user doesn't provide a valid DocumentType, default to EXECUTIVE_ORDER
     let docType: DocumentType = DocumentType.EXECUTIVE_ORDER;
     if (body.type && Object.values(DocumentType).includes(body.type)) {
       docType = body.type;
@@ -173,4 +166,8 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export default function ExecutiveOrderTracker() {
+  // Your component implementation here
 }

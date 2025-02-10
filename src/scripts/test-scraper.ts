@@ -1,36 +1,34 @@
-// src/scripts/test-scraper.ts
-import { logger } from '../utils/logger';
-
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+import { apiConfig } from '@/config/api.config';
+import { logger } from '@/utils/logger';
 
 async function testScraper() {
-  logger.info('Starting testScraper...');
+  logger.info('Starting testScraper...', { baseUrl: apiConfig.aws.apiUrl });
+  
+  try {
+    const url = `${apiConfig.aws.apiUrl}/api/scrape`;
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Origin': process.env.NEXTAUTH_URL || 'http://localhost:3000'
+      }
+    });
 
-  // 1) Trigger the scraper
-  const scrapeRes = await fetch(`${BASE_URL}/api/scrape`);
-  if (!scrapeRes.ok) {
-    throw new Error(`Scrape failed with status ${scrapeRes.status}`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+    }
+
+    const data = await response.json();
+    logger.info('Scraper response:', data);
+    return data;
+  } catch (error) {
+    logger.error('Error running test-scraper:', error);
+    throw error;
   }
-  const scrapeData = await scrapeRes.json();
-  logger.info('Scrape response:', scrapeData);
-
-  // 2) Fetch orders
-  const ordersRes = await fetch(`${BASE_URL}/api/orders?limit=5`);
-  if (!ordersRes.ok) {
-    throw new Error(`Failed to fetch orders. Status: ${ordersRes.status}`);
-  }
-  const ordersJson = await ordersRes.json();
-  logger.info('Orders response:', ordersJson);
-
-  logger.info('TestScraper complete!');
 }
 
-// ES Module main check
-if (import.meta.url.endsWith('test-scraper.ts')) {
-  testScraper().catch((err) => {
-    logger.error('Error running test-scraper:', err);
-    process.exit(1);
-  });
-}
-
-export { testScraper };
+testScraper().catch((error) => {
+  process.exit(1);
+});

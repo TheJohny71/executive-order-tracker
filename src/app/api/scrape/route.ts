@@ -1,27 +1,34 @@
-// File: app/api/scrape/route.ts
+import { config } from '../utils/config';
+import { logger } from '../utils/logger';
 
-import { NextRequest } from 'next/server';
-import { scrapeExecutiveOrders } from '@/lib/scraper';
-import { logger } from '@/utils/logger';
-
-export async function GET(_req: NextRequest) {
+async function testScraper() {
+  logger.info('Starting testScraper...', { BASE_URL: config.BASE_URL });
+  
   try {
-    logger.info('Received GET /api/scrape request');
-    const result = await scrapeExecutiveOrders();
+    const url = `${config.BASE_URL}/api/scrape`;
+    logger.info('Requesting:', url);
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
 
-    if (!result.success) {
-      return new Response(JSON.stringify(result), { status: 500 });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
     }
 
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const data = await response.json();
+    logger.info('Scraper response:', data);
+    return data;
   } catch (error) {
-    logger.error('Error in GET /api/scrape:', error);
-    return new Response(JSON.stringify({
-      success: false,
-      message: 'Scrape failed',
-    }), { status: 500 });
+    logger.error('Error running test-scraper:', error);
+    throw error;
   }
 }
+
+testScraper().catch((error) => {
+  process.exit(1);
+});

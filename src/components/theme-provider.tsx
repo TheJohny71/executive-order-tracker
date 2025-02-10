@@ -7,7 +7,7 @@ import type { ThemeProviderProps as NextThemeProviderProps } from 'next-themes'
 type Theme = 'light' | 'dark' | 'system'
 type Attribute = 'class' | 'data-theme'
 
-interface ThemeProviderProps extends Partial<NextThemeProviderProps> {
+export interface ThemeProviderProps extends Partial<NextThemeProviderProps> {
   children: React.ReactNode
   attribute?: Attribute
   defaultTheme?: Theme

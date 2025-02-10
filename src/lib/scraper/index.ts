@@ -2,7 +2,7 @@
 import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
 import pretty from 'pino-pretty';
-import { fetchExecutiveOrders } from '../api/whitehouse';
+import { spaw } from '../api/spaw';  // Updated import
 import type { ScrapedOrder } from '@/types';
 
 const prisma = new PrismaClient();
@@ -68,7 +68,7 @@ export class DocumentScheduler {
         return;
       }
 
-      const documents = await this.retryWithDelay(() => fetchExecutiveOrders());
+      const documents = await this.retryWithDelay(() => spaw.fetchExecutiveOrders());
       
       if (documents.length === 0) {
         log.info('No historical documents found');
@@ -80,14 +80,14 @@ export class DocumentScheduler {
           await tx.order.create({
             data: {
               type: doc.type,
-              number: doc.metadata?.orderNumber || 'UNKNOWN',
+              number: doc.identifier || 'UNKNOWN',  // Updated to use identifier
               title: doc.title || 'Untitled Document',
               summary: doc.summary || '',
               datePublished: doc.date,
-              category: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
-              agency: doc.metadata?.agencies?.[0]?.name || null,
+              category: (doc.categories[0]?.name) || 'Uncategorized',  // Updated to use categories array
+              agency: (doc.agencies[0]?.name) || null,  // Updated to use agencies array
               link: doc.url || '',
-              statusId: 1,
+              statusId: doc.statusId,
               createdAt: new Date(),
               updatedAt: new Date()
             }
@@ -107,7 +107,7 @@ export class DocumentScheduler {
       log.info('Starting document check', { lastCheck: this.lastCheckTime });
       consecutiveFailures = 0;
       
-      const latestDocuments = await this.retryWithDelay(() => fetchExecutiveOrders());
+      const latestDocuments = await this.retryWithDelay(() => spaw.fetchExecutiveOrders());
       
       const existingDocuments = await prisma.order.findMany({
         select: { link: true, number: true }
@@ -118,7 +118,7 @@ export class DocumentScheduler {
       
       const newDocuments = latestDocuments.filter(doc => {
         return !existingLinks.has(doc.url) && 
-               !existingNumbers.has(doc.metadata?.orderNumber || '');
+               !existingNumbers.has(doc.identifier || '');  // Updated to use identifier
       });
       
       if (newDocuments.length === 0) {
@@ -132,14 +132,14 @@ export class DocumentScheduler {
           await tx.order.create({
             data: {
               type: doc.type,
-              number: doc.metadata?.orderNumber || 'UNKNOWN',
+              number: doc.identifier || 'UNKNOWN',  // Updated to use identifier
               title: doc.title || 'Untitled Document',
               summary: doc.summary || '',
               datePublished: doc.date,
-              category: doc.metadata?.categories?.[0]?.name || 'Uncategorized',
-              agency: doc.metadata?.agencies?.[0]?.name || null,
+              category: (doc.categories[0]?.name) || 'Uncategorized',  // Updated to use categories array
+              agency: (doc.agencies[0]?.name) || null,  // Updated to use agencies array
               link: doc.url || '',
-              statusId: 1,
+              statusId: doc.statusId,
               createdAt: new Date(),
               updatedAt: new Date()
             }
@@ -168,7 +168,7 @@ export class DocumentScheduler {
       const documentsList = documents.map(d => ({
         type: d.type,
         title: d.title || 'Untitled',
-        number: d.metadata?.orderNumber || 'N/A',
+        number: d.identifier || 'N/A',  // Updated to use identifier
         date: d.date
       }));
       

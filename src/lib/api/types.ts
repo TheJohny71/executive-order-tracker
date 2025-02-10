@@ -1,14 +1,14 @@
 // src/lib/api/types.ts
-import { DocumentType } from '@prisma/client';
+import type { DocumentType } from '@prisma/client';
 
-export interface APIResponse<T> {
+export type APIResponse<T> = {
   success: boolean;
   data?: T;
   error?: string;
   message?: string;
-}
+};
 
-export interface Order {
+export type Order = {
   id: number;
   number: string;
   title: string;
@@ -23,9 +23,9 @@ export interface Order {
     id: number;
     name: string;
   };
-}
+};
 
-export interface OrdersResponse {
+export type OrdersResponse = {
   orders: Order[];
   pagination: {
     total: number;
@@ -41,9 +41,9 @@ export interface OrdersResponse {
       name: string;
     }>;
   };
-}
+};
 
-export interface OrdersQueryParams {
+export type OrdersQueryParams = {
   page?: number;
   limit?: number;
   search?: string;
@@ -54,4 +54,4 @@ export interface OrdersQueryParams {
   sort?: string;
   dateFrom?: string;
   dateTo?: string;
-}
+};

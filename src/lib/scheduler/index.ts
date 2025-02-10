@@ -1,8 +1,8 @@
 // src/lib/scheduler/index.ts
 import { PrismaClient, DocumentType } from '@prisma/client';
-import { api } from '../api';
+import { fetchOrders } from '../api';
 import { logger } from '@/utils/logger';
-import type { Order } from '../api/types';
+import type { Order, OrdersResponse } from '../api/types';
 
 const prisma = new PrismaClient();
 
@@ -79,11 +79,11 @@ export class DocumentScheduler {
         return;
       }
 
-      const response = await this.retryWithDelay(() => api.orders.fetch());
+      const response: OrdersResponse = await this.retryWithDelay(() => fetchOrders());
       const orders = response.orders;
       
       // Filter for documents since 2025
-      const relevantDocuments = orders.filter(doc => 
+      const relevantDocuments = orders.filter((doc: Order) => 
         new Date(doc.date) >= MIN_DATE
       );
       
@@ -141,11 +141,11 @@ export class DocumentScheduler {
       logger.info('Starting document check', { lastCheck: this.lastCheckTime });
       consecutiveFailures = 0;
       
-      const response = await this.retryWithDelay(() => api.orders.fetch());
+      const response: OrdersResponse = await this.retryWithDelay(() => fetchOrders());
       const latestDocuments = response.orders;
       
       // Filter for recent documents
-      const relevantDocuments = latestDocuments.filter(doc => 
+      const relevantDocuments = latestDocuments.filter((doc: Order) => 
         new Date(doc.date) >= MIN_DATE
       );
       
@@ -164,7 +164,7 @@ export class DocumentScheduler {
       const existingLinks = new Set(existingDocuments.map(doc => doc.link));
       const existingNumbers = new Set(existingDocuments.map(doc => doc.number));
       
-      const newDocuments = relevantDocuments.filter(doc => {
+      const newDocuments = relevantDocuments.filter((doc: Order) => {
         return !existingLinks.has(doc.link || '') && 
                !existingNumbers.has(doc.number || '');
       });
@@ -179,34 +179,22 @@ export class DocumentScheduler {
         let createdCount = 0;
         
         for (const doc of newDocuments) {
-          // Double-check existence within transaction to prevent race conditions
-          const exists = await tx.order.findFirst({
-            where: {
-              OR: [
-                { link: doc.link },
-                { number: doc.number }
-              ]
+          await tx.order.create({
+            data: {
+              type: doc.type as DocumentType,
+              number: doc.number || 'UNKNOWN',
+              title: doc.title,
+              summary: doc.summary,
+              datePublished: new Date(doc.date),
+              category: doc.category || 'Uncategorized',
+              agency: doc.agency,
+              link: doc.link || '',
+              statusId: doc.statusId,
+              createdAt: new Date(),
+              updatedAt: new Date()
             }
           });
-          
-          if (!exists) {
-            await tx.order.create({
-              data: {
-                type: doc.type as DocumentType,
-                number: doc.number || 'UNKNOWN',
-                title: doc.title,
-                summary: doc.summary,
-                datePublished: new Date(doc.date),
-                category: doc.category || 'Uncategorized',
-                agency: doc.agency,
-                link: doc.link || '',
-                statusId: doc.statusId,
-                createdAt: new Date(),
-                updatedAt: new Date()
-              }
-            });
-            createdCount++;
-          }
+          createdCount++;
         }
         
         return createdCount;

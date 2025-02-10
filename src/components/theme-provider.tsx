@@ -1,47 +1,43 @@
 'use client'
 
-import React from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { ThemeProvider } from '@/components/theme-provider'
+import * as React from 'react'
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import type { ThemeProviderProps as NextThemeProviderProps } from 'next-themes'
 
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000, // 1 minute
-      refetchOnWindowFocus: false,
-      retry: 1,
-    },
-  },
-})
+type Theme = 'light' | 'dark' | 'system'
+type Attribute = 'class' | 'data-theme'
 
-interface ProvidersProps {
+interface ThemeProviderProps extends Partial<NextThemeProviderProps> {
   children: React.ReactNode
+  attribute?: Attribute
+  defaultTheme?: Theme
+  enableSystem?: boolean
+  disableTransitionOnChange?: boolean
+  storageKey?: string
+  themes?: string[]
 }
 
-export function Providers({ children }: ProvidersProps) {
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return null
-  }
-
+export function ThemeProvider({ 
+  children,
+  attribute = 'class',
+  defaultTheme = 'system',
+  enableSystem = true,
+  disableTransitionOnChange = false,
+  storageKey = 'theme',
+  themes = ['light', 'dark'],
+  ...props
+}: ThemeProviderProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider 
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
-        {children}
-      </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <NextThemesProvider 
+      attribute={attribute}
+      defaultTheme={defaultTheme}
+      enableSystem={enableSystem}
+      disableTransitionOnChange={disableTransitionOnChange}
+      storageKey={storageKey}
+      themes={themes}
+      {...props}
+    >
+      {children}
+    </NextThemesProvider>
   )
 }

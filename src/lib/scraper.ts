@@ -31,9 +31,9 @@ async function fetchWithRetry(url: string, attempts = RETRY_ATTEMPTS): Promise<s
   }
 }
 
-function extractOrderNumber(title: string): string | null {
+function extractOrderNumber(title: string): string {
   const match = title.match(/Executive Order (\d+)/i);
-  return match ? match[1] : null;
+  return match ? match[1] : title;
 }
 
 function determineDocumentType(title: string): DocumentType {
@@ -56,7 +56,13 @@ function parseDate(dateStr: string): Date {
   return date;
 }
 
-async function extractOrderDetails(url: string): Promise<Partial<ScrapedOrder>> {
+interface OrderDetails {
+  content: string;
+  agencies: Array<{ name: string }>;
+  categories: Array<{ name: string }>;
+}
+
+async function extractOrderDetails(url: string): Promise<OrderDetails> {
   try {
     const html = await fetchWithRetry(url);
     const $ = cheerio.load(html);
@@ -66,7 +72,6 @@ async function extractOrderDetails(url: string): Promise<Partial<ScrapedOrder>> 
     const categories: Array<{ name: string }> = [];
 
     // Extract agencies and categories from content
-    // This is a simple example - you might want to expand this
     if (content.includes('Department of')) {
       const deptMatch = content.match(/Department of [A-Za-z]+/);
       if (deptMatch) {
@@ -81,7 +86,11 @@ async function extractOrderDetails(url: string): Promise<Partial<ScrapedOrder>> 
     };
   } catch (error) {
     logger.error(`Error extracting order details from ${url}:`, error);
-    return {};
+    return {
+      content: '',
+      agencies: [],
+      categories: []
+    };
   }
 }
 
@@ -97,30 +106,37 @@ export async function scrapeExecutiveOrders() {
       try {
         const $element = $(element);
         const title = $element.find('h3').text().trim();
-        const dateStr = $element.find('time').attr('datetime') || '';
-        const url = $element.find('a').attr('href') || '';
+        const dateText = $element.find('time').attr('datetime');
+        const url = $element.find('a').attr('href');
         const summary = $element.find('.presidential-action-content').text().trim();
 
+        if (!dateText || !url) {
+          logger.warn('Missing required fields for article:', title);
+          return;
+        }
+
         const type = determineDocumentType(title);
-        const date = parseDate(dateStr);
-        const orderNumber = type === DocumentType.EXECUTIVE_ORDER ? extractOrderNumber(title) : null;
+        const date = parseDate(dateText);
+        const identifier = type === DocumentType.EXECUTIVE_ORDER ? 
+          extractOrderNumber(title) : 
+          title;
 
         if (date >= new Date('2025-01-01')) {
           orders.push({
-            identifier: orderNumber || title,
+            identifier,
             type,
             title,
             date,
             url,
             summary,
-            content: null,
-            notes: null,
+            content: '',
+            notes: '',
             statusId: '1', // Assuming 1 is 'Active'
             isNew: true,
             categories: [],
             agencies: [],
             metadata: {
-              orderNumber,
+              orderNumber: type === DocumentType.EXECUTIVE_ORDER ? extractOrderNumber(title) : undefined,
               categories: [],
               agencies: []
             }
@@ -133,12 +149,10 @@ export async function scrapeExecutiveOrders() {
 
     // Fetch additional details for each order
     for (const order of orders) {
-      if (order.url) {
-        const details = await extractOrderDetails(order.url);
-        order.content = details.content || null;
-        order.agencies = details.agencies || [];
-        order.categories = details.categories || [];
-      }
+      const details = await extractOrderDetails(order.url);
+      order.content = details.content;
+      order.agencies = details.agencies;
+      order.categories = details.categories;
     }
 
     // Store in database

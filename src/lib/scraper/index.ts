@@ -8,7 +8,6 @@ const prisma = new PrismaClient();
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 5000; // 5 seconds
 
-// Define interfaces for AWS API response
 interface AWSApiItem {
   identifier: string;
   id?: string;
@@ -17,12 +16,12 @@ interface AWSApiItem {
   date: string;
   url: string;
   summary: string;
-  notes?: string;
-  content?: string;
+  notes?: string | null;
+  content?: string | null;
   statusId: string;
-  orderNumber?: string;
-  categories?: Array<{ name: string }>;
-  agencies?: Array<{ name: string }>;
+  orderNumber?: string | null;
+  categories?: Array<{ name: string }> | null;
+  agencies?: Array<{ name: string }> | null;
 }
 
 interface ScraperResult {
@@ -33,51 +32,63 @@ interface ScraperResult {
   updatedOrders: ScrapedOrder[];
 }
 
-/**
- * Fetches executive orders from AWS API
- */
+interface ScrapedOrderMetadata {
+  orderNumber: string;
+  categories: Array<{ name: string }> | null;
+  agencies: Array<{ name: string }> | null;
+}
+
 async function fetchFromAWS(): Promise<ScrapedOrder[]> {
-  if (!process.env.AWS_API_ENDPOINT) {
+  const endpoint = process.env.AWS_API_ENDPOINT;
+  if (!endpoint) {
     throw new Error('AWS_API_ENDPOINT environment variable is not set');
   }
 
   try {
-    const response = await axios.get<AWSApiItem[]>(process.env.AWS_API_ENDPOINT);
+    const response = await axios.get<AWSApiItem[]>(endpoint);
     
     if (!response.data) {
       throw new Error('No data received from AWS API');
     }
 
-    // Transform the AWS response to match ScrapedOrder type
-    return response.data.map((item: AWSApiItem): ScrapedOrder => ({
-      identifier: item.identifier || item.id || '',
-      type: item.type || DocumentType.EXECUTIVE_ORDER,
-      title: item.title || 'Untitled',
-      date: new Date(item.date),
-      url: item.url,
-      summary: item.summary || '',
-      notes: item.notes || null,
-      content: item.content || null,
-      statusId: String(item.statusId || '1'),
-      isNew: true,
-      categories: item.categories || [],
-      agencies: item.agencies || [],
-      metadata: {
-        orderNumber: item.orderNumber || item.identifier,
-        categories: item.categories,
-        agencies: item.agencies
+    return response.data.map((item: AWSApiItem): ScrapedOrder => {
+      const date = new Date(item.date);
+      if (isNaN(date.getTime())) {
+        throw new Error(`Invalid date format for item: ${item.identifier}`);
       }
-    }));
+
+      const metadata: ScrapedOrderMetadata = {
+        orderNumber: item.orderNumber || item.identifier,
+        categories: item.categories || null,
+        agencies: item.agencies || null
+      };
+
+      return {
+        identifier: item.identifier || item.id || '',
+        type: item.type,
+        title: item.title || 'Untitled',
+        date,
+        url: item.url,
+        summary: item.summary || '',
+        notes: item.notes || null,
+        content: item.content || null,
+        statusId: item.statusId || '1',
+        isNew: true,
+        categories: item.categories || [],
+        agencies: item.agencies || [],
+        metadata
+      };
+    });
   } catch (error) {
     logger.error('Error fetching from AWS:', error);
     throw error;
   }
 }
 
-/**
- * Retry mechanism for API calls
- */
-async function retryWithDelay<T>(fn: () => Promise<T>, retries = MAX_RETRIES): Promise<T> {
+async function retryWithDelay<T>(
+  fn: () => Promise<T>, 
+  retries = MAX_RETRIES
+): Promise<T> {
   try {
     return await fn();
   } catch (error) {
@@ -90,15 +101,11 @@ async function retryWithDelay<T>(fn: () => Promise<T>, retries = MAX_RETRIES): P
   }
 }
 
-/**
- * Main function to scrape documents
- */
 export async function scrapeDocuments(): Promise<ScraperResult> {
   try {
-    const documents: ScrapedOrder[] = await retryWithDelay(() => fetchFromAWS());
+    const documents = await retryWithDelay(() => fetchFromAWS());
 
     if (documents.length === 0) {
-      logger.warn('No documents found');
       return {
         success: true,
         ordersScraped: 0,
@@ -117,21 +124,19 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
       }
     });
     
-    const existingLinks = new Set(existingOrders.map(o => o.link));
-    const existingNumbers = new Set(existingOrders.map(o => o.number));
+    const existingLinks = new Set(existingOrders.map(o => o.link).filter(Boolean));
+    const existingNumbers = new Set(existingOrders.map(o => o.number).filter(Boolean));
 
     const newOrders: ScrapedOrder[] = [];
     const updatedOrders: ScrapedOrder[] = [];
 
-    for (const doc of documents) {
+    documents.forEach(doc => {
       if (!existingLinks.has(doc.url) && !existingNumbers.has(doc.identifier)) {
         newOrders.push(doc);
       } else {
         updatedOrders.push(doc);
       }
-    }
-
-    logger.info(`Found ${newOrders.length} new and ${updatedOrders.length} updated documents`);
+    });
 
     return {
       success: true,
@@ -142,23 +147,21 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
     };
 
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logger.error('Error scraping documents:', error);
     return {
       success: false,
       ordersScraped: 0,
-      errors: [error instanceof Error ? error.message : 'Unknown error'],
+      errors: [errorMessage],
       newOrders: [],
       updatedOrders: []
     };
   }
 }
 
-/**
- * Check for new documents since last check
- */
 export async function checkForNewDocuments(): Promise<ScrapedOrder[]> {
   try {
-    const latestDocuments: ScrapedOrder[] = await retryWithDelay(() => fetchFromAWS());
+    const latestDocuments = await retryWithDelay(() => fetchFromAWS());
     
     const existingOrders = await prisma.order.findMany({
       select: { 
@@ -167,18 +170,12 @@ export async function checkForNewDocuments(): Promise<ScrapedOrder[]> {
       }
     });
     
-    const existingLinks = new Set(existingOrders.map(o => o.link));
-    const existingNumbers = new Set(existingOrders.map(o => o.number));
+    const existingLinks = new Set(existingOrders.map(o => o.link).filter(Boolean));
+    const existingNumbers = new Set(existingOrders.map(o => o.number).filter(Boolean));
     
-    const newDocuments = latestDocuments.filter(doc => 
+    return latestDocuments.filter(doc => 
       !existingLinks.has(doc.url) && !existingNumbers.has(doc.identifier)
     );
-
-    if (newDocuments.length > 0) {
-      logger.info(`Found ${newDocuments.length} new documents`);
-    }
-
-    return newDocuments;
   } catch (error) {
     logger.error('Error checking for new documents:', error);
     throw error;

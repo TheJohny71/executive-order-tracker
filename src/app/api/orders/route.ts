@@ -2,10 +2,10 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import sanitize from 'sanitize-html';
 import { prisma } from '@/lib/db';
-import { DocumentType } from '@prisma/client';  // Remove 'type'
+import { DocumentType } from '@prisma/client';
 import { logger } from '@/utils/logger';
 import type { WhereClause, OrderDbRecord, OrdersResponse } from '@/types';
-import { transformOrderRecord } from '@/types';
+import { transformOrderRecord } from '@/utils';  // Changed from @/types
 
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -19,7 +19,7 @@ const querySchema = z.object({
 const sanitizeOptions = {
   allowedTags: [],
   allowedAttributes: {},
-};
+} as const;
 
 export async function GET(request: NextRequest) {
   try {
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    const [totalCount, dbOrders, categories, agencies] = await Promise.all([
+    const [totalCount, dbOrders, categories, agencies, statuses] = await Promise.all([
       prisma.order.count({ where }),
       prisma.order.findMany({
         where,
@@ -81,16 +81,19 @@ export async function GET(request: NextRequest) {
       prisma.agency.findMany({
         orderBy: { name: 'asc' }
       }),
+      prisma.status.findMany({
+        orderBy: { name: 'asc' }
+      })
     ]);
 
-    const orders = dbOrders.map((order) => transformOrderRecord(order as OrderDbRecord));
+    const orders = dbOrders.map(order => transformOrderRecord(order as OrderDbRecord));
 
     const response: OrdersResponse = {
       orders,
       metadata: {
         categories: categories.map(c => c.name),
         agencies: agencies.map(a => a.name),
-        statuses: []
+        statuses: statuses.map(s => s.name)
       },
       pagination: {
         page,
@@ -153,7 +156,7 @@ export async function POST(request: NextRequest) {
           create: { name }
         }))
       } : undefined,
-    } as const;
+    };
 
     const newOrder = await prisma.order.create({
       data: orderData,

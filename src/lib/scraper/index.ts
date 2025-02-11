@@ -130,6 +130,55 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
       }
     });
 
+    // Save new orders to database
+    for (const order of newOrders) {
+      await prisma.order.create({
+        data: {
+          title: order.title,
+          type: order.type,
+          number: order.metadata?.orderNumber || order.identifier,
+          summary: order.summary,
+          datePublished: order.date,
+          link: order.url,
+          status: {
+            connect: {
+              id: parseInt(order.statusId)
+            }
+          },
+          categories: {
+            connectOrCreate: order.categories.map(cat => ({
+              where: { name: cat.name },
+              create: { name: cat.name }
+            }))
+          },
+          agencies: {
+            connectOrCreate: order.agencies.map(agency => ({
+              where: { name: agency.name },
+              create: { name: agency.name }
+            }))
+          }
+        }
+      });
+    }
+
+    // Update existing orders
+    for (const order of updatedOrders) {
+      await prisma.order.updateMany({
+        where: {
+          OR: [
+            { link: order.url },
+            { number: order.identifier }
+          ]
+        },
+        data: {
+          title: order.title,
+          summary: order.summary,
+          datePublished: order.date,
+          statusId: parseInt(order.statusId)
+        }
+      });
+    }
+
     return {
       success: true,
       ordersScraped: documents.length,

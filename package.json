@@ -11,6 +11,7 @@
     "postinstall": "prisma generate",
     "scrape": "tsx src/lib/scraper/index.ts",
     "scrape:watch": "tsx watch src/lib/scraper/index.ts",
+    "scrape:full": "npm run db:generate && npm run scrape && npm run db:push",
     "scheduler": "tsx src/lib/scheduler/index.ts",
     "scheduler:prod": "node dist/lib/scheduler/index.js",
     "scheduler:watch": "tsx watch src/lib/scheduler/index.ts",

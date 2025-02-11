@@ -1,14 +1,75 @@
 {
-  "extends": ["next/core-web-vitals"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript"
+  ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": [
+    "@typescript-eslint",
+    "import",
+    "unused-imports"
+  ],
   "root": true,
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      },
+      "node": true
+    }
+  },
   "rules": {
-    "@typescript-eslint/no-unused-vars": "off",
+    // TypeScript specific rules
+    "@typescript-eslint/no-unused-vars": ["warn", {
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_",
+      "caughtErrorsIgnorePattern": "^_"
+    }],
     "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/no-empty-interface": "warn",
+    "@typescript-eslint/ban-ts-comment": ["warn", {
+      "ts-ignore": "allow-with-description",
+      "ts-expect-error": "allow-with-description"
+    }],
+
+    // Import rules
+    "import/order": ["warn", {
+      "groups": [
+        ["builtin", "external"],
+        "internal",
+        ["parent", "sibling", "index"]
+      ],
+      "newlines-between": "always",
+      "alphabetize": {
+        "order": "asc",
+        "caseInsensitive": true
+      }
+    }],
+    "import/no-duplicates": "error",
+    "import/no-unresolved": "error",
+    "import/no-cycle": "error",
+    "import/first": "error",
+    "import/newline-after-import": "warn",
+
+    // General rules
     "no-console": ["warn", { 
       "allow": ["warn", "error", "info", "debug"] 
-    }]
+    }],
+    "prefer-const": "warn",
+    "no-unused-expressions": "warn",
+    "no-unused-vars": "off", // Turned off in favor of @typescript-eslint/no-unused-vars
+    "unused-imports/no-unused-imports": "warn",
+    "eqeqeq": ["error", "always"],
+    "curly": ["error", "all"],
+    "no-var": "error",
+    "object-shorthand": ["warn", "always"],
+    "prefer-template": "warn",
+    "no-else-return": "warn"
   },
   "overrides": [
     {
@@ -23,6 +84,35 @@
         "no-console": "off",
         "@typescript-eslint/no-explicit-any": "off"
       }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "extends": ["plugin:jest/recommended"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "jest/expect-expect": "error",
+        "jest/no-disabled-tests": "warn",
+        "jest/no-focused-tests": "error",
+        "jest/valid-expect": "error"
+      }
+    },
+    {
+      "files": ["src/app/**/*.ts", "src/app/**/*.tsx"],
+      "rules": {
+        "import/no-default-export": "off"
+      }
     }
+  ],
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "out/",
+    "dist/",
+    "coverage/",
+    "public/",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.json",
+    "**/*.d.ts"
   ]
 }

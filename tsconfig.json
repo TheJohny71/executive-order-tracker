@@ -36,7 +36,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": false, // Changed from true
+    "useUnknownInCatchVariables": true,
 
     // Interop Constraints
     "esModuleInterop": true,
@@ -63,7 +64,8 @@
     ".next/types/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/types/**/*.d.ts"
+    "src/types/**/*.d.ts",
+    "prisma/**/*.ts"  // Added to include Prisma types
   ],
   "exclude": [
     "node_modules",

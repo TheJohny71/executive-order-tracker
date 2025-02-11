@@ -22,8 +22,6 @@ const sanitizeOptions: IOptions = {
   allowedAttributes: {} as { [key: string]: string[] },
 };
 
-type OrderCreateInput = Prisma.OrderCreateInput;
-
 export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url);

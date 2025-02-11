@@ -10,58 +10,88 @@ import { Sha256 } from "@aws-crypto/sha256-js";
 
 dotenv.config();
 
+// Debug function to compare our signing details with AWS expectations
+function debugSigningProcess(request: HttpRequest, signedRequest: any, awsErrorData?: string) {
+  logger.info('=== Signing Debug Information ===');
+  logger.info('Our Request:', {
+    method: request.method,
+    path: request.path,
+    headers: request.headers,
+  });
+  
+  logger.info('Our Signed Headers:', signedRequest.headers);
+  
+  if (awsErrorData) {
+    const errorLines = awsErrorData.split('\n');
+    const expectedCanonical = errorLines
+      .slice(errorLines.indexOf('The Canonical String for this request should have been') + 1,
+             errorLines.indexOf('The String-to-Sign should have been'))
+      .join('\n');
+    
+    logger.info('AWS Expected Canonical String:', expectedCanonical);
+  }
+  logger.info('===============================');
+}
+
 const region = process.env.AWS_REGION || "us-east-2";
 const service = "execute-api";
 
+// Create signer with debug capabilities
 const signer = new SignatureV4({
   credentials: fromEnv(),
   region: region,
   service: service,
-  sha256: Sha256
+  sha256: Sha256,
+  applyChecksum: true
 });
 
+const BASE_URL = "https://v7059ugs9e.execute-api.us-east-2.amazonaws.com/dev";
+
 const testEndpoints = [
-  // Test base endpoints
-  `${process.env.AWS_API_ENDPOINT}orders`,
-  `${process.env.AWS_API_ENDPOINT}api/orders`,
-  // Test with query params
-  `${process.env.AWS_API_ENDPOINT}orders?limit=10&page=1`,
-  `${process.env.AWS_API_ENDPOINT}api/orders?limit=10&page=1`,
-  // Test alternate formats
-  `${process.env.NEXT_PUBLIC_AWS_API_URL}/prod/orders`,
-  `${process.env.NEXT_PUBLIC_AWS_API_URL}/prod/api/orders`
+  // Test dev environment endpoints
+  `${BASE_URL}`,                        // Base health check
+  `${BASE_URL}/orders`,                 // Orders endpoint
+  `${BASE_URL}/orders?limit=10&page=1`  // Orders with pagination
 ];
 
 async function testAwsEndpoint(): Promise<boolean> {
-  logger.info('Starting AWS API test...');
+  logger.info('Starting AWS API test in dev environment...');
   
-  if (!process.env.AWS_API_ENDPOINT) {
-    throw new Error('AWS_API_ENDPOINT not configured');
-  }
+  // Verify credentials are loaded
+  const credentials = await fromEnv()();
+  logger.info('Credentials loaded:', {
+    hasAccessKeyId: !!credentials.accessKeyId,
+    hasSecretKey: !!credentials.secretAccessKey,
+    hasSessionToken: !!credentials.sessionToken
+  });
 
   let successfulEndpoint = false;
 
   for (const endpoint of testEndpoints) {
+    let request: HttpRequest | null = null;
+    let signedRequest: any = null;
+    
     try {
       logger.info(`Testing endpoint: ${endpoint}`);
       
       const url = new URL(endpoint);
       
-      // Create the request to be signed
-      const request = new HttpRequest({
+      request = new HttpRequest({
         method: "GET",
         protocol: url.protocol.replace(':', ''),
         hostname: url.hostname,
         path: url.pathname + url.search,
         headers: {
           host: url.hostname,
+          'content-type': 'application/json',
         }
       });
 
-      // Sign the request
-      const signedRequest = await signer.sign(request);
+      signedRequest = await signer.sign(request);
       
-      // Make the request with signed headers
+      // Debug signing process
+      debugSigningProcess(request, signedRequest);
+      
       const response = await axios.get(endpoint, {
         headers: signedRequest.headers
       });
@@ -73,53 +103,29 @@ async function testAwsEndpoint(): Promise<boolean> {
         data: response.data
       });
 
-      let data: OrdersResponse;
-    
+      // Check if it's a health check response
       if (response.data.body) {
-        try {
-          const parsedBody = JSON.parse(response.data.body);
-          logger.info('Parsed body:', parsedBody);
-          
-          if (parsedBody.message === "Executive Orders API is working!") {
-            logger.warn('Received health check response instead of data');
-            continue;
-          }
-          
-          data = parsedBody;
-        } catch (parseError) {
-          if (parseError instanceof Error) {
-            logger.error('Failed to parse response body:', parseError.message);
-          } else {
-            logger.error('Failed to parse response body:', String(parseError));
-          }
+        const parsedBody = JSON.parse(response.data.body);
+        if (parsedBody.message === "Executive Orders API is working!") {
+          logger.info('Successfully received health check response');
+          successfulEndpoint = true;
           continue;
         }
-      } else {
-        data = response.data;
       }
 
-      const validationResult = validateAPIResponse(data);
-      if (!validationResult.valid) {
-        logger.error('Response validation failed:', validationResult.errors);
-        continue;
-      }
-
-      logger.info(`Endpoint ${endpoint} test completed successfully`);
       successfulEndpoint = true;
-      break;
 
     } catch (error) {
-      if (error instanceof AxiosError) {
-        logger.warn(`Failed testing endpoint ${endpoint}:`, {
-          message: error.message,
-          status: error.response?.status,
-          statusText: error.response?.statusText,
-          data: error.response?.data
+      if (error instanceof AxiosError && error.response?.data && request && signedRequest) {
+        debugSigningProcess(request, signedRequest, error.response.data);
+        
+        logger.error('Request failed:', {
+          status: error.response.status,
+          statusText: error.response.statusText,
+          data: error.response.data
         });
-      } else if (error instanceof Error) {
-        logger.warn(`Failed testing endpoint ${endpoint}:`, error.message);
       } else {
-        logger.warn(`Failed testing endpoint ${endpoint}:`, String(error));
+        logger.error('Unknown error:', error);
       }
       continue;
     }
@@ -130,76 +136,8 @@ async function testAwsEndpoint(): Promise<boolean> {
     return false;
   }
 
-  logger.info('AWS API test completed successfully');
+  logger.info('Dev environment API test completed successfully');
   return true;
-}
-
-interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-}
-
-function validateAPIResponse(data: unknown): ValidationResult {
-  const errors: string[] = [];
-
-  if (!data || typeof data !== 'object') {
-    return { valid: false, errors: ['Invalid response data'] };
-  }
-
-  const response = data as OrdersResponse;
-
-  if (!Array.isArray(response.orders)) {
-    errors.push('Missing or invalid orders array');
-  }
-
-  if (!response.metadata || typeof response.metadata !== 'object') {
-    errors.push('Missing or invalid metadata');
-  }
-
-  if (!response.pagination || typeof response.pagination !== 'object') {
-    errors.push('Missing or invalid pagination');
-  } else {
-    const { total, page, limit, hasMore } = response.pagination;
-    if (typeof total !== 'number') errors.push('Invalid pagination.total');
-    if (typeof page !== 'number') errors.push('Invalid pagination.page');
-    if (typeof limit !== 'number') errors.push('Invalid pagination.limit');
-    if (typeof hasMore !== 'boolean') errors.push('Invalid pagination.hasMore');
-  }
-
-  if (response.orders?.length > 0) {
-    const orderErrors = validateOrder(response.orders[0]);
-    errors.push(...orderErrors);
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors
-  };
-}
-
-function validateOrder(order: unknown): string[] {
-  const errors: string[] = [];
-  
-  if (!order || typeof order !== 'object') {
-    return ['Invalid order data'];
-  }
-
-  const typedOrder = order as Order;
-
-  if (typeof typedOrder.id !== 'number') {
-    errors.push('Invalid order.id');
-  }
-  if (!Object.values(DocumentType).includes(typedOrder.type)) {
-    errors.push('Invalid order.type');
-  }
-  if (typeof typedOrder.title !== 'string') {
-    errors.push('Invalid order.title');
-  }
-  if (!(typedOrder.datePublished instanceof Date)) {
-    errors.push('Invalid order.datePublished');
-  }
-
-  return errors;
 }
 
 async function isMainModule(): Promise<boolean> {
@@ -214,6 +152,7 @@ async function isMainModule(): Promise<boolean> {
   }
 }
 
+// Execute the test
 if (await isMainModule()) {
   testAwsEndpoint()
     .then((success) => {

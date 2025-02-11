@@ -7,7 +7,7 @@
 
     // Modules
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
@@ -36,7 +36,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": false, // Changed from true
+    "exactOptionalPropertyTypes": false,
     "useUnknownInCatchVariables": true,
 
     // Interop Constraints
@@ -55,7 +55,11 @@
   },
   "ts-node": {
     "esm": true,
-    "experimentalSpecifierResolution": "node"
+    "experimentalSpecifierResolution": "node",
+    "compilerOptions": {
+      "module": "ESNext",
+      "moduleResolution": "NodeNext"
+    }
   },
   "include": [
     "next-env.d.ts",
@@ -65,7 +69,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/types/**/*.d.ts",
-    "prisma/**/*.ts"  // Added to include Prisma types
+    "prisma/**/*.ts"
   ],
   "exclude": [
     "node_modules",

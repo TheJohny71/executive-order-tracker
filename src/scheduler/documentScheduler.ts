@@ -23,18 +23,18 @@ interface OrderCreateData {
   datePublished: Date;
   link: string | null;
   statusId: number;
-  categories?: {
+  categories: {
     connectOrCreate: Array<{
       where: { name: string };
       create: { name: string };
     }>;
-  } | undefined;
-  agencies?: {
+  };
+  agencies: {
     connectOrCreate: Array<{
       where: { name: string };
       create: { name: string };
     }>;
-  } | undefined;
+  };
 }
 
 export class DocumentScheduler {
@@ -127,18 +127,18 @@ export class DocumentScheduler {
             datePublished: doc.date,
             link: doc.url,
             statusId: parseInt(doc.statusId, 10),
-            categories: doc.categories ? {
+            categories: {
               connectOrCreate: doc.categories.map(cat => ({
                 where: { name: cat.name },
                 create: { name: cat.name }
               }))
-            } : undefined,
-            agencies: doc.agencies ? {
+            },
+            agencies: {
               connectOrCreate: doc.agencies.map(agency => ({
                 where: { name: agency.name },
                 create: { name: agency.name }
               }))
-            } : undefined
+            }
           };
 
           await tx.order.create({

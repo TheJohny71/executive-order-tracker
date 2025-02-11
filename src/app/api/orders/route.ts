@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import sanitize from 'sanitize-html';
 import { prisma } from '@/lib/db';
-import { DocumentType } from '@prisma/client';
+import { DocumentType, Prisma } from '@prisma/client';
 import { logger } from '@/utils/logger';
 import type { WhereClause, OrderDbRecord, OrdersResponse } from '@/types';
 import { transformOrderRecord } from '@/utils';
@@ -22,27 +22,7 @@ const sanitizeOptions: IOptions = {
   allowedAttributes: {} as { [key: string]: string[] },
 };
 
-type OrderCreateInput = {
-  title: string;
-  type: DocumentType;
-  number: string | null;
-  summary: string | null;
-  datePublished: Date;
-  link: string | null;
-  statusId: number;
-  categories?: {
-    connectOrCreate: Array<{
-      where: { name: string };
-      create: { name: string };
-    }>;
-  } | undefined;
-  agencies?: {
-    connectOrCreate: Array<{
-      where: { name: string };
-      create: { name: string };
-    }>;
-  } | undefined;
-};
+type OrderCreateInput = Prisma.OrderCreateInput;
 
 export async function GET(request: NextRequest) {
   try {
@@ -119,7 +99,7 @@ export async function GET(request: NextRequest) {
         statuses: statuses.map(s => ({
           id: s.id,
           name: s.name,
-          color: s.color || undefined
+          color: s.color || null
         }))
       },
       pagination: {
@@ -163,14 +143,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const orderData: OrderCreateInput = {
+    const orderData: Prisma.OrderCreateInput = {
       title: body.title,
       type: body.type ?? DocumentType.EXECUTIVE_ORDER,
       number: body.number ?? null,
       summary: body.summary ?? null,
       datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
       link: body.link ?? null,
-      statusId: body.statusId ?? 1,
+      status: {
+        connect: {
+          id: body.statusId ?? 1
+        }
+      },
       categories: body.categories ? {
         connectOrCreate: body.categories.map((name: string) => ({
           where: { name },

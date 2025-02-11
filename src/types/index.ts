@@ -21,7 +21,7 @@ export interface OrderDbRecord {
   status: {
     id: number;
     name: string;
-    color?: string;
+    color: string | null;
   } | null;
 }
 
@@ -39,7 +39,7 @@ export interface Order {
   status: {
     id: number;
     name: string;
-    color?: string;
+    color: string | null;
   };
   link: string | null;
   createdAt: Date;
@@ -69,7 +69,7 @@ export interface OrderMetadata {
 export interface OrderStatus {
   id: number;
   name: string;
-  color?: string;
+  color: string | null;
 }
 
 // Pagination Interfaces
@@ -146,16 +146,17 @@ export interface QueryResult<T> {
 
 // Database Input Types
 export interface OrderCreateInput {
-  identifier: string;
-  type: DocumentType;
   title: string;
-  date: Date;
-  url: string;
-  summary: string;
-  content?: string | null;
-  notes?: string | null;
-  statusId: string;
-  isNew: boolean;
+  type: DocumentType;
+  number: string | null;
+  summary: string | null;
+  datePublished: Date;
+  link: string | null;
+  status: {
+    connect: {
+      id: number;
+    };
+  };
   categories?: {
     connectOrCreate: Array<{
       where: { name: string };
@@ -171,16 +172,13 @@ export interface OrderCreateInput {
 }
 
 export interface OrderWhereInput {
-  identifier?: string;
   type?: DocumentType;
   title?: string;
-  date?: Date;
-  url?: string;
+  datePublished?: Date;
+  link?: string;
   summary?: string;
-  content?: string | null;
-  notes?: string | null;
-  statusId?: string;
-  isNew?: boolean;
+  number?: string;
+  statusId?: number;
   OR?: OrderWhereInput[];
   AND?: OrderWhereInput[];
   categories?: {
@@ -224,7 +222,8 @@ export const transformOrderRecord = (record: OrderDbRecord): Order => {
     agency: record.agencies[0]?.name ?? null,
     status: record.status ?? {
       id: 1,
-      name: 'Unknown'
+      name: 'Unknown',
+      color: null
     }
   };
 };

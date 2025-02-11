@@ -20,7 +20,7 @@ async function fetchWithRetry(url: string, attempts = RETRY_ATTEMPTS): Promise<s
         'User-Agent': 'Mozilla/5.0 (compatible; ExecutiveOrderTracker/1.0)',
       }
     });
-    return response.data;
+    return response.data as string;
   } catch (error) {
     if (attempts > 1) {
       logger.warn(`Retrying fetch for ${url}. Attempts left: ${attempts - 1}`);
@@ -33,7 +33,7 @@ async function fetchWithRetry(url: string, attempts = RETRY_ATTEMPTS): Promise<s
 
 function extractOrderNumber(title: string): string {
   const match = title.match(/Executive Order (\d+)/i);
-  return match ? match[1] : title;
+  return match?.[1] ?? title;
 }
 
 function determineDocumentType(title: string): DocumentType {
@@ -74,7 +74,7 @@ async function extractOrderDetails(url: string): Promise<OrderDetails> {
     // Extract agencies and categories from content
     if (content.includes('Department of')) {
       const deptMatch = content.match(/Department of [A-Za-z]+/);
-      if (deptMatch) {
+      if (deptMatch?.[0]) {
         agencies.push({ name: deptMatch[0] });
       }
     }
@@ -105,24 +105,25 @@ export async function scrapeExecutiveOrders() {
     $('.presidential-actions article').each((_, element) => {
       try {
         const $element = $(element);
-        const title = $element.find('h3').text().trim();
-        const dateText = $element.find('time').attr('datetime');
-        const url = $element.find('a').attr('href');
-        const summary = $element.find('.presidential-action-content').text().trim();
-
-        if (!dateText || !url) {
-          logger.warn('Missing required fields for article:', title);
+        const title: string = $element.find('h3').text().trim();
+        const dateText: string = $element.find('time').attr('datetime') ?? '';
+        const url: string = $element.find('a').attr('href') ?? '';
+        
+        // Skip if we don't have required data
+        if (!url || !dateText) {
+          logger.warn('Missing required data for article:', title);
           return;
         }
 
-        const type = determineDocumentType(title);
-        const date = parseDate(dateText);
-        const identifier = type === DocumentType.EXECUTIVE_ORDER ? 
+        const summary: string = $element.find('.presidential-action-content').text().trim();
+        const type: DocumentType = determineDocumentType(title);
+        const date: Date = parseDate(dateText);
+        const identifier: string = type === DocumentType.EXECUTIVE_ORDER ? 
           extractOrderNumber(title) : 
           title;
 
         if (date >= new Date('2025-01-01')) {
-          orders.push({
+          const orderData: ScrapedOrder = {
             identifier,
             type,
             title,
@@ -136,11 +137,12 @@ export async function scrapeExecutiveOrders() {
             categories: [],
             agencies: [],
             metadata: {
-              orderNumber: type === DocumentType.EXECUTIVE_ORDER ? extractOrderNumber(title) : undefined,
+              orderNumber: type === DocumentType.EXECUTIVE_ORDER ? extractOrderNumber(title) : '',
               categories: [],
               agencies: []
             }
-          });
+          };
+          orders.push(orderData);
         }
       } catch (error) {
         logger.error('Error processing article element:', error);
@@ -161,7 +163,7 @@ export async function scrapeExecutiveOrders() {
         const existingOrder = await prisma.order.findFirst({
           where: {
             OR: [
-              { number: order.metadata?.orderNumber },
+              { number: order.metadata?.orderNumber || null },
               { title: order.title }
             ]
           }

@@ -13,13 +13,15 @@ export const Pagination: React.FC<PaginationProps> = ({
   totalPages, 
   onPageChange 
 }) => {
-  if (totalPages <= 1) return null;
+  if (totalPages <= 1) {
+    return null;
+  }
   
   const getPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
     let start = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let end = Math.min(totalPages, start + maxVisiblePages - 1);
+    const end = Math.min(totalPages, start + maxVisiblePages - 1);
 
     if (end - start + 1 < maxVisiblePages) {
       start = Math.max(1, end - maxVisiblePages + 1);

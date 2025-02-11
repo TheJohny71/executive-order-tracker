@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { DocumentType, PrismaClient } from '@prisma/client';
 import { logger } from '@/utils/logger';
 import type { ScrapedOrder } from '@/types';
 import axios from 'axios';
@@ -15,7 +15,7 @@ interface AWSScrapeResponse {
   error?: string;
 }
 
-type OrderCreateData = {
+interface OrderCreateData {
   type: DocumentType;
   number: string;
   title: string;
@@ -28,14 +28,14 @@ type OrderCreateData = {
       where: { name: string };
       create: { name: string };
     }>;
-  };
+  } | undefined;
   agencies?: {
     connectOrCreate: Array<{
       where: { name: string };
       create: { name: string };
     }>;
-  };
-};
+  } | undefined;
+}
 
 export class DocumentScheduler {
   private isRunning = false;
@@ -120,25 +120,25 @@ export class DocumentScheduler {
         let count = 0;
         for (const doc of newDocs) {
           const orderData: OrderCreateData = {
-            type: doc.type,
+            type: doc.type as DocumentType,
             number: doc.identifier,
             title: doc.title,
             summary: doc.summary || '',
             datePublished: doc.date,
             link: doc.url,
             statusId: parseInt(doc.statusId, 10),
-            categories: {
+            categories: doc.categories ? {
               connectOrCreate: doc.categories.map(cat => ({
                 where: { name: cat.name },
                 create: { name: cat.name }
               }))
-            },
-            agencies: {
+            } : undefined,
+            agencies: doc.agencies ? {
               connectOrCreate: doc.agencies.map(agency => ({
                 where: { name: agency.name },
                 create: { name: agency.name }
               }))
-            }
+            } : undefined
           };
 
           await tx.order.create({

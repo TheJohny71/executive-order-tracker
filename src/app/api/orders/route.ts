@@ -22,7 +22,7 @@ const sanitizeOptions: IOptions = {
   allowedAttributes: {} as { [key: string]: string[] },
 };
 
-type OrderCreateData = {
+type OrderCreateInput = {
   title: string;
   type: DocumentType;
   number: string | null;
@@ -35,13 +35,13 @@ type OrderCreateData = {
       where: { name: string };
       create: { name: string };
     }>;
-  };
+  } | undefined;
   agencies?: {
     connectOrCreate: Array<{
       where: { name: string };
       create: { name: string };
     }>;
-  };
+  } | undefined;
 };
 
 export async function GET(request: NextRequest) {
@@ -116,16 +116,11 @@ export async function GET(request: NextRequest) {
       metadata: {
         categories: categories.map(c => c.name),
         agencies: agencies.map(a => a.name),
-        statuses: statuses.map(s => {
-          const status = {
-            id: s.id,
-            name: s.name
-          };
-          if ('color' in s && s.color !== undefined) {
-            return { ...status, color: s.color };
-          }
-          return status;
-        })
+        statuses: statuses.map(s => ({
+          id: s.id,
+          name: s.name,
+          color: s.color || undefined
+        }))
       },
       pagination: {
         page,
@@ -168,7 +163,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const orderData: OrderCreateData = {
+    const orderData: OrderCreateInput = {
       title: body.title,
       type: body.type ?? DocumentType.EXECUTIVE_ORDER,
       number: body.number ?? null,

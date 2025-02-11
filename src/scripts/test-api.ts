@@ -1,62 +1,102 @@
 import { DocumentType } from '@prisma/client';
 import { logger } from '../utils/logger';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import dotenv from 'dotenv';
 import type { OrdersResponse, Order } from '../types';
 
 dotenv.config();
 
+const testEndpoints = [
+  // Test base endpoints
+  `${process.env.AWS_API_ENDPOINT}orders`,
+  `${process.env.AWS_API_ENDPOINT}api/orders`,
+  // Test with query params
+  `${process.env.AWS_API_ENDPOINT}orders?limit=10&page=1`,
+  `${process.env.AWS_API_ENDPOINT}api/orders?limit=10&page=1`,
+  // Test alternate formats
+  `${process.env.NEXT_PUBLIC_AWS_API_URL}/prod/orders`,
+  `${process.env.NEXT_PUBLIC_AWS_API_URL}/prod/api/orders`
+];
+
 async function testAwsEndpoint(): Promise<boolean> {
   logger.info('Starting AWS API test...');
   
-  const endpoint = process.env.AWS_API_ENDPOINT;
-  if (!endpoint) {
+  if (!process.env.AWS_API_ENDPOINT) {
     throw new Error('AWS_API_ENDPOINT not configured');
   }
 
-  try {
-    const response = await axios.get(endpoint);
-    
-    logger.info('AWS Response:', {
-      status: response.status,
-      headers: response.headers,
-      data: response.data
-    });
+  let successfulEndpoint = false;
 
-    let data: OrdersResponse;
+  for (const endpoint of testEndpoints) {
+    try {
+      logger.info(`Testing endpoint: ${endpoint}`);
+      const response = await axios.get(endpoint);
+      
+      logger.info('AWS Response:', {
+        endpoint,
+        status: response.status,
+        headers: response.headers,
+        data: response.data
+      });
+
+      let data: OrdersResponse;
     
-    if (response.data.body) {
-      try {
-        const parsedBody = JSON.parse(response.data.body);
-        logger.info('Parsed body:', parsedBody);
-        
-        if (parsedBody.message === "Executive Orders API is working!") {
-          logger.warn('Received health check response instead of data');
-          return false;
+      if (response.data.body) {
+        try {
+          const parsedBody = JSON.parse(response.data.body);
+          logger.info('Parsed body:', parsedBody);
+          
+          if (parsedBody.message === "Executive Orders API is working!") {
+            logger.warn('Received health check response instead of data');
+            continue;
+          }
+          
+          data = parsedBody;
+        } catch (parseError) {
+          if (parseError instanceof Error) {
+            logger.error('Failed to parse response body:', parseError.message);
+          } else {
+            logger.error('Failed to parse response body:', String(parseError));
+          }
+          continue;
         }
-        
-        data = parsedBody;
-      } catch (parseError) {
-        logger.error('Failed to parse response body:', parseError);
-        return false;
+      } else {
+        data = response.data;
       }
-    } else {
-      data = response.data;
+
+      const validationResult = validateAPIResponse(data);
+      if (!validationResult.valid) {
+        logger.error('Response validation failed:', validationResult.errors);
+        continue;
+      }
+
+      logger.info(`Endpoint ${endpoint} test completed successfully`);
+      successfulEndpoint = true;
+      break;
+
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        logger.warn(`Failed testing endpoint ${endpoint}:`, {
+          message: error.message,
+          status: error.response?.status,
+          statusText: error.response?.statusText
+        });
+      } else if (error instanceof Error) {
+        logger.warn(`Failed testing endpoint ${endpoint}:`, error.message);
+      } else {
+        logger.warn(`Failed testing endpoint ${endpoint}:`, String(error));
+      }
+      continue;
     }
-
-    const validationResult = validateAPIResponse(data);
-    if (!validationResult.valid) {
-      logger.error('Response validation failed:', validationResult.errors);
-      return false;
-    }
-
-    logger.info('AWS API test completed successfully');
-    return true;
-
-  } catch (error) {
-    logger.error('AWS API test failed:', error);
-    throw error;
   }
+
+  if (!successfulEndpoint) {
+    logger.error('All endpoints failed testing');
+    return false;
+  }
+
+  logger.info('AWS API test completed successfully');
+  return true;
 }
 
 interface ValidationResult {
@@ -151,7 +191,11 @@ if (await isMainModule()) {
       }
     })
     .catch((error) => {
-      logger.error('Test failed:', error);
+      if (error instanceof Error) {
+        logger.error('Test failed:', error.message);
+      } else {
+        logger.error('Test failed:', String(error));
+      }
       process.exit(1);
     });
 }

@@ -2,9 +2,9 @@
 
 import * as React from 'react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import type { ProviderProps } from 'next-themes/dist/types'
+import type { ThemeProviderProps as BaseThemeProviderProps } from 'next-themes/dist/types'
 
-type ThemeProviderProps = ProviderProps & {
+type ThemeProviderProps = BaseThemeProviderProps & {
   children: React.ReactNode;
 }
 

@@ -15,9 +15,31 @@ interface AWSScrapeResponse {
   error?: string;
 }
 
+type OrderCreateData = {
+  type: DocumentType;
+  number: string;
+  title: string;
+  summary: string | null;
+  datePublished: Date;
+  link: string | null;
+  statusId: number;
+  categories?: {
+    connectOrCreate: Array<{
+      where: { name: string };
+      create: { name: string };
+    }>;
+  };
+  agencies?: {
+    connectOrCreate: Array<{
+      where: { name: string };
+      create: { name: string };
+    }>;
+  };
+};
+
 export class DocumentScheduler {
   private isRunning = false;
-  private intervalId?: NodeJS.Timeout;
+  private intervalId: NodeJS.Timeout | null = null;
   private lastCheckTime?: Date;
   private consecutiveFailures = 0;
   private intervalMs: number;
@@ -46,7 +68,7 @@ export class DocumentScheduler {
     if (!this.isRunning) return;
     if (this.intervalId) {
       clearInterval(this.intervalId);
-      this.intervalId = undefined;
+      this.intervalId = null;
     }
     this.isRunning = false;
     logger.info('Scheduler stopped.');
@@ -97,28 +119,30 @@ export class DocumentScheduler {
       const createdCount = await prisma.$transaction(async (tx) => {
         let count = 0;
         for (const doc of newDocs) {
-          await tx.order.create({
-            data: {
-              type: doc.type,
-              number: doc.identifier,
-              title: doc.title,
-              summary: doc.summary || '',
-              datePublished: doc.date,
-              link: doc.url,
-              statusId: parseInt(doc.statusId, 10),
-              categories: {
-                connectOrCreate: doc.categories.map(cat => ({
-                  where: { name: cat.name },
-                  create: { name: cat.name }
-                }))
-              },
-              agencies: {
-                connectOrCreate: doc.agencies.map(agency => ({
-                  where: { name: agency.name },
-                  create: { name: agency.name }
-                }))
-              }
+          const orderData: OrderCreateData = {
+            type: doc.type,
+            number: doc.identifier,
+            title: doc.title,
+            summary: doc.summary || '',
+            datePublished: doc.date,
+            link: doc.url,
+            statusId: parseInt(doc.statusId, 10),
+            categories: {
+              connectOrCreate: doc.categories.map(cat => ({
+                where: { name: cat.name },
+                create: { name: cat.name }
+              }))
+            },
+            agencies: {
+              connectOrCreate: doc.agencies.map(agency => ({
+                where: { name: agency.name },
+                create: { name: agency.name }
+              }))
             }
+          };
+
+          await tx.order.create({
+            data: orderData
           });
           count++;
         }

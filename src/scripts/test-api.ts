@@ -88,8 +88,8 @@ function summarizeOrder(order: Order): OrderSummary {
     id: order.id,
     type: order.type,
     title: order.title,
-    categoryCount: order.categories.length,
-    agencyCount: order.agencies.length
+    categoryCount: order.categories?.length ?? 0,
+    agencyCount: order.agencies?.length ?? 0
   };
 }
 
@@ -114,23 +114,29 @@ async function testEndpoint(): Promise<boolean> {
       metadata: data.metadata
     });
 
-    if (data.orders.length > 0) {
-      const firstOrder = data.orders[0];
-      logger.info('First order:', summarizeOrder(firstOrder));
-
-      if (firstOrder.categories.length > 0) {
-        logger.info('Categories:', firstOrder.categories);
-      } else {
-        logger.info('No categories found for first order');
-      }
-
-      if (firstOrder.agencies.length > 0) {
-        logger.info('Agencies:', firstOrder.agencies);
-      } else {
-        logger.info('No agencies found for first order');
-      }
-    } else {
+    if (!data.orders.length) {
       logger.info('No orders found in response');
+      return true;
+    }
+
+    const firstOrder = data.orders[0];
+    if (!firstOrder) {
+      logger.info('No first order found');
+      return true;
+    }
+
+    logger.info('First order:', summarizeOrder(firstOrder));
+
+    if (firstOrder.categories?.length > 0) {
+      logger.info('Categories:', firstOrder.categories);
+    } else {
+      logger.info('No categories found for first order');
+    }
+
+    if (firstOrder.agencies?.length > 0) {
+      logger.info('Agencies:', firstOrder.agencies);
+    } else {
+      logger.info('No agencies found for first order');
     }
 
     logger.info('Test completed successfully');

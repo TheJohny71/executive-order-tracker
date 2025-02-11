@@ -2,10 +2,10 @@
 
 import * as React from 'react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import type { ThemeProviderProps as NextThemeProviderProps } from 'next-themes'
+import type { ProviderProps } from 'next-themes/dist/types'
 
-export interface ThemeProviderProps extends NextThemeProviderProps {
-  children: React.ReactNode
+type ThemeProviderProps = ProviderProps & {
+  children: React.ReactNode;
 }
 
 export function ThemeProvider({ 

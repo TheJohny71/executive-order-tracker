@@ -6,6 +6,7 @@ import { DocumentType } from '@prisma/client';
 import { logger } from '@/utils/logger';
 import type { WhereClause, OrderDbRecord, OrdersResponse } from '@/types';
 import { transformOrderRecord } from '@/utils';
+import type { IOptions } from 'sanitize-html';
 
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -16,10 +17,32 @@ const querySchema = z.object({
   agency: z.string().optional(),
 });
 
-const sanitizeOptions = {
-  allowedTags: [],
-  allowedAttributes: {},
-} as const;
+const sanitizeOptions: IOptions = {
+  allowedTags: [] as string[],
+  allowedAttributes: {} as { [key: string]: string[] },
+};
+
+type OrderCreateData = {
+  title: string;
+  type: DocumentType;
+  number: string | null;
+  summary: string | null;
+  datePublished: Date;
+  link: string | null;
+  statusId: number;
+  categories?: {
+    connectOrCreate: Array<{
+      where: { name: string };
+      create: { name: string };
+    }>;
+  };
+  agencies?: {
+    connectOrCreate: Array<{
+      where: { name: string };
+      create: { name: string };
+    }>;
+  };
+};
 
 export async function GET(request: NextRequest) {
   try {
@@ -93,7 +116,16 @@ export async function GET(request: NextRequest) {
       metadata: {
         categories: categories.map(c => c.name),
         agencies: agencies.map(a => a.name),
-        statuses: statuses.map(s => s.name)
+        statuses: statuses.map(s => {
+          const status = {
+            id: s.id,
+            name: s.name
+          };
+          if ('color' in s && s.color !== undefined) {
+            return { ...status, color: s.color };
+          }
+          return status;
+        })
       },
       pagination: {
         page,
@@ -136,7 +168,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const orderData = {
+    const orderData: OrderCreateData = {
       title: body.title,
       type: body.type ?? DocumentType.EXECUTIVE_ORDER,
       number: body.number ?? null,

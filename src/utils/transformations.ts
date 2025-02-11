@@ -9,7 +9,8 @@ export const transformOrderRecord = (record: OrderDbRecord): Order => {
     agency: record.agencies[0]?.name ?? null,
     status: record.status ?? {
       id: 1,
-      name: 'Unknown'
+      name: 'Unknown',
+      color: null  // Added the required color property
     }
   };
 };

@@ -79,7 +79,9 @@ export class DocumentScheduler {
   }
 
   public stop(): void {
-    if (!this.isRunning) return;
+    if (!this.isRunning) {
+      return;
+    }
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;

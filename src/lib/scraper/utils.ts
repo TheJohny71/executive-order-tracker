@@ -1,16 +1,55 @@
-import type { CategoryKeywords } from './types';
+import { DocumentType, PrismaClient } from '@prisma/client';
+import type { ScrapedOrder } from '@/types';
+import { logger } from '@/utils/logger';
+import axios from 'axios';
 
-export async function retry<T>(
-  fn: () => Promise<T>,
-  retries = 3,
-  delay = 5000
+const prisma = new PrismaClient();
+
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 5000;
+
+interface AWSApiItem {
+  identifier: string;
+  id?: string;
+  type: DocumentType;
+  title: string;
+  date: string;
+  url: string;
+  summary: string;
+  notes?: string | null;
+  content?: string | null;
+  statusId: string;
+  orderNumber?: string | null;
+  categories: Array<{ name: string }>;
+  agencies: Array<{ name: string }>;
+}
+
+interface ScraperResult {
+  success: boolean;
+  ordersScraped: number;
+  errors: string[];
+  newOrders: ScrapedOrder[];
+  updatedOrders: ScrapedOrder[];
+}
+
+interface CategoryKeywords {
+  [key: string]: string[];
+}
+
+async function retryWithDelay<T>(
+  fn: () => Promise<T>, 
+  retries = MAX_RETRIES,
+  delay = RETRY_DELAY
 ): Promise<T> {
   try {
     return await fn();
   } catch (error) {
-    if (retries <= 0) throw error;
-    await new Promise(resolve => setTimeout(resolve, delay));
-    return retry(fn, retries - 1, delay);
+    if (retries > 0) {
+      logger.warn(`Retrying operation in ${delay}ms. Retries left: ${retries - 1}`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return retryWithDelay(fn, retries - 1, delay);
+    }
+    throw error;
   }
 }
 
@@ -33,7 +72,6 @@ export function determineCategories(content: string): string[] {
   };
 
   const contentLower = content.toLowerCase();
-  // Use regex word boundaries to avoid partial matches
   for (const [category, keywords] of Object.entries(categoryKeywords)) {
     if (keywords.some(keyword => new RegExp(`\\b${keyword}\\b`, 'i').test(contentLower))) {
       categories.add(category);
@@ -62,7 +100,6 @@ export function determineAgencies(content: string): string[] {
   };
 
   const contentLower = content.toLowerCase();
-  // Use regex word boundaries for more accurate agency detection
   for (const [agency, keywords] of Object.entries(agencyKeywords)) {
     if (keywords.some(keyword => new RegExp(`\\b${keyword}\\b`, 'i').test(contentLower))) {
       agencies.add(agency);
@@ -71,3 +108,155 @@ export function determineAgencies(content: string): string[] {
 
   return Array.from(agencies);
 }
+
+async function fetchFromAWS(): Promise<ScrapedOrder[]> {
+  const endpoint = process.env.AWS_API_ENDPOINT;
+  if (!endpoint) {
+    throw new Error('AWS_API_ENDPOINT environment variable is not set');
+  }
+
+  try {
+    const response = await axios.get<AWSApiItem[]>(endpoint);
+    
+    if (!response.data) {
+      throw new Error('No data received from AWS API');
+    }
+
+    return response.data.map((item: AWSApiItem): ScrapedOrder => {
+      const date = new Date(item.date);
+      if (isNaN(date.getTime())) {
+        throw new Error(`Invalid date format for item: ${item.identifier}`);
+      }
+
+      // Extract categories and agencies from content if available
+      const detectedCategories = item.content ? determineCategories(item.content) : [];
+      const detectedAgencies = item.content ? determineAgencies(item.content) : [];
+
+      // Combine existing and detected categories/agencies
+      const combinedCategories = [
+        ...new Set([
+          ...(item.categories || []).map(c => c.name),
+          ...detectedCategories
+        ])
+      ].map(name => ({ name }));
+
+      const combinedAgencies = [
+        ...new Set([
+          ...(item.agencies || []).map(a => a.name),
+          ...detectedAgencies
+        ])
+      ].map(name => ({ name }));
+
+      return {
+        identifier: item.identifier || item.id || '',
+        type: item.type,
+        title: item.title || 'Untitled',
+        date,
+        url: item.url,
+        summary: item.summary || '',
+        notes: item.notes || null,
+        content: item.content || null,
+        statusId: item.statusId || '1',
+        isNew: true,
+        categories: combinedCategories,
+        agencies: combinedAgencies,
+        metadata: {
+          orderNumber: item.orderNumber || item.identifier,
+          categories: combinedCategories,
+          agencies: combinedAgencies
+        }
+      };
+    });
+  } catch (error) {
+    logger.error('Error fetching from AWS:', error);
+    throw error;
+  }
+}
+
+export async function scrapeDocuments(): Promise<ScraperResult> {
+  try {
+    const documents = await retryWithDelay(() => fetchFromAWS());
+
+    if (documents.length === 0) {
+      return {
+        success: true,
+        ordersScraped: 0,
+        errors: [],
+        newOrders: [],
+        updatedOrders: []
+      };
+    }
+
+    logger.info(`Found ${documents.length} documents`);
+
+    const existingOrders = await prisma.order.findMany({
+      select: { 
+        link: true,
+        number: true 
+      }
+    });
+    
+    const existingLinks = new Set(existingOrders.map(o => o.link).filter(Boolean));
+    const existingNumbers = new Set(existingOrders.map(o => o.number).filter(Boolean));
+
+    const newOrders: ScrapedOrder[] = [];
+    const updatedOrders: ScrapedOrder[] = [];
+
+    documents.forEach(doc => {
+      if (!existingLinks.has(doc.url) && !existingNumbers.has(doc.identifier)) {
+        newOrders.push(doc);
+      } else {
+        updatedOrders.push(doc);
+      }
+    });
+
+    return {
+      success: true,
+      ordersScraped: documents.length,
+      errors: [],
+      newOrders,
+      updatedOrders
+    };
+
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Error scraping documents:', error);
+    return {
+      success: false,
+      ordersScraped: 0,
+      errors: [errorMessage],
+      newOrders: [],
+      updatedOrders: []
+    };
+  }
+}
+
+export async function checkForNewDocuments(): Promise<ScrapedOrder[]> {
+  try {
+    const latestDocuments = await retryWithDelay(() => fetchFromAWS());
+    
+    const existingOrders = await prisma.order.findMany({
+      select: { 
+        link: true,
+        number: true 
+      }
+    });
+    
+    const existingLinks = new Set(existingOrders.map(o => o.link).filter(Boolean));
+    const existingNumbers = new Set(existingOrders.map(o => o.number).filter(Boolean));
+    
+    return latestDocuments.filter(doc => 
+      !existingLinks.has(doc.url) && !existingNumbers.has(doc.identifier)
+    );
+  } catch (error) {
+    logger.error('Error checking for new documents:', error);
+    throw error;
+  }
+}
+
+export const utils = {
+  retryWithDelay,
+  fetchFromAWS,
+  determineCategories,
+  determineAgencies
+};

@@ -1,7 +1,10 @@
 import type { OrderDbRecord, Order } from '@/types';
+import { DocumentType } from '@prisma/client';
 
 export function isValidOrder(order: unknown): order is Order {
-  if (!order || typeof order !== 'object') return false;
+  if (!order || typeof order !== 'object') {
+    return false;
+  }
   
   const o = order as Order;
   return (
@@ -35,5 +38,8 @@ export const transformOrderRecord = (record: OrderDbRecord): Order => {
 };
 
 export function getSelectValue(value: string | null | undefined): string {
-  return value || 'all';
+  if (!value) {
+    return 'all';
+  }
+  return value;
 }

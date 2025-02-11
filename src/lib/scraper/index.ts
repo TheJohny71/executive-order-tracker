@@ -2,6 +2,7 @@ import { DocumentType, PrismaClient } from '@prisma/client';
 import type { ScrapedOrder } from '@/types';
 import { logger } from '@/utils/logger';
 import axios from 'axios';
+import { fileURLToPath } from 'url';
 
 const prisma = new PrismaClient();
 
@@ -237,7 +238,8 @@ export async function checkForNewDocuments(): Promise<ScrapedOrder[]> {
 }
 
 // Main execution
-if (require.main === module) {
+const currentFile = fileURLToPath(import.meta.url);
+if (process.argv[1] === currentFile) {
   logger.info('Starting scraper execution');
   scrapeDocuments()
     .then(result => {

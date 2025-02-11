@@ -3,8 +3,22 @@ import { logger } from '../utils/logger';
 import axios, { AxiosError } from 'axios';
 import dotenv from 'dotenv';
 import type { OrdersResponse, Order } from '../types';
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { fromEnv } from "@aws-sdk/credential-providers";
+import { HttpRequest } from "@aws-sdk/protocol-http";
+import { Sha256 } from "@aws-crypto/sha256-js";
 
 dotenv.config();
+
+const region = process.env.AWS_REGION || "us-east-2";
+const service = "execute-api";
+
+const signer = new SignatureV4({
+  credentials: fromEnv(),
+  region: region,
+  service: service,
+  sha256: Sha256
+});
 
 const testEndpoints = [
   // Test base endpoints
@@ -30,7 +44,27 @@ async function testAwsEndpoint(): Promise<boolean> {
   for (const endpoint of testEndpoints) {
     try {
       logger.info(`Testing endpoint: ${endpoint}`);
-      const response = await axios.get(endpoint);
+      
+      const url = new URL(endpoint);
+      
+      // Create the request to be signed
+      const request = new HttpRequest({
+        method: "GET",
+        protocol: url.protocol.replace(':', ''),
+        hostname: url.hostname,
+        path: url.pathname + url.search,
+        headers: {
+          host: url.hostname,
+        }
+      });
+
+      // Sign the request
+      const signedRequest = await signer.sign(request);
+      
+      // Make the request with signed headers
+      const response = await axios.get(endpoint, {
+        headers: signedRequest.headers
+      });
       
       logger.info('AWS Response:', {
         endpoint,
@@ -79,7 +113,8 @@ async function testAwsEndpoint(): Promise<boolean> {
         logger.warn(`Failed testing endpoint ${endpoint}:`, {
           message: error.message,
           status: error.response?.status,
-          statusText: error.response?.statusText
+          statusText: error.response?.statusText,
+          data: error.response?.data
         });
       } else if (error instanceof Error) {
         logger.warn(`Failed testing endpoint ${endpoint}:`, error.message);

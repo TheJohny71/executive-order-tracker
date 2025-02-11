@@ -1,16 +1,21 @@
 import { PrismaClient, DocumentType } from '@prisma/client';
 import { logger } from '@/utils/logger';
 
-// Define a minimal interface for your "Order" from external sources
+// Define interfaces
 interface MyOrder {
-  type?: DocumentType;
-  number?: string;
-  link?: string | null;
-  summary?: string | null;
-  datePublished?: string | Date;
-  category?: string;
-  agency?: string;
-  title?: string;
+  type: DocumentType;
+  number: string | null;
+  link: string | null;
+  summary: string | null;
+  datePublished: string | Date;
+  category?: string | null;
+  agency?: string | null;
+  title: string;
+  statusId?: number;
+}
+
+interface FetchOrdersResponse {
+  orders: MyOrder[];
 }
 
 // Constants
@@ -20,18 +25,22 @@ const MIN_DATE = new Date('2025-01-01T00:00:00Z');
 
 const prisma = new PrismaClient();
 
-async function fetchOrders(): Promise<{ orders: MyOrder[] }> {
+async function fetchOrders(): Promise<FetchOrdersResponse> {
   return { orders: [] };
 }
 
 export class DocumentScheduler {
-  private isRunning = false;
-  private intervalId: NodeJS.Timeout | null = null;
-  private lastCheckTime?: Date;
-  private consecutiveFailures = 0;
-  private intervalMinutes: number;
+  private isRunning: boolean;
+  private intervalId: NodeJS.Timeout | null;
+  private lastCheckTime: Date | null;
+  private consecutiveFailures: number;
+  private readonly intervalMinutes: number;
 
   constructor(intervalMinutes = 30) {
+    this.isRunning = false;
+    this.intervalId = null;
+    this.lastCheckTime = null;
+    this.consecutiveFailures = 0;
     this.intervalMinutes = intervalMinutes * 60 * 1000;
   }
 
@@ -42,7 +51,7 @@ export class DocumentScheduler {
     }
     this.isRunning = true;
     this.intervalId = setInterval(() => {
-      this.checkNewDocuments().catch((err) => {
+      void this.checkNewDocuments().catch((err) => {
         logger.error('Error in scheduled check:', err);
       });
     }, this.intervalMinutes);
@@ -86,15 +95,16 @@ export class DocumentScheduler {
 
   private async checkNewDocuments(): Promise<void> {
     try {
-      logger.info(`Starting document check. Last check: ${this.lastCheckTime || 'N/A'}`);
+      logger.info(`Starting document check. Last check: ${this.lastCheckTime?.toISOString() || 'N/A'}`);
       this.consecutiveFailures = 0;
 
       const response = await this.retryWithDelay(() => fetchOrders());
       const latestDocuments = response.orders;
 
       const relevantDocs = latestDocuments.filter((doc) => {
-        const docDate = new Date(doc.datePublished ?? 0);
-        return docDate >= MIN_DATE;
+        if (!doc.datePublished) return false;
+        const docDate = new Date(doc.datePublished);
+        return !isNaN(docDate.getTime()) && docDate >= MIN_DATE;
       });
 
       const existingDocs = await prisma.order.findMany({
@@ -102,13 +112,13 @@ export class DocumentScheduler {
         select: { link: true, number: true },
       });
 
-      const existingLinks = new Set(existingDocs.map((d) => d.link ?? ''));
-      const existingNumbers = new Set(existingDocs.map((d) => d.number ?? ''));
+      const existingLinks = new Set(existingDocs.map((d) => d.link).filter(Boolean));
+      const existingNumbers = new Set(existingDocs.map((d) => d.number).filter(Boolean));
 
       const newDocs = relevantDocs.filter((doc) => {
         return (
-          !existingLinks.has(doc.link ?? '') &&
-          !existingNumbers.has(doc.number ?? '')
+          doc.link && !existingLinks.has(doc.link) &&
+          doc.number && !existingNumbers.has(doc.number)
         );
       });
 
@@ -123,14 +133,13 @@ export class DocumentScheduler {
         for (const doc of newDocs) {
           await tx.order.create({
             data: {
-              type: doc.type ?? DocumentType.EXECUTIVE_ORDER,
+              type: doc.type,
               number: doc.number ?? 'UNKNOWN',
-              title: doc.title ?? 'Untitled',
+              title: doc.title,
               summary: doc.summary,
-              datePublished: doc.datePublished
-                ? new Date(doc.datePublished)
-                : new Date(),
+              datePublished: new Date(doc.datePublished),
               link: doc.link,
+              statusId: doc.statusId ?? 1,
               categories: doc.category
                 ? {
                     connectOrCreate: [{

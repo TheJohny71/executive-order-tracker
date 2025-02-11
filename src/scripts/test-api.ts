@@ -9,6 +9,21 @@ interface APIConfig {
   };
 }
 
+interface OrderStatus {
+  id: number;
+  name: string;
+}
+
+interface Category {
+  id: number;
+  name: string;
+}
+
+interface Agency {
+  id: number;
+  name: string;
+}
+
 interface Order {
   id: number;
   type: DocumentType;
@@ -20,18 +35,9 @@ interface Order {
   createdAt: string;
   updatedAt: string;
   statusId: number;
-  status: {
-    id: number;
-    name: string;
-  } | null;
-  categories: Array<{
-    id: number;
-    name: string;
-  }>;
-  agencies: Array<{
-    id: number;
-    name: string;
-  }>;
+  status: OrderStatus | null;
+  categories: Category[];
+  agencies: Agency[];
 }
 
 interface APIResponse {
@@ -42,17 +48,52 @@ interface APIResponse {
     limit: number;
     hasMore: boolean;
   };
+  metadata?: {
+    categories: string[];
+    agencies: string[];
+    statuses: string[];
+  };
+}
+
+interface OrderSummary {
+  id: number;
+  type: DocumentType;
+  title: string;
+  categoryCount: number;
+  agencyCount: number;
 }
 
 const config: APIConfig = {
-  baseURL: "http://localhost:3000",
+  baseURL: process.env.API_BASE_URL || "http://localhost:3000",
   defaultParams: {
     page: 1,
     limit: 10
   }
-};
+} as const;
 
-async function testEndpoint() {
+async function fetchAPI(url: string): Promise<APIResponse> {
+  const response = await fetch(url);
+  
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+  }
+  
+  const data = await response.json();
+  return data as APIResponse;
+}
+
+function summarizeOrder(order: Order): OrderSummary {
+  return {
+    id: order.id,
+    type: order.type,
+    title: order.title,
+    categoryCount: order.categories.length,
+    agencyCount: order.agencies.length
+  };
+}
+
+async function testEndpoint(): Promise<boolean> {
   try {
     logger.info('Starting API test...');
     
@@ -64,35 +105,18 @@ async function testEndpoint() {
     const fullURL = new URL(`/api/orders?${params}`, config.baseURL);
     logger.info('Testing:', fullURL.toString());
     
-    const response = await fetch(fullURL.toString());
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
-    }
-    
-    const data = await response.json() as APIResponse;
+    const data = await fetchAPI(fullURL.toString());
     
     logger.info('Response structure:', {
       totalCount: data.totalCount,
       pagination: data.pagination,
-      orderCount: data.orders.length
+      orderCount: data.orders.length,
+      metadata: data.metadata
     });
 
     if (data.orders.length > 0) {
       const firstOrder = data.orders[0];
-      if (!firstOrder) {
-        logger.info('No orders found in response');
-        return true;
-      }
-
-      logger.info('First order:', {
-        id: firstOrder.id,
-        type: firstOrder.type,
-        title: firstOrder.title,
-        categoryCount: firstOrder.categories.length,
-        agencyCount: firstOrder.agencies.length
-      });
+      logger.info('First order:', summarizeOrder(firstOrder));
 
       if (firstOrder.categories.length > 0) {
         logger.info('Categories:', firstOrder.categories);
@@ -109,28 +133,33 @@ async function testEndpoint() {
       logger.info('No orders found in response');
     }
 
-    logger.info('Test completed');
+    logger.info('Test completed successfully');
     return true;
   } catch (error) {
-    logger.error('Test failed:', error);
+    logger.error('Test failed:', error instanceof Error ? error.message : 'Unknown error');
     throw error;
   }
 }
 
-// Safe check for script execution
-const isMainModule = async () => {
-  if (typeof process !== 'undefined' && process.argv.length > 1) {
-    const scriptPath = process.argv[1];
-    const scriptUrl = new URL(scriptPath, 'file://').href;
+async function isMainModule(): Promise<boolean> {
+  try {
+    if (typeof process === 'undefined' || !process.argv[1]) {
+      return false;
+    }
+    const scriptUrl = new URL(process.argv[1], 'file://').href;
     return import.meta.url === scriptUrl;
+  } catch {
+    return false;
   }
-  return false;
-};
+}
 
 if (await isMainModule()) {
   testEndpoint()
     .then(() => process.exit(0))
-    .catch(() => process.exit(1));
+    .catch((error) => {
+      logger.error('Script failed:', error);
+      process.exit(1);
+    });
 }
 
-export { testEndpoint };
+export { testEndpoint, type APIResponse, type Order };

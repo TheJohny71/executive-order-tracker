@@ -23,18 +23,22 @@ interface TimelineDataPoint {
   total: number;
   [DocumentType.EXECUTIVE_ORDER]: number;
   [DocumentType.MEMORANDUM]: number;
-  [DocumentType.PROCLAMATION]: number; // Added to match DocumentType enum
+  [DocumentType.PROCLAMATION]: number;
 }
 
 export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
   const timelineData = useMemo(() => {
-    if (!orders?.length) return [];
+    if (!orders || orders.length === 0) return [];
     
     const ordersByMonth: Record<string, TimelineDataPoint> = {};
     
     orders.forEach(order => {
-      const date = new Date(order.datePublished); // Changed from order.date to order.datePublished
-      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      if (!order.datePublished) return;
+      
+      const date = new Date(order.datePublished);
+      const year = date.getFullYear().toString();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const monthKey = `${year}-${month}`;
       
       if (!ordersByMonth[monthKey]) {
         ordersByMonth[monthKey] = {
@@ -42,19 +46,49 @@ export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
           total: 0,
           [DocumentType.EXECUTIVE_ORDER]: 0,
           [DocumentType.MEMORANDUM]: 0,
-          [DocumentType.PROCLAMATION]: 0 // Initialize PROCLAMATION count
+          [DocumentType.PROCLAMATION]: 0
         };
       }
       
       ordersByMonth[monthKey].total += 1;
-      ordersByMonth[monthKey][order.type] += 1;
+      if (order.type) {
+        ordersByMonth[monthKey][order.type] += 1;
+      }
     });
 
     return Object.values(ordersByMonth)
       .sort((a, b) => a.month.localeCompare(b.month));
   }, [orders]);
 
-  if (!orders?.length) return null;
+  if (!orders || orders.length === 0) return null;
+
+  const formatMonth = (value: string): string => {
+    const [year, month] = value.split('-');
+    if (!year || !month) return '';
+    return `${month}/${year.slice(2)}`;
+  };
+
+  const formatTooltipLabel = (value: string): string => {
+    const [year, month] = value.split('-');
+    if (!year || !month) return '';
+    return new Date(Number(year), Number(month) - 1).toLocaleString('default', { 
+      month: 'long',
+      year: 'numeric' 
+    });
+  };
+
+  const formatTooltipValue = (value: number, name: string): [string, string] => {
+    switch (name) {
+      case DocumentType.EXECUTIVE_ORDER:
+        return [`${value} Executive Orders`, ''];
+      case DocumentType.MEMORANDUM:
+        return [`${value} Memoranda`, ''];
+      case DocumentType.PROCLAMATION:
+        return [`${value} Proclamations`, ''];
+      default:
+        return [`${value}`, name];
+    }
+  };
 
   return (
     <div className="h-64 w-full bg-white rounded-lg shadow-sm">
@@ -66,10 +100,7 @@ export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
           <CartesianGrid strokeDasharray="3 3" className="opacity-50" />
           <XAxis 
             dataKey="month" 
-            tickFormatter={(value: string) => {
-              const [year, month] = value.split('-');
-              return `${month}/${year.slice(2)}`;
-            }}
+            tickFormatter={formatMonth}
             className="text-gray-600"
           />
           <YAxis 
@@ -77,25 +108,8 @@ export const TimelineChart: React.FC<TimelineChartProps> = ({ orders }) => {
             className="text-gray-600"
           />
           <Tooltip 
-            labelFormatter={(value: string) => {
-              const [year, month] = value.split('-');
-              return `${new Date(Number(year), Number(month) - 1).toLocaleString('default', { 
-                month: 'long',
-                year: 'numeric' 
-              })}`;
-            }}
-            formatter={(value: number, name: string) => {
-              switch (name) {
-                case DocumentType.EXECUTIVE_ORDER:
-                  return [`${value} Executive Orders`, ''];
-                case DocumentType.MEMORANDUM:
-                  return [`${value} Memoranda`, ''];
-                case DocumentType.PROCLAMATION:
-                  return [`${value} Proclamations`, ''];
-                default:
-                  return [`${value}`, name];
-              }
-            }}
+            labelFormatter={formatTooltipLabel}
+            formatter={formatTooltipValue}
             contentStyle={{
               backgroundColor: 'white',
               border: '1px solid #e5e7eb',

@@ -6,7 +6,7 @@ import axios from 'axios';
 const prisma = new PrismaClient();
 
 const MAX_RETRIES = 3;
-const RETRY_DELAY = 5000; // 5 seconds
+const RETRY_DELAY = 5000;
 
 interface AWSApiItem {
   identifier: string;
@@ -20,8 +20,8 @@ interface AWSApiItem {
   content?: string | null;
   statusId: string;
   orderNumber?: string | null;
-  categories?: Array<{ name: string }> | null;
-  agencies?: Array<{ name: string }> | null;
+  categories: Array<{ name: string }>;
+  agencies: Array<{ name: string }>;
 }
 
 interface ScraperResult {
@@ -30,12 +30,6 @@ interface ScraperResult {
   errors: string[];
   newOrders: ScrapedOrder[];
   updatedOrders: ScrapedOrder[];
-}
-
-interface ScrapedOrderMetadata {
-  orderNumber: string;
-  categories: Array<{ name: string }> | null;
-  agencies: Array<{ name: string }> | null;
 }
 
 async function fetchFromAWS(): Promise<ScrapedOrder[]> {
@@ -57,12 +51,6 @@ async function fetchFromAWS(): Promise<ScrapedOrder[]> {
         throw new Error(`Invalid date format for item: ${item.identifier}`);
       }
 
-      const metadata: ScrapedOrderMetadata = {
-        orderNumber: item.orderNumber || item.identifier,
-        categories: item.categories || null,
-        agencies: item.agencies || null
-      };
-
       return {
         identifier: item.identifier || item.id || '',
         type: item.type,
@@ -76,7 +64,11 @@ async function fetchFromAWS(): Promise<ScrapedOrder[]> {
         isNew: true,
         categories: item.categories || [],
         agencies: item.agencies || [],
-        metadata
+        metadata: {
+          orderNumber: item.orderNumber || item.identifier,
+          categories: item.categories,
+          agencies: item.agencies
+        }
       };
     });
   } catch (error) {

@@ -4,7 +4,7 @@ import sanitize from 'sanitize-html';
 import { prisma } from '@/lib/db';
 import { DocumentType, Prisma } from '@prisma/client';
 import { logger } from '@/utils/logger';
-import type { WhereClause, OrderDbRecord, OrdersResponse } from '@/types';
+import type { WhereClause, OrderDbRecord, OrdersResponse, OrderStatus } from '@/types';
 import { transformOrderRecord } from '@/utils';
 import type { IOptions } from 'sanitize-html';
 
@@ -89,16 +89,18 @@ export async function GET(request: NextRequest) {
 
     const orders = dbOrders.map(order => transformOrderRecord(order as OrderDbRecord));
 
+    const mappedStatuses: OrderStatus[] = statuses.map(s => ({
+      id: s.id,
+      name: s.name,
+      color: null
+    }));
+
     const response: OrdersResponse = {
       orders,
       metadata: {
         categories: categories.map(c => c.name),
         agencies: agencies.map(a => a.name),
-        statuses: statuses.map(s => ({
-          id: s.id,
-          name: s.name,
-          color: s.color || null
-        }))
+        statuses: mappedStatuses
       },
       pagination: {
         page,

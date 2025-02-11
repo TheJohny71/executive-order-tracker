@@ -38,12 +38,16 @@ async function fetchFromAWS(): Promise<ScrapedOrder[]> {
     throw new Error('AWS_API_ENDPOINT environment variable is not set');
   }
 
+  logger.info(`Fetching data from AWS endpoint: ${endpoint}`);
+  
   try {
     const response = await axios.get<AWSApiItem[]>(endpoint);
     
     if (!response.data) {
       throw new Error('No data received from AWS API');
     }
+
+    logger.info(`Received ${response.data.length} items from AWS`);
 
     return response.data.map((item: AWSApiItem): ScrapedOrder => {
       const date = new Date(item.date);
@@ -95,9 +99,12 @@ async function retryWithDelay<T>(
 
 export async function scrapeDocuments(): Promise<ScraperResult> {
   try {
+    logger.info('Starting document scraping process');
+    
     const documents = await retryWithDelay(() => fetchFromAWS());
 
     if (documents.length === 0) {
+      logger.info('No documents found to process');
       return {
         success: true,
         ordersScraped: 0,
@@ -130,8 +137,11 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
       }
     });
 
+    logger.info(`Processing ${newOrders.length} new orders and ${updatedOrders.length} updates`);
+
     // Save new orders to database
     for (const order of newOrders) {
+      logger.info(`Creating new order: ${order.title}`);
       await prisma.order.create({
         data: {
           title: order.title,
@@ -163,6 +173,7 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
 
     // Update existing orders
     for (const order of updatedOrders) {
+      logger.info(`Updating order: ${order.title}`);
       await prisma.order.updateMany({
         where: {
           OR: [
@@ -178,6 +189,8 @@ export async function scrapeDocuments(): Promise<ScraperResult> {
         }
       });
     }
+
+    logger.info('Document scraping process completed successfully');
 
     return {
       success: true,
@@ -221,6 +234,20 @@ export async function checkForNewDocuments(): Promise<ScrapedOrder[]> {
     logger.error('Error checking for new documents:', error);
     throw error;
   }
+}
+
+// Main execution
+if (require.main === module) {
+  logger.info('Starting scraper execution');
+  scrapeDocuments()
+    .then(result => {
+      logger.info('Scraper execution completed', result);
+      process.exit(0);
+    })
+    .catch(error => {
+      logger.error('Scraper execution failed:', error);
+      process.exit(1);
+    });
 }
 
 export const utils = {

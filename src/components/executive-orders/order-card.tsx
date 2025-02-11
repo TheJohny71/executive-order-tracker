@@ -1,17 +1,18 @@
 import React from 'react';
+import { ChevronDown } from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
   Card,
   CardContent,
   CardHeader,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ChevronDown } from 'lucide-react';
+} from '@/components/ui/collapsible';
 import type { Order, FilterType } from '@/types';
 
 interface OrderCardProps {

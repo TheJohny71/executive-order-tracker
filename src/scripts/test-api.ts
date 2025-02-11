@@ -1,150 +1,130 @@
 import { DocumentType } from '@prisma/client';
 import { logger } from '../utils/logger';
+import axios from 'axios';
+import dotenv from 'dotenv';
+import type { OrdersResponse, Order } from '../types';
 
-interface APIConfig {
-  baseURL: string;
-  defaultParams: {
-    page: number;
-    limit: number;
-  };
-}
+dotenv.config();
 
-interface OrderStatus {
-  id: number;
-  name: string;
-}
-
-interface Category {
-  id: number;
-  name: string;
-}
-
-interface Agency {
-  id: number;
-  name: string;
-}
-
-interface Order {
-  id: number;
-  type: DocumentType;
-  number: string | null;
-  title: string;
-  summary: string | null;
-  datePublished: string;
-  link: string | null;
-  createdAt: string;
-  updatedAt: string;
-  statusId: number;
-  status: OrderStatus | null;
-  categories: Category[];
-  agencies: Agency[];
-}
-
-interface APIResponse {
-  totalCount: number;
-  orders: Order[];
-  pagination: {
-    page: number;
-    limit: number;
-    hasMore: boolean;
-  };
-  metadata?: {
-    categories: string[];
-    agencies: string[];
-    statuses: string[];
-  };
-}
-
-interface OrderSummary {
-  id: number;
-  type: DocumentType;
-  title: string;
-  categoryCount: number;
-  agencyCount: number;
-}
-
-const config: APIConfig = {
-  baseURL: process.env.API_BASE_URL || "http://localhost:3000",
-  defaultParams: {
-    page: 1,
-    limit: 10
-  }
-} as const;
-
-async function fetchAPI(url: string): Promise<APIResponse> {
-  const response = await fetch(url);
+async function testAwsEndpoint(): Promise<boolean> {
+  logger.info('Starting AWS API test...');
   
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+  const endpoint = process.env.AWS_API_ENDPOINT;
+  if (!endpoint) {
+    throw new Error('AWS_API_ENDPOINT not configured');
   }
-  
-  const data = await response.json();
-  return data as APIResponse;
-}
 
-function summarizeOrder(order: Order): OrderSummary {
-  return {
-    id: order.id,
-    type: order.type,
-    title: order.title,
-    categoryCount: order.categories?.length ?? 0,
-    agencyCount: order.agencies?.length ?? 0
-  };
-}
-
-async function testEndpoint(): Promise<boolean> {
   try {
-    logger.info('Starting API test...');
+    const response = await axios.get(endpoint);
     
-    const params = new URLSearchParams({
-      page: config.defaultParams.page.toString(),
-      limit: config.defaultParams.limit.toString()
-    });
-    
-    const fullURL = new URL(`/api/orders?${params}`, config.baseURL);
-    logger.info('Testing:', fullURL.toString());
-    
-    const data = await fetchAPI(fullURL.toString());
-    
-    logger.info('Response structure:', {
-      totalCount: data.totalCount,
-      pagination: data.pagination,
-      orderCount: data.orders.length,
-      metadata: data.metadata
+    logger.info('AWS Response:', {
+      status: response.status,
+      headers: response.headers,
+      data: response.data
     });
 
-    if (!data.orders.length) {
-      logger.info('No orders found in response');
-      return true;
-    }
-
-    const firstOrder = data.orders[0];
-    if (!firstOrder) {
-      logger.info('No first order found');
-      return true;
-    }
-
-    logger.info('First order:', summarizeOrder(firstOrder));
-
-    if (firstOrder.categories?.length > 0) {
-      logger.info('Categories:', firstOrder.categories);
+    let data: OrdersResponse;
+    
+    if (response.data.body) {
+      try {
+        const parsedBody = JSON.parse(response.data.body);
+        logger.info('Parsed body:', parsedBody);
+        
+        if (parsedBody.message === "Executive Orders API is working!") {
+          logger.warn('Received health check response instead of data');
+          return false;
+        }
+        
+        data = parsedBody;
+      } catch (parseError) {
+        logger.error('Failed to parse response body:', parseError);
+        return false;
+      }
     } else {
-      logger.info('No categories found for first order');
+      data = response.data;
     }
 
-    if (firstOrder.agencies?.length > 0) {
-      logger.info('Agencies:', firstOrder.agencies);
-    } else {
-      logger.info('No agencies found for first order');
+    const validationResult = validateAPIResponse(data);
+    if (!validationResult.valid) {
+      logger.error('Response validation failed:', validationResult.errors);
+      return false;
     }
 
-    logger.info('Test completed successfully');
+    logger.info('AWS API test completed successfully');
     return true;
+
   } catch (error) {
-    logger.error('Test failed:', error instanceof Error ? error.message : 'Unknown error');
+    logger.error('AWS API test failed:', error);
     throw error;
   }
+}
+
+interface ValidationResult {
+  valid: boolean;
+  errors: string[];
+}
+
+function validateAPIResponse(data: unknown): ValidationResult {
+  const errors: string[] = [];
+
+  if (!data || typeof data !== 'object') {
+    return { valid: false, errors: ['Invalid response data'] };
+  }
+
+  const response = data as OrdersResponse;
+
+  if (!Array.isArray(response.orders)) {
+    errors.push('Missing or invalid orders array');
+  }
+
+  if (!response.metadata || typeof response.metadata !== 'object') {
+    errors.push('Missing or invalid metadata');
+  }
+
+  if (!response.pagination || typeof response.pagination !== 'object') {
+    errors.push('Missing or invalid pagination');
+  } else {
+    const { total, page, limit, hasMore } = response.pagination;
+    if (typeof total !== 'number') errors.push('Invalid pagination.total');
+    if (typeof page !== 'number') errors.push('Invalid pagination.page');
+    if (typeof limit !== 'number') errors.push('Invalid pagination.limit');
+    if (typeof hasMore !== 'boolean') errors.push('Invalid pagination.hasMore');
+  }
+
+  if (response.orders?.length > 0) {
+    const orderErrors = validateOrder(response.orders[0]);
+    errors.push(...orderErrors);
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+
+function validateOrder(order: unknown): string[] {
+  const errors: string[] = [];
+  
+  if (!order || typeof order !== 'object') {
+    return ['Invalid order data'];
+  }
+
+  const typedOrder = order as Order;
+
+  if (typeof typedOrder.id !== 'number') {
+    errors.push('Invalid order.id');
+  }
+  if (!Object.values(DocumentType).includes(typedOrder.type)) {
+    errors.push('Invalid order.type');
+  }
+  if (typeof typedOrder.title !== 'string') {
+    errors.push('Invalid order.title');
+  }
+  if (!(typedOrder.datePublished instanceof Date)) {
+    errors.push('Invalid order.datePublished');
+  }
+
+  return errors;
 }
 
 async function isMainModule(): Promise<boolean> {
@@ -160,12 +140,20 @@ async function isMainModule(): Promise<boolean> {
 }
 
 if (await isMainModule()) {
-  testEndpoint()
-    .then(() => process.exit(0))
+  testAwsEndpoint()
+    .then((success) => {
+      if (success) {
+        logger.info('Test completed successfully');
+        process.exit(0);
+      } else {
+        logger.error('Test failed');
+        process.exit(1);
+      }
+    })
     .catch((error) => {
-      logger.error('Script failed:', error);
+      logger.error('Test failed:', error);
       process.exit(1);
     });
 }
 
-export { testEndpoint, type APIResponse, type Order };
+export { testAwsEndpoint };

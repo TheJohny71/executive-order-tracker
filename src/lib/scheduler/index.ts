@@ -23,6 +23,11 @@ const MIN_DATE = new Date('2025-01-01T00:00:00Z');
 
 const prisma = new PrismaClient();
 
+interface CategoryConnect {
+  where: { name: string };
+  create: { name: string };
+}
+
 type OrderCreateData = {
   type: DocumentType;
   number: string;
@@ -32,16 +37,10 @@ type OrderCreateData = {
   link: string | null;
   statusId: number;
   categories?: {
-    connectOrCreate: Array<{
-      where: { name: string };
-      create: { name: string };
-    }>;
+    connectOrCreate: CategoryConnect[];
   };
   agencies?: {
-    connectOrCreate: Array<{
-      where: { name: string };
-      create: { name: string };
-    }>;
+    connectOrCreate: CategoryConnect[];
   };
 };
 
@@ -148,6 +147,16 @@ export class DocumentScheduler {
       const createdCount = await prisma.$transaction(async (tx) => {
         let count = 0;
         for (const doc of newDocs) {
+          const categoriesConnect = doc.category ? [{
+            where: { name: doc.category },
+            create: { name: doc.category }
+          }] : [];
+
+          const agenciesConnect = doc.agency ? [{
+            where: { name: doc.agency },
+            create: { name: doc.agency }
+          }] : [];
+
           const orderData: OrderCreateData = {
             type: doc.type,
             number: doc.number,
@@ -156,22 +165,16 @@ export class DocumentScheduler {
             datePublished: new Date(doc.datePublished),
             link: doc.link,
             statusId: doc.statusId,
-            categories: doc.category
-              ? {
-                  connectOrCreate: [{
-                    where: { name: doc.category },
-                    create: { name: doc.category },
-                  }],
-                }
-              : undefined,
-            agencies: doc.agency
-              ? {
-                  connectOrCreate: [{
-                    where: { name: doc.agency },
-                    create: { name: doc.agency },
-                  }],
-                }
-              : undefined,
+            ...(categoriesConnect.length > 0 && {
+              categories: {
+                connectOrCreate: categoriesConnect
+              }
+            }),
+            ...(agenciesConnect.length > 0 && {
+              agencies: {
+                connectOrCreate: agenciesConnect
+              }
+            })
           };
 
           await tx.order.create({

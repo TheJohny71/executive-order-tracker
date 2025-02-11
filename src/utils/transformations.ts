@@ -1,4 +1,3 @@
-// Fix the type-only imports
 import type { OrderDbRecord, Order } from '@/types';
 
 export const transformOrderRecord = (record: OrderDbRecord): Order => {

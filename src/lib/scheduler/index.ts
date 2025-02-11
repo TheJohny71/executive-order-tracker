@@ -23,20 +23,42 @@ const MIN_DATE = new Date('2025-01-01T00:00:00Z');
 
 const prisma = new PrismaClient();
 
+type OrderCreateData = {
+  type: DocumentType;
+  number: string;
+  title: string;
+  summary: string | null;
+  datePublished: Date;
+  link: string | null;
+  statusId: number;
+  categories?: {
+    connectOrCreate: Array<{
+      where: { name: string };
+      create: { name: string };
+    }>;
+  };
+  agencies?: {
+    connectOrCreate: Array<{
+      where: { name: string };
+      create: { name: string };
+    }>;
+  };
+};
+
 async function fetchOrders(): Promise<FetchOrdersResponse> {
   return { orders: [] };
 }
 
 export class DocumentScheduler {
   private isRunning: boolean;
-  private intervalId: NodeJS.Timeout | undefined;
+  private intervalId: NodeJS.Timeout | null;
   private lastCheckTime: Date | null;
   private consecutiveFailures: number;
   private readonly intervalMinutes: number;
 
   constructor(intervalMinutes = 30) {
     this.isRunning = false;
-    this.intervalId = undefined;
+    this.intervalId = null;
     this.lastCheckTime = null;
     this.consecutiveFailures = 0;
     this.intervalMinutes = intervalMinutes * 60 * 1000;
@@ -58,12 +80,10 @@ export class DocumentScheduler {
   }
 
   public stop(): void {
-    if (!this.isRunning) {
-      return;
-    }
+    if (!this.isRunning) return;
     if (this.intervalId) {
       clearInterval(this.intervalId);
-      this.intervalId = undefined;
+      this.intervalId = null;
     }
     this.isRunning = false;
     logger.info('Scheduler stopped');
@@ -128,32 +148,34 @@ export class DocumentScheduler {
       const createdCount = await prisma.$transaction(async (tx) => {
         let count = 0;
         for (const doc of newDocs) {
+          const orderData: OrderCreateData = {
+            type: doc.type,
+            number: doc.number,
+            title: doc.title,
+            summary: doc.summary,
+            datePublished: new Date(doc.datePublished),
+            link: doc.link,
+            statusId: doc.statusId,
+            categories: doc.category
+              ? {
+                  connectOrCreate: [{
+                    where: { name: doc.category },
+                    create: { name: doc.category },
+                  }],
+                }
+              : undefined,
+            agencies: doc.agency
+              ? {
+                  connectOrCreate: [{
+                    where: { name: doc.agency },
+                    create: { name: doc.agency },
+                  }],
+                }
+              : undefined,
+          };
+
           await tx.order.create({
-            data: {
-              type: doc.type,
-              number: doc.number,
-              title: doc.title,
-              summary: doc.summary,
-              datePublished: new Date(doc.datePublished),
-              link: doc.link,
-              statusId: doc.statusId,
-              categories: doc.category
-                ? {
-                    connectOrCreate: [{
-                      where: { name: doc.category },
-                      create: { name: doc.category },
-                    }],
-                  }
-                : undefined,
-              agencies: doc.agency
-                ? {
-                    connectOrCreate: [{
-                      where: { name: doc.agency },
-                      create: { name: doc.agency },
-                    }],
-                  }
-                : undefined,
-            },
+            data: orderData,
           });
           count++;
         }

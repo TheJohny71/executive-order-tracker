@@ -42,15 +42,60 @@ async function fetchFromAWS(): Promise<ScrapedOrder[]> {
   logger.info(`Fetching data from AWS endpoint: ${endpoint}`);
   
   try {
-    const response = await axios.get<AWSApiItem[]>(endpoint);
+    const response = await axios.get(endpoint);
     
+    logger.info('Raw AWS Response:', {
+      status: response.status,
+      headers: response.headers,
+      data: JSON.stringify(response.data, null, 2)
+    });
+
     if (!response.data) {
       throw new Error('No data received from AWS API');
     }
 
-    logger.info(`Received ${response.data.length} items from AWS`);
+    // Check the actual structure of response.data
+    if (!Array.isArray(response.data)) {
+      logger.warn('Response data is not an array:', JSON.stringify(response.data, null, 2));
+      // If response.data is wrapped in another object, try to find the array
+      if (response.data.items) {
+        logger.info('Found items array in response');
+        response.data = response.data.items;
+      } else if (response.data.data) {
+        logger.info('Found data array in response');
+        response.data = response.data.data;
+      } else if (response.data.orders) {
+        logger.info('Found orders array in response');
+        response.data = response.data.orders;
+      } else if (response.data.body) {
+        logger.info('Found body in response, attempting to parse');
+        try {
+          const bodyData = JSON.parse(response.data.body);
+          if (Array.isArray(bodyData)) {
+            response.data = bodyData;
+          } else if (bodyData.items || bodyData.data || bodyData.orders) {
+            response.data = bodyData.items || bodyData.data || bodyData.orders;
+          } else {
+            throw new Error('Body data is not in expected format');
+          }
+        } catch (parseError) {
+          logger.error('Error parsing body:', parseError);
+          throw new Error('Failed to parse response body');
+        }
+      } else {
+        throw new Error('Response data is not in expected format');
+      }
+    }
+
+    if (!Array.isArray(response.data)) {
+      throw new Error('Could not find array data in response');
+    }
+
+    logger.info(`Processing ${response.data.length} items from AWS`);
 
     return response.data.map((item: AWSApiItem): ScrapedOrder => {
+      logger.info('Processing item:', JSON.stringify(item, null, 2));
+      
       const date = new Date(item.date);
       if (isNaN(date.getTime())) {
         throw new Error(`Invalid date format for item: ${item.identifier}`);

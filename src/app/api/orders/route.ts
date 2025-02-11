@@ -5,7 +5,7 @@ import { prisma } from '@/lib/db';
 import { DocumentType } from '@prisma/client';
 import { logger } from '@/utils/logger';
 import type { WhereClause, OrderDbRecord, OrdersResponse } from '@/types';
-import { transformOrderRecord } from '@/utils';  // Changed from @/types
+import { transformOrderRecord } from '@/utils';
 
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),

@@ -14,7 +14,7 @@ const queryClient = new QueryClient({
       retry: 1,
       refetchOnMount: true,
       refetchOnReconnect: true,
-      cacheTime: 5 * 60 * 1000,
+      gcTime: 5 * 60 * 1000,
     },
     mutations: {
       retry: 1,
@@ -34,7 +34,6 @@ export function Providers({ children }: ProvidersProps) {
     return () => setMounted(false)
   }, [])
 
-  // Prevent flash of unstyled content
   if (!mounted) {
     return <>{children}</>
   }
@@ -54,7 +53,7 @@ export function Providers({ children }: ProvidersProps) {
       {process.env.NODE_ENV === 'development' && (
         <ReactQueryDevtools 
           initialIsOpen={false}
-          position="bottom-right"
+          position="bottom"
         />
       )}
     </QueryClientProvider>

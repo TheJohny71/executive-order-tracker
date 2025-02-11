@@ -1,24 +1,22 @@
-import { PrismaClient, DocumentType } from '@prisma/client';
+import { DocumentType, PrismaClient } from '@prisma/client';
 import { logger } from '@/utils/logger';
 
-// Define interfaces
 interface MyOrder {
   type: DocumentType;
-  number: string | null;
+  number: string;
   link: string | null;
   summary: string | null;
-  datePublished: string | Date;
-  category?: string | null;
-  agency?: string | null;
+  datePublished: Date;
+  category?: string;
+  agency?: string;
   title: string;
-  statusId?: number;
+  statusId: number;
 }
 
 interface FetchOrdersResponse {
   orders: MyOrder[];
 }
 
-// Constants
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 5000;
 const MIN_DATE = new Date('2025-01-01T00:00:00Z');
@@ -31,14 +29,14 @@ async function fetchOrders(): Promise<FetchOrdersResponse> {
 
 export class DocumentScheduler {
   private isRunning: boolean;
-  private intervalId: NodeJS.Timeout | null;
+  private intervalId: NodeJS.Timeout | undefined;
   private lastCheckTime: Date | null;
   private consecutiveFailures: number;
   private readonly intervalMinutes: number;
 
   constructor(intervalMinutes = 30) {
     this.isRunning = false;
-    this.intervalId = null;
+    this.intervalId = undefined;
     this.lastCheckTime = null;
     this.consecutiveFailures = 0;
     this.intervalMinutes = intervalMinutes * 60 * 1000;
@@ -65,7 +63,7 @@ export class DocumentScheduler {
     }
     if (this.intervalId) {
       clearInterval(this.intervalId);
-      this.intervalId = null;
+      this.intervalId = undefined;
     }
     this.isRunning = false;
     logger.info('Scheduler stopped');
@@ -102,7 +100,6 @@ export class DocumentScheduler {
       const latestDocuments = response.orders;
 
       const relevantDocs = latestDocuments.filter((doc) => {
-        if (!doc.datePublished) return false;
         const docDate = new Date(doc.datePublished);
         return !isNaN(docDate.getTime()) && docDate >= MIN_DATE;
       });
@@ -134,12 +131,12 @@ export class DocumentScheduler {
           await tx.order.create({
             data: {
               type: doc.type,
-              number: doc.number ?? 'UNKNOWN',
+              number: doc.number,
               title: doc.title,
               summary: doc.summary,
               datePublished: new Date(doc.datePublished),
               link: doc.link,
-              statusId: doc.statusId ?? 1,
+              statusId: doc.statusId,
               categories: doc.category
                 ? {
                     connectOrCreate: [{

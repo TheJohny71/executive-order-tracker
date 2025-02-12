@@ -1,0 +1,7 @@
+{
+    "path": "/api/scrape",
+    "httpMethod": "GET",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }

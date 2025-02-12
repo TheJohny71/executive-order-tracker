@@ -4,24 +4,22 @@
   "type": "module",
   "scripts": {
     "build": "esbuild index.ts --bundle --minify --platform=node --target=node18 --external:@aws-sdk/* --external:puppeteer-core --external:@sparticuz/chromium --outfile=dist/index.js",
+    "clean": "rimraf dist node_modules package-lock.json lambda.zip",
+    "predeploy": "npm run clean && npm install --production && npm run build",
+    "deploy": "cd dist && zip -r ../../lambda.zip index.js && cd .. && zip -ur ../lambda.zip package.json",
     "dev": "tsc --watch",
     "test": "node --experimental-specifier-resolution=node --loader ts-node/esm test.ts",
     "watch": "node --experimental-specifier-resolution=node --loader ts-node/esm --watch test.ts",
-    "type-check": "tsc --noEmit",
-    "clean": "rimraf dist node_modules package-lock.json",
-    "predeploy": "npm run clean && npm install --production && npm run build",
-    "deploy": "zip -r ../lambda.zip dist/* package.json node_modules/@sparticuz/chromium node_modules/puppeteer-core"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.474.0",
-    "@aws-sdk/lib-dynamodb": "^3.474.0",
-    "@sparticuz/chromium": "119.0.0",
-    "puppeteer-core": "24.2.0"
+    "@aws-sdk/client-dynamodb": "^3.744.0",
+    "@aws-sdk/lib-dynamodb": "^3.744.0"
   },
   "devDependencies": {
+    "@aws-sdk/types": "^3.474.0",
     "@types/aws-lambda": "^8.10.134",
     "@types/node": "^20.11.17",
-    "@aws-sdk/types": "^3.474.0",
     "esbuild": "^0.20.1",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",

@@ -14,9 +14,9 @@
     "puppeteer-core": "^19.11.1"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.134",
     "@types/node": "^20.11.17",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
-    "@types/aws-lambda": "^8.10.134"
+    "typescript": "^5.3.3"
   }
 }

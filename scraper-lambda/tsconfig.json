@@ -10,7 +10,7 @@
       "sourceMap": true,
       "declaration": true,
       "skipLibCheck": true,
-      "types": ["node", "aws-lambda"],
+      "types": ["node"],
       "typeRoots": ["./node_modules/@types", "./"]
     },
     "include": [

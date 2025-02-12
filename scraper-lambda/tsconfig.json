@@ -10,13 +10,15 @@
       "sourceMap": true,
       "declaration": true,
       "skipLibCheck": true,
-      "types": ["node", "aws-lambda"]
+      "types": ["node", "aws-lambda"],
+      "typeRoots": ["./node_modules/@types", "./"]
     },
     "include": [
-      "*.ts"
+      "*.ts",
+      "*.d.ts"
     ],
     "exclude": [
       "node_modules",
       "dist"
     ]
-  }
+}

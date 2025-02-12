@@ -18,7 +18,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   }
   
   const getPageNumbers = () => {
-    const pages = [];
+    const pages: number[] = []; // Fixed: Added type annotation here
     const maxVisiblePages = 5;
     let start = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     const end = Math.min(totalPages, start + maxVisiblePages - 1);

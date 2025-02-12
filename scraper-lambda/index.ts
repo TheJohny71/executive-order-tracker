@@ -1,10 +1,18 @@
 import chromium from '@sparticuz/chromium';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { 
   ScrapedOrder, 
   ScraperResponse, 
-  LambdaEvent 
+  LambdaEvent,
+  DocumentType,
+  DynamoDBItem 
 } from './types.js';
+
+const client = new DynamoDBClient({ region: "us-east-2" });
+const docClient = DynamoDBDocumentClient.from(client);
+const TABLE_NAME = "executive-orders";
 
 const extractOrderDetails = async (page: Page): Promise<Partial<ScrapedOrder>> => {
   return page.evaluate(() => {
@@ -14,6 +22,49 @@ const extractOrderDetails = async (page: Page): Promise<Partial<ScrapedOrder>> =
         contentElement.textContent?.trim().substring(0, 1000) || '' : ''
     };
   });
+};
+
+const saveOrdersToDynamoDB = async (orders: ScrapedOrder[]): Promise<void> => {
+  // Break orders into chunks of 25 (DynamoDB batch write limit)
+  const chunks = Array.from({ length: Math.ceil(orders.length / 25) }, (_, i) =>
+    orders.slice(i * 25, (i + 1) * 25)
+  );
+
+  for (const chunk of chunks) {
+    const writeRequests = chunk.map(order => {
+      const item: DynamoDBItem = {
+        pk: order.sourceId,
+        sk: order.type,
+        sourceId: order.sourceId,
+        title: order.title,
+        date: order.date,
+        url: order.url,
+        number: order.number,
+        type: order.type,
+        description: order.description,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      return {
+        PutRequest: {
+          Item: item
+        }
+      };
+    });
+
+    try {
+      await docClient.send(new BatchWriteCommand({
+        RequestItems: {
+          [TABLE_NAME]: writeRequests
+        }
+      }));
+      console.log(`Successfully wrote ${chunk.length} orders to DynamoDB`);
+    } catch (error) {
+      console.error('Error writing to DynamoDB:', error);
+      throw error;
+    }
+  }
 };
 
 export const handler = async (_event: LambdaEvent): Promise<{
@@ -55,8 +106,8 @@ export const handler = async (_event: LambdaEvent): Promise<{
           date: dateElement?.textContent?.trim() || '',
           url,
           type: url.toLowerCase().includes('executive-order') 
-            ? 'EXECUTIVE_ORDER' as const
-            : 'PRESIDENTIAL_MEMORANDUM' as const,
+            ? DocumentType.EXECUTIVE_ORDER
+            : DocumentType.PRESIDENTIAL_MEMORANDUM,
           number: numberMatch?.[1] || null,
           sourceId: url.split('/').slice(-2, -1)[0] || ''
         };
@@ -85,6 +136,15 @@ export const handler = async (_event: LambdaEvent): Promise<{
         }
       })
     );
+
+    // Save orders to DynamoDB
+    try {
+      await saveOrdersToDynamoDB(detailedOrders);
+      console.log('Successfully saved all orders to DynamoDB');
+    } catch (dbError) {
+      console.error('Failed to save orders to DynamoDB:', dbError);
+      // Continue execution - we still want to return the scraped data even if DB save fails
+    }
 
     const response: ScraperResponse = {
       success: true,

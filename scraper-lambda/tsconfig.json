@@ -1,45 +1,21 @@
 {
-  "compilerOptions": {
-      "target": "es2020",
-      "module": "node16",
-      "moduleResolution": "node16",
-      "baseUrl": ".",
-      "outDir": "./dist",
-      "rootDir": ".",
-      "paths": {
-          "*": ["node_modules/*"]
-      },
-      "resolveJsonModule": true,
-      "types": ["node", "aws-lambda"],
-      "typeRoots": [
-          "./node_modules/@types",
-          "../node_modules/@types"
-      ],
-      "allowJs": true,
-      "checkJs": true,
-      "declaration": true,
-      "sourceMap": true,
-      "removeComments": false,
-      "strict": true,
-      "strictNullChecks": true,
-      "noImplicitAny": true,
-      "noUnusedLocals": true,
-      "noUnusedParameters": true,
-      "noFallthroughCasesInSwitch": true,
-      "noUncheckedIndexedAccess": true,
-      "exactOptionalPropertyTypes": false,
-      "useUnknownInCatchVariables": true,
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "ES2020",
+      "moduleResolution": "node",
       "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "forceConsistentCasingInFileNames": true,
+      "strict": true,
+      "outDir": "dist",
+      "rootDir": ".",
+      "sourceMap": true,
+      "declaration": true,
       "skipLibCheck": true
-  },
-  "include": [
-      "*.ts",
-      "**/*.ts"
-  ],
-  "exclude": [
+    },
+    "include": [
+      "*.ts"
+    ],
+    "exclude": [
       "node_modules",
       "dist"
-  ]
-}
+    ]
+  }

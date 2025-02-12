@@ -1,18 +1,19 @@
 {
-    "compilerOptions": {
+  "compilerOptions": {
       "target": "es2020",
-      "module": "commonjs",
-      "moduleResolution": "node",
+      "module": "node16",
+      "moduleResolution": "node16",
       "baseUrl": ".",
       "outDir": "./dist",
       "rootDir": ".",
       "paths": {
-        "*": ["node_modules/*"]
+          "*": ["node_modules/*"]
       },
       "resolveJsonModule": true,
-      "types": ["node", "@types/aws-lambda"],
+      "types": ["node", "aws-lambda"],
       "typeRoots": [
-        "./node_modules/@types"
+          "./node_modules/@types",
+          "../node_modules/@types"
       ],
       "allowJs": true,
       "checkJs": true,
@@ -32,13 +33,13 @@
       "allowSyntheticDefaultImports": true,
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true
-    },
-    "include": [
+  },
+  "include": [
       "*.ts",
       "**/*.ts"
-    ],
-    "exclude": [
+  ],
+  "exclude": [
       "node_modules",
       "dist"
-    ]
-  }
+  ]
+}

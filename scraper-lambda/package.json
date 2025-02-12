@@ -3,20 +3,20 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "ts-node test.ts",
-    "watch": "ts-node --watch test.ts",
-    "type-check": "tsc --noEmit"
+      "build": "tsc",
+      "dev": "tsc --watch",
+      "test": "node --experimental-specifier-resolution=node --loader ts-node/esm test.ts",
+      "watch": "node --experimental-specifier-resolution=node --loader ts-node/esm --watch test.ts",
+      "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@sparticuz/chromium": "^119.0.0",
-    "puppeteer-core": "^19.11.1"
+      "@sparticuz/chromium": "^119.0.0",
+      "puppeteer-core": "^24.2.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.134",
-    "@types/node": "^20.11.17",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+      "@types/aws-lambda": "^8.10.134",
+      "@types/node": "^20.11.17",
+      "ts-node": "^10.9.2",
+      "typescript": "^5.7.3"
   }
 }

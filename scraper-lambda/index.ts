@@ -5,7 +5,7 @@ import {
   ScrapedOrder, 
   ScraperResponse, 
   LambdaEvent 
-} from './types';
+} from './types.js';
 
 const extractOrderDetails = async (page: Page): Promise<Partial<ScrapedOrder>> => {
   return page.evaluate(() => {
@@ -17,13 +17,7 @@ const extractOrderDetails = async (page: Page): Promise<Partial<ScrapedOrder>> =
   });
 };
 
-const determineDocumentType = (url: string): DocumentType => {
-  return url.toLowerCase().includes('executive-order') 
-    ? DocumentType.EXECUTIVE_ORDER 
-    : DocumentType.PRESIDENTIAL_MEMORANDUM;
-};
-
-export const handler = async (event: LambdaEvent): Promise<{
+export const handler = async (_event: LambdaEvent): Promise<{
   statusCode: number;
   headers: Record<string, string>;
   body: string;
@@ -36,7 +30,7 @@ export const handler = async (event: LambdaEvent): Promise<{
       args: [...chromium.args, '--disable-web-security'],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
+      headless: true,
     });
     
     console.log('Browser started, opening White House page...');
@@ -44,9 +38,10 @@ export const handler = async (event: LambdaEvent): Promise<{
     await page.goto('https://www.whitehouse.gov/presidential-actions/');
     
     console.log('Page loaded, extracting data...');
-    const orders = await page.evaluate(() => {
-      const articles = document.querySelectorAll('article');
-      return Array.from(articles).map(article => {
+    
+    const initialOrders = await page.evaluate(() => {
+      const articles = Array.from(document.querySelectorAll('article'));
+      return articles.map(article => {
         const titleElement = article.querySelector('.news-item__title');
         const dateElement = article.querySelector('.news-item__date');
         const linkElement = article.querySelector('a');
@@ -55,23 +50,22 @@ export const handler = async (event: LambdaEvent): Promise<{
         const numberMatch = titleElement?.textContent?.match(
           /(?:Executive Order|Presidential Memorandum) (\d+)/
         );
-        
+
         return {
           title: titleElement?.textContent?.trim() || '',
           date: dateElement?.textContent?.trim() || '',
-          url: url,
-          number: numberMatch ? numberMatch[1] : null,
-          type: url.toLowerCase().includes('executive-order') ? 
-            'EXECUTIVE_ORDER' as const : 
-            'PRESIDENTIAL_MEMORANDUM' as const,
-          description: '',
+          url,
+          type: url.toLowerCase().includes('executive-order') 
+            ? 'EXECUTIVE_ORDER' as const
+            : 'PRESIDENTIAL_MEMORANDUM' as const,
+          number: numberMatch?.[1] || null,
           sourceId: url.split('/').slice(-2, -1)[0] || ''
         };
       });
-    });
+    }) as Array<Omit<ScrapedOrder, 'description'>>;
 
     const detailedOrders = await Promise.all(
-      orders.map(async (order): Promise<ScrapedOrder> => {
+      initialOrders.map(async (order): Promise<ScrapedOrder> => {
         try {
           const detailPage = await browser!.newPage();
           await detailPage.goto(order.url);
@@ -81,12 +75,14 @@ export const handler = async (event: LambdaEvent): Promise<{
           
           return {
             ...order,
-            ...details,
-            description: details.description || order.description
+            description: details.description || ''
           };
         } catch (error) {
           console.error(`Error fetching details for ${order.url}:`, error);
-          return order;
+          return {
+            ...order,
+            description: ''
+          };
         }
       })
     );

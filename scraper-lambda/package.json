@@ -1,16 +1,9 @@
 {
-  "name": "scraper-lambda",
+  "name": "executive-order-scraper-lambda",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "type": "module",
   "dependencies": {
-    "@sparticuz/chromium": "^132.0.0",
+    "@sparticuz/chromium": "^119.0.0",
     "puppeteer-core": "^24.2.0"
   }
 }

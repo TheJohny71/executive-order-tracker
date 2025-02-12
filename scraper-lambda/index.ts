@@ -17,15 +17,19 @@ const TABLE_NAME = "executive-orders";
 const extractOrderDetails = async (page: Page): Promise<Partial<ScrapedOrder>> => {
   return page.evaluate(() => {
     const contentElement = document.querySelector('.body-content');
+    const summaryElement = document.querySelector('.news-item__excerpt');
+    
+    // Try to get content from either body-content or news-item__excerpt
+    const description = contentElement?.textContent?.trim() || 
+                       summaryElement?.textContent?.trim() || '';
+                       
     return {
-      description: contentElement ? 
-        contentElement.textContent?.trim().substring(0, 1000) || '' : ''
+      description: description.substring(0, 1000)
     };
   });
 };
 
 const saveOrdersToDynamoDB = async (orders: ScrapedOrder[]): Promise<void> => {
-  // Break orders into chunks of 25 (DynamoDB batch write limit)
   const chunks = Array.from({ length: Math.ceil(orders.length / 25) }, (_, i) =>
     orders.slice(i * 25, (i + 1) * 25)
   );
@@ -81,19 +85,24 @@ export const handler = async (_event: LambdaEvent): Promise<{
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
       headless: true,
+      ignoreHTTPSErrors: true
     });
     
     console.log('Browser started, opening White House page...');
     const page = await browser.newPage();
-    await page.goto('https://www.whitehouse.gov/presidential-actions/');
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    await page.goto('https://www.whitehouse.gov/briefing-room/presidential-actions/', {
+      waitUntil: 'networkidle0',
+      timeout: 30000
+    });
     
     console.log('Page loaded, extracting data...');
     
     const initialOrders = await page.evaluate(() => {
-      const articles = Array.from(document.querySelectorAll('article'));
+      const articles = Array.from(document.querySelectorAll('article.news-item'));
       return articles.map(article => {
         const titleElement = article.querySelector('.news-item__title');
-        const dateElement = article.querySelector('.news-item__date');
+        const dateElement = article.querySelector('time.entry-date');
         const linkElement = article.querySelector('a');
         const url = linkElement?.href || '';
         
@@ -118,7 +127,11 @@ export const handler = async (_event: LambdaEvent): Promise<{
       initialOrders.map(async (order): Promise<ScrapedOrder> => {
         try {
           const detailPage = await browser!.newPage();
-          await detailPage.goto(order.url);
+          await detailPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+          await detailPage.goto(order.url, {
+            waitUntil: 'networkidle0',
+            timeout: 30000
+          });
           
           const details = await extractOrderDetails(detailPage);
           await detailPage.close();
@@ -137,13 +150,11 @@ export const handler = async (_event: LambdaEvent): Promise<{
       })
     );
 
-    // Save orders to DynamoDB
     try {
       await saveOrdersToDynamoDB(detailedOrders);
       console.log('Successfully saved all orders to DynamoDB');
     } catch (dbError) {
       console.error('Failed to save orders to DynamoDB:', dbError);
-      // Continue execution - we still want to return the scraped data even if DB save fails
     }
 
     const response: ScraperResponse = {

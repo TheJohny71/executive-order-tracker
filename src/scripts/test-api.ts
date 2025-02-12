@@ -3,7 +3,7 @@ import { HttpRequest } from '@aws-sdk/protocol-http';
 import { Sha256 } from '@aws-crypto/sha256-js';
 import { SignatureV4 } from '@aws-sdk/signature-v4';
 import { fromEnv } from '@aws-sdk/credential-providers';
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 import axios, { AxiosError } from 'axios';
 import dotenv from 'dotenv';
 
@@ -32,8 +32,21 @@ function debugSigningProcess(request: HttpRequest, signedRequest: any, awsErrorD
   logger.info('===============================');
 }
 
+// Load environment variables
 const region = process.env.AWS_REGION || "us-east-2";
 const service = "execute-api";
+
+// Define base URLs for both environments
+const BASE_URLS = {
+  dev: process.env.API_BASE_URL_DEV || "https://v7059ugs9e.execute-api.us-east-2.amazonaws.com/dev",
+  prod: process.env.API_BASE_URL_PROD || "https://v7059ugs9e.execute-api.us-east-2.amazonaws.com/prod"
+};
+
+// Validate required environment variables
+if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+  logger.error('AWS credentials not found in environment variables');
+  process.exit(1);
+}
 
 // Create signer with debug capabilities
 const signer = new SignatureV4({
@@ -44,34 +57,29 @@ const signer = new SignatureV4({
   applyChecksum: true
 });
 
-const BASE_URL = "https://v7059ugs9e.execute-api.us-east-2.amazonaws.com/dev";
+// Define test endpoints for both environments
+const testEndpoints = {
+  dev: [
+    `${BASE_URLS.dev}`,                        // Base health check
+    `${BASE_URLS.dev}/orders`,                 // Orders endpoint
+    `${BASE_URLS.dev}/orders?limit=10&page=1`  // Orders with pagination
+  ],
+  prod: [
+    `${BASE_URLS.prod}`,                        // Base health check
+    `${BASE_URLS.prod}/orders`,                 // Orders endpoint
+    `${BASE_URLS.prod}/orders?limit=10&page=1`  // Orders with pagination
+  ]
+};
 
-const testEndpoints = [
-  // Test dev environment endpoints
-  `${BASE_URL}`,                        // Base health check
-  `${BASE_URL}/orders`,                 // Orders endpoint
-  `${BASE_URL}/orders?limit=10&page=1`  // Orders with pagination
-];
-
-async function testAwsEndpoint(): Promise<boolean> {
-  logger.info('Starting AWS API test in dev environment...');
-  
-  // Verify credentials are loaded
-  const credentials = await fromEnv()();
-  logger.info('Credentials loaded:', {
-    hasAccessKeyId: !!credentials.accessKeyId,
-    hasSecretKey: !!credentials.secretAccessKey,
-    hasSessionToken: !!credentials.sessionToken
-  });
-
+async function testEnvironment(env: 'dev' | 'prod', endpoints: string[]): Promise<boolean> {
   let successfulEndpoint = false;
 
-  for (const endpoint of testEndpoints) {
+  for (const endpoint of endpoints) {
     let request: HttpRequest | null = null;
     let signedRequest: any = null;
     
     try {
-      logger.info(`Testing endpoint: ${endpoint}`);
+      logger.info(`Testing ${env.toUpperCase()} endpoint: ${endpoint}`);
       
       const url = new URL(endpoint);
       
@@ -92,10 +100,11 @@ async function testAwsEndpoint(): Promise<boolean> {
       debugSigningProcess(request, signedRequest);
       
       const response = await axios.get(endpoint, {
-        headers: signedRequest.headers
+        headers: signedRequest.headers,
+        validateStatus: null // Allow any status code to be handled in the catch block
       });
       
-      logger.info('AWS Response:', {
+      logger.info(`${env.toUpperCase()} Response:`, {
         endpoint,
         status: response.status,
         headers: response.headers,
@@ -104,39 +113,75 @@ async function testAwsEndpoint(): Promise<boolean> {
 
       // Check if it's a health check response
       if (response.data.body) {
-        const parsedBody = JSON.parse(response.data.body);
-        if (parsedBody.message === "Executive Orders API is working!") {
-          logger.info('Successfully received health check response');
-          successfulEndpoint = true;
-          continue;
+        try {
+          const parsedBody = JSON.parse(response.data.body);
+          if (parsedBody.message === "Executive Orders API is working!") {
+            logger.info(`Successfully received health check response from ${env.toUpperCase()}`);
+            successfulEndpoint = true;
+            continue;
+          }
+        } catch (parseError) {
+          logger.warn(`Failed to parse response body from ${env.toUpperCase()}:`, response.data.body);
         }
       }
 
-      successfulEndpoint = true;
+      // If we get here and the status is 200, consider it successful
+      if (response.status >= 200 && response.status < 300) {
+        successfulEndpoint = true;
+      }
 
     } catch (error) {
       if (error instanceof AxiosError && error.response?.data && request && signedRequest) {
         debugSigningProcess(request, signedRequest, error.response.data);
         
-        logger.error('Request failed:', {
+        logger.error(`${env.toUpperCase()} Request failed:`, {
           status: error.response.status,
           statusText: error.response.statusText,
           data: error.response.data
         });
       } else {
-        logger.error('Unknown error:', error);
+        logger.error(`Unknown error in ${env.toUpperCase()}:`, error);
       }
       continue;
     }
   }
 
-  if (!successfulEndpoint) {
-    logger.error('All endpoints failed testing');
+  return successfulEndpoint;
+}
+
+async function testAwsEndpoint(): Promise<boolean> {
+  logger.info('Starting AWS API tests in both dev and prod environments...');
+  
+  try {
+    // Verify credentials are loaded
+    const credentials = await fromEnv()();
+    logger.info('Credentials loaded:', {
+      hasAccessKeyId: !!credentials.accessKeyId,
+      hasSecretKey: !!credentials.secretAccessKey,
+      hasSessionToken: !!credentials.sessionToken
+    });
+
+    // Test DEV environment
+    logger.info('Testing DEV environment...');
+    const devSuccess = await testEnvironment('dev', testEndpoints.dev);
+    
+    // Test PROD environment
+    logger.info('Testing PROD environment...');
+    const prodSuccess = await testEnvironment('prod', testEndpoints.prod);
+
+    if (!devSuccess) {
+      logger.error('DEV environment tests failed');
+    }
+    if (!prodSuccess) {
+      logger.error('PROD environment tests failed');
+    }
+
+    return devSuccess && prodSuccess;
+
+  } catch (error) {
+    logger.error('Test failed with error:', error);
     return false;
   }
-
-  logger.info('Dev environment API test completed successfully');
-  return true;
 }
 
 async function isMainModule(): Promise<boolean> {
@@ -156,10 +201,10 @@ if (await isMainModule()) {
   testAwsEndpoint()
     .then((success) => {
       if (success) {
-        logger.info('Test completed successfully');
+        logger.info('All tests completed successfully');
         process.exit(0);
       } else {
-        logger.error('Test failed');
+        logger.error('Some tests failed');
         process.exit(1);
       }
     })

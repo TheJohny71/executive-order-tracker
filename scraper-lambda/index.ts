@@ -14,15 +14,18 @@ const client = new DynamoDBClient({ region: "us-east-2" });
 const docClient = DynamoDBDocumentClient.from(client);
 const TABLE_NAME = "executive-orders";
 
+const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+const PAGE_OPTIONS = {
+  waitUntil: 'networkidle0' as const,
+  timeout: 30000
+};
+
 const extractOrderDetails = async (page: Page): Promise<Partial<ScrapedOrder>> => {
   return page.evaluate(() => {
     const contentElement = document.querySelector('.body-content');
     const summaryElement = document.querySelector('.news-item__excerpt');
-    
-    // Try to get content from either body-content or news-item__excerpt
     const description = contentElement?.textContent?.trim() || 
                        summaryElement?.textContent?.trim() || '';
-                       
     return {
       description: description.substring(0, 1000)
     };
@@ -30,32 +33,29 @@ const extractOrderDetails = async (page: Page): Promise<Partial<ScrapedOrder>> =
 };
 
 const saveOrdersToDynamoDB = async (orders: ScrapedOrder[]): Promise<void> => {
-  const chunks = Array.from({ length: Math.ceil(orders.length / 25) }, (_, i) =>
-    orders.slice(i * 25, (i + 1) * 25)
+  const chunks = Array.from(
+    { length: Math.ceil(orders.length / 25) }, 
+    (_, i) => orders.slice(i * 25, (i + 1) * 25)
   );
 
   for (const chunk of chunks) {
-    const writeRequests = chunk.map(order => {
-      const item: DynamoDBItem = {
-        pk: order.sourceId,
-        sk: order.type,
-        sourceId: order.sourceId,
-        title: order.title,
-        date: order.date,
-        url: order.url,
-        number: order.number,
-        type: order.type,
-        description: order.description,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      
-      return {
-        PutRequest: {
-          Item: item
-        }
-      };
-    });
+    const writeRequests = chunk.map(order => ({
+      PutRequest: {
+        Item: {
+          pk: order.sourceId,
+          sk: order.type,
+          sourceId: order.sourceId,
+          title: order.title,
+          date: order.date,
+          url: order.url,
+          number: order.number,
+          type: order.type,
+          description: order.description,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        } as DynamoDBItem
+      }
+    }));
 
     try {
       await docClient.send(new BatchWriteCommand({
@@ -70,6 +70,12 @@ const saveOrdersToDynamoDB = async (orders: ScrapedOrder[]): Promise<void> => {
     }
   }
 };
+
+async function setupPage(browser: Browser): Promise<Page> {
+  const page = await browser.newPage();
+  await page.setUserAgent(USER_AGENT);
+  return page;
+}
 
 export const handler = async (_event: LambdaEvent): Promise<{
   statusCode: number;
@@ -88,12 +94,8 @@ export const handler = async (_event: LambdaEvent): Promise<{
     });
     
     console.log('Browser started, opening White House page...');
-    const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-    await page.goto('https://www.whitehouse.gov/briefing-room/presidential-actions/', {
-      waitUntil: 'networkidle0',
-      timeout: 30000
-    });
+    const page = await setupPage(browser);
+    await page.goto('https://www.whitehouse.gov/briefing-room/presidential-actions/', PAGE_OPTIONS);
     
     console.log('Page loaded, extracting data...');
     
@@ -120,17 +122,13 @@ export const handler = async (_event: LambdaEvent): Promise<{
           sourceId: url.split('/').slice(-2, -1)[0] || ''
         };
       });
-    }) as Array<Omit<ScrapedOrder, 'description'>>;
+    });
 
     const detailedOrders = await Promise.all(
       initialOrders.map(async (order): Promise<ScrapedOrder> => {
         try {
-          const detailPage = await browser!.newPage();
-          await detailPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-          await detailPage.goto(order.url, {
-            waitUntil: 'networkidle0',
-            timeout: 30000
-          });
+          const detailPage = await setupPage(browser!);
+          await detailPage.goto(order.url, PAGE_OPTIONS);
           
           const details = await extractOrderDetails(detailPage);
           await detailPage.close();
@@ -149,12 +147,8 @@ export const handler = async (_event: LambdaEvent): Promise<{
       })
     );
 
-    try {
-      await saveOrdersToDynamoDB(detailedOrders);
-      console.log('Successfully saved all orders to DynamoDB');
-    } catch (dbError) {
-      console.error('Failed to save orders to DynamoDB:', dbError);
-    }
+    await saveOrdersToDynamoDB(detailedOrders);
+    console.log('Successfully saved all orders to DynamoDB');
 
     const response: ScraperResponse = {
       success: true,
@@ -174,19 +168,17 @@ export const handler = async (_event: LambdaEvent): Promise<{
     
   } catch (error) {
     console.error('Scraping error:', error);
-    const errorResponse: ScraperResponse = {
-      success: false,
-      message: 'Scraping failed',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    };
-
     return {
       statusCode: 500,
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify(errorResponse)
+      body: JSON.stringify({
+        success: false,
+        message: 'Scraping failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      } as ScraperResponse)
     };
   } finally {
     if (browser !== null) {

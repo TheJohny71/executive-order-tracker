@@ -1,6 +1,7 @@
-import { handler } from './index.js';
+import { handler } from './index';
+import { LambdaEvent } from './types';
 
-const event = {
+const event: LambdaEvent = {
   path: "/api/scrape",
   httpMethod: "GET",
   headers: {

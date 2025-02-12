@@ -9,7 +9,8 @@
       "rootDir": ".",
       "sourceMap": true,
       "declaration": true,
-      "skipLibCheck": true
+      "skipLibCheck": true,
+      "types": ["node", "aws-lambda"]
     },
     "include": [
       "*.ts"

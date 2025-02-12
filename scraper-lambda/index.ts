@@ -1,7 +1,6 @@
 import chromium from '@sparticuz/chromium';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 import { 
-  DocumentType, 
   ScrapedOrder, 
   ScraperResponse, 
   LambdaEvent 

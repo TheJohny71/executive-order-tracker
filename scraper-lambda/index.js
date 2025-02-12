@@ -19,7 +19,21 @@ export const handler = async (event) => {
         
         console.log('Page loaded, extracting data...');
         const orders = await page.evaluate(() => {
-            return 'Test data'; // We'll add real scraping logic next
+            const orderElements = document.querySelectorAll('.document-wrapper');
+            return Array.from(orderElements).map(element => {
+                const titleElement = element.querySelector('h5');
+                const dateElement = element.querySelector('.metadata time');
+                const linkElement = element.querySelector('h5 a');
+                const descriptionElement = element.querySelector('.description');
+
+                return {
+                    title: titleElement ? titleElement.textContent.trim() : '',
+                    date: dateElement ? dateElement.getAttribute('datetime') : '',
+                    url: linkElement ? linkElement.href : '',
+                    description: descriptionElement ? descriptionElement.textContent.trim() : '',
+                    id: linkElement ? linkElement.href.split('/').pop() : '',
+                };
+            });
         });
         
         return {
@@ -30,7 +44,9 @@ export const handler = async (event) => {
             },
             body: JSON.stringify({
                 success: true,
-                orders
+                orders,
+                count: orders.length,
+                timestamp: new Date().toISOString()
             })
         };
         

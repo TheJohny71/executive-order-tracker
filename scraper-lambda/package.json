@@ -1,0 +1,16 @@
+{
+  "name": "scraper-lambda",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@sparticuz/chromium": "^132.0.0",
+    "puppeteer-core": "^24.2.0"
+  }
+}

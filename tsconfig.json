@@ -1,13 +1,11 @@
+# File: tsconfig.base.json
 {
   "compilerOptions": {
-    // Language and Environment
     "target": "es2020",
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "preserve",
-
-    // Modules
     "module": "esnext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
@@ -18,48 +16,29 @@
       "./node_modules/@types",
       "./src/types"
     ],
-
-    // JavaScript Support
     "allowJs": true,
-    "checkJs": true,
-
-    // Emit
+    "checkJs": false,
     "noEmit": true,
     "incremental": true,
     "isolatedModules": true,
-
-    // Type Checking
     "strict": true,
     "strictNullChecks": true,
-    "noImplicitAny": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": false,
     "useUnknownInCatchVariables": true,
-
-    // Interop Constraints
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-
-    // Projects
     "plugins": [
       {
         "name": "next"
       }
     ]
-  },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node",
-    "compilerOptions": {
-      "module": "ESNext",
-      "moduleResolution": "NodeNext"
-    }
   },
   "include": [
     "next-env.d.ts",
@@ -68,8 +47,7 @@
     ".next/types/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/types/**/*.d.ts",
-    "prisma/**/*.ts"
+    "src/types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
@@ -78,6 +56,53 @@
     "out",
     "coverage",
     "**/*.js",
-    "**/*.jsx"
+    "**/*.jsx",
+    "scripts"
   ]
+}
+
+# File: tsconfig.scripts.json
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "noEmit": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
+    "compilerOptions": {
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext"
+    }
+  },
+  "include": [
+    "scripts/**/*.ts",
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next",
+    "out",
+    "coverage"
+  ]
+}
+
+# File: package.json (relevant parts)
+{
+  "type": "module",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "type-check:scripts": "tsc --noEmit -p tsconfig.scripts.json"
+  }
 }

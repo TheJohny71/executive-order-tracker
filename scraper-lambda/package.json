@@ -3,21 +3,26 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "esbuild index.ts types.ts --bundle --minify --platform=node --target=node18 --external:@aws-sdk/* --outfile=dist/index.js",
     "dev": "tsc --watch",
     "test": "node --experimental-specifier-resolution=node --loader ts-node/esm test.ts",
     "watch": "node --experimental-specifier-resolution=node --loader ts-node/esm --watch test.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "predeploy": "npm run clean && npm run build",
+    "deploy": "zip -r ../lambda.zip dist/* package.json"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.744.0",
-    "@aws-sdk/lib-dynamodb": "^3.744.0",
-    "@sparticuz/chromium": "^119.0.0",
-    "puppeteer-core": "^24.2.0"
+    "@aws-sdk/client-dynamodb": "^3.474.0",
+    "@aws-sdk/lib-dynamodb": "^3.474.0",
+    "@sparticuz/chromium": "119.0.0",
+    "puppeteer-core": "24.2.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.134",
     "@types/node": "^20.11.17",
+    "esbuild": "^0.20.1",
+    "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   }

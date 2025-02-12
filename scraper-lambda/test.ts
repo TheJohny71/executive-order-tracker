@@ -1,26 +1,29 @@
 import { handler } from './index.js';
-import { LambdaEvent } from './types.js';
+import type { APIGatewayProxyEvent } from 'aws-lambda';
 
-const event: Partial<LambdaEvent> = {
-    path: "/api/scrape",
-    httpMethod: "GET",
-    headers: {
-        "Content-Type": "application/json"
-    }
+const mockEvent: APIGatewayProxyEvent = {
+  httpMethod: 'GET',
+  path: '/scrape',
+  headers: {},
+  queryStringParameters: null,
+  multiValueQueryStringParameters: null,
+  pathParameters: null,
+  stageVariables: null,
+  requestContext: {} as any,
+  resource: '',
+  multiValueHeaders: {},
+  isBase64Encoded: false,
+  body: null
 };
 
 async function test() {
-    try {
-        console.log('Testing Lambda function...');
-        const response = await handler(event as LambdaEvent);
-        console.log('Response:', JSON.stringify(response, null, 2));
-    } catch (error) {
-        console.error('Test failed:', error);
-        // Log the full error stack trace in development
-        if (error instanceof Error) {
-            console.error('Error stack:', error.stack);
-        }
-    }
+  try {
+    console.log('Testing Lambda function...');
+    const response = await handler(mockEvent);
+    console.log('Response:', JSON.stringify(response, null, 2));
+  } catch (error) {
+    console.error('Test failed:', error);
+  }
 }
 
 test();

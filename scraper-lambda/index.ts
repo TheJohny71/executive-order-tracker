@@ -81,11 +81,10 @@ export const handler = async (_event: LambdaEvent): Promise<{
   try {
     console.log('Starting browser...');
     browser = await puppeteer.launch({
-      args: [...chromium.args, '--disable-web-security'],
+      args: [...chromium.args, '--disable-web-security', '--ignore-certificate-errors'],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
-      headless: true,
-      ignoreHTTPSErrors: true
+      headless: true
     });
     
     console.log('Browser started, opening White House page...');

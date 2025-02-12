@@ -1,10 +1,9 @@
-import type { PrismaClient } from '@prisma/client';
-import type { OrdersResponse, Order } from '../types';
+import { PrismaClient } from '@prisma/client';
+import { HttpRequest } from '@aws-sdk/protocol-http';
+import { Sha256 } from '@aws-crypto/sha256-js';
+import { SignatureV4 } from '@aws-sdk/signature-v4';
+import { fromEnv } from '@aws-sdk/credential-providers';
 import { logger } from '../utils/logger.js';
-import { SignatureV4 } from '@aws-sdk/signature-v4/dist-types';
-import { fromEnv } from '@aws-sdk/credential-providers/dist-types/fromEnv';
-import { HttpRequest } from '@aws-sdk/protocol-http/dist-types/HttpRequest';
-import { Sha256 } from '@aws-crypto/sha256-js/build/Sha256';
 import axios, { AxiosError } from 'axios';
 import dotenv from 'dotenv';
 

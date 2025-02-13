@@ -3,8 +3,8 @@
     "target": "es2020",
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "preserve",
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
@@ -37,14 +37,9 @@
     ]
   },
   "ts-node": {
-    "compilerOptions": {
-      "module": "NodeNext",
-      "moduleResolution": "NodeNext"
-    },
     "esm": true,
     "experimentalSpecifiers": true,
-    "transpileOnly": true,
-    "swc": true
+    "transpileOnly": true
   },
   "include": [
     "next-env.d.ts",

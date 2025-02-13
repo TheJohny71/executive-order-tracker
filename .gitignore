@@ -4,3 +4,4 @@ node_modules
 .env
 .env
 .env.backup
+scraper-lambda/executive-order-image.tar.gz

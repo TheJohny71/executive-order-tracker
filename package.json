@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "esbuild index.ts --bundle --minify --platform=node --target=node18 --format=esm --external:@aws-sdk/* --external:@sparticuz/chromium --external:puppeteer-core --outfile=dist/index.mjs",
-    "dev": "node --loader ts-node/esm src/scraper/local-scraper.ts",
+    "dev": "cross-env NODE_OPTIONS='--loader ts-node/esm' node src/scraper/local-scraper.ts",
+    "scrape:local": "cross-env NODE_OPTIONS='--loader ts-node/esm' node --project src/scraper/tsconfig.json src/scraper/local-scraper.ts",
     "test": "jest",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
@@ -35,6 +36,7 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "autoprefixer": "^10.4.17",
+    "cross-env": "^7.0.3",
     "esbuild": "^0.20.0",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",

@@ -42,7 +42,9 @@
       "moduleResolution": "NodeNext"
     },
     "esm": true,
-    "experimentalSpecifiers": true
+    "experimentalSpecifiers": true,
+    "transpileOnly": true,
+    "swc": true
   },
   "include": [
     "next-env.d.ts",

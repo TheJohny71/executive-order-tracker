@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "target": "ES2020"
+  },
+  "include": ["./**/*.ts"],
+  "ts-node": {
+    "swc": true,
+    "transpileOnly": true
+  }
+}

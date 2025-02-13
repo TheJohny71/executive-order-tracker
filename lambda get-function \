@@ -1,0 +1,50 @@
+{
+    "FunctionName": "executive-order-scraper",
+    "FunctionArn": "arn:aws:lambda:us-east-2:565393056361:function:executive-order-scraper",
+    "Runtime": "nodejs18.x",
+    "Role": "arn:aws:iam::565393056361:role/executive-order-scraper-role",
+    "Handler": "index.handler",
+    "CodeSize": 2127,
+    "Description": "",
+    "Timeout": 300,
+    "MemorySize": 2048,
+    "LastModified": "2025-02-13T15:00:00.000+0000",
+    "CodeSha256": "KpSdn40r6iecvrPSyN/lxgIY0YnEAgrtW08jUosz3l4=",
+    "Version": "$LATEST",
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "8fe16e74-6821-42be-b3b1-10f84233397e",
+    "Layers": [
+        {
+            "Arn": "arn:aws:lambda:us-east-2:764866452798:layer:chrome-aws-lambda:10",
+            "CodeSize": 43650861
+        },
+        {
+            "Arn": "arn:aws:lambda:us-east-2:565393056361:layer:puppeteer-core-layer:1",
+            "CodeSize": 7503987
+        }
+    ],
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-2::runtime:8865cfc6a1d3f2dfabf5c509eaa9fbd70aa12fa4bbe614047030158c21978bcc"
+    },
+    "LoggingConfig": {
+        "LogFormat": "Text",
+        "LogGroup": "/aws/lambda/executive-order-scraper"
+    }
+}

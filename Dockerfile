@@ -24,24 +24,19 @@ RUN yum install -y \
     && yum clean all \
     && rm -rf /var/cache/yum
 
-# Set working directory
 WORKDIR ${LAMBDA_TASK_ROOT}
 
-# Copy package files
+# Copy package files and install dependencies
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY types.ts ./
-COPY index.ts ./
+RUN npm install --legacy-peer-deps
 
-# Install dependencies including development dependencies needed for build
-RUN npm ci
-
-# Build the project using esbuild (as specified in your package.json)
+# Copy and build TypeScript files
+COPY *.ts ./
 RUN npm run build
 
-# Clean up development dependencies and source files
-RUN npm prune --production && \
-    rm -rf *.ts tsconfig.json
+# Clean up dev dependencies
+RUN npm prune --production --legacy-peer-deps
 
-# Set the Lambda handler to use the ESM module
-CMD [ "index.handler" ]
+# Set the Lambda handler
+CMD [ "dist/index.handler" ]

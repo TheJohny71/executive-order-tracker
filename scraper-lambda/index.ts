@@ -1,4 +1,4 @@
-import chromium from 'chrome-aws-lambda';
+import chromium from '@sparticuz/chromium';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
@@ -88,9 +88,13 @@ export const handler = async (_event: LambdaEvent): Promise<{
     console.log('Starting browser...');
     browser = await puppeteer.launch({
       args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless
+      defaultViewport: {
+        width: 1920,
+        height: 1080
+      },
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+      protocolTimeout: 30000
     });
     
     console.log('Browser started, opening White House page...');

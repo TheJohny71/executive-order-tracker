@@ -2,14 +2,18 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "NodeNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "moduleResolution": "NodeNext",
+    "sourceMap": true,
+    "outDir": "./dist",
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "dist",
-    "typeRoots": ["./node_modules/@types", "./"],
-    "types": ["node", "aws-lambda"]
+    "types": ["node"],
+    "allowJs": true,
+    "resolveJsonModule": true
   },
-  "include": ["*.ts", "custom.d.ts"],
+  "include": ["*.ts"],
   "exclude": ["node_modules", "dist"]
 }

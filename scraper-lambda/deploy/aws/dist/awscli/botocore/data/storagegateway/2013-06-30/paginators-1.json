@@ -45,18 +45,14 @@
     "ListFileShares": {
       "input_token": "Marker",
       "limit_key": "Limit",
-      "non_aggregate_keys": [
-        "Marker"
-      ],
+      "non_aggregate_keys": ["Marker"],
       "output_token": "NextMarker",
       "result_key": "FileShareInfoList"
     },
     "ListTagsForResource": {
       "input_token": "Marker",
       "limit_key": "Limit",
-      "non_aggregate_keys": [
-        "ResourceARN"
-      ],
+      "non_aggregate_keys": ["ResourceARN"],
       "output_token": "Marker",
       "result_key": "Tags"
     },
@@ -69,9 +65,7 @@
     "ListFileSystemAssociations": {
       "input_token": "Marker",
       "limit_key": "Limit",
-      "non_aggregate_keys": [
-        "Marker"
-      ],
+      "non_aggregate_keys": ["Marker"],
       "output_token": "NextMarker",
       "result_key": "FileSystemAssociationSummaryList"
     }

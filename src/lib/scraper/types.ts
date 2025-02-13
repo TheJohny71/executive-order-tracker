@@ -1,4 +1,4 @@
-import { DocumentType } from '@prisma/client';
+import { DocumentType } from "@prisma/client";
 
 // Single export for each interface
 export interface ScrapedOrder {

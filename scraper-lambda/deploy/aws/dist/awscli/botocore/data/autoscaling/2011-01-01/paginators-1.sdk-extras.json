@@ -3,9 +3,7 @@
   "merge": {
     "pagination": {
       "DescribeWarmPool": {
-        "non_aggregate_keys": [
-          "WarmPoolConfiguration"
-        ]
+        "non_aggregate_keys": ["WarmPoolConfiguration"]
       }
     }
   }

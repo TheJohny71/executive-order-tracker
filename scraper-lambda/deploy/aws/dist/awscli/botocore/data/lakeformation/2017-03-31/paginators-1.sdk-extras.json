@@ -3,9 +3,7 @@
   "merge": {
     "pagination": {
       "GetWorkUnits": {
-        "non_aggregate_keys": [
-          "QueryId"
-        ]
+        "non_aggregate_keys": ["QueryId"]
       }
     }
   }

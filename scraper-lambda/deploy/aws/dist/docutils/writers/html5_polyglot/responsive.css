@@ -21,13 +21,12 @@
 /* This style sheet is provisional:					   */
 /* the API is not settled and may change with any minor Docutils version.  */
 
-
-
 /* General Settings */
 /* ================ */
 
-
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   background-color: #fafaf6;
@@ -45,39 +44,57 @@ body > * {
   margin: auto;
   max-width: 100rem;
 }
-sup, sub { /* avoid additional inter-line space for lines with sup/sub */
+sup,
+sub {
+  /* avoid additional inter-line space for lines with sup/sub */
   line-height: 1;
 }
 
 /* Vertical Space (Parskip) */
-p, ol, ul, dl, li,
+p,
+ol,
+ul,
+dl,
+li,
 div.line-block,
 .topic,
-.footnote, .citation,
+.footnote,
+.citation,
 div > math,
 table {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
-h1, h2, h3, h4, h5, h6,
-dl > dd, details > p:last-child {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+dl > dd,
+details > p:last-child {
   margin-bottom: 0.5em;
 }
 
 /* Indented Blocks */
-blockquote, figure, .topic {
+blockquote,
+figure,
+.topic {
   margin: 1em 2%;
   padding-left: 1em;
 }
 div.line-block div.line-block,
-pre, dd, dl.option-list {
+pre,
+dd,
+dl.option-list {
   margin-left: calc(2% + 1em);
 }
 
 /* Object styling */
 /* ============== */
 
-footer, header {
+footer,
+header {
   font-size: small;
 }
 
@@ -101,24 +118,25 @@ blockquote p.attribution,
 nav.contents ul {
   padding-left: 1em;
 }
-ul.auto-toc > li > p { /* hanging indent */
+ul.auto-toc > li > p {
+  /* hanging indent */
   padding-left: 1em;
   text-indent: -1em;
 }
-main > nav.contents  ul:not(.auto-toc) {
+main > nav.contents ul:not(.auto-toc) {
   list-style-type: square;
 }
-main > nav.contents  ul ul:not(.auto-toc) {
+main > nav.contents ul ul:not(.auto-toc) {
   list-style-type: disc;
 }
-main > nav.contents  ul ul ul:not(.auto-toc) {
-  list-style-type: '\2B29\ ';
+main > nav.contents ul ul ul:not(.auto-toc) {
+  list-style-type: "\2B29\ ";
 }
-main > nav.contents  ul ul ul ul:not(.auto-toc) {
-  list-style-type: '\2B1D\ ';
+main > nav.contents ul ul ul ul:not(.auto-toc) {
+  list-style-type: "\2B1D\ ";
 }
-main > nav.contents  ul ul ul ul ul:not(.auto-toc) {
-  list-style-type: '\2B2A\ ';
+main > nav.contents ul ul ul ul ul:not(.auto-toc) {
+  list-style-type: "\2B2A\ ";
 }
 nav.contents ul > li::marker {
   color: grey;
@@ -131,7 +149,8 @@ hr {
 
 /* Lists */
 
-ul, ol {
+ul,
+ol {
   padding-left: 1.1em; /* indent by bullet width (Firefox, DejaVu fonts) */
 }
 dl.field-list > dd,
@@ -170,8 +189,12 @@ dd > ol:first-child {
 }
 
 /* disclosures */
-details { padding-left: 1em; }
-summary { margin-left: -1em; }
+details {
+  padding-left: 1em;
+}
+summary {
+  margin-left: -1em;
+}
 
 /* Footnotes and Citations */
 .footnote {
@@ -182,8 +205,10 @@ summary { margin-left: -1em; }
 img {
   display: block;
 }
-p > img, p > a > img,
-figure > img, figure > a > img {
+p > img,
+p > a > img,
+figure > img,
+figure > a > img {
   display: inline;
 }
 
@@ -207,7 +232,8 @@ table tr {
   text-align: left;
   vertical-align: baseline;
 }
-table.booktabs { /* "booktabs" style (no vertical lines) */
+table.booktabs {
+  /* "booktabs" style (no vertical lines) */
   border-top: 2px solid;
   border-bottom: 2px solid;
 }
@@ -243,11 +269,14 @@ div.system-message > p > span.literal {
 }
 
 /* Literal and Code */
-pre.literal-block, pre.doctest{
+pre.literal-block,
+pre.doctest {
   padding: 0.2em;
   overflow-x: auto;
 }
-.literal-block, .doctest, span.literal {
+.literal-block,
+.doctest,
+span.literal {
   background-color: #f6f9f8;
 }
 .system-message span.literal {
@@ -256,12 +285,31 @@ pre.literal-block, pre.doctest{
 
 /* basic highlighting: for a complete scheme, see */
 /* https://docutils.sourceforge.io/sandbox/stylesheets/ */
-pre.code .comment, code .comment { color: #5C6576 }
-pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
-pre.code .literal.string, code .literal.string { color: #0C5404 }
-pre.code .name.builtin, code .name.builtin { color: #352B84 }
-pre.code .deleted, code .deleted { background-color: #DEB0A1}
-pre.code .inserted, code .inserted { background-color: #A3D289}
+pre.code .comment,
+code .comment {
+  color: #5c6576;
+}
+pre.code .keyword,
+code .keyword {
+  color: #3b0d06;
+  font-weight: bold;
+}
+pre.code .literal.string,
+code .literal.string {
+  color: #0c5404;
+}
+pre.code .name.builtin,
+code .name.builtin {
+  color: #352b84;
+}
+pre.code .deleted,
+code .deleted {
+  background-color: #deb0a1;
+}
+pre.code .inserted,
+code .inserted {
+  background-color: #a3d289;
+}
 
 /* Hyperlink References */
 a {
@@ -269,7 +317,9 @@ a {
   /* Wrap links at any place, if this is the only way to prevent overflow */
   overflow-wrap: break-word;
 }
-.contents a, a.toc-backref, a.citation-reference {
+.contents a,
+a.toc-backref,
+a.citation-reference {
   overflow-wrap: inherit;
 }
 /* Undecorated Links (see also minimal.css) */
@@ -307,8 +357,12 @@ section:target > h5, section:target > h6,
 /* Let content flow to the side of aligned images and figures */
 
 /* no floats around this elements */
-footer, header, hr,
-h1, h2, h3 {
+footer,
+header,
+hr,
+h1,
+h2,
+h3 {
   clear: both;
 }
 
@@ -356,7 +410,8 @@ table.align-right {
 math .boldsymbol {
   font-weight: bold;
 }
-mstyle.mathscr, mi.mathscr {
+mstyle.mathscr,
+mi.mathscr {
   font-family: STIX;
 }
 
@@ -368,7 +423,7 @@ mstyle.mathscr, mi.mathscr {
   /* (main text less than 40 characters/line) */
   body > * {
     padding: 0.5rem 5%;
-    line-height: 1.4
+    line-height: 1.4;
   }
   .sidebar,
   .marginal,
@@ -384,12 +439,15 @@ mstyle.mathscr, mi.mathscr {
   body {
     --field-indent: 4em;
   }
-  dl.field-list.narrow, dl.docinfo, dl.option-list {
+  dl.field-list.narrow,
+  dl.docinfo,
+  dl.option-list {
     --field-indent: 2.4em;
   }
-  pre, pre * {
-  font-size: 0.9em;
-  /* overflow: auto; */
+  pre,
+  pre * {
+    font-size: 0.9em;
+    /* overflow: auto; */
   }
 }
 
@@ -406,7 +464,8 @@ mstyle.mathscr, mi.mathscr {
     padding-left: min(22%, 22rem);
     padding-right: 7%;
   }
-  main > nav.contents { /* global ToC */
+  main > nav.contents {
+    /* global ToC */
     position: fixed;
     top: 0;
     left: 0;
@@ -422,7 +481,7 @@ mstyle.mathscr, mi.mathscr {
     line-height: 1.4;
   }
   main > nav.contents a {
-  color: inherit;
+    color: inherit;
   }
 }
 
@@ -478,7 +537,9 @@ mstyle.mathscr, mi.mathscr {
   body.with-toc > * {
     --sidebar-margin-right: -20rem;
   }
-  body > *, body.with-toc > * { /* for webkit */
+  body > *,
+  body.with-toc > * {
+    /* for webkit */
     padding-left: 22rem;
     padding-right: 28rem;
   }

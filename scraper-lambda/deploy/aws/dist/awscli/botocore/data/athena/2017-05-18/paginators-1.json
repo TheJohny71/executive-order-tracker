@@ -17,10 +17,7 @@
       "output_token": "NextToken",
       "limit_key": "MaxResults",
       "result_key": "ResultSet.Rows",
-      "non_aggregate_keys": [
-        "ResultSet.ResultSetMetadata",
-        "UpdateCount"
-      ]
+      "non_aggregate_keys": ["ResultSet.ResultSetMetadata", "UpdateCount"]
     },
     "ListDataCatalogs": {
       "input_token": "NextToken",

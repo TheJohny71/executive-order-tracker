@@ -3,11 +3,7 @@
   "merge": {
     "pagination": {
       "ListTableOptimizerRuns": {
-        "non_aggregate_keys": [
-          "CatalogId",
-          "DatabaseName",
-          "TableName"
-        ]
+        "non_aggregate_keys": ["CatalogId", "DatabaseName", "TableName"]
       }
     }
   }

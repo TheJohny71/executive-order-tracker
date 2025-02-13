@@ -272,9 +272,7 @@
     "ListThingRegistrationTaskReports": {
       "input_token": "nextToken",
       "limit_key": "maxResults",
-      "non_aggregate_keys": [
-        "reportType"
-      ],
+      "non_aggregate_keys": ["reportType"],
       "output_token": "nextToken",
       "result_key": "resourceLinks"
     },

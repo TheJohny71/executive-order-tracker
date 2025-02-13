@@ -3,9 +3,7 @@
   "merge": {
     "pagination": {
       "ListEnrollmentStatuses": {
-        "non_aggregate_keys": [
-          "includeMemberAccounts"
-        ]
+        "non_aggregate_keys": ["includeMemberAccounts"]
       },
       "ListRecommendationSummaries": {
         "non_aggregate_keys": [

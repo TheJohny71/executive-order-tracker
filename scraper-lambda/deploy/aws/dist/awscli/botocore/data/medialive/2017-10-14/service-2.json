@@ -10,9 +10,7 @@
     "signatureVersion": "v4",
     "serviceAbbreviation": "MediaLive",
     "jsonVersion": "1.1",
-    "auth": [
-      "aws.auth#sigv4"
-    ]
+    "auth": ["aws.auth#sigv4"]
   },
   "operations": {
     "AcceptInputDeviceTransfer": {
@@ -5229,35 +5227,22 @@
     "AacInputType": {
       "type": "string",
       "documentation": "Aac Input Type",
-      "enum": [
-        "BROADCASTER_MIXED_AD",
-        "NORMAL"
-      ]
+      "enum": ["BROADCASTER_MIXED_AD", "NORMAL"]
     },
     "AacProfile": {
       "type": "string",
       "documentation": "Aac Profile",
-      "enum": [
-        "HEV1",
-        "HEV2",
-        "LC"
-      ]
+      "enum": ["HEV1", "HEV2", "LC"]
     },
     "AacRateControlMode": {
       "type": "string",
       "documentation": "Aac Rate Control Mode",
-      "enum": [
-        "CBR",
-        "VBR"
-      ]
+      "enum": ["CBR", "VBR"]
     },
     "AacRawFormat": {
       "type": "string",
       "documentation": "Aac Raw Format",
-      "enum": [
-        "LATM_LOAS",
-        "NONE"
-      ]
+      "enum": ["LATM_LOAS", "NONE"]
     },
     "AacSettings": {
       "type": "structure",
@@ -5313,28 +5298,17 @@
     "AacSpec": {
       "type": "string",
       "documentation": "Aac Spec",
-      "enum": [
-        "MPEG2",
-        "MPEG4"
-      ]
+      "enum": ["MPEG2", "MPEG4"]
     },
     "AacVbrQuality": {
       "type": "string",
       "documentation": "Aac Vbr Quality",
-      "enum": [
-        "HIGH",
-        "LOW",
-        "MEDIUM_HIGH",
-        "MEDIUM_LOW"
-      ]
+      "enum": ["HIGH", "LOW", "MEDIUM_HIGH", "MEDIUM_LOW"]
     },
     "Ac3AttenuationControl": {
       "type": "string",
       "documentation": "Ac3 Attenuation Control",
-      "enum": [
-        "ATTENUATE_3_DB",
-        "NONE"
-      ]
+      "enum": ["ATTENUATE_3_DB", "NONE"]
     },
     "Ac3BitstreamMode": {
       "type": "string",
@@ -5363,26 +5337,17 @@
     "Ac3DrcProfile": {
       "type": "string",
       "documentation": "Ac3 Drc Profile",
-      "enum": [
-        "FILM_STANDARD",
-        "NONE"
-      ]
+      "enum": ["FILM_STANDARD", "NONE"]
     },
     "Ac3LfeFilter": {
       "type": "string",
       "documentation": "Ac3 Lfe Filter",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "Ac3MetadataControl": {
       "type": "string",
       "documentation": "Ac3 Metadata Control",
-      "enum": [
-        "FOLLOW_INPUT",
-        "USE_CONFIGURED"
-      ]
+      "enum": ["FOLLOW_INPUT", "USE_CONFIGURED"]
     },
     "Ac3Settings": {
       "type": "structure",
@@ -5440,15 +5405,12 @@
           "documentation": "The unique ID of the input device to accept. For example, hd-123456789abcdef."
         }
       },
-      "required": [
-        "InputDeviceId"
-      ],
+      "required": ["InputDeviceId"],
       "documentation": "Placeholder documentation for AcceptInputDeviceTransferRequest"
     },
     "AcceptInputDeviceTransferResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for AcceptInputDeviceTransferResponse"
     },
     "AccessDenied": {
@@ -5483,11 +5445,7 @@
     "AfdSignaling": {
       "type": "string",
       "documentation": "Afd Signaling",
-      "enum": [
-        "AUTO",
-        "FIXED",
-        "NONE"
-      ]
+      "enum": ["AUTO", "FIXED", "NONE"]
     },
     "AncillarySourceSettings": {
       "type": "structure",
@@ -5544,9 +5502,7 @@
         }
       },
       "documentation": "Archive Group Settings",
-      "required": [
-        "Destination"
-      ]
+      "required": ["Destination"]
     },
     "ArchiveOutputSettings": {
       "type": "structure",
@@ -5568,17 +5524,12 @@
         }
       },
       "documentation": "Archive Output Settings",
-      "required": [
-        "ContainerSettings"
-      ]
+      "required": ["ContainerSettings"]
     },
     "ArchiveS3LogUploads": {
       "type": "string",
       "documentation": "Archive S3 Log Uploads",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "ArchiveS3Settings": {
       "type": "structure",
@@ -5593,14 +5544,12 @@
     },
     "AribDestinationSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Arib Destination Settings"
     },
     "AribSourceSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Arib Source Settings"
     },
     "AudioChannelMapping": {
@@ -5618,10 +5567,7 @@
         }
       },
       "documentation": "Audio Channel Mapping",
-      "required": [
-        "OutputChannel",
-        "InputChannelLevels"
-      ]
+      "required": ["OutputChannel", "InputChannelLevels"]
     },
     "AudioCodecSettings": {
       "type": "structure",
@@ -5727,26 +5673,17 @@
         }
       },
       "documentation": "Audio Description",
-      "required": [
-        "AudioSelectorName",
-        "Name"
-      ]
+      "required": ["AudioSelectorName", "Name"]
     },
     "AudioDescriptionAudioTypeControl": {
       "type": "string",
       "documentation": "Audio Description Audio Type Control",
-      "enum": [
-        "FOLLOW_INPUT",
-        "USE_CONFIGURED"
-      ]
+      "enum": ["FOLLOW_INPUT", "USE_CONFIGURED"]
     },
     "AudioDescriptionLanguageCodeControl": {
       "type": "string",
       "documentation": "Audio Description Language Code Control",
-      "enum": [
-        "FOLLOW_INPUT",
-        "USE_CONFIGURED"
-      ]
+      "enum": ["FOLLOW_INPUT", "USE_CONFIGURED"]
     },
     "AudioDolbyEDecode": {
       "type": "structure",
@@ -5758,9 +5695,7 @@
         }
       },
       "documentation": "Audio Dolby EDecode",
-      "required": [
-        "ProgramSelection"
-      ]
+      "required": ["ProgramSelection"]
     },
     "AudioHlsRenditionSelection": {
       "type": "structure",
@@ -5777,10 +5712,7 @@
         }
       },
       "documentation": "Audio Hls Rendition Selection",
-      "required": [
-        "Name",
-        "GroupId"
-      ]
+      "required": ["Name", "GroupId"]
     },
     "AudioLanguageSelection": {
       "type": "structure",
@@ -5797,32 +5729,22 @@
         }
       },
       "documentation": "Audio Language Selection",
-      "required": [
-        "LanguageCode"
-      ]
+      "required": ["LanguageCode"]
     },
     "AudioLanguageSelectionPolicy": {
       "type": "string",
       "documentation": "Audio Language Selection Policy",
-      "enum": [
-        "LOOSE",
-        "STRICT"
-      ]
+      "enum": ["LOOSE", "STRICT"]
     },
     "AudioNormalizationAlgorithm": {
       "type": "string",
       "documentation": "Audio Normalization Algorithm",
-      "enum": [
-        "ITU_1770_1",
-        "ITU_1770_2"
-      ]
+      "enum": ["ITU_1770_1", "ITU_1770_2"]
     },
     "AudioNormalizationAlgorithmControl": {
       "type": "string",
       "documentation": "Audio Normalization Algorithm Control",
-      "enum": [
-        "CORRECT_AUDIO"
-      ]
+      "enum": ["CORRECT_AUDIO"]
     },
     "AudioNormalizationSettings": {
       "type": "structure",
@@ -5848,10 +5770,7 @@
     "AudioOnlyHlsSegmentType": {
       "type": "string",
       "documentation": "Audio Only Hls Segment Type",
-      "enum": [
-        "AAC",
-        "FMP4"
-      ]
+      "enum": ["AAC", "FMP4"]
     },
     "AudioOnlyHlsSettings": {
       "type": "structure",
@@ -5899,9 +5818,7 @@
         }
       },
       "documentation": "Audio Pid Selection",
-      "required": [
-        "Pid"
-      ]
+      "required": ["Pid"]
     },
     "AudioSelector": {
       "type": "structure",
@@ -5918,9 +5835,7 @@
         }
       },
       "documentation": "Audio Selector",
-      "required": [
-        "Name"
-      ]
+      "required": ["Name"]
     },
     "AudioSelectorSettings": {
       "type": "structure",
@@ -5958,9 +5873,7 @@
           "documentation": "The amount of time (in milliseconds) that the active input must be silent before automatic input failover occurs. Silence is defined as audio loss or audio quieter than -50 dBFS."
         }
       },
-      "required": [
-        "AudioSelectorName"
-      ],
+      "required": ["AudioSelectorName"],
       "documentation": "Placeholder documentation for AudioSilenceFailoverSettings"
     },
     "AudioTrack": {
@@ -5973,9 +5886,7 @@
         }
       },
       "documentation": "Audio Track",
-      "required": [
-        "Track"
-      ]
+      "required": ["Track"]
     },
     "AudioTrackSelection": {
       "type": "structure",
@@ -5992,9 +5903,7 @@
         }
       },
       "documentation": "Audio Track Selection",
-      "required": [
-        "Tracks"
-      ]
+      "required": ["Tracks"]
     },
     "AudioType": {
       "type": "string",
@@ -6020,10 +5929,7 @@
     "AuthenticationScheme": {
       "type": "string",
       "documentation": "Authentication Scheme",
-      "enum": [
-        "AKAMAI",
-        "COMMON"
-      ]
+      "enum": ["AKAMAI", "COMMON"]
     },
     "AutomaticInputFailoverSettings": {
       "type": "structure",
@@ -6050,9 +5956,7 @@
         }
       },
       "documentation": "The settings for Automatic Input Failover.",
-      "required": [
-        "SecondaryInputId"
-      ]
+      "required": ["SecondaryInputId"]
     },
     "AvailBlanking": {
       "type": "structure",
@@ -6073,10 +5977,7 @@
     "AvailBlankingState": {
       "type": "string",
       "documentation": "Avail Blanking State",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "AvailConfiguration": {
       "type": "structure",
@@ -6260,9 +6161,7 @@
         }
       },
       "documentation": "A list of schedule actions to create (in a request) or that have been created (in a response).",
-      "required": [
-        "ScheduleActions"
-      ]
+      "required": ["ScheduleActions"]
     },
     "BatchScheduleActionCreateResult": {
       "type": "structure",
@@ -6274,9 +6173,7 @@
         }
       },
       "documentation": "List of actions that have been created in the schedule.",
-      "required": [
-        "ScheduleActions"
-      ]
+      "required": ["ScheduleActions"]
     },
     "BatchScheduleActionDeleteRequest": {
       "type": "structure",
@@ -6288,9 +6185,7 @@
         }
       },
       "documentation": "A list of schedule actions to delete.",
-      "required": [
-        "ActionNames"
-      ]
+      "required": ["ActionNames"]
     },
     "BatchScheduleActionDeleteResult": {
       "type": "structure",
@@ -6302,9 +6197,7 @@
         }
       },
       "documentation": "List of actions that have been deleted from the schedule.",
-      "required": [
-        "ScheduleActions"
-      ]
+      "required": ["ScheduleActions"]
     },
     "BatchStart": {
       "type": "structure",
@@ -6476,9 +6369,7 @@
         }
       },
       "documentation": "List of actions to create and list of actions to delete.",
-      "required": [
-        "ChannelId"
-      ]
+      "required": ["ChannelId"]
     },
     "BatchUpdateScheduleResponse": {
       "type": "structure",
@@ -6546,36 +6437,22 @@
     "BlackoutSlateNetworkEndBlackout": {
       "type": "string",
       "documentation": "Blackout Slate Network End Blackout",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "BlackoutSlateState": {
       "type": "string",
       "documentation": "Blackout Slate State",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "BurnInAlignment": {
       "type": "string",
       "documentation": "Burn In Alignment",
-      "enum": [
-        "CENTERED",
-        "LEFT",
-        "SMART"
-      ]
+      "enum": ["CENTERED", "LEFT", "SMART"]
     },
     "BurnInBackgroundColor": {
       "type": "string",
       "documentation": "Burn In Background Color",
-      "enum": [
-        "BLACK",
-        "NONE",
-        "WHITE"
-      ]
+      "enum": ["BLACK", "NONE", "WHITE"]
     },
     "BurnInDestinationSettings": {
       "type": "structure",
@@ -6671,43 +6548,22 @@
     "BurnInFontColor": {
       "type": "string",
       "documentation": "Burn In Font Color",
-      "enum": [
-        "BLACK",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "WHITE",
-        "YELLOW"
-      ]
+      "enum": ["BLACK", "BLUE", "GREEN", "RED", "WHITE", "YELLOW"]
     },
     "BurnInOutlineColor": {
       "type": "string",
       "documentation": "Burn In Outline Color",
-      "enum": [
-        "BLACK",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "WHITE",
-        "YELLOW"
-      ]
+      "enum": ["BLACK", "BLUE", "GREEN", "RED", "WHITE", "YELLOW"]
     },
     "BurnInShadowColor": {
       "type": "string",
       "documentation": "Burn In Shadow Color",
-      "enum": [
-        "BLACK",
-        "NONE",
-        "WHITE"
-      ]
+      "enum": ["BLACK", "NONE", "WHITE"]
     },
     "BurnInTeletextGridControl": {
       "type": "string",
       "documentation": "Burn In Teletext Grid Control",
-      "enum": [
-        "FIXED",
-        "SCALED"
-      ]
+      "enum": ["FIXED", "SCALED"]
     },
     "CancelInputDeviceTransferRequest": {
       "type": "structure",
@@ -6719,15 +6575,12 @@
           "documentation": "The unique ID of the input device to cancel. For example, hd-123456789abcdef."
         }
       },
-      "required": [
-        "InputDeviceId"
-      ],
+      "required": ["InputDeviceId"],
       "documentation": "Placeholder documentation for CancelInputDeviceTransferRequest"
     },
     "CancelInputDeviceTransferResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for CancelInputDeviceTransferResponse"
     },
     "CaptionDescription": {
@@ -6775,10 +6628,7 @@
         }
       },
       "documentation": "Caption Description",
-      "required": [
-        "CaptionSelectorName",
-        "Name"
-      ]
+      "required": ["CaptionSelectorName", "Name"]
     },
     "CaptionDestinationSettings": {
       "type": "structure",
@@ -6858,11 +6708,7 @@
         }
       },
       "documentation": "Maps a caption channel to an ISO 693-2 language code (http://www.loc.gov/standards/iso639-2), with an optional description.",
-      "required": [
-        "LanguageCode",
-        "LanguageDescription",
-        "CaptionChannel"
-      ]
+      "required": ["LanguageCode", "LanguageDescription", "CaptionChannel"]
     },
     "CaptionRectangle": {
       "type": "structure",
@@ -6889,12 +6735,7 @@
         }
       },
       "documentation": "Caption Rectangle",
-      "required": [
-        "TopOffset",
-        "Height",
-        "Width",
-        "LeftOffset"
-      ]
+      "required": ["TopOffset", "Height", "Width", "LeftOffset"]
     },
     "CaptionSelector": {
       "type": "structure",
@@ -6916,9 +6757,7 @@
         }
       },
       "documentation": "Caption Selector",
-      "required": [
-        "Name"
-      ]
+      "required": ["Name"]
     },
     "CaptionSelectorSettings": {
       "type": "structure",
@@ -6957,12 +6796,7 @@
     "CdiInputResolution": {
       "type": "string",
       "documentation": "Maximum CDI input resolution; SD is 480i and 576i up to 30 frames-per-second (fps), HD is 720p up to 60 fps / 1080i up to 30 fps, FHD is 1080p up to 60 fps, UHD is 2160p up to 60 fps",
-      "enum": [
-        "SD",
-        "HD",
-        "FHD",
-        "UHD"
-      ]
+      "enum": ["SD", "HD", "FHD", "UHD"]
     },
     "CdiInputSpecification": {
       "type": "structure",
@@ -7082,10 +6916,7 @@
     "ChannelClass": {
       "type": "string",
       "documentation": "A standard channel has two encoding pipelines and a single pipeline channel only has one.",
-      "enum": [
-        "STANDARD",
-        "SINGLE_PIPELINE"
-      ]
+      "enum": ["STANDARD", "SINGLE_PIPELINE"]
     },
     "ChannelConfigurationValidationError": {
       "type": "structure",
@@ -7243,8 +7074,7 @@
     },
     "ClaimDeviceResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for ClaimDeviceResponse"
     },
     "ColorCorrection": {
@@ -7267,11 +7097,7 @@
         }
       },
       "documentation": "Property of ColorCorrectionSettings. Used for custom color space conversion. The object identifies one 3D LUT file and specifies the input/output color space combination that the file will be used for.",
-      "required": [
-        "OutputColorSpace",
-        "InputColorSpace",
-        "Uri"
-      ]
+      "required": ["OutputColorSpace", "InputColorSpace", "Uri"]
     },
     "ColorCorrectionSettings": {
       "type": "structure",
@@ -7283,24 +7109,16 @@
         }
       },
       "documentation": "Property of encoderSettings. Controls color conversion when you are using 3D LUT files to perform color conversion on video.",
-      "required": [
-        "GlobalColorCorrections"
-      ]
+      "required": ["GlobalColorCorrections"]
     },
     "ColorSpace": {
       "type": "string",
       "documentation": "Property of colorCorrections. When you are using 3D LUT files to perform color conversion on video, these are the supported color spaces.",
-      "enum": [
-        "HDR10",
-        "HLG_2020",
-        "REC_601",
-        "REC_709"
-      ]
+      "enum": ["HDR10", "HLG_2020", "REC_601", "REC_709"]
     },
     "ColorSpacePassthroughSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Passthrough applies no color space conversion to the output"
     },
     "ConflictException": {
@@ -7781,11 +7599,7 @@
           "idempotencyToken": true
         }
       },
-      "required": [
-        "RequestId",
-        "MultiplexProgramSettings",
-        "ProgramName"
-      ],
+      "required": ["RequestId", "MultiplexProgramSettings", "ProgramName"],
       "documentation": "Placeholder documentation for CreateMultiplexProgram"
     },
     "CreateMultiplexProgramRequest": {
@@ -7943,9 +7757,7 @@
         }
       },
       "documentation": "A request to create a partner input",
-      "required": [
-        "InputId"
-      ]
+      "required": ["InputId"]
     },
     "CreatePartnerInputResponse": {
       "type": "structure",
@@ -7980,9 +7792,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "ResourceArn"
-      ],
+      "required": ["ResourceArn"],
       "documentation": "Placeholder documentation for CreateTagsRequest"
     },
     "DeleteChannelRequest": {
@@ -7995,9 +7805,7 @@
           "documentation": "Unique ID of the channel."
         }
       },
-      "required": [
-        "ChannelId"
-      ],
+      "required": ["ChannelId"],
       "documentation": "Placeholder documentation for DeleteChannelRequest"
     },
     "DeleteChannelResponse": {
@@ -8114,15 +7922,12 @@
           "documentation": "Unique ID of the input"
         }
       },
-      "required": [
-        "InputId"
-      ],
+      "required": ["InputId"],
       "documentation": "Placeholder documentation for DeleteInputRequest"
     },
     "DeleteInputResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for DeleteInputResponse"
     },
     "DeleteInputSecurityGroupRequest": {
@@ -8135,15 +7940,12 @@
           "documentation": "The Input Security Group to delete"
         }
       },
-      "required": [
-        "InputSecurityGroupId"
-      ],
+      "required": ["InputSecurityGroupId"],
       "documentation": "Placeholder documentation for DeleteInputSecurityGroupRequest"
     },
     "DeleteInputSecurityGroupResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for DeleteInputSecurityGroupResponse"
     },
     "DeleteMultiplexProgramRequest": {
@@ -8162,10 +7964,7 @@
           "documentation": "The multiplex program name."
         }
       },
-      "required": [
-        "MultiplexId",
-        "ProgramName"
-      ],
+      "required": ["MultiplexId", "ProgramName"],
       "documentation": "Placeholder documentation for DeleteMultiplexProgramRequest"
     },
     "DeleteMultiplexProgramResponse": {
@@ -8209,9 +8008,7 @@
           "documentation": "The ID of the multiplex."
         }
       },
-      "required": [
-        "MultiplexId"
-      ],
+      "required": ["MultiplexId"],
       "documentation": "Placeholder documentation for DeleteMultiplexRequest"
     },
     "DeleteMultiplexResponse": {
@@ -8280,9 +8077,7 @@
           "documentation": "Unique reservation ID, e.g. '1234567'"
         }
       },
-      "required": [
-        "ReservationId"
-      ],
+      "required": ["ReservationId"],
       "documentation": "Placeholder documentation for DeleteReservationRequest"
     },
     "DeleteReservationResponse": {
@@ -8396,15 +8191,12 @@
           "documentation": "Id of the channel whose schedule is being deleted."
         }
       },
-      "required": [
-        "ChannelId"
-      ],
+      "required": ["ChannelId"],
       "documentation": "Placeholder documentation for DeleteScheduleRequest"
     },
     "DeleteScheduleResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for DeleteScheduleResponse"
     },
     "DeleteTagsRequest": {
@@ -8422,16 +8214,12 @@
           "documentation": "An array of tag keys to delete"
         }
       },
-      "required": [
-        "TagKeys",
-        "ResourceArn"
-      ],
+      "required": ["TagKeys", "ResourceArn"],
       "documentation": "Placeholder documentation for DeleteTagsRequest"
     },
     "DescribeAccountConfigurationRequest": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for DescribeAccountConfigurationRequest"
     },
     "DescribeAccountConfigurationResponse": {
@@ -8464,9 +8252,7 @@
           "documentation": "channel ID"
         }
       },
-      "required": [
-        "ChannelId"
-      ],
+      "required": ["ChannelId"],
       "documentation": "Placeholder documentation for DescribeChannelRequest"
     },
     "DescribeChannelResponse": {
@@ -8583,9 +8369,7 @@
           "documentation": "The unique ID of this input device. For example, hd-123456789abcdef."
         }
       },
-      "required": [
-        "InputDeviceId"
-      ],
+      "required": ["InputDeviceId"],
       "documentation": "Placeholder documentation for DescribeInputDeviceRequest"
     },
     "DescribeInputDeviceResponse": {
@@ -8690,10 +8474,7 @@
           "documentation": "The HTTP Accept header. Indicates the requested type for the thumbnail."
         }
       },
-      "required": [
-        "InputDeviceId",
-        "Accept"
-      ],
+      "required": ["InputDeviceId", "Accept"],
       "documentation": "Placeholder documentation for DescribeInputDeviceThumbnailRequest"
     },
     "DescribeInputDeviceThumbnailResponse": {
@@ -8742,9 +8523,7 @@
           "documentation": "Unique ID of the input"
         }
       },
-      "required": [
-        "InputId"
-      ],
+      "required": ["InputId"],
       "documentation": "Placeholder documentation for DescribeInputRequest"
     },
     "DescribeInputResponse": {
@@ -8856,9 +8635,7 @@
           "documentation": "The id of the Input Security Group to describe"
         }
       },
-      "required": [
-        "InputSecurityGroupId"
-      ],
+      "required": ["InputSecurityGroupId"],
       "documentation": "Placeholder documentation for DescribeInputSecurityGroupRequest"
     },
     "DescribeInputSecurityGroupResponse": {
@@ -8913,10 +8690,7 @@
           "documentation": "The name of the program."
         }
       },
-      "required": [
-        "MultiplexId",
-        "ProgramName"
-      ],
+      "required": ["MultiplexId", "ProgramName"],
       "documentation": "Placeholder documentation for DescribeMultiplexProgramRequest"
     },
     "DescribeMultiplexProgramResponse": {
@@ -8960,9 +8734,7 @@
           "documentation": "The ID of the multiplex."
         }
       },
-      "required": [
-        "MultiplexId"
-      ],
+      "required": ["MultiplexId"],
       "documentation": "Placeholder documentation for DescribeMultiplexRequest"
     },
     "DescribeMultiplexResponse": {
@@ -9031,9 +8803,7 @@
           "documentation": "Unique offering ID, e.g. '87654321'"
         }
       },
-      "required": [
-        "OfferingId"
-      ],
+      "required": ["OfferingId"],
       "documentation": "Placeholder documentation for DescribeOfferingRequest"
     },
     "DescribeOfferingResponse": {
@@ -9107,9 +8877,7 @@
           "documentation": "Unique reservation ID, e.g. '1234567'"
         }
       },
-      "required": [
-        "ReservationId"
-      ],
+      "required": ["ReservationId"],
       "documentation": "Placeholder documentation for DescribeReservationRequest"
     },
     "DescribeReservationResponse": {
@@ -9233,9 +9001,7 @@
           "locationName": "nextToken"
         }
       },
-      "required": [
-        "ChannelId"
-      ],
+      "required": ["ChannelId"],
       "documentation": "Placeholder documentation for DescribeScheduleRequest"
     },
     "DescribeScheduleResponse": {
@@ -9276,11 +9042,7 @@
           "documentation": "thumbnail type"
         }
       },
-      "required": [
-        "ThumbnailType",
-        "PipelineId",
-        "ChannelId"
-      ],
+      "required": ["ThumbnailType", "PipelineId", "ChannelId"],
       "documentation": "Placeholder documentation for DescribeThumbnailsRequest"
     },
     "DescribeThumbnailsResponse": {
@@ -9306,19 +9068,12 @@
     "DeviceSettingsSyncState": {
       "type": "string",
       "documentation": "The status of the action to synchronize the device configuration. If you change the configuration of the input device (for example, the maximum bitrate), MediaLive sends the new data to the device. The device might not update itself immediately. SYNCED means the device has updated its configuration. SYNCING means that it has not updated its configuration.",
-      "enum": [
-        "SYNCED",
-        "SYNCING"
-      ]
+      "enum": ["SYNCED", "SYNCING"]
     },
     "DeviceUpdateStatus": {
       "type": "string",
       "documentation": "The status of software on the input device.",
-      "enum": [
-        "UP_TO_DATE",
-        "NOT_UP_TO_DATE",
-        "UPDATING"
-      ]
+      "enum": ["UP_TO_DATE", "NOT_UP_TO_DATE", "UPDATING"]
     },
     "DolbyEProgramSelection": {
       "type": "string",
@@ -9337,8 +9092,7 @@
     },
     "DolbyVision81Settings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Dolby Vision81 Settings"
     },
     "DvbNitSettings": {
@@ -9361,20 +9115,12 @@
         }
       },
       "documentation": "DVB Network Information Table (NIT)",
-      "required": [
-        "NetworkName",
-        "NetworkId"
-      ]
+      "required": ["NetworkName", "NetworkId"]
     },
     "DvbSdtOutputSdt": {
       "type": "string",
       "documentation": "Dvb Sdt Output Sdt",
-      "enum": [
-        "SDT_FOLLOW",
-        "SDT_FOLLOW_IF_PRESENT",
-        "SDT_MANUAL",
-        "SDT_NONE"
-      ]
+      "enum": ["SDT_FOLLOW", "SDT_FOLLOW_IF_PRESENT", "SDT_MANUAL", "SDT_NONE"]
     },
     "DvbSdtSettings": {
       "type": "structure",
@@ -9405,44 +9151,22 @@
     "DvbSubDestinationAlignment": {
       "type": "string",
       "documentation": "Dvb Sub Destination Alignment",
-      "enum": [
-        "CENTERED",
-        "LEFT",
-        "SMART"
-      ]
+      "enum": ["CENTERED", "LEFT", "SMART"]
     },
     "DvbSubDestinationBackgroundColor": {
       "type": "string",
       "documentation": "Dvb Sub Destination Background Color",
-      "enum": [
-        "BLACK",
-        "NONE",
-        "WHITE"
-      ]
+      "enum": ["BLACK", "NONE", "WHITE"]
     },
     "DvbSubDestinationFontColor": {
       "type": "string",
       "documentation": "Dvb Sub Destination Font Color",
-      "enum": [
-        "BLACK",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "WHITE",
-        "YELLOW"
-      ]
+      "enum": ["BLACK", "BLUE", "GREEN", "RED", "WHITE", "YELLOW"]
     },
     "DvbSubDestinationOutlineColor": {
       "type": "string",
       "documentation": "Dvb Sub Destination Outline Color",
-      "enum": [
-        "BLACK",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "WHITE",
-        "YELLOW"
-      ]
+      "enum": ["BLACK", "BLUE", "GREEN", "RED", "WHITE", "YELLOW"]
     },
     "DvbSubDestinationSettings": {
       "type": "structure",
@@ -9538,31 +9262,17 @@
     "DvbSubDestinationShadowColor": {
       "type": "string",
       "documentation": "Dvb Sub Destination Shadow Color",
-      "enum": [
-        "BLACK",
-        "NONE",
-        "WHITE"
-      ]
+      "enum": ["BLACK", "NONE", "WHITE"]
     },
     "DvbSubDestinationTeletextGridControl": {
       "type": "string",
       "documentation": "Dvb Sub Destination Teletext Grid Control",
-      "enum": [
-        "FIXED",
-        "SCALED"
-      ]
+      "enum": ["FIXED", "SCALED"]
     },
     "DvbSubOcrLanguage": {
       "type": "string",
       "documentation": "Dvb Sub Ocr Language",
-      "enum": [
-        "DEU",
-        "ENG",
-        "FRA",
-        "NLD",
-        "POR",
-        "SPA"
-      ]
+      "enum": ["DEU", "ENG", "FRA", "NLD", "POR", "SPA"]
     },
     "DvbSubSourceSettings": {
       "type": "structure",
@@ -9594,11 +9304,7 @@
     "Eac3AtmosCodingMode": {
       "type": "string",
       "documentation": "Eac3 Atmos Coding Mode",
-      "enum": [
-        "CODING_MODE_5_1_4",
-        "CODING_MODE_7_1_4",
-        "CODING_MODE_9_1_6"
-      ]
+      "enum": ["CODING_MODE_5_1_4", "CODING_MODE_7_1_4", "CODING_MODE_9_1_6"]
     },
     "Eac3AtmosDrcLine": {
       "type": "string",
@@ -9668,10 +9374,7 @@
     "Eac3AttenuationControl": {
       "type": "string",
       "documentation": "Eac3 Attenuation Control",
-      "enum": [
-        "ATTENUATE_3_DB",
-        "NONE"
-      ]
+      "enum": ["ATTENUATE_3_DB", "NONE"]
     },
     "Eac3BitstreamMode": {
       "type": "string",
@@ -9687,19 +9390,12 @@
     "Eac3CodingMode": {
       "type": "string",
       "documentation": "Eac3 Coding Mode",
-      "enum": [
-        "CODING_MODE_1_0",
-        "CODING_MODE_2_0",
-        "CODING_MODE_3_2"
-      ]
+      "enum": ["CODING_MODE_1_0", "CODING_MODE_2_0", "CODING_MODE_3_2"]
     },
     "Eac3DcFilter": {
       "type": "string",
       "documentation": "Eac3 Dc Filter",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "Eac3DrcLine": {
       "type": "string",
@@ -9728,42 +9424,27 @@
     "Eac3LfeControl": {
       "type": "string",
       "documentation": "Eac3 Lfe Control",
-      "enum": [
-        "LFE",
-        "NO_LFE"
-      ]
+      "enum": ["LFE", "NO_LFE"]
     },
     "Eac3LfeFilter": {
       "type": "string",
       "documentation": "Eac3 Lfe Filter",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "Eac3MetadataControl": {
       "type": "string",
       "documentation": "Eac3 Metadata Control",
-      "enum": [
-        "FOLLOW_INPUT",
-        "USE_CONFIGURED"
-      ]
+      "enum": ["FOLLOW_INPUT", "USE_CONFIGURED"]
     },
     "Eac3PassthroughControl": {
       "type": "string",
       "documentation": "Eac3 Passthrough Control",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "WHEN_POSSIBLE"
-      ]
+      "enum": ["NO_PASSTHROUGH", "WHEN_POSSIBLE"]
     },
     "Eac3PhaseControl": {
       "type": "string",
       "documentation": "Eac3 Phase Control",
-      "enum": [
-        "NO_SHIFT",
-        "SHIFT_90_DEGREES"
-      ]
+      "enum": ["NO_SHIFT", "SHIFT_90_DEGREES"]
     },
     "Eac3Settings": {
       "type": "structure",
@@ -9874,30 +9555,17 @@
     "Eac3StereoDownmix": {
       "type": "string",
       "documentation": "Eac3 Stereo Downmix",
-      "enum": [
-        "DPL2",
-        "LO_RO",
-        "LT_RT",
-        "NOT_INDICATED"
-      ]
+      "enum": ["DPL2", "LO_RO", "LT_RT", "NOT_INDICATED"]
     },
     "Eac3SurroundExMode": {
       "type": "string",
       "documentation": "Eac3 Surround Ex Mode",
-      "enum": [
-        "DISABLED",
-        "ENABLED",
-        "NOT_INDICATED"
-      ]
+      "enum": ["DISABLED", "ENABLED", "NOT_INDICATED"]
     },
     "Eac3SurroundMode": {
       "type": "string",
       "documentation": "Eac3 Surround Mode",
-      "enum": [
-        "DISABLED",
-        "ENABLED",
-        "NOT_INDICATED"
-      ]
+      "enum": ["DISABLED", "ENABLED", "NOT_INDICATED"]
     },
     "EbuTtDDestinationSettings": {
       "type": "structure",
@@ -9928,46 +9596,32 @@
     "EbuTtDDestinationStyleControl": {
       "type": "string",
       "documentation": "Ebu Tt DDestination Style Control",
-      "enum": [
-        "EXCLUDE",
-        "INCLUDE"
-      ]
+      "enum": ["EXCLUDE", "INCLUDE"]
     },
     "EbuTtDFillLineGapControl": {
       "type": "string",
       "documentation": "Ebu Tt DFill Line Gap Control",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "EmbeddedConvert608To708": {
       "type": "string",
       "documentation": "Embedded Convert608 To708",
-      "enum": [
-        "DISABLED",
-        "UPCONVERT"
-      ]
+      "enum": ["DISABLED", "UPCONVERT"]
     },
     "EmbeddedDestinationSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Embedded Destination Settings"
     },
     "EmbeddedPlusScte20DestinationSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Embedded Plus Scte20 Destination Settings"
     },
     "EmbeddedScte20Detection": {
       "type": "string",
       "documentation": "Embedded Scte20 Detection",
-      "enum": [
-        "AUTO",
-        "OFF"
-      ]
+      "enum": ["AUTO", "OFF"]
     },
     "EmbeddedSourceSettings": {
       "type": "structure",
@@ -9997,8 +9651,7 @@
     },
     "Empty": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for Empty"
     },
     "EncoderSettings": {
@@ -10131,10 +9784,7 @@
         }
       },
       "documentation": "Esam",
-      "required": [
-        "AcquisitionPointId",
-        "PoisEndpoint"
-      ]
+      "required": ["AcquisitionPointId", "PoisEndpoint"]
     },
     "FailoverCondition": {
       "type": "structure",
@@ -10187,26 +9837,17 @@
     "FeatureActivationsInputPrepareScheduleActions": {
       "type": "string",
       "documentation": "Feature Activations Input Prepare Schedule Actions",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "FeatureActivationsOutputStaticImageOverlayScheduleActions": {
       "type": "string",
       "documentation": "Feature Activations Output Static Image Overlay Schedule Actions",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "FecOutputIncludeFec": {
       "type": "string",
       "documentation": "Fec Output Include Fec",
-      "enum": [
-        "COLUMN",
-        "COLUMN_AND_ROW"
-      ]
+      "enum": ["COLUMN", "COLUMN_AND_ROW"]
     },
     "FecOutputSettings": {
       "type": "structure",
@@ -10256,9 +9897,7 @@
         }
       },
       "documentation": "Start time for the action.",
-      "required": [
-        "Time"
-      ]
+      "required": ["Time"]
     },
     "Fmp4HlsSettings": {
       "type": "structure",
@@ -10284,18 +9923,12 @@
     "Fmp4NielsenId3Behavior": {
       "type": "string",
       "documentation": "Fmp4 Nielsen Id3 Behavior",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_PASSTHROUGH", "PASSTHROUGH"]
     },
     "Fmp4TimedMetadataBehavior": {
       "type": "string",
       "documentation": "Fmp4 Timed Metadata Behavior",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_PASSTHROUGH", "PASSTHROUGH"]
     },
     "FollowModeScheduleActionStartSettings": {
       "type": "structure",
@@ -10312,18 +9945,12 @@
         }
       },
       "documentation": "Settings to specify if an action follows another.",
-      "required": [
-        "ReferenceActionName",
-        "FollowPoint"
-      ]
+      "required": ["ReferenceActionName", "FollowPoint"]
     },
     "FollowPoint": {
       "type": "string",
       "documentation": "Follow reference point.",
-      "enum": [
-        "END",
-        "START"
-      ]
+      "enum": ["END", "START"]
     },
     "ForbiddenException": {
       "type": "structure",
@@ -10364,23 +9991,17 @@
         }
       },
       "documentation": "Frame Capture Group Settings",
-      "required": [
-        "Destination"
-      ]
+      "required": ["Destination"]
     },
     "FrameCaptureHlsSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Frame Capture Hls Settings"
     },
     "FrameCaptureIntervalUnit": {
       "type": "string",
       "documentation": "Frame Capture Interval Unit",
-      "enum": [
-        "MILLISECONDS",
-        "SECONDS"
-      ]
+      "enum": ["MILLISECONDS", "SECONDS"]
     },
     "FrameCaptureOutputSettings": {
       "type": "structure",
@@ -10396,10 +10017,7 @@
     "FrameCaptureS3LogUploads": {
       "type": "string",
       "documentation": "Frame Capture S3 Log Uploads",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "FrameCaptureS3Settings": {
       "type": "structure",
@@ -10491,55 +10109,32 @@
     "GlobalConfigurationInputEndAction": {
       "type": "string",
       "documentation": "Global Configuration Input End Action",
-      "enum": [
-        "NONE",
-        "SWITCH_AND_LOOP_INPUTS"
-      ]
+      "enum": ["NONE", "SWITCH_AND_LOOP_INPUTS"]
     },
     "GlobalConfigurationLowFramerateInputs": {
       "type": "string",
       "documentation": "Global Configuration Low Framerate Inputs",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "GlobalConfigurationOutputLockingMode": {
       "type": "string",
       "documentation": "Global Configuration Output Locking Mode",
-      "enum": [
-        "EPOCH_LOCKING",
-        "PIPELINE_LOCKING"
-      ]
+      "enum": ["EPOCH_LOCKING", "PIPELINE_LOCKING"]
     },
     "GlobalConfigurationOutputTimingSource": {
       "type": "string",
       "documentation": "Global Configuration Output Timing Source",
-      "enum": [
-        "INPUT_CLOCK",
-        "SYSTEM_CLOCK"
-      ]
+      "enum": ["INPUT_CLOCK", "SYSTEM_CLOCK"]
     },
     "H264AdaptiveQuantization": {
       "type": "string",
       "documentation": "H264 Adaptive Quantization",
-      "enum": [
-        "AUTO",
-        "HIGH",
-        "HIGHER",
-        "LOW",
-        "MAX",
-        "MEDIUM",
-        "OFF"
-      ]
+      "enum": ["AUTO", "HIGH", "HIGHER", "LOW", "MAX", "MEDIUM", "OFF"]
     },
     "H264ColorMetadata": {
       "type": "string",
       "documentation": "H264 Color Metadata",
-      "enum": [
-        "IGNORE",
-        "INSERT"
-      ]
+      "enum": ["IGNORE", "INSERT"]
     },
     "H264ColorSpaceSettings": {
       "type": "structure",
@@ -10562,10 +10157,7 @@
     "H264EntropyEncoding": {
       "type": "string",
       "documentation": "H264 Entropy Encoding",
-      "enum": [
-        "CABAC",
-        "CAVLC"
-      ]
+      "enum": ["CABAC", "CAVLC"]
     },
     "H264FilterSettings": {
       "type": "structure",
@@ -10584,42 +10176,27 @@
     "H264FlickerAq": {
       "type": "string",
       "documentation": "H264 Flicker Aq",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "H264ForceFieldPictures": {
       "type": "string",
       "documentation": "H264 Force Field Pictures",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "H264FramerateControl": {
       "type": "string",
       "documentation": "H264 Framerate Control",
-      "enum": [
-        "INITIALIZE_FROM_SOURCE",
-        "SPECIFIED"
-      ]
+      "enum": ["INITIALIZE_FROM_SOURCE", "SPECIFIED"]
     },
     "H264GopBReference": {
       "type": "string",
       "documentation": "H264 Gop BReference",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "H264GopSizeUnits": {
       "type": "string",
       "documentation": "H264 Gop Size Units",
-      "enum": [
-        "FRAMES",
-        "SECONDS"
-      ]
+      "enum": ["FRAMES", "SECONDS"]
     },
     "H264Level": {
       "type": "string",
@@ -10647,19 +10224,12 @@
     "H264LookAheadRateControl": {
       "type": "string",
       "documentation": "H264 Look Ahead Rate Control",
-      "enum": [
-        "HIGH",
-        "LOW",
-        "MEDIUM"
-      ]
+      "enum": ["HIGH", "LOW", "MEDIUM"]
     },
     "H264ParControl": {
       "type": "string",
       "documentation": "H264 Par Control",
-      "enum": [
-        "INITIALIZE_FROM_SOURCE",
-        "SPECIFIED"
-      ]
+      "enum": ["INITIALIZE_FROM_SOURCE", "SPECIFIED"]
     },
     "H264Profile": {
       "type": "string",
@@ -10676,36 +10246,22 @@
     "H264QualityLevel": {
       "type": "string",
       "documentation": "H264 Quality Level",
-      "enum": [
-        "ENHANCED_QUALITY",
-        "STANDARD_QUALITY"
-      ]
+      "enum": ["ENHANCED_QUALITY", "STANDARD_QUALITY"]
     },
     "H264RateControlMode": {
       "type": "string",
       "documentation": "H264 Rate Control Mode",
-      "enum": [
-        "CBR",
-        "MULTIPLEX",
-        "QVBR",
-        "VBR"
-      ]
+      "enum": ["CBR", "MULTIPLEX", "QVBR", "VBR"]
     },
     "H264ScanType": {
       "type": "string",
       "documentation": "H264 Scan Type",
-      "enum": [
-        "INTERLACED",
-        "PROGRESSIVE"
-      ]
+      "enum": ["INTERLACED", "PROGRESSIVE"]
     },
     "H264SceneChangeDetect": {
       "type": "string",
       "documentation": "H264 Scene Change Detect",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "H264Settings": {
       "type": "structure",
@@ -10931,71 +10487,42 @@
     "H264SpatialAq": {
       "type": "string",
       "documentation": "H264 Spatial Aq",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "H264SubGopLength": {
       "type": "string",
       "documentation": "H264 Sub Gop Length",
-      "enum": [
-        "DYNAMIC",
-        "FIXED"
-      ]
+      "enum": ["DYNAMIC", "FIXED"]
     },
     "H264Syntax": {
       "type": "string",
       "documentation": "H264 Syntax",
-      "enum": [
-        "DEFAULT",
-        "RP2027"
-      ]
+      "enum": ["DEFAULT", "RP2027"]
     },
     "H264TemporalAq": {
       "type": "string",
       "documentation": "H264 Temporal Aq",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "H264TimecodeInsertionBehavior": {
       "type": "string",
       "documentation": "H264 Timecode Insertion Behavior",
-      "enum": [
-        "DISABLED",
-        "PIC_TIMING_SEI"
-      ]
+      "enum": ["DISABLED", "PIC_TIMING_SEI"]
     },
     "H265AdaptiveQuantization": {
       "type": "string",
       "documentation": "H265 Adaptive Quantization",
-      "enum": [
-        "AUTO",
-        "HIGH",
-        "HIGHER",
-        "LOW",
-        "MAX",
-        "MEDIUM",
-        "OFF"
-      ]
+      "enum": ["AUTO", "HIGH", "HIGHER", "LOW", "MAX", "MEDIUM", "OFF"]
     },
     "H265AlternativeTransferFunction": {
       "type": "string",
       "documentation": "H265 Alternative Transfer Function",
-      "enum": [
-        "INSERT",
-        "OMIT"
-      ]
+      "enum": ["INSERT", "OMIT"]
     },
     "H265ColorMetadata": {
       "type": "string",
       "documentation": "H265 Color Metadata",
-      "enum": [
-        "IGNORE",
-        "INSERT"
-      ]
+      "enum": ["IGNORE", "INSERT"]
     },
     "H265ColorSpaceSettings": {
       "type": "structure",
@@ -11040,18 +10567,12 @@
     "H265FlickerAq": {
       "type": "string",
       "documentation": "H265 Flicker Aq",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "H265GopSizeUnits": {
       "type": "string",
       "documentation": "H265 Gop Size Units",
-      "enum": [
-        "FRAMES",
-        "SECONDS"
-      ]
+      "enum": ["FRAMES", "SECONDS"]
     },
     "H265Level": {
       "type": "string",
@@ -11076,44 +10597,27 @@
     "H265LookAheadRateControl": {
       "type": "string",
       "documentation": "H265 Look Ahead Rate Control",
-      "enum": [
-        "HIGH",
-        "LOW",
-        "MEDIUM"
-      ]
+      "enum": ["HIGH", "LOW", "MEDIUM"]
     },
     "H265Profile": {
       "type": "string",
       "documentation": "H265 Profile",
-      "enum": [
-        "MAIN",
-        "MAIN_10BIT"
-      ]
+      "enum": ["MAIN", "MAIN_10BIT"]
     },
     "H265RateControlMode": {
       "type": "string",
       "documentation": "H265 Rate Control Mode",
-      "enum": [
-        "CBR",
-        "MULTIPLEX",
-        "QVBR"
-      ]
+      "enum": ["CBR", "MULTIPLEX", "QVBR"]
     },
     "H265ScanType": {
       "type": "string",
       "documentation": "H265 Scan Type",
-      "enum": [
-        "INTERLACED",
-        "PROGRESSIVE"
-      ]
+      "enum": ["INTERLACED", "PROGRESSIVE"]
     },
     "H265SceneChangeDetect": {
       "type": "string",
       "documentation": "H265 Scene Change Detect",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "H265Settings": {
       "type": "structure",
@@ -11310,26 +10814,17 @@
         }
       },
       "documentation": "H265 Settings",
-      "required": [
-        "FramerateNumerator",
-        "FramerateDenominator"
-      ]
+      "required": ["FramerateNumerator", "FramerateDenominator"]
     },
     "H265Tier": {
       "type": "string",
       "documentation": "H265 Tier",
-      "enum": [
-        "HIGH",
-        "MAIN"
-      ]
+      "enum": ["HIGH", "MAIN"]
     },
     "H265TimecodeInsertionBehavior": {
       "type": "string",
       "documentation": "H265 Timecode Insertion Behavior",
-      "enum": [
-        "DISABLED",
-        "PIC_TIMING_SEI"
-      ]
+      "enum": ["DISABLED", "PIC_TIMING_SEI"]
     },
     "Hdr10Settings": {
       "type": "structure",
@@ -11350,19 +10845,12 @@
     "HlsAdMarkers": {
       "type": "string",
       "documentation": "Hls Ad Markers",
-      "enum": [
-        "ADOBE",
-        "ELEMENTAL",
-        "ELEMENTAL_SCTE35"
-      ]
+      "enum": ["ADOBE", "ELEMENTAL", "ELEMENTAL_SCTE35"]
     },
     "HlsAkamaiHttpTransferMode": {
       "type": "string",
       "documentation": "Hls Akamai Http Transfer Mode",
-      "enum": [
-        "CHUNKED",
-        "NON_CHUNKED"
-      ]
+      "enum": ["CHUNKED", "NON_CHUNKED"]
     },
     "HlsAkamaiSettings": {
       "type": "structure",
@@ -11434,11 +10922,7 @@
     "HlsCaptionLanguageSetting": {
       "type": "string",
       "documentation": "Hls Caption Language Setting",
-      "enum": [
-        "INSERT",
-        "NONE",
-        "OMIT"
-      ]
+      "enum": ["INSERT", "NONE", "OMIT"]
     },
     "HlsCdnSettings": {
       "type": "structure",
@@ -11469,42 +10953,27 @@
     "HlsClientCache": {
       "type": "string",
       "documentation": "Hls Client Cache",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "HlsCodecSpecification": {
       "type": "string",
       "documentation": "Hls Codec Specification",
-      "enum": [
-        "RFC_4281",
-        "RFC_6381"
-      ]
+      "enum": ["RFC_4281", "RFC_6381"]
     },
     "HlsDirectoryStructure": {
       "type": "string",
       "documentation": "Hls Directory Structure",
-      "enum": [
-        "SINGLE_DIRECTORY",
-        "SUBDIRECTORY_PER_STREAM"
-      ]
+      "enum": ["SINGLE_DIRECTORY", "SUBDIRECTORY_PER_STREAM"]
     },
     "HlsDiscontinuityTags": {
       "type": "string",
       "documentation": "Hls Discontinuity Tags",
-      "enum": [
-        "INSERT",
-        "NEVER_INSERT"
-      ]
+      "enum": ["INSERT", "NEVER_INSERT"]
     },
     "HlsEncryptionType": {
       "type": "string",
       "documentation": "Hls Encryption Type",
-      "enum": [
-        "AES128",
-        "SAMPLE_AES"
-      ]
+      "enum": ["AES128", "SAMPLE_AES"]
     },
     "HlsGroupSettings": {
       "type": "structure",
@@ -11726,17 +11195,12 @@
         }
       },
       "documentation": "Hls Group Settings",
-      "required": [
-        "Destination"
-      ]
+      "required": ["Destination"]
     },
     "HlsH265PackagingType": {
       "type": "string",
       "documentation": "Hls H265 Packaging Type",
-      "enum": [
-        "HEV1",
-        "HVC1"
-      ]
+      "enum": ["HEV1", "HVC1"]
     },
     "HlsId3SegmentTaggingScheduleActionSettings": {
       "type": "structure",
@@ -11757,18 +11221,12 @@
     "HlsId3SegmentTaggingState": {
       "type": "string",
       "documentation": "State of HLS ID3 Segment Tagging",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "HlsIncompleteSegmentBehavior": {
       "type": "string",
       "documentation": "Hls Incomplete Segment Behavior",
-      "enum": [
-        "AUTO",
-        "SUPPRESS"
-      ]
+      "enum": ["AUTO", "SUPPRESS"]
     },
     "HlsInputSettings": {
       "type": "structure",
@@ -11804,34 +11262,22 @@
     "HlsIvInManifest": {
       "type": "string",
       "documentation": "Hls Iv In Manifest",
-      "enum": [
-        "EXCLUDE",
-        "INCLUDE"
-      ]
+      "enum": ["EXCLUDE", "INCLUDE"]
     },
     "HlsIvSource": {
       "type": "string",
       "documentation": "Hls Iv Source",
-      "enum": [
-        "EXPLICIT",
-        "FOLLOWS_SEGMENT_NUMBER"
-      ]
+      "enum": ["EXPLICIT", "FOLLOWS_SEGMENT_NUMBER"]
     },
     "HlsManifestCompression": {
       "type": "string",
       "documentation": "Hls Manifest Compression",
-      "enum": [
-        "GZIP",
-        "NONE"
-      ]
+      "enum": ["GZIP", "NONE"]
     },
     "HlsManifestDurationFormat": {
       "type": "string",
       "documentation": "Hls Manifest Duration Format",
-      "enum": [
-        "FLOATING_POINT",
-        "INTEGER"
-      ]
+      "enum": ["FLOATING_POINT", "INTEGER"]
     },
     "HlsMediaStoreSettings": {
       "type": "structure",
@@ -11867,17 +11313,12 @@
     "HlsMediaStoreStorageClass": {
       "type": "string",
       "documentation": "Hls Media Store Storage Class",
-      "enum": [
-        "TEMPORAL"
-      ]
+      "enum": ["TEMPORAL"]
     },
     "HlsMode": {
       "type": "string",
       "documentation": "Hls Mode",
-      "enum": [
-        "LIVE",
-        "VOD"
-      ]
+      "enum": ["LIVE", "VOD"]
     },
     "HlsOutputSelection": {
       "type": "string",
@@ -11913,41 +11354,27 @@
         }
       },
       "documentation": "Hls Output Settings",
-      "required": [
-        "HlsSettings"
-      ]
+      "required": ["HlsSettings"]
     },
     "HlsProgramDateTime": {
       "type": "string",
       "documentation": "Hls Program Date Time",
-      "enum": [
-        "EXCLUDE",
-        "INCLUDE"
-      ]
+      "enum": ["EXCLUDE", "INCLUDE"]
     },
     "HlsProgramDateTimeClock": {
       "type": "string",
       "documentation": "Hls Program Date Time Clock",
-      "enum": [
-        "INITIALIZE_FROM_OUTPUT_TIMECODE",
-        "SYSTEM_CLOCK"
-      ]
+      "enum": ["INITIALIZE_FROM_OUTPUT_TIMECODE", "SYSTEM_CLOCK"]
     },
     "HlsRedundantManifest": {
       "type": "string",
       "documentation": "Hls Redundant Manifest",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "HlsS3LogUploads": {
       "type": "string",
       "documentation": "Hls S3 Log Uploads",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "HlsS3Settings": {
       "type": "structure",
@@ -11963,18 +11390,12 @@
     "HlsScte35SourceType": {
       "type": "string",
       "documentation": "Hls Scte35 Source Type",
-      "enum": [
-        "MANIFEST",
-        "SEGMENTS"
-      ]
+      "enum": ["MANIFEST", "SEGMENTS"]
     },
     "HlsSegmentationMode": {
       "type": "string",
       "documentation": "Hls Segmentation Mode",
-      "enum": [
-        "USE_INPUT_SEGMENTATION",
-        "USE_SEGMENT_DURATION"
-      ]
+      "enum": ["USE_INPUT_SEGMENTATION", "USE_SEGMENT_DURATION"]
     },
     "HlsSettings": {
       "type": "structure",
@@ -12001,19 +11422,12 @@
     "HlsStreamInfResolution": {
       "type": "string",
       "documentation": "Hls Stream Inf Resolution",
-      "enum": [
-        "EXCLUDE",
-        "INCLUDE"
-      ]
+      "enum": ["EXCLUDE", "INCLUDE"]
     },
     "HlsTimedMetadataId3Frame": {
       "type": "string",
       "documentation": "Hls Timed Metadata Id3 Frame",
-      "enum": [
-        "NONE",
-        "PRIV",
-        "TDRL"
-      ]
+      "enum": ["NONE", "PRIV", "TDRL"]
     },
     "HlsTimedMetadataScheduleActionSettings": {
       "type": "structure",
@@ -12025,25 +11439,17 @@
         }
       },
       "documentation": "Settings for the action to insert ID3 metadata (as a one-time action) in HLS output groups.",
-      "required": [
-        "Id3"
-      ]
+      "required": ["Id3"]
     },
     "HlsTsFileMode": {
       "type": "string",
       "documentation": "Hls Ts File Mode",
-      "enum": [
-        "SEGMENTED_FILES",
-        "SINGLE_FILE"
-      ]
+      "enum": ["SEGMENTED_FILES", "SINGLE_FILE"]
     },
     "HlsWebdavHttpTransferMode": {
       "type": "string",
       "documentation": "Hls Webdav Http Transfer Mode",
-      "enum": [
-        "CHUNKED",
-        "NON_CHUNKED"
-      ]
+      "enum": ["CHUNKED", "NON_CHUNKED"]
     },
     "HlsWebdavSettings": {
       "type": "structure",
@@ -12078,32 +11484,23 @@
     },
     "HtmlMotionGraphicsSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Html Motion Graphics Settings"
     },
     "IFrameOnlyPlaylistType": {
       "type": "string",
       "documentation": "When set to \"standard\", an I-Frame only playlist will be written out for each video output in the output group. This I-Frame only playlist will contain byte range offsets pointing to the I-frame(s) in each segment.",
-      "enum": [
-        "DISABLED",
-        "STANDARD"
-      ]
+      "enum": ["DISABLED", "STANDARD"]
     },
     "ImmediateModeScheduleActionStartSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Settings to configure an action so that it occurs as soon as possible."
     },
     "IncludeFillerNalUnits": {
       "type": "string",
       "documentation": "Include Filler Nal Units",
-      "enum": [
-        "AUTO",
-        "DROP",
-        "INCLUDE"
-      ]
+      "enum": ["AUTO", "DROP", "INCLUDE"]
     },
     "Input": {
       "type": "structure",
@@ -12250,18 +11647,12 @@
         }
       },
       "documentation": "Input Channel Level",
-      "required": [
-        "InputChannel",
-        "Gain"
-      ]
+      "required": ["InputChannel", "Gain"]
     },
     "InputClass": {
       "type": "string",
       "documentation": "A standard input has two sources and a single pipeline input only has one.",
-      "enum": [
-        "STANDARD",
-        "SINGLE_PIPELINE"
-      ]
+      "enum": ["STANDARD", "SINGLE_PIPELINE"]
     },
     "InputClippingSettings": {
       "type": "structure",
@@ -12283,34 +11674,22 @@
         }
       },
       "documentation": "Settings to let you create a clip of the file input, in order to set up the input to ingest only a portion of the file.",
-      "required": [
-        "InputTimecodeSource"
-      ]
+      "required": ["InputTimecodeSource"]
     },
     "InputCodec": {
       "type": "string",
       "documentation": "codec in increasing order of complexity",
-      "enum": [
-        "MPEG2",
-        "AVC",
-        "HEVC"
-      ]
+      "enum": ["MPEG2", "AVC", "HEVC"]
     },
     "InputDeblockFilter": {
       "type": "string",
       "documentation": "Input Deblock Filter",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "InputDenoiseFilter": {
       "type": "string",
       "documentation": "Input Denoise Filter",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "InputDestination": {
       "type": "structure",
@@ -12478,18 +11857,12 @@
     "InputDeviceActiveInput": {
       "type": "string",
       "documentation": "The source at the input device that is currently active.",
-      "enum": [
-        "HDMI",
-        "SDI"
-      ]
+      "enum": ["HDMI", "SDI"]
     },
     "InputDeviceCodec": {
       "type": "string",
       "documentation": "The codec to use on the video that the device produces.",
-      "enum": [
-        "HEVC",
-        "AVC"
-      ]
+      "enum": ["HEVC", "AVC"]
     },
     "InputDeviceConfigurableSettings": {
       "type": "structure",
@@ -12546,19 +11919,12 @@
     "InputDeviceConfiguredInput": {
       "type": "string",
       "documentation": "The source to activate (use) from the input device.",
-      "enum": [
-        "AUTO",
-        "HDMI",
-        "SDI"
-      ]
+      "enum": ["AUTO", "HDMI", "SDI"]
     },
     "InputDeviceConnectionState": {
       "type": "string",
       "documentation": "The state of the connection between the input device and AWS.",
-      "enum": [
-        "DISCONNECTED",
-        "CONNECTED"
-      ]
+      "enum": ["DISCONNECTED", "CONNECTED"]
     },
     "InputDeviceHdSettings": {
       "type": "structure",
@@ -12614,10 +11980,7 @@
     "InputDeviceIpScheme": {
       "type": "string",
       "documentation": "Specifies whether the input device has been configured (outside of MediaLive) to use a dynamic IP address assignment (DHCP) or a static IP address.",
-      "enum": [
-        "STATIC",
-        "DHCP"
-      ]
+      "enum": ["STATIC", "DHCP"]
     },
     "InputDeviceMediaConnectConfigurableSettings": {
       "type": "structure",
@@ -12705,11 +12068,7 @@
     "InputDeviceOutputType": {
       "type": "string",
       "documentation": "The output attachment type of the input device.",
-      "enum": [
-        "NONE",
-        "MEDIALIVE_INPUT",
-        "MEDIACONNECT_FLOW"
-      ]
+      "enum": ["NONE", "MEDIALIVE_INPUT", "MEDIACONNECT_FLOW"]
     },
     "InputDeviceRequest": {
       "type": "structure",
@@ -12725,10 +12084,7 @@
     "InputDeviceScanType": {
       "type": "string",
       "documentation": "The scan type of the video source.",
-      "enum": [
-        "INTERLACED",
-        "PROGRESSIVE"
-      ]
+      "enum": ["INTERLACED", "PROGRESSIVE"]
     },
     "InputDeviceSettings": {
       "type": "structure",
@@ -12744,10 +12100,7 @@
     "InputDeviceState": {
       "type": "string",
       "documentation": "The state of the input device.",
-      "enum": [
-        "IDLE",
-        "STREAMING"
-      ]
+      "enum": ["IDLE", "STREAMING"]
     },
     "InputDeviceSummary": {
       "type": "structure",
@@ -12838,18 +12191,12 @@
     "InputDeviceTransferType": {
       "type": "string",
       "documentation": "The type of device transfer. INCOMING for an input device that is being transferred to you, OUTGOING for an input device that you are transferring to another AWS account.",
-      "enum": [
-        "OUTGOING",
-        "INCOMING"
-      ]
+      "enum": ["OUTGOING", "INCOMING"]
     },
     "InputDeviceType": {
       "type": "string",
       "documentation": "The type of the input device. For an AWS Elemental Link device that outputs resolutions up to 1080, choose \"HD\".",
-      "enum": [
-        "HD",
-        "UHD"
-      ]
+      "enum": ["HD", "UHD"]
     },
     "InputDeviceUhdSettings": {
       "type": "structure",
@@ -12920,11 +12267,7 @@
     "InputFilter": {
       "type": "string",
       "documentation": "Input Filter",
-      "enum": [
-        "AUTO",
-        "DISABLED",
-        "FORCED"
-      ]
+      "enum": ["AUTO", "DISABLED", "FORCED"]
     },
     "InputLocation": {
       "type": "structure",
@@ -12946,42 +12289,27 @@
         }
       },
       "documentation": "Input Location",
-      "required": [
-        "Uri"
-      ]
+      "required": ["Uri"]
     },
     "InputLossActionForHlsOut": {
       "type": "string",
       "documentation": "Input Loss Action For Hls Out",
-      "enum": [
-        "EMIT_OUTPUT",
-        "PAUSE_OUTPUT"
-      ]
+      "enum": ["EMIT_OUTPUT", "PAUSE_OUTPUT"]
     },
     "InputLossActionForMsSmoothOut": {
       "type": "string",
       "documentation": "Input Loss Action For Ms Smooth Out",
-      "enum": [
-        "EMIT_OUTPUT",
-        "PAUSE_OUTPUT"
-      ]
+      "enum": ["EMIT_OUTPUT", "PAUSE_OUTPUT"]
     },
     "InputLossActionForRtmpOut": {
       "type": "string",
       "documentation": "Input Loss Action For Rtmp Out",
-      "enum": [
-        "EMIT_OUTPUT",
-        "PAUSE_OUTPUT"
-      ]
+      "enum": ["EMIT_OUTPUT", "PAUSE_OUTPUT"]
     },
     "InputLossActionForUdpOut": {
       "type": "string",
       "documentation": "Input Loss Action For Udp Out",
-      "enum": [
-        "DROP_PROGRAM",
-        "DROP_TS",
-        "EMIT_PROGRAM"
-      ]
+      "enum": ["DROP_PROGRAM", "DROP_TS", "EMIT_PROGRAM"]
     },
     "InputLossBehavior": {
       "type": "structure",
@@ -13028,27 +12356,17 @@
     "InputLossImageType": {
       "type": "string",
       "documentation": "Input Loss Image Type",
-      "enum": [
-        "COLOR",
-        "SLATE"
-      ]
+      "enum": ["COLOR", "SLATE"]
     },
     "InputMaximumBitrate": {
       "type": "string",
       "documentation": "Maximum input bitrate in megabits per second. Bitrates up to 50 Mbps are supported currently.",
-      "enum": [
-        "MAX_10_MBPS",
-        "MAX_20_MBPS",
-        "MAX_50_MBPS"
-      ]
+      "enum": ["MAX_10_MBPS", "MAX_20_MBPS", "MAX_50_MBPS"]
     },
     "InputPreference": {
       "type": "string",
       "documentation": "Input preference when deciding which input to make active when a previously failed input has recovered.\nIf \\\"EQUAL_INPUT_PREFERENCE\\\", then the active input will stay active as long as it is healthy.\nIf \\\"PRIMARY_INPUT_PREFERRED\\\", then always switch back to the primary input when it is healthy.",
-      "enum": [
-        "EQUAL_INPUT_PREFERENCE",
-        "PRIMARY_INPUT_PREFERRED"
-      ]
+      "enum": ["EQUAL_INPUT_PREFERENCE", "PRIMARY_INPUT_PREFERRED"]
     },
     "InputPrepareScheduleActionSettings": {
       "type": "structure",
@@ -13074,11 +12392,7 @@
     "InputResolution": {
       "type": "string",
       "documentation": "Input resolution based on lines of vertical resolution in the input; SD is less than 720 lines, HD is 720 to 1080 lines, UHD is greater than 1080 lines",
-      "enum": [
-        "SD",
-        "HD",
-        "UHD"
-      ]
+      "enum": ["SD", "HD", "UHD"]
     },
     "InputSecurityGroup": {
       "type": "structure",
@@ -13118,12 +12432,7 @@
     },
     "InputSecurityGroupState": {
       "type": "string",
-      "enum": [
-        "IDLE",
-        "IN_USE",
-        "UPDATING",
-        "DELETED"
-      ],
+      "enum": ["IDLE", "IN_USE", "UPDATING", "DELETED"],
       "documentation": "Placeholder documentation for InputSecurityGroupState"
     },
     "InputSecurityGroupWhitelistRequest": {
@@ -13227,10 +12536,7 @@
     "InputSourceEndBehavior": {
       "type": "string",
       "documentation": "Input Source End Behavior",
-      "enum": [
-        "CONTINUE",
-        "LOOP"
-      ]
+      "enum": ["CONTINUE", "LOOP"]
     },
     "InputSourceRequest": {
       "type": "structure",
@@ -13256,10 +12562,7 @@
     "InputSourceType": {
       "type": "string",
       "documentation": "There are two types of input sources, static and dynamic. If an input source is dynamic you can\nchange the source url of the input dynamically using an input switch action. Currently, two input types\nsupport a dynamic url at this time, MP4_FILE and TS_FILE. By default all input sources are static.",
-      "enum": [
-        "STATIC",
-        "DYNAMIC"
-      ]
+      "enum": ["STATIC", "DYNAMIC"]
     },
     "InputSpecification": {
       "type": "structure",
@@ -13284,13 +12587,7 @@
     },
     "InputState": {
       "type": "string",
-      "enum": [
-        "CREATING",
-        "DETACHED",
-        "ATTACHED",
-        "DELETING",
-        "DELETED"
-      ],
+      "enum": ["CREATING", "DETACHED", "ATTACHED", "DELETING", "DELETED"],
       "documentation": "Placeholder documentation for InputState"
     },
     "InputSwitchScheduleActionSettings": {
@@ -13313,17 +12610,12 @@
         }
       },
       "documentation": "Settings for the \"switch input\" action: to switch from ingesting one input to ingesting another input.",
-      "required": [
-        "InputAttachmentNameReference"
-      ]
+      "required": ["InputAttachmentNameReference"]
     },
     "InputTimecodeSource": {
       "type": "string",
       "documentation": "Documentation update needed",
-      "enum": [
-        "ZEROBASED",
-        "EMBEDDED"
-      ]
+      "enum": ["ZEROBASED", "EMBEDDED"]
     },
     "InputType": {
       "type": "string",
@@ -13358,9 +12650,7 @@
         }
       },
       "documentation": "Settings for a private VPC Input.\nWhen this property is specified, the input destination addresses will be created in a VPC rather than with public Internet addresses.\nThis property requires setting the roleArn property on Input creation.\nNot compatible with the inputSecurityGroups property.",
-      "required": [
-        "SubnetIds"
-      ]
+      "required": ["SubnetIds"]
     },
     "InputWhitelistRule": {
       "type": "structure",
@@ -13431,10 +12721,7 @@
     "LastFrameClippingBehavior": {
       "type": "string",
       "documentation": "If you specify a StopTimecode in an input (in order to clip the file), you can specify if you want the clip to exclude (the default) or include the frame specified by the timecode.",
-      "enum": [
-        "EXCLUDE_LAST_FRAME",
-        "INCLUDE_LAST_FRAME"
-      ]
+      "enum": ["EXCLUDE_LAST_FRAME", "INCLUDE_LAST_FRAME"]
     },
     "LimitExceeded": {
       "type": "structure",
@@ -13509,9 +12796,7 @@
           "locationName": "transferType"
         }
       },
-      "required": [
-        "TransferType"
-      ],
+      "required": ["TransferType"],
       "documentation": "Placeholder documentation for ListInputDeviceTransfersRequest"
     },
     "ListInputDeviceTransfersResponse": {
@@ -13706,9 +12991,7 @@
           "documentation": "The token to retrieve the next page of results."
         }
       },
-      "required": [
-        "MultiplexId"
-      ],
+      "required": ["MultiplexId"],
       "documentation": "Placeholder documentation for ListMultiplexProgramsRequest"
     },
     "ListMultiplexProgramsResponse": {
@@ -14006,9 +13289,7 @@
           "locationName": "resource-arn"
         }
       },
-      "required": [
-        "ResourceArn"
-      ],
+      "required": ["ResourceArn"],
       "documentation": "Placeholder documentation for ListTagsForResourceRequest"
     },
     "ListTagsForResourceResponse": {
@@ -14024,141 +13305,87 @@
     "LogLevel": {
       "type": "string",
       "documentation": "The log level the user wants for their channel.",
-      "enum": [
-        "ERROR",
-        "WARNING",
-        "INFO",
-        "DEBUG",
-        "DISABLED"
-      ]
+      "enum": ["ERROR", "WARNING", "INFO", "DEBUG", "DISABLED"]
     },
     "M2tsAbsentInputAudioBehavior": {
       "type": "string",
       "documentation": "M2ts Absent Input Audio Behavior",
-      "enum": [
-        "DROP",
-        "ENCODE_SILENCE"
-      ]
+      "enum": ["DROP", "ENCODE_SILENCE"]
     },
     "M2tsArib": {
       "type": "string",
       "documentation": "M2ts Arib",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "M2tsAribCaptionsPidControl": {
       "type": "string",
       "documentation": "M2ts Arib Captions Pid Control",
-      "enum": [
-        "AUTO",
-        "USE_CONFIGURED"
-      ]
+      "enum": ["AUTO", "USE_CONFIGURED"]
     },
     "M2tsAudioBufferModel": {
       "type": "string",
       "documentation": "M2ts Audio Buffer Model",
-      "enum": [
-        "ATSC",
-        "DVB"
-      ]
+      "enum": ["ATSC", "DVB"]
     },
     "M2tsAudioInterval": {
       "type": "string",
       "documentation": "M2ts Audio Interval",
-      "enum": [
-        "VIDEO_AND_FIXED_INTERVALS",
-        "VIDEO_INTERVAL"
-      ]
+      "enum": ["VIDEO_AND_FIXED_INTERVALS", "VIDEO_INTERVAL"]
     },
     "M2tsAudioStreamType": {
       "type": "string",
       "documentation": "M2ts Audio Stream Type",
-      "enum": [
-        "ATSC",
-        "DVB"
-      ]
+      "enum": ["ATSC", "DVB"]
     },
     "M2tsBufferModel": {
       "type": "string",
       "documentation": "M2ts Buffer Model",
-      "enum": [
-        "MULTIPLEX",
-        "NONE"
-      ]
+      "enum": ["MULTIPLEX", "NONE"]
     },
     "M2tsCcDescriptor": {
       "type": "string",
       "documentation": "M2ts Cc Descriptor",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "M2tsEbifControl": {
       "type": "string",
       "documentation": "M2ts Ebif Control",
-      "enum": [
-        "NONE",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NONE", "PASSTHROUGH"]
     },
     "M2tsEbpPlacement": {
       "type": "string",
       "documentation": "M2ts Ebp Placement",
-      "enum": [
-        "VIDEO_AND_AUDIO_PIDS",
-        "VIDEO_PID"
-      ]
+      "enum": ["VIDEO_AND_AUDIO_PIDS", "VIDEO_PID"]
     },
     "M2tsEsRateInPes": {
       "type": "string",
       "documentation": "M2ts Es Rate In Pes",
-      "enum": [
-        "EXCLUDE",
-        "INCLUDE"
-      ]
+      "enum": ["EXCLUDE", "INCLUDE"]
     },
     "M2tsKlv": {
       "type": "string",
       "documentation": "M2ts Klv",
-      "enum": [
-        "NONE",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NONE", "PASSTHROUGH"]
     },
     "M2tsNielsenId3Behavior": {
       "type": "string",
       "documentation": "M2ts Nielsen Id3 Behavior",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_PASSTHROUGH", "PASSTHROUGH"]
     },
     "M2tsPcrControl": {
       "type": "string",
       "documentation": "M2ts Pcr Control",
-      "enum": [
-        "CONFIGURED_PCR_PERIOD",
-        "PCR_EVERY_PES_PACKET"
-      ]
+      "enum": ["CONFIGURED_PCR_PERIOD", "PCR_EVERY_PES_PACKET"]
     },
     "M2tsRateMode": {
       "type": "string",
       "documentation": "M2ts Rate Mode",
-      "enum": [
-        "CBR",
-        "VBR"
-      ]
+      "enum": ["CBR", "VBR"]
     },
     "M2tsScte35Control": {
       "type": "string",
       "documentation": "M2ts Scte35 Control",
-      "enum": [
-        "NONE",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NONE", "PASSTHROUGH"]
     },
     "M2tsSegmentationMarkers": {
       "type": "string",
@@ -14175,10 +13402,7 @@
     "M2tsSegmentationStyle": {
       "type": "string",
       "documentation": "M2ts Segmentation Style",
-      "enum": [
-        "MAINTAIN_CADENCE",
-        "RESET_CADENCE"
-      ]
+      "enum": ["MAINTAIN_CADENCE", "RESET_CADENCE"]
     },
     "M2tsSettings": {
       "type": "structure",
@@ -14429,42 +13653,27 @@
     "M2tsTimedMetadataBehavior": {
       "type": "string",
       "documentation": "M2ts Timed Metadata Behavior",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_PASSTHROUGH", "PASSTHROUGH"]
     },
     "M3u8KlvBehavior": {
       "type": "string",
       "documentation": "M3u8 Klv Behavior",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_PASSTHROUGH", "PASSTHROUGH"]
     },
     "M3u8NielsenId3Behavior": {
       "type": "string",
       "documentation": "M3u8 Nielsen Id3 Behavior",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_PASSTHROUGH", "PASSTHROUGH"]
     },
     "M3u8PcrControl": {
       "type": "string",
       "documentation": "M3u8 Pcr Control",
-      "enum": [
-        "CONFIGURED_PCR_PERIOD",
-        "PCR_EVERY_PES_PACKET"
-      ]
+      "enum": ["CONFIGURED_PCR_PERIOD", "PCR_EVERY_PES_PACKET"]
     },
     "M3u8Scte35Behavior": {
       "type": "string",
       "documentation": "M3u8 Scte35 Behavior",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_PASSTHROUGH", "PASSTHROUGH"]
     },
     "M3u8Settings": {
       "type": "structure",
@@ -14570,10 +13779,7 @@
     "M3u8TimedMetadataBehavior": {
       "type": "string",
       "documentation": "M3u8 Timed Metadata Behavior",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_PASSTHROUGH", "PASSTHROUGH"]
     },
     "MaintenanceCreateSettings": {
       "type": "structure",
@@ -14689,9 +13895,7 @@
         }
       },
       "documentation": "Media Package Group Settings",
-      "required": [
-        "Destination"
-      ]
+      "required": ["Destination"]
     },
     "MediaPackageOutputDestinationSettings": {
       "type": "structure",
@@ -14716,8 +13920,7 @@
     },
     "MediaPackageOutputSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Media Package Output Settings"
     },
     "MotionGraphicsActivateScheduleActionSettings": {
@@ -14760,23 +13963,17 @@
         }
       },
       "documentation": "Motion Graphics Configuration",
-      "required": [
-        "MotionGraphicsSettings"
-      ]
+      "required": ["MotionGraphicsSettings"]
     },
     "MotionGraphicsDeactivateScheduleActionSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Settings to specify the ending of rendering motion graphics into the video stream."
     },
     "MotionGraphicsInsertion": {
       "type": "string",
       "documentation": "Motion Graphics Insertion",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "MotionGraphicsSettings": {
       "type": "structure",
@@ -14791,10 +13988,7 @@
     "Mp2CodingMode": {
       "type": "string",
       "documentation": "Mp2 Coding Mode",
-      "enum": [
-        "CODING_MODE_1_0",
-        "CODING_MODE_2_0"
-      ]
+      "enum": ["CODING_MODE_1_0", "CODING_MODE_2_0"]
     },
     "Mp2Settings": {
       "type": "structure",
@@ -14820,37 +14014,22 @@
     "Mpeg2AdaptiveQuantization": {
       "type": "string",
       "documentation": "Mpeg2 Adaptive Quantization",
-      "enum": [
-        "AUTO",
-        "HIGH",
-        "LOW",
-        "MEDIUM",
-        "OFF"
-      ]
+      "enum": ["AUTO", "HIGH", "LOW", "MEDIUM", "OFF"]
     },
     "Mpeg2ColorMetadata": {
       "type": "string",
       "documentation": "Mpeg2 Color Metadata",
-      "enum": [
-        "IGNORE",
-        "INSERT"
-      ]
+      "enum": ["IGNORE", "INSERT"]
     },
     "Mpeg2ColorSpace": {
       "type": "string",
       "documentation": "Mpeg2 Color Space",
-      "enum": [
-        "AUTO",
-        "PASSTHROUGH"
-      ]
+      "enum": ["AUTO", "PASSTHROUGH"]
     },
     "Mpeg2DisplayRatio": {
       "type": "string",
       "documentation": "Mpeg2 Display Ratio",
-      "enum": [
-        "DISPLAYRATIO16X9",
-        "DISPLAYRATIO4X3"
-      ]
+      "enum": ["DISPLAYRATIO16X9", "DISPLAYRATIO4X3"]
     },
     "Mpeg2FilterSettings": {
       "type": "structure",
@@ -14865,18 +14044,12 @@
     "Mpeg2GopSizeUnits": {
       "type": "string",
       "documentation": "Mpeg2 Gop Size Units",
-      "enum": [
-        "FRAMES",
-        "SECONDS"
-      ]
+      "enum": ["FRAMES", "SECONDS"]
     },
     "Mpeg2ScanType": {
       "type": "string",
       "documentation": "Mpeg2 Scan Type",
-      "enum": [
-        "INTERLACED",
-        "PROGRESSIVE"
-      ]
+      "enum": ["INTERLACED", "PROGRESSIVE"]
     },
     "Mpeg2Settings": {
       "type": "structure",
@@ -14968,26 +14141,17 @@
         }
       },
       "documentation": "Mpeg2 Settings",
-      "required": [
-        "FramerateNumerator",
-        "FramerateDenominator"
-      ]
+      "required": ["FramerateNumerator", "FramerateDenominator"]
     },
     "Mpeg2SubGopLength": {
       "type": "string",
       "documentation": "Mpeg2 Sub Gop Length",
-      "enum": [
-        "DYNAMIC",
-        "FIXED"
-      ]
+      "enum": ["DYNAMIC", "FIXED"]
     },
     "Mpeg2TimecodeInsertionBehavior": {
       "type": "string",
       "documentation": "Mpeg2 Timecode Insertion Behavior",
-      "enum": [
-        "DISABLED",
-        "GOP_TIMECODE"
-      ]
+      "enum": ["DISABLED", "GOP_TIMECODE"]
     },
     "MsSmoothGroupSettings": {
       "type": "structure",
@@ -15089,17 +14253,12 @@
         }
       },
       "documentation": "Ms Smooth Group Settings",
-      "required": [
-        "Destination"
-      ]
+      "required": ["Destination"]
     },
     "MsSmoothH265PackagingType": {
       "type": "string",
       "documentation": "Ms Smooth H265 Packaging Type",
-      "enum": [
-        "HEV1",
-        "HVC1"
-      ]
+      "enum": ["HEV1", "HVC1"]
     },
     "MsSmoothOutputSettings": {
       "type": "structure",
@@ -15191,8 +14350,7 @@
     },
     "MultiplexGroupSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Multiplex Group Settings"
     },
     "MultiplexMediaConnectOutputDestinationSettings": {
@@ -15231,9 +14389,7 @@
         }
       },
       "documentation": "Multiplex Output Settings",
-      "required": [
-        "Destination"
-      ]
+      "required": ["Destination"]
     },
     "MultiplexProgram": {
       "type": "structure",
@@ -15387,10 +14543,7 @@
         }
       },
       "documentation": "Transport stream service descriptor configuration for the Multiplex program.",
-      "required": [
-        "ProviderName",
-        "ServiceName"
-      ]
+      "required": ["ProviderName", "ServiceName"]
     },
     "MultiplexProgramSettings": {
       "type": "structure",
@@ -15417,9 +14570,7 @@
         }
       },
       "documentation": "Multiplex Program settings configuration.",
-      "required": [
-        "ProgramNumber"
-      ]
+      "required": ["ProgramNumber"]
     },
     "MultiplexProgramSummary": {
       "type": "structure",
@@ -15462,10 +14613,7 @@
         }
       },
       "documentation": "Contains configuration for a Multiplex event",
-      "required": [
-        "TransportStreamBitrate",
-        "TransportStreamId"
-      ]
+      "required": ["TransportStreamBitrate", "TransportStreamId"]
     },
     "MultiplexSettingsSummary": {
       "type": "structure",
@@ -15630,11 +14778,7 @@
         }
       },
       "documentation": "Nielsen CBET",
-      "required": [
-        "CbetCheckDigitString",
-        "CbetStepaside",
-        "Csid"
-      ]
+      "required": ["CbetCheckDigitString", "CbetStepaside", "Csid"]
     },
     "NielsenConfiguration": {
       "type": "structure",
@@ -15672,18 +14816,12 @@
         }
       },
       "documentation": "Nielsen Naes Ii Nw",
-      "required": [
-        "CheckDigitString",
-        "Sid"
-      ]
+      "required": ["CheckDigitString", "Sid"]
     },
     "NielsenPcmToId3TaggingState": {
       "type": "string",
       "documentation": "State of Nielsen PCM to ID3 tagging",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "NielsenWatermarkTimezones": {
       "type": "string",
@@ -15704,18 +14842,12 @@
     "NielsenWatermarksCbetStepaside": {
       "type": "string",
       "documentation": "Nielsen Watermarks Cbet Stepaside",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "NielsenWatermarksDistributionTypes": {
       "type": "string",
       "documentation": "Nielsen Watermarks Distribution Types",
-      "enum": [
-        "FINAL_DISTRIBUTOR",
-        "PROGRAM_CONTENT"
-      ]
+      "enum": ["FINAL_DISTRIBUTOR", "PROGRAM_CONTENT"]
     },
     "NielsenWatermarksSettings": {
       "type": "structure",
@@ -15816,16 +14948,12 @@
     "OfferingDurationUnits": {
       "type": "string",
       "documentation": "Units for duration, e.g. 'MONTHS'",
-      "enum": [
-        "MONTHS"
-      ]
+      "enum": ["MONTHS"]
     },
     "OfferingType": {
       "type": "string",
       "documentation": "Offering type, e.g. 'NO_UPFRONT'",
-      "enum": [
-        "NO_UPFRONT"
-      ]
+      "enum": ["NO_UPFRONT"]
     },
     "Output": {
       "type": "structure",
@@ -15857,9 +14985,7 @@
         }
       },
       "documentation": "Output settings. There can be multiple outputs within a group.",
-      "required": [
-        "OutputSettings"
-      ]
+      "required": ["OutputSettings"]
     },
     "OutputDestination": {
       "type": "structure",
@@ -15937,10 +15063,7 @@
         }
       },
       "documentation": "Output groups for this Live Event. Output groups contain information about where streams should be distributed.",
-      "required": [
-        "Outputs",
-        "OutputGroupSettings"
-      ]
+      "required": ["Outputs", "OutputGroupSettings"]
     },
     "OutputGroupSettings": {
       "type": "structure",
@@ -16060,8 +15183,7 @@
     },
     "PassThroughSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Pass Through Settings"
     },
     "PauseStateScheduleActionSettings": {
@@ -16113,15 +15235,11 @@
     "PipelineId": {
       "type": "string",
       "documentation": "Pipeline ID",
-      "enum": [
-        "PIPELINE_0",
-        "PIPELINE_1"
-      ]
+      "enum": ["PIPELINE_0", "PIPELINE_1"]
     },
     "PipelineLockingSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Pipeline Locking Settings"
     },
     "PipelinePauseStateSettings": {
@@ -16134,18 +15252,12 @@
         }
       },
       "documentation": "Settings for pausing a pipeline.",
-      "required": [
-        "PipelineId"
-      ]
+      "required": ["PipelineId"]
     },
     "PreferredChannelPipeline": {
       "type": "string",
       "documentation": "Indicates which pipeline is preferred by the multiplex for program ingest.\nIf set to \\\"PIPELINE_0\\\" or \\\"PIPELINE_1\\\" and an unhealthy ingest causes the multiplex to switch to the non-preferred pipeline,\nit will switch back once that ingest is healthy again. If set to \\\"CURRENTLY_ACTIVE\\\",\nit will not switch back to the other pipeline based on it recovering to a healthy state,\nit will only switch if the active pipeline becomes unhealthy.",
-      "enum": [
-        "CURRENTLY_ACTIVE",
-        "PIPELINE_0",
-        "PIPELINE_1"
-      ]
+      "enum": ["CURRENTLY_ACTIVE", "PIPELINE_0", "PIPELINE_1"]
     },
     "PurchaseOffering": {
       "type": "structure",
@@ -16183,9 +15295,7 @@
         }
       },
       "documentation": "PurchaseOffering request",
-      "required": [
-        "Count"
-      ]
+      "required": ["Count"]
     },
     "PurchaseOfferingRequest": {
       "type": "structure",
@@ -16228,10 +15338,7 @@
           "documentation": "A collection of key-value pairs"
         }
       },
-      "required": [
-        "OfferingId",
-        "Count"
-      ],
+      "required": ["OfferingId", "Count"],
       "documentation": "Placeholder documentation for PurchaseOfferingRequest"
     },
     "PurchaseOfferingResponse": {
@@ -16256,8 +15363,7 @@
     },
     "RawSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Raw Settings"
     },
     "RebootInputDevice": {
@@ -16274,10 +15380,7 @@
     "RebootInputDeviceForce": {
       "type": "string",
       "documentation": "Whether or not to force reboot the input device.",
-      "enum": [
-        "NO",
-        "YES"
-      ]
+      "enum": ["NO", "YES"]
     },
     "RebootInputDeviceRequest": {
       "type": "structure",
@@ -16295,26 +15398,21 @@
         }
       },
       "documentation": "A request to reboot an AWS Elemental device.",
-      "required": [
-        "InputDeviceId"
-      ]
+      "required": ["InputDeviceId"]
     },
     "RebootInputDeviceResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for RebootInputDeviceResponse"
     },
     "Rec601Settings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Rec601 Settings"
     },
     "Rec709Settings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Rec709 Settings"
     },
     "RejectInputDeviceTransferRequest": {
@@ -16327,15 +15425,12 @@
           "documentation": "The unique ID of the input device to reject. For example, hd-123456789abcdef."
         }
       },
-      "required": [
-        "InputDeviceId"
-      ],
+      "required": ["InputDeviceId"],
       "documentation": "Placeholder documentation for RejectInputDeviceTransferRequest"
     },
     "RejectInputDeviceTransferResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for RejectInputDeviceTransferResponse"
     },
     "RemixSettings": {
@@ -16358,9 +15453,7 @@
         }
       },
       "documentation": "Remix Settings",
-      "required": [
-        "ChannelMappings"
-      ]
+      "required": ["ChannelMappings"]
     },
     "RenewalSettings": {
       "type": "structure",
@@ -16482,50 +15575,27 @@
     "ReservationAutomaticRenewal": {
       "type": "string",
       "documentation": "Automatic Renewal Status for Reservation",
-      "enum": [
-        "DISABLED",
-        "ENABLED",
-        "UNAVAILABLE"
-      ]
+      "enum": ["DISABLED", "ENABLED", "UNAVAILABLE"]
     },
     "ReservationCodec": {
       "type": "string",
       "documentation": "Codec, 'MPEG2', 'AVC', 'HEVC', 'AUDIO', 'LINK', or 'AV1'",
-      "enum": [
-        "MPEG2",
-        "AVC",
-        "HEVC",
-        "AUDIO",
-        "LINK",
-        "AV1"
-      ]
+      "enum": ["MPEG2", "AVC", "HEVC", "AUDIO", "LINK", "AV1"]
     },
     "ReservationMaximumBitrate": {
       "type": "string",
       "documentation": "Maximum bitrate in megabits per second",
-      "enum": [
-        "MAX_10_MBPS",
-        "MAX_20_MBPS",
-        "MAX_50_MBPS"
-      ]
+      "enum": ["MAX_10_MBPS", "MAX_20_MBPS", "MAX_50_MBPS"]
     },
     "ReservationMaximumFramerate": {
       "type": "string",
       "documentation": "Maximum framerate in frames per second (Outputs only)",
-      "enum": [
-        "MAX_30_FPS",
-        "MAX_60_FPS"
-      ]
+      "enum": ["MAX_30_FPS", "MAX_60_FPS"]
     },
     "ReservationResolution": {
       "type": "string",
       "documentation": "Resolution based on lines of vertical resolution; SD is less than 720 lines, HD is 720 to 1080 lines, FHD is 1080 lines, UHD is greater than 1080 lines",
-      "enum": [
-        "SD",
-        "HD",
-        "FHD",
-        "UHD"
-      ]
+      "enum": ["SD", "HD", "FHD", "UHD"]
     },
     "ReservationResourceSpecification": {
       "type": "structure",
@@ -16576,41 +15646,22 @@
     "ReservationResourceType": {
       "type": "string",
       "documentation": "Resource type, 'INPUT', 'OUTPUT', 'MULTIPLEX', or 'CHANNEL'",
-      "enum": [
-        "INPUT",
-        "OUTPUT",
-        "MULTIPLEX",
-        "CHANNEL"
-      ]
+      "enum": ["INPUT", "OUTPUT", "MULTIPLEX", "CHANNEL"]
     },
     "ReservationSpecialFeature": {
       "type": "string",
       "documentation": "Special features, 'ADVANCED_AUDIO' 'AUDIO_NORMALIZATION' 'MGHD' or 'MGUHD'",
-      "enum": [
-        "ADVANCED_AUDIO",
-        "AUDIO_NORMALIZATION",
-        "MGHD",
-        "MGUHD"
-      ]
+      "enum": ["ADVANCED_AUDIO", "AUDIO_NORMALIZATION", "MGHD", "MGUHD"]
     },
     "ReservationState": {
       "type": "string",
       "documentation": "Current reservation state",
-      "enum": [
-        "ACTIVE",
-        "EXPIRED",
-        "CANCELED",
-        "DELETED"
-      ]
+      "enum": ["ACTIVE", "EXPIRED", "CANCELED", "DELETED"]
     },
     "ReservationVideoQuality": {
       "type": "string",
       "documentation": "Video quality, e.g. 'STANDARD' (Outputs only)",
-      "enum": [
-        "STANDARD",
-        "ENHANCED",
-        "PREMIUM"
-      ]
+      "enum": ["STANDARD", "ENHANCED", "PREMIUM"]
     },
     "ResourceConflict": {
       "type": "structure",
@@ -16635,31 +15686,21 @@
     "RtmpAdMarkers": {
       "type": "string",
       "documentation": "Rtmp Ad Markers",
-      "enum": [
-        "ON_CUE_POINT_SCTE35"
-      ]
+      "enum": ["ON_CUE_POINT_SCTE35"]
     },
     "RtmpCacheFullBehavior": {
       "type": "string",
       "documentation": "Rtmp Cache Full Behavior",
-      "enum": [
-        "DISCONNECT_IMMEDIATELY",
-        "WAIT_FOR_SERVER"
-      ]
+      "enum": ["DISCONNECT_IMMEDIATELY", "WAIT_FOR_SERVER"]
     },
     "RtmpCaptionData": {
       "type": "string",
       "documentation": "Rtmp Caption Data",
-      "enum": [
-        "ALL",
-        "FIELD1_608",
-        "FIELD1_AND_FIELD2_608"
-      ]
+      "enum": ["ALL", "FIELD1_608", "FIELD1_AND_FIELD2_608"]
     },
     "RtmpCaptionInfoDestinationSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Rtmp Caption Info Destination Settings"
     },
     "RtmpGroupSettings": {
@@ -16711,10 +15752,7 @@
     "RtmpOutputCertificateMode": {
       "type": "string",
       "documentation": "Rtmp Output Certificate Mode",
-      "enum": [
-        "SELF_SIGNED",
-        "VERIFY_AUTHENTICITY"
-      ]
+      "enum": ["SELF_SIGNED", "VERIFY_AUTHENTICITY"]
     },
     "RtmpOutputSettings": {
       "type": "structure",
@@ -16741,9 +15779,7 @@
         }
       },
       "documentation": "Rtmp Output Settings",
-      "required": [
-        "Destination"
-      ]
+      "required": ["Destination"]
     },
     "S3CannedAcl": {
       "type": "string",
@@ -16895,8 +15931,7 @@
     },
     "ScheduleDeleteResultModel": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Result of a schedule deletion."
     },
     "ScheduleDescribeResultModel": {
@@ -16914,22 +15949,16 @@
         }
       },
       "documentation": "Results of a schedule describe.",
-      "required": [
-        "ScheduleActions"
-      ]
+      "required": ["ScheduleActions"]
     },
     "Scte20Convert608To708": {
       "type": "string",
       "documentation": "Scte20 Convert608 To708",
-      "enum": [
-        "DISABLED",
-        "UPCONVERT"
-      ]
+      "enum": ["DISABLED", "UPCONVERT"]
     },
     "Scte20PlusEmbeddedDestinationSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Scte20 Plus Embedded Destination Settings"
     },
     "Scte20SourceSettings": {
@@ -16950,21 +15979,13 @@
     },
     "Scte27DestinationSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Scte27 Destination Settings"
     },
     "Scte27OcrLanguage": {
       "type": "string",
       "documentation": "Scte27 Ocr Language",
-      "enum": [
-        "DEU",
-        "ENG",
-        "FRA",
-        "NLD",
-        "POR",
-        "SPA"
-      ]
+      "enum": ["DEU", "ENG", "FRA", "NLD", "POR", "SPA"]
     },
     "Scte27SourceSettings": {
       "type": "structure",
@@ -16985,26 +16006,17 @@
     "Scte35AposNoRegionalBlackoutBehavior": {
       "type": "string",
       "documentation": "Scte35 Apos No Regional Blackout Behavior",
-      "enum": [
-        "FOLLOW",
-        "IGNORE"
-      ]
+      "enum": ["FOLLOW", "IGNORE"]
     },
     "Scte35AposWebDeliveryAllowedBehavior": {
       "type": "string",
       "documentation": "Scte35 Apos Web Delivery Allowed Behavior",
-      "enum": [
-        "FOLLOW",
-        "IGNORE"
-      ]
+      "enum": ["FOLLOW", "IGNORE"]
     },
     "Scte35ArchiveAllowedFlag": {
       "type": "string",
       "documentation": "Corresponds to the archive_allowed parameter. A value of ARCHIVE_NOT_ALLOWED corresponds to 0 (false) in the SCTE-35 specification. If you include one of the \"restriction\" flags then you must include all four of them.",
-      "enum": [
-        "ARCHIVE_NOT_ALLOWED",
-        "ARCHIVE_ALLOWED"
-      ]
+      "enum": ["ARCHIVE_NOT_ALLOWED", "ARCHIVE_ALLOWED"]
     },
     "Scte35DeliveryRestrictions": {
       "type": "structure",
@@ -17048,9 +16060,7 @@
         }
       },
       "documentation": "Holds one set of SCTE-35 Descriptor Settings.",
-      "required": [
-        "Scte35DescriptorSettings"
-      ]
+      "required": ["Scte35DescriptorSettings"]
     },
     "Scte35DescriptorSettings": {
       "type": "structure",
@@ -17062,27 +16072,17 @@
         }
       },
       "documentation": "SCTE-35 Descriptor settings.",
-      "required": [
-        "SegmentationDescriptorScte35DescriptorSettings"
-      ]
+      "required": ["SegmentationDescriptorScte35DescriptorSettings"]
     },
     "Scte35DeviceRestrictions": {
       "type": "string",
       "documentation": "Corresponds to the device_restrictions parameter in a segmentation_descriptor. If you include one of the \"restriction\" flags then you must include all four of them.",
-      "enum": [
-        "NONE",
-        "RESTRICT_GROUP0",
-        "RESTRICT_GROUP1",
-        "RESTRICT_GROUP2"
-      ]
+      "enum": ["NONE", "RESTRICT_GROUP0", "RESTRICT_GROUP1", "RESTRICT_GROUP2"]
     },
     "Scte35InputMode": {
       "type": "string",
       "documentation": "Whether the SCTE-35 input should be the active input or a fixed input.",
-      "enum": [
-        "FIXED",
-        "FOLLOW_ACTIVE"
-      ]
+      "enum": ["FIXED", "FOLLOW_ACTIVE"]
     },
     "Scte35InputScheduleActionSettings": {
       "type": "structure",
@@ -17099,17 +16099,12 @@
         }
       },
       "documentation": "Scte35Input Schedule Action Settings",
-      "required": [
-        "Mode"
-      ]
+      "required": ["Mode"]
     },
     "Scte35NoRegionalBlackoutFlag": {
       "type": "string",
       "documentation": "Corresponds to the no_regional_blackout_flag parameter. A value of REGIONAL_BLACKOUT corresponds to 0 (false) in the SCTE-35 specification. If you include one of the \"restriction\" flags then you must include all four of them.",
-      "enum": [
-        "REGIONAL_BLACKOUT",
-        "NO_REGIONAL_BLACKOUT"
-      ]
+      "enum": ["REGIONAL_BLACKOUT", "NO_REGIONAL_BLACKOUT"]
     },
     "Scte35ReturnToNetworkScheduleActionSettings": {
       "type": "structure",
@@ -17121,17 +16116,12 @@
         }
       },
       "documentation": "Settings for a SCTE-35 return_to_network message.",
-      "required": [
-        "SpliceEventId"
-      ]
+      "required": ["SpliceEventId"]
     },
     "Scte35SegmentationCancelIndicator": {
       "type": "string",
       "documentation": "Corresponds to SCTE-35 segmentation_event_cancel_indicator. SEGMENTATION_EVENT_NOT_CANCELED corresponds to 0 in the SCTE-35 specification and indicates that this is an insertion request. SEGMENTATION_EVENT_CANCELED corresponds to 1 in the SCTE-35 specification and indicates that this is a cancelation request, in which case complete this field and the existing event ID to cancel.",
-      "enum": [
-        "SEGMENTATION_EVENT_NOT_CANCELED",
-        "SEGMENTATION_EVENT_CANCELED"
-      ]
+      "enum": ["SEGMENTATION_EVENT_NOT_CANCELED", "SEGMENTATION_EVENT_CANCELED"]
     },
     "Scte35SegmentationDescriptor": {
       "type": "structure",
@@ -17193,10 +16183,7 @@
         }
       },
       "documentation": "Corresponds to SCTE-35 segmentation_descriptor.",
-      "required": [
-        "SegmentationEventId",
-        "SegmentationCancelIndicator"
-      ]
+      "required": ["SegmentationEventId", "SegmentationCancelIndicator"]
     },
     "Scte35SpliceInsert": {
       "type": "structure",
@@ -17222,10 +16209,7 @@
     "Scte35SpliceInsertNoRegionalBlackoutBehavior": {
       "type": "string",
       "documentation": "Scte35 Splice Insert No Regional Blackout Behavior",
-      "enum": [
-        "FOLLOW",
-        "IGNORE"
-      ]
+      "enum": ["FOLLOW", "IGNORE"]
     },
     "Scte35SpliceInsertScheduleActionSettings": {
       "type": "structure",
@@ -17242,17 +16226,12 @@
         }
       },
       "documentation": "Settings for a SCTE-35 splice_insert message.",
-      "required": [
-        "SpliceEventId"
-      ]
+      "required": ["SpliceEventId"]
     },
     "Scte35SpliceInsertWebDeliveryAllowedBehavior": {
       "type": "string",
       "documentation": "Scte35 Splice Insert Web Delivery Allowed Behavior",
-      "enum": [
-        "FOLLOW",
-        "IGNORE"
-      ]
+      "enum": ["FOLLOW", "IGNORE"]
     },
     "Scte35TimeSignalApos": {
       "type": "structure",
@@ -17285,96 +16264,61 @@
         }
       },
       "documentation": "Settings for a SCTE-35 time_signal.",
-      "required": [
-        "Scte35Descriptors"
-      ]
+      "required": ["Scte35Descriptors"]
     },
     "Scte35WebDeliveryAllowedFlag": {
       "type": "string",
       "documentation": "Corresponds to the web_delivery_allowed_flag parameter. A value of WEB_DELIVERY_NOT_ALLOWED corresponds to 0 (false) in the SCTE-35 specification. If you include one of the \"restriction\" flags then you must include all four of them.",
-      "enum": [
-        "WEB_DELIVERY_NOT_ALLOWED",
-        "WEB_DELIVERY_ALLOWED"
-      ]
+      "enum": ["WEB_DELIVERY_NOT_ALLOWED", "WEB_DELIVERY_ALLOWED"]
     },
     "SmoothGroupAudioOnlyTimecodeControl": {
       "type": "string",
       "documentation": "Smooth Group Audio Only Timecode Control",
-      "enum": [
-        "PASSTHROUGH",
-        "USE_CONFIGURED_CLOCK"
-      ]
+      "enum": ["PASSTHROUGH", "USE_CONFIGURED_CLOCK"]
     },
     "SmoothGroupCertificateMode": {
       "type": "string",
       "documentation": "Smooth Group Certificate Mode",
-      "enum": [
-        "SELF_SIGNED",
-        "VERIFY_AUTHENTICITY"
-      ]
+      "enum": ["SELF_SIGNED", "VERIFY_AUTHENTICITY"]
     },
     "SmoothGroupEventIdMode": {
       "type": "string",
       "documentation": "Smooth Group Event Id Mode",
-      "enum": [
-        "NO_EVENT_ID",
-        "USE_CONFIGURED",
-        "USE_TIMESTAMP"
-      ]
+      "enum": ["NO_EVENT_ID", "USE_CONFIGURED", "USE_TIMESTAMP"]
     },
     "SmoothGroupEventStopBehavior": {
       "type": "string",
       "documentation": "Smooth Group Event Stop Behavior",
-      "enum": [
-        "NONE",
-        "SEND_EOS"
-      ]
+      "enum": ["NONE", "SEND_EOS"]
     },
     "SmoothGroupSegmentationMode": {
       "type": "string",
       "documentation": "Smooth Group Segmentation Mode",
-      "enum": [
-        "USE_INPUT_SEGMENTATION",
-        "USE_SEGMENT_DURATION"
-      ]
+      "enum": ["USE_INPUT_SEGMENTATION", "USE_SEGMENT_DURATION"]
     },
     "SmoothGroupSparseTrackType": {
       "type": "string",
       "documentation": "Smooth Group Sparse Track Type",
-      "enum": [
-        "NONE",
-        "SCTE_35",
-        "SCTE_35_WITHOUT_SEGMENTATION"
-      ]
+      "enum": ["NONE", "SCTE_35", "SCTE_35_WITHOUT_SEGMENTATION"]
     },
     "SmoothGroupStreamManifestBehavior": {
       "type": "string",
       "documentation": "Smooth Group Stream Manifest Behavior",
-      "enum": [
-        "DO_NOT_SEND",
-        "SEND"
-      ]
+      "enum": ["DO_NOT_SEND", "SEND"]
     },
     "SmoothGroupTimestampOffsetMode": {
       "type": "string",
       "documentation": "Smooth Group Timestamp Offset Mode",
-      "enum": [
-        "USE_CONFIGURED_OFFSET",
-        "USE_EVENT_START_DATE"
-      ]
+      "enum": ["USE_CONFIGURED_OFFSET", "USE_EVENT_START_DATE"]
     },
     "Smpte2038DataPreference": {
       "type": "string",
       "documentation": "Smpte2038 Data Preference",
-      "enum": [
-        "IGNORE",
-        "PREFER"
-      ]
+      "enum": ["IGNORE", "PREFER"]
     },
     "SmpteTtDestinationSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Smpte Tt Destination Settings"
     },
     "StandardHlsSettings": {
@@ -17391,9 +16335,7 @@
         }
       },
       "documentation": "Standard Hls Settings",
-      "required": [
-        "M3u8Settings"
-      ]
+      "required": ["M3u8Settings"]
     },
     "StartChannelRequest": {
       "type": "structure",
@@ -17405,9 +16347,7 @@
           "documentation": "A request to start a channel"
         }
       },
-      "required": [
-        "ChannelId"
-      ],
+      "required": ["ChannelId"],
       "documentation": "Placeholder documentation for StartChannelRequest"
     },
     "StartChannelResponse": {
@@ -17524,15 +16464,12 @@
           "documentation": "The unique ID of the input device to start a maintenance window for. For example, hd-123456789abcdef."
         }
       },
-      "required": [
-        "InputDeviceId"
-      ],
+      "required": ["InputDeviceId"],
       "documentation": "Placeholder documentation for StartInputDeviceMaintenanceWindowRequest"
     },
     "StartInputDeviceMaintenanceWindowResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for StartInputDeviceMaintenanceWindowResponse"
     },
     "StartInputDeviceRequest": {
@@ -17545,15 +16482,12 @@
           "documentation": "The unique ID of the input device to start. For example, hd-123456789abcdef."
         }
       },
-      "required": [
-        "InputDeviceId"
-      ],
+      "required": ["InputDeviceId"],
       "documentation": "Placeholder documentation for StartInputDeviceRequest"
     },
     "StartInputDeviceResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for StartInputDeviceResponse"
     },
     "StartMultiplexRequest": {
@@ -17566,9 +16500,7 @@
           "documentation": "The ID of the multiplex."
         }
       },
-      "required": [
-        "MultiplexId"
-      ],
+      "required": ["MultiplexId"],
       "documentation": "Placeholder documentation for StartMultiplexRequest"
     },
     "StartMultiplexResponse": {
@@ -17693,9 +16625,7 @@
         }
       },
       "documentation": "Settings for the action to activate a static image.",
-      "required": [
-        "Image"
-      ]
+      "required": ["Image"]
     },
     "StaticImageDeactivateScheduleActionSettings": {
       "type": "structure",
@@ -17773,10 +16703,7 @@
         }
       },
       "documentation": "Settings for the action to activate a static image.",
-      "required": [
-        "OutputNames",
-        "Image"
-      ]
+      "required": ["OutputNames", "Image"]
     },
     "StaticImageOutputDeactivateScheduleActionSettings": {
       "type": "structure",
@@ -17798,9 +16725,7 @@
         }
       },
       "documentation": "Settings for the action to deactivate the image in a specific layer.",
-      "required": [
-        "OutputNames"
-      ]
+      "required": ["OutputNames"]
     },
     "StaticKeySettings": {
       "type": "structure",
@@ -17817,9 +16742,7 @@
         }
       },
       "documentation": "Static Key Settings",
-      "required": [
-        "StaticKeyValue"
-      ]
+      "required": ["StaticKeyValue"]
     },
     "StopChannelRequest": {
       "type": "structure",
@@ -17831,9 +16754,7 @@
           "documentation": "A request to stop a running channel"
         }
       },
-      "required": [
-        "ChannelId"
-      ],
+      "required": ["ChannelId"],
       "documentation": "Placeholder documentation for StopChannelRequest"
     },
     "StopChannelResponse": {
@@ -17950,15 +16871,12 @@
           "documentation": "The unique ID of the input device to stop. For example, hd-123456789abcdef."
         }
       },
-      "required": [
-        "InputDeviceId"
-      ],
+      "required": ["InputDeviceId"],
       "documentation": "Placeholder documentation for StopInputDeviceRequest"
     },
     "StopInputDeviceResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for StopInputDeviceResponse"
     },
     "StopMultiplexRequest": {
@@ -17971,9 +16889,7 @@
           "documentation": "The ID of the multiplex."
         }
       },
-      "required": [
-        "MultiplexId"
-      ],
+      "required": ["MultiplexId"],
       "documentation": "Placeholder documentation for StopMultiplexRequest"
     },
     "StopMultiplexResponse": {
@@ -18070,8 +16986,7 @@
     },
     "TeletextDestinationSettings": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Teletext Destination Settings"
     },
     "TeletextSourceSettings": {
@@ -18093,11 +17008,7 @@
     "TemporalFilterPostFilterSharpening": {
       "type": "string",
       "documentation": "Temporal Filter Post Filter Sharpening",
-      "enum": [
-        "AUTO",
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["AUTO", "DISABLED", "ENABLED"]
     },
     "TemporalFilterSettings": {
       "type": "structure",
@@ -18174,9 +17085,7 @@
         }
       },
       "documentation": "Thumbnail Configuration",
-      "required": [
-        "State"
-      ]
+      "required": ["State"]
     },
     "ThumbnailData": {
       "type": "structure",
@@ -18207,35 +17116,23 @@
     },
     "ThumbnailNoData": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Response when thumbnail has no data. It should have no message."
     },
     "ThumbnailState": {
       "type": "string",
       "documentation": "Thumbnail State",
-      "enum": [
-        "AUTO",
-        "DISABLED"
-      ]
+      "enum": ["AUTO", "DISABLED"]
     },
     "ThumbnailType": {
       "type": "string",
       "documentation": "Thumbnail type.",
-      "enum": [
-        "UNSPECIFIED",
-        "CURRENT_ACTIVE"
-      ]
+      "enum": ["UNSPECIFIED", "CURRENT_ACTIVE"]
     },
     "TimecodeBurninFontSize": {
       "type": "string",
       "documentation": "Timecode Burnin Font Size",
-      "enum": [
-        "EXTRA_SMALL_10",
-        "LARGE_48",
-        "MEDIUM_32",
-        "SMALL_16"
-      ]
+      "enum": ["EXTRA_SMALL_10", "LARGE_48", "MEDIUM_32", "SMALL_16"]
     },
     "TimecodeBurninPosition": {
       "type": "string",
@@ -18272,10 +17169,7 @@
         }
       },
       "documentation": "Timecode Burnin Settings",
-      "required": [
-        "Position",
-        "FontSize"
-      ]
+      "required": ["Position", "FontSize"]
     },
     "TimecodeConfig": {
       "type": "structure",
@@ -18292,18 +17186,12 @@
         }
       },
       "documentation": "Timecode Config",
-      "required": [
-        "Source"
-      ]
+      "required": ["Source"]
     },
     "TimecodeConfigSource": {
       "type": "string",
       "documentation": "Timecode Config Source",
-      "enum": [
-        "EMBEDDED",
-        "SYSTEMCLOCK",
-        "ZEROBASED"
-      ]
+      "enum": ["EMBEDDED", "SYSTEMCLOCK", "ZEROBASED"]
     },
     "TooManyRequestsException": {
       "type": "structure",
@@ -18366,14 +17254,11 @@
         }
       },
       "documentation": "A request to transfer an input device.",
-      "required": [
-        "InputDeviceId"
-      ]
+      "required": ["InputDeviceId"]
     },
     "TransferInputDeviceResponse": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for TransferInputDeviceResponse"
     },
     "TransferringInputDeviceSummary": {
@@ -18416,10 +17301,7 @@
     "TtmlDestinationStyleControl": {
       "type": "string",
       "documentation": "Ttml Destination Style Control",
-      "enum": [
-        "PASSTHROUGH",
-        "USE_CONFIGURED"
-      ]
+      "enum": ["PASSTHROUGH", "USE_CONFIGURED"]
     },
     "UdpContainerSettings": {
       "type": "structure",
@@ -18476,19 +17358,12 @@
         }
       },
       "documentation": "Udp Output Settings",
-      "required": [
-        "Destination",
-        "ContainerSettings"
-      ]
+      "required": ["Destination", "ContainerSettings"]
     },
     "UdpTimedMetadataId3Frame": {
       "type": "string",
       "documentation": "Udp Timed Metadata Id3 Frame",
-      "enum": [
-        "NONE",
-        "PRIV",
-        "TDRL"
-      ]
+      "enum": ["NONE", "PRIV", "TDRL"]
     },
     "UnprocessableEntityException": {
       "type": "structure",
@@ -18623,9 +17498,7 @@
           "documentation": "A list of output destinations for this channel."
         }
       },
-      "required": [
-        "ChannelClass"
-      ],
+      "required": ["ChannelClass"],
       "documentation": "Placeholder documentation for UpdateChannelClass"
     },
     "UpdateChannelClassRequest": {
@@ -18649,10 +17522,7 @@
         }
       },
       "documentation": "Channel class that the channel should be updated to.",
-      "required": [
-        "ChannelId",
-        "ChannelClass"
-      ]
+      "required": ["ChannelId", "ChannelClass"]
     },
     "UpdateChannelClassResponse": {
       "type": "structure",
@@ -18728,9 +17598,7 @@
         }
       },
       "documentation": "A request to update a channel.",
-      "required": [
-        "ChannelId"
-      ]
+      "required": ["ChannelId"]
     },
     "UpdateChannelResponse": {
       "type": "structure",
@@ -18860,9 +17728,7 @@
         }
       },
       "documentation": "A request to update an input device.",
-      "required": [
-        "InputDeviceId"
-      ]
+      "required": ["InputDeviceId"]
     },
     "UpdateInputDeviceResponse": {
       "type": "structure",
@@ -19006,9 +17872,7 @@
         }
       },
       "documentation": "A request to update an input.",
-      "required": [
-        "InputId"
-      ]
+      "required": ["InputId"]
     },
     "UpdateInputResponse": {
       "type": "structure",
@@ -19054,9 +17918,7 @@
         }
       },
       "documentation": "The request to update some combination of the Input Security Group name and the IPv4 CIDRs the Input Security Group should allow.",
-      "required": [
-        "InputSecurityGroupId"
-      ]
+      "required": ["InputSecurityGroupId"]
     },
     "UpdateInputSecurityGroupResponse": {
       "type": "structure",
@@ -19131,10 +17993,7 @@
         }
       },
       "documentation": "A request to update a program in a multiplex.",
-      "required": [
-        "MultiplexId",
-        "ProgramName"
-      ]
+      "required": ["MultiplexId", "ProgramName"]
     },
     "UpdateMultiplexProgramResponse": {
       "type": "structure",
@@ -19183,9 +18042,7 @@
         }
       },
       "documentation": "A request to update a multiplex.",
-      "required": [
-        "MultiplexId"
-      ]
+      "required": ["MultiplexId"]
     },
     "UpdateMultiplexResponse": {
       "type": "structure",
@@ -19246,9 +18103,7 @@
         }
       },
       "documentation": "Request to update a reservation",
-      "required": [
-        "ReservationId"
-      ]
+      "required": ["ReservationId"]
     },
     "UpdateReservationResponse": {
       "type": "structure",
@@ -19368,26 +18223,17 @@
         }
       },
       "documentation": "Video settings for this stream.",
-      "required": [
-        "Name"
-      ]
+      "required": ["Name"]
     },
     "VideoDescriptionRespondToAfd": {
       "type": "string",
       "documentation": "Video Description Respond To Afd",
-      "enum": [
-        "NONE",
-        "PASSTHROUGH",
-        "RESPOND"
-      ]
+      "enum": ["NONE", "PASSTHROUGH", "RESPOND"]
     },
     "VideoDescriptionScalingBehavior": {
       "type": "string",
       "documentation": "Video Description Scaling Behavior",
-      "enum": [
-        "DEFAULT",
-        "STRETCH_TO_OUTPUT"
-      ]
+      "enum": ["DEFAULT", "STRETCH_TO_OUTPUT"]
     },
     "VideoSelector": {
       "type": "structure",
@@ -19418,13 +18264,7 @@
     "VideoSelectorColorSpace": {
       "type": "string",
       "documentation": "Video Selector Color Space",
-      "enum": [
-        "FOLLOW",
-        "HDR10",
-        "HLG_2020",
-        "REC_601",
-        "REC_709"
-      ]
+      "enum": ["FOLLOW", "HDR10", "HLG_2020", "REC_601", "REC_709"]
     },
     "VideoSelectorColorSpaceSettings": {
       "type": "structure",
@@ -19439,10 +18279,7 @@
     "VideoSelectorColorSpaceUsage": {
       "type": "string",
       "documentation": "Video Selector Color Space Usage",
-      "enum": [
-        "FALLBACK",
-        "FORCE"
-      ]
+      "enum": ["FALLBACK", "FORCE"]
     },
     "VideoSelectorPid": {
       "type": "structure",
@@ -19500,9 +18337,7 @@
         }
       },
       "documentation": "The properties for a private VPC Output\nWhen this property is specified, the output egress addresses will be created in a user specified VPC",
-      "required": [
-        "SubnetIds"
-      ]
+      "required": ["SubnetIds"]
     },
     "VpcOutputSettingsDescription": {
       "type": "structure",
@@ -19575,10 +18410,7 @@
     "WebvttDestinationStyleControl": {
       "type": "string",
       "documentation": "Webvtt Destination Style Control",
-      "enum": [
-        "NO_STYLE_DATA",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_STYLE_DATA", "PASSTHROUGH"]
     },
     "__boolean": {
       "type": "boolean",
@@ -20440,16 +19272,12 @@
     },
     "AcceptHeader": {
       "type": "string",
-      "enum": [
-        "image/jpeg"
-      ],
+      "enum": ["image/jpeg"],
       "documentation": "The HTTP Accept header. Indicates the requested type fothe thumbnail."
     },
     "ContentType": {
       "type": "string",
-      "enum": [
-        "image/jpeg"
-      ],
+      "enum": ["image/jpeg"],
       "documentation": "Specifies the media type of the thumbnail."
     },
     "__timestamp": {
@@ -20533,10 +19361,7 @@
     "ChannelPipelineIdToRestart": {
       "type": "string",
       "documentation": "Property of RestartChannelPipelinesRequest",
-      "enum": [
-        "PIPELINE_0",
-        "PIPELINE_1"
-      ]
+      "enum": ["PIPELINE_0", "PIPELINE_1"]
     },
     "RestartChannelPipelinesRequest": {
       "type": "structure",
@@ -20554,9 +19379,7 @@
         }
       },
       "documentation": "Pipelines to restart.",
-      "required": [
-        "ChannelId"
-      ]
+      "required": ["ChannelId"]
     },
     "RestartChannelPipelinesResponse": {
       "type": "structure",
@@ -20677,34 +19500,22 @@
     "H265MvOverPictureBoundaries": {
       "type": "string",
       "documentation": "H265 Mv Over Picture Boundaries",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "H265MvTemporalPredictor": {
       "type": "string",
       "documentation": "H265 Mv Temporal Predictor",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "H265TilePadding": {
       "type": "string",
       "documentation": "H265 Tile Padding",
-      "enum": [
-        "NONE",
-        "PADDED"
-      ]
+      "enum": ["NONE", "PADDED"]
     },
     "H265TreeblockSize": {
       "type": "string",
       "documentation": "H265 Treeblock Size",
-      "enum": [
-        "AUTO",
-        "TREE_SIZE_32X32"
-      ]
+      "enum": ["AUTO", "TREE_SIZE_32X32"]
     },
     "__integerMin256Max3840": {
       "type": "integer",
@@ -20783,9 +19594,7 @@
         }
       },
       "documentation": "Cmaf Ingest Group Settings",
-      "required": [
-        "Destination"
-      ]
+      "required": ["Destination"]
     },
     "CmafIngestOutputSettings": {
       "type": "structure",
@@ -20801,18 +19610,12 @@
     "CmafIngestSegmentLengthUnits": {
       "type": "string",
       "documentation": "Cmaf Ingest Segment Length Units",
-      "enum": [
-        "MILLISECONDS",
-        "SECONDS"
-      ]
+      "enum": ["MILLISECONDS", "SECONDS"]
     },
     "CmafNielsenId3Behavior": {
       "type": "string",
       "documentation": "Cmaf Nielsen Id3 Behavior",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_PASSTHROUGH", "PASSTHROUGH"]
     },
     "DashRoleAudio": {
       "type": "string",
@@ -20878,10 +19681,7 @@
     "Scte35Type": {
       "type": "string",
       "documentation": "Scte35 Type",
-      "enum": [
-        "NONE",
-        "SCTE_35_WITHOUT_SEGMENTATION"
-      ]
+      "enum": ["NONE", "SCTE_35_WITHOUT_SEGMENTATION"]
     },
     "BadRequestExceptionResponseContent": {
       "type": "structure",
@@ -20945,25 +19745,13 @@
           "documentation": "The number of templates in a group."
         }
       },
-      "required": [
-        "TemplateCount",
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name"
-      ],
+      "required": ["TemplateCount", "CreatedAt", "Id", "Arn", "Name"],
       "documentation": "Placeholder documentation for CloudWatchAlarmTemplateGroupSummary"
     },
     "CloudWatchAlarmTemplateStatistic": {
       "type": "string",
       "documentation": "The statistic to apply to the alarm's metric data.",
-      "enum": [
-        "SampleCount",
-        "Average",
-        "Sum",
-        "Minimum",
-        "Maximum"
-      ]
+      "enum": ["SampleCount", "Average", "Sum", "Minimum", "Maximum"]
     },
     "CloudWatchAlarmTemplateSummary": {
       "type": "structure",
@@ -21081,12 +19869,7 @@
     "CloudWatchAlarmTemplateTreatMissingData": {
       "type": "string",
       "documentation": "Specifies how missing data points are treated when evaluating the alarm's condition.",
-      "enum": [
-        "notBreaching",
-        "breaching",
-        "ignore",
-        "missing"
-      ]
+      "enum": ["notBreaching", "breaching", "ignore", "missing"]
     },
     "ConflictExceptionResponseContent": {
       "type": "structure",
@@ -21117,9 +19900,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "Name"
-      ],
+      "required": ["Name"],
       "documentation": "Placeholder documentation for CreateCloudWatchAlarmTemplateGroupRequest"
     },
     "CreateCloudWatchAlarmTemplateGroupRequestContent": {
@@ -21140,9 +19921,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "Name"
-      ],
+      "required": ["Name"],
       "documentation": "Placeholder documentation for CreateCloudWatchAlarmTemplateGroupRequestContent"
     },
     "CreateCloudWatchAlarmTemplateGroupResponse": {
@@ -21219,12 +19998,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name"
-      ],
+      "required": ["CreatedAt", "Id", "Arn", "Name"],
       "documentation": "Placeholder documentation for CreateCloudWatchAlarmTemplateGroupResponseContent"
     },
     "CreateCloudWatchAlarmTemplateRequest": {
@@ -21584,9 +20358,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "Name"
-      ],
+      "required": ["Name"],
       "documentation": "Placeholder documentation for CreateEventBridgeRuleTemplateGroupRequest"
     },
     "CreateEventBridgeRuleTemplateGroupRequestContent": {
@@ -21607,9 +20379,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "Name"
-      ],
+      "required": ["Name"],
       "documentation": "Placeholder documentation for CreateEventBridgeRuleTemplateGroupRequestContent"
     },
     "CreateEventBridgeRuleTemplateGroupResponse": {
@@ -21686,12 +20456,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name"
-      ],
+      "required": ["CreatedAt", "Id", "Arn", "Name"],
       "documentation": "Placeholder documentation for CreateEventBridgeRuleTemplateGroupResponseContent"
     },
     "CreateEventBridgeRuleTemplateRequest": {
@@ -21725,11 +20490,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "EventType",
-        "Name",
-        "GroupIdentifier"
-      ],
+      "required": ["EventType", "Name", "GroupIdentifier"],
       "documentation": "Placeholder documentation for CreateEventBridgeRuleTemplateRequest"
     },
     "CreateEventBridgeRuleTemplateRequestContent": {
@@ -21763,11 +20524,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "EventType",
-        "Name",
-        "GroupIdentifier"
-      ],
+      "required": ["EventType", "Name", "GroupIdentifier"],
       "documentation": "Placeholder documentation for CreateEventBridgeRuleTemplateRequestContent"
     },
     "CreateEventBridgeRuleTemplateResponse": {
@@ -21870,14 +20627,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "EventType",
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name",
-        "GroupId"
-      ],
+      "required": ["EventType", "CreatedAt", "Id", "Arn", "Name", "GroupId"],
       "documentation": "Placeholder documentation for CreateEventBridgeRuleTemplateResponseContent"
     },
     "CreateSignalMapRequest": {
@@ -21911,10 +20661,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "DiscoveryEntryPointArn",
-        "Name"
-      ],
+      "required": ["DiscoveryEntryPointArn", "Name"],
       "documentation": "Placeholder documentation for CreateSignalMapRequest"
     },
     "CreateSignalMapRequestContent": {
@@ -21948,10 +20695,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "DiscoveryEntryPointArn",
-        "Name"
-      ],
+      "required": ["DiscoveryEntryPointArn", "Name"],
       "documentation": "Placeholder documentation for CreateSignalMapRequestContent"
     },
     "CreateSignalMapResponse": {
@@ -22143,9 +20887,7 @@
           "documentation": "A cloudwatch alarm template group's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for DeleteCloudWatchAlarmTemplateGroupRequest"
     },
     "DeleteCloudWatchAlarmTemplateRequest": {
@@ -22158,9 +20900,7 @@
           "documentation": "A cloudwatch alarm template's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for DeleteCloudWatchAlarmTemplateRequest"
     },
     "DeleteEventBridgeRuleTemplateGroupRequest": {
@@ -22173,9 +20913,7 @@
           "documentation": "An eventbridge rule template group's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for DeleteEventBridgeRuleTemplateGroupRequest"
     },
     "DeleteEventBridgeRuleTemplateRequest": {
@@ -22188,9 +20926,7 @@
           "documentation": "An eventbridge rule template's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for DeleteEventBridgeRuleTemplateRequest"
     },
     "DeleteSignalMapRequest": {
@@ -22203,9 +20939,7 @@
           "documentation": "A signal map's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for DeleteSignalMapRequest"
     },
     "EventBridgeRuleTemplateEventType": {
@@ -22268,13 +21002,7 @@
           "documentation": "The number of templates in a group."
         }
       },
-      "required": [
-        "TemplateCount",
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name"
-      ],
+      "required": ["TemplateCount", "CreatedAt", "Id", "Arn", "Name"],
       "documentation": "Placeholder documentation for EventBridgeRuleTemplateGroupSummary"
     },
     "EventBridgeRuleTemplateSummary": {
@@ -22348,9 +21076,7 @@
         }
       },
       "documentation": "The target to which to send matching events.",
-      "required": [
-        "Arn"
-      ]
+      "required": ["Arn"]
     },
     "FailedMediaResourceMap": {
       "type": "map",
@@ -22383,9 +21109,7 @@
           "documentation": "A cloudwatch alarm template group's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for GetCloudWatchAlarmTemplateGroupRequest"
     },
     "GetCloudWatchAlarmTemplateGroupResponse": {
@@ -22462,12 +21186,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name"
-      ],
+      "required": ["CreatedAt", "Id", "Arn", "Name"],
       "documentation": "Placeholder documentation for GetCloudWatchAlarmTemplateGroupResponseContent"
     },
     "GetCloudWatchAlarmTemplateRequest": {
@@ -22480,9 +21199,7 @@
           "documentation": "A cloudwatch alarm template's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for GetCloudWatchAlarmTemplateRequest"
     },
     "GetCloudWatchAlarmTemplateResponse": {
@@ -22678,9 +21395,7 @@
           "documentation": "An eventbridge rule template group's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for GetEventBridgeRuleTemplateGroupRequest"
     },
     "GetEventBridgeRuleTemplateGroupResponse": {
@@ -22757,12 +21472,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name"
-      ],
+      "required": ["CreatedAt", "Id", "Arn", "Name"],
       "documentation": "Placeholder documentation for GetEventBridgeRuleTemplateGroupResponseContent"
     },
     "GetEventBridgeRuleTemplateRequest": {
@@ -22775,9 +21485,7 @@
           "documentation": "An eventbridge rule template's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for GetEventBridgeRuleTemplateRequest"
     },
     "GetEventBridgeRuleTemplateResponse": {
@@ -22880,14 +21588,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "EventType",
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name",
-        "GroupId"
-      ],
+      "required": ["EventType", "CreatedAt", "Id", "Arn", "Name", "GroupId"],
       "documentation": "Placeholder documentation for GetEventBridgeRuleTemplateResponseContent"
     },
     "GetSignalMapRequest": {
@@ -22900,9 +21601,7 @@
           "documentation": "A signal map's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for GetSignalMapRequest"
     },
     "GetSignalMapResponse": {
@@ -23152,9 +21851,7 @@
           "documentation": "A token used to retrieve the next set of results in paginated list responses."
         }
       },
-      "required": [
-        "CloudWatchAlarmTemplateGroups"
-      ],
+      "required": ["CloudWatchAlarmTemplateGroups"],
       "documentation": "Placeholder documentation for ListCloudWatchAlarmTemplateGroupsResponseContent"
     },
     "ListCloudWatchAlarmTemplatesRequest": {
@@ -23220,9 +21917,7 @@
           "documentation": "A token used to retrieve the next set of results in paginated list responses."
         }
       },
-      "required": [
-        "CloudWatchAlarmTemplates"
-      ],
+      "required": ["CloudWatchAlarmTemplates"],
       "documentation": "Placeholder documentation for ListCloudWatchAlarmTemplatesResponseContent"
     },
     "ListEventBridgeRuleTemplateGroupsRequest": {
@@ -23276,9 +21971,7 @@
           "documentation": "A token used to retrieve the next set of results in paginated list responses."
         }
       },
-      "required": [
-        "EventBridgeRuleTemplateGroups"
-      ],
+      "required": ["EventBridgeRuleTemplateGroups"],
       "documentation": "Placeholder documentation for ListEventBridgeRuleTemplateGroupsResponseContent"
     },
     "ListEventBridgeRuleTemplatesRequest": {
@@ -23338,9 +22031,7 @@
           "documentation": "A token used to retrieve the next set of results in paginated list responses."
         }
       },
-      "required": [
-        "EventBridgeRuleTemplates"
-      ],
+      "required": ["EventBridgeRuleTemplates"],
       "documentation": "Placeholder documentation for ListEventBridgeRuleTemplatesResponseContent"
     },
     "ListSignalMapsRequest": {
@@ -23400,9 +22091,7 @@
           "locationName": "signalMaps"
         }
       },
-      "required": [
-        "SignalMaps"
-      ],
+      "required": ["SignalMaps"],
       "documentation": "Placeholder documentation for ListSignalMapsResponseContent"
     },
     "MediaResource": {
@@ -23449,9 +22138,7 @@
         }
       },
       "documentation": "A direct source or destination neighbor to an AWS media resource.",
-      "required": [
-        "Arn"
-      ]
+      "required": ["Arn"]
     },
     "MonitorDeployment": {
       "type": "structure",
@@ -23472,9 +22159,7 @@
         }
       },
       "documentation": "Represents the latest monitor deployment of a signal map.",
-      "required": [
-        "Status"
-      ]
+      "required": ["Status"]
     },
     "NotFoundExceptionResponseContent": {
       "type": "structure",
@@ -23582,9 +22267,7 @@
           "documentation": "A signal map's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for StartDeleteMonitorDeploymentRequest"
     },
     "StartDeleteMonitorDeploymentResponse": {
@@ -23780,9 +22463,7 @@
           "documentation": "A signal map's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for StartMonitorDeploymentRequest"
     },
     "StartMonitorDeploymentRequestContent": {
@@ -24012,9 +22693,7 @@
           "documentation": "A resource's name. Names must be unique within the scope of a resource type in a specific region."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for StartUpdateSignalMapRequest"
     },
     "StartUpdateSignalMapRequestContent": {
@@ -24244,10 +22923,7 @@
         }
       },
       "documentation": "Represents the latest successful monitor deployment of a signal map.",
-      "required": [
-        "DetailsUri",
-        "Status"
-      ]
+      "required": ["DetailsUri", "Status"]
     },
     "TagMap": {
       "type": "map",
@@ -24285,9 +22961,7 @@
           "documentation": "A cloudwatch alarm template group's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for UpdateCloudWatchAlarmTemplateGroupRequest"
     },
     "UpdateCloudWatchAlarmTemplateGroupRequestContent": {
@@ -24375,12 +23049,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name"
-      ],
+      "required": ["CreatedAt", "Id", "Arn", "Name"],
       "documentation": "Placeholder documentation for UpdateCloudWatchAlarmTemplateGroupResponseContent"
     },
     "UpdateCloudWatchAlarmTemplateRequest": {
@@ -24449,9 +23118,7 @@
           "locationName": "treatMissingData"
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for UpdateCloudWatchAlarmTemplateRequest"
     },
     "UpdateCloudWatchAlarmTemplateRequestContent": {
@@ -24714,9 +23381,7 @@
           "documentation": "An eventbridge rule template group's identifier. Can be either be its id or current name."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for UpdateEventBridgeRuleTemplateGroupRequest"
     },
     "UpdateEventBridgeRuleTemplateGroupRequestContent": {
@@ -24804,12 +23469,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name"
-      ],
+      "required": ["CreatedAt", "Id", "Arn", "Name"],
       "documentation": "Placeholder documentation for UpdateEventBridgeRuleTemplateGroupResponseContent"
     },
     "UpdateEventBridgeRuleTemplateRequest": {
@@ -24845,9 +23505,7 @@
           "documentation": "A resource's name. Names must be unique within the scope of a resource type in a specific region."
         }
       },
-      "required": [
-        "Identifier"
-      ],
+      "required": ["Identifier"],
       "documentation": "Placeholder documentation for UpdateEventBridgeRuleTemplateRequest"
     },
     "UpdateEventBridgeRuleTemplateRequestContent": {
@@ -24979,14 +23637,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "EventType",
-        "CreatedAt",
-        "Id",
-        "Arn",
-        "Name",
-        "GroupId"
-      ],
+      "required": ["EventType", "CreatedAt", "Id", "Arn", "Name", "GroupId"],
       "documentation": "Placeholder documentation for UpdateEventBridgeRuleTemplateResponseContent"
     },
     "__integerMax5": {
@@ -25134,18 +23785,11 @@
     "Scte35SegmentationScope": {
       "type": "string",
       "documentation": "Scte35 Segmentation Scope",
-      "enum": [
-        "ALL_OUTPUT_GROUPS",
-        "SCTE35_ENABLED_OUTPUT_GROUPS"
-      ]
+      "enum": ["ALL_OUTPUT_GROUPS", "SCTE35_ENABLED_OUTPUT_GROUPS"]
     },
     "Algorithm": {
       "type": "string",
-      "enum": [
-        "AES128",
-        "AES192",
-        "AES256"
-      ],
+      "enum": ["AES128", "AES192", "AES256"],
       "documentation": "Placeholder documentation for Algorithm"
     },
     "SrtCallerDecryption": {
@@ -25331,10 +23975,7 @@
     "Av1GopSizeUnits": {
       "type": "string",
       "documentation": "Av1 Gop Size Units",
-      "enum": [
-        "FRAMES",
-        "SECONDS"
-      ]
+      "enum": ["FRAMES", "SECONDS"]
     },
     "Av1Level": {
       "type": "string",
@@ -25360,19 +24001,12 @@
     "Av1LookAheadRateControl": {
       "type": "string",
       "documentation": "Av1 Look Ahead Rate Control",
-      "enum": [
-        "HIGH",
-        "LOW",
-        "MEDIUM"
-      ]
+      "enum": ["HIGH", "LOW", "MEDIUM"]
     },
     "Av1SceneChangeDetect": {
       "type": "string",
       "documentation": "Av1 Scene Change Detect",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "Av1Settings": {
       "type": "structure",
@@ -25464,10 +24098,7 @@
         }
       },
       "documentation": "Av1 Settings",
-      "required": [
-        "FramerateNumerator",
-        "FramerateDenominator"
-      ]
+      "required": ["FramerateNumerator", "FramerateDenominator"]
     },
     "ChannelPlacementGroupState": {
       "type": "string",
@@ -25545,9 +24176,7 @@
     "ClusterType": {
       "type": "string",
       "documentation": "Used in CreateClusterSummary, DescribeClusterSummary, DescribeClusterResult, UpdateClusterResult.",
-      "enum": [
-        "ON_PREMISES"
-      ]
+      "enum": ["ON_PREMISES"]
     },
     "CreateChannelPlacementGroupRequest": {
       "type": "structure",
@@ -25581,9 +24210,7 @@
         }
       },
       "documentation": "A request to create a channel placement group.",
-      "required": [
-        "ClusterId"
-      ]
+      "required": ["ClusterId"]
     },
     "CreateChannelPlacementGroupResponse": {
       "type": "structure",
@@ -25817,9 +24444,7 @@
         }
       },
       "documentation": "A request to create a new node registration script.",
-      "required": [
-        "ClusterId"
-      ]
+      "required": ["ClusterId"]
     },
     "CreateNodeRegistrationScriptResponse": {
       "type": "structure",
@@ -25880,9 +24505,7 @@
         }
       },
       "documentation": "A request to create a node",
-      "required": [
-        "ClusterId"
-      ]
+      "required": ["ClusterId"]
     },
     "CreateNodeResponse": {
       "type": "structure",
@@ -25956,10 +24579,7 @@
           "documentation": "The ID of the cluster."
         }
       },
-      "required": [
-        "ClusterId",
-        "ChannelPlacementGroupId"
-      ],
+      "required": ["ClusterId", "ChannelPlacementGroupId"],
       "documentation": "Placeholder documentation for DeleteChannelPlacementGroupRequest"
     },
     "DeleteChannelPlacementGroupResponse": {
@@ -26013,9 +24633,7 @@
           "documentation": "The ID of the cluster."
         }
       },
-      "required": [
-        "ClusterId"
-      ],
+      "required": ["ClusterId"],
       "documentation": "Placeholder documentation for DeleteClusterRequest"
     },
     "DeleteClusterResponse": {
@@ -26073,9 +24691,7 @@
           "documentation": "The ID of the network."
         }
       },
-      "required": [
-        "NetworkId"
-      ],
+      "required": ["NetworkId"],
       "documentation": "Placeholder documentation for DeleteNetworkRequest"
     },
     "DeleteNetworkResponse": {
@@ -26134,10 +24750,7 @@
           "documentation": "The ID of the node."
         }
       },
-      "required": [
-        "NodeId",
-        "ClusterId"
-      ],
+      "required": ["NodeId", "ClusterId"],
       "documentation": "Placeholder documentation for DeleteNodeRequest"
     },
     "DeleteNodeResponse": {
@@ -26228,10 +24841,7 @@
           "documentation": "The ID of the cluster."
         }
       },
-      "required": [
-        "ClusterId",
-        "ChannelPlacementGroupId"
-      ],
+      "required": ["ClusterId", "ChannelPlacementGroupId"],
       "documentation": "Placeholder documentation for DescribeChannelPlacementGroupRequest"
     },
     "DescribeChannelPlacementGroupResponse": {
@@ -26367,9 +24977,7 @@
           "documentation": "The ID of the cluster."
         }
       },
-      "required": [
-        "ClusterId"
-      ],
+      "required": ["ClusterId"],
       "documentation": "Placeholder documentation for DescribeClusterRequest"
     },
     "DescribeClusterResponse": {
@@ -26518,9 +25126,7 @@
           "documentation": "The ID of the network."
         }
       },
-      "required": [
-        "NetworkId"
-      ],
+      "required": ["NetworkId"],
       "documentation": "Placeholder documentation for DescribeNetworkRequest"
     },
     "DescribeNetworkResponse": {
@@ -26659,10 +25265,7 @@
           "documentation": "The ID of the node."
         }
       },
-      "required": [
-        "NodeId",
-        "ClusterId"
-      ],
+      "required": ["NodeId", "ClusterId"],
       "documentation": "Placeholder documentation for DescribeNodeRequest"
     },
     "DescribeNodeResponse": {
@@ -26857,10 +25460,7 @@
     "InputNetworkLocation": {
       "type": "string",
       "documentation": "With the introduction of MediaLive Anywhere, a MediaLive input can now exist in two different places: AWS or\ninside an on-premises datacenter. By default all inputs will continue to be AWS inputs.",
-      "enum": [
-        "AWS",
-        "ON_PREMISES"
-      ]
+      "enum": ["AWS", "ON_PREMISES"]
     },
     "InputRequestDestinationRoute": {
       "type": "structure",
@@ -26981,9 +25581,7 @@
           "documentation": "The token to retrieve the next page of results."
         }
       },
-      "required": [
-        "ClusterId"
-      ],
+      "required": ["ClusterId"],
       "documentation": "Placeholder documentation for ListChannelPlacementGroupsRequest"
     },
     "ListChannelPlacementGroupsResponse": {
@@ -27140,9 +25738,7 @@
           "documentation": "The token to retrieve the next page of results."
         }
       },
-      "required": [
-        "ClusterId"
-      ],
+      "required": ["ClusterId"],
       "documentation": "Placeholder documentation for ListNodesRequest"
     },
     "ListNodesResponse": {
@@ -27233,9 +25829,7 @@
         }
       },
       "documentation": "Pair of multicast url and source ip address (optional) that make up a multicast source.",
-      "required": [
-        "Url"
-      ]
+      "required": ["Url"]
     },
     "MulticastSourceCreateRequest": {
       "type": "structure",
@@ -27252,9 +25846,7 @@
         }
       },
       "documentation": "Pair of multicast url and source ip address (optional) that make up a multicast source.",
-      "required": [
-        "Url"
-      ]
+      "required": ["Url"]
     },
     "MulticastSourceUpdateRequest": {
       "type": "structure",
@@ -27271,17 +25863,12 @@
         }
       },
       "documentation": "Pair of multicast url and source ip address (optional) that make up a multicast source.",
-      "required": [
-        "Url"
-      ]
+      "required": ["Url"]
     },
     "NetworkInterfaceMode": {
       "type": "string",
       "documentation": "Used in NodeInterfaceMapping and NodeInterfaceMappingCreateRequest",
-      "enum": [
-        "NAT",
-        "BRIDGE"
-      ]
+      "enum": ["NAT", "BRIDGE"]
     },
     "NetworkState": {
       "type": "string",
@@ -27317,10 +25904,7 @@
     "NodeConnectionState": {
       "type": "string",
       "documentation": "Used in DescribeNodeSummary.",
-      "enum": [
-        "CONNECTED",
-        "DISCONNECTED"
-      ]
+      "enum": ["CONNECTED", "DISCONNECTED"]
     },
     "NodeInterfaceMapping": {
       "type": "structure",
@@ -27366,10 +25950,7 @@
     "NodeRole": {
       "type": "string",
       "documentation": "Used in CreateNodeRequest, CreateNodeRegistrationScriptRequest, DescribeNodeResult, DescribeNodeSummary, UpdateNodeRequest.",
-      "enum": [
-        "BACKUP",
-        "ACTIVE"
-      ]
+      "enum": ["BACKUP", "ACTIVE"]
     },
     "NodeState": {
       "type": "string",
@@ -27440,11 +26021,7 @@
     "SrtEncryptionType": {
       "type": "string",
       "documentation": "Srt Encryption Type",
-      "enum": [
-        "AES128",
-        "AES192",
-        "AES256"
-      ]
+      "enum": ["AES128", "AES192", "AES256"]
     },
     "SrtGroupSettings": {
       "type": "structure",
@@ -27506,10 +26083,7 @@
         }
       },
       "documentation": "Srt Output Settings",
-      "required": [
-        "Destination",
-        "ContainerSettings"
-      ]
+      "required": ["Destination", "ContainerSettings"]
     },
     "UpdateChannelPlacementGroupRequest": {
       "type": "structure",
@@ -27538,10 +26112,7 @@
         }
       },
       "documentation": "A request to update the channel placement group",
-      "required": [
-        "ClusterId",
-        "ChannelPlacementGroupId"
-      ]
+      "required": ["ClusterId", "ChannelPlacementGroupId"]
     },
     "UpdateChannelPlacementGroupResponse": {
       "type": "structure",
@@ -27605,9 +26176,7 @@
         }
       },
       "documentation": "A request to update the cluster.",
-      "required": [
-        "ClusterId"
-      ]
+      "required": ["ClusterId"]
     },
     "UpdateClusterResponse": {
       "type": "structure",
@@ -27717,9 +26286,7 @@
         }
       },
       "documentation": "A request to update the network.",
-      "required": [
-        "NetworkId"
-      ]
+      "required": ["NetworkId"]
     },
     "UpdateNetworkResponse": {
       "type": "structure",
@@ -27828,10 +26395,7 @@
         }
       },
       "documentation": "A request to update the node.",
-      "required": [
-        "NodeId",
-        "ClusterId"
-      ]
+      "required": ["NodeId", "ClusterId"]
     },
     "UpdateNodeResponse": {
       "type": "structure",
@@ -27892,10 +26456,7 @@
     "UpdateNodeState": {
       "type": "string",
       "documentation": "Used in UpdateNodeStateRequest.",
-      "enum": [
-        "ACTIVE",
-        "DRAINING"
-      ]
+      "enum": ["ACTIVE", "DRAINING"]
     },
     "UpdateNodeStateRequest": {
       "type": "structure",
@@ -27919,10 +26480,7 @@
         }
       },
       "documentation": "A request to update the state of a node.",
-      "required": [
-        "NodeId",
-        "ClusterId"
-      ]
+      "required": ["NodeId", "ClusterId"]
     },
     "UpdateNodeStateResponse": {
       "type": "structure",
@@ -28164,23 +26722,12 @@
     "BandwidthReductionFilterStrength": {
       "type": "string",
       "documentation": "Bandwidth Reduction Filter Strength",
-      "enum": [
-        "AUTO",
-        "STRENGTH_1",
-        "STRENGTH_2",
-        "STRENGTH_3",
-        "STRENGTH_4"
-      ]
+      "enum": ["AUTO", "STRENGTH_1", "STRENGTH_2", "STRENGTH_3", "STRENGTH_4"]
     },
     "BandwidthReductionPostFilterSharpening": {
       "type": "string",
       "documentation": "Bandwidth Reduction Post Filter Sharpening",
-      "enum": [
-        "DISABLED",
-        "SHARPENING_1",
-        "SHARPENING_2",
-        "SHARPENING_3"
-      ]
+      "enum": ["DISABLED", "SHARPENING_1", "SHARPENING_2", "SHARPENING_3"]
     },
     "MultiplexContainerSettings": {
       "type": "structure",
@@ -28271,18 +26818,12 @@
     "H265Deblocking": {
       "type": "string",
       "documentation": "H265 Deblocking",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "CmafKLVBehavior": {
       "type": "string",
       "documentation": "Cmaf KLVBehavior",
-      "enum": [
-        "NO_PASSTHROUGH",
-        "PASSTHROUGH"
-      ]
+      "enum": ["NO_PASSTHROUGH", "PASSTHROUGH"]
     },
     "__stringMax100": {
       "type": "string",
@@ -28318,8 +26859,7 @@
     },
     "ListVersionsRequest": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "Placeholder documentation for ListVersionsRequest"
     },
     "ListVersionsResponse": {
@@ -28343,10 +26883,7 @@
     "CmafId3Behavior": {
       "type": "string",
       "documentation": "Cmaf Id3 Behavior",
-      "enum": [
-        "DISABLED",
-        "ENABLED"
-      ]
+      "enum": ["DISABLED", "ENABLED"]
     },
     "Id3SegmentTaggingScheduleActionSettings": {
       "type": "structure",
@@ -28374,9 +26911,7 @@
         }
       },
       "documentation": "Settings for the action to insert ID3 metadata (as a one-time action) in applicable output groups.",
-      "required": [
-        "Id3"
-      ]
+      "required": ["Id3"]
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

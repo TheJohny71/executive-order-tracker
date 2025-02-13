@@ -16,12 +16,12 @@ plan:
         type: prompt
         description: Primary key type
         choices:
-            - actual_value: S
-              display: String
-            - actual_value: N
-              display: Number
-            - actual_value: B
-              display:  Binary
+          - actual_value: S
+            display: String
+          - actual_value: N
+            display: Number
+          - actual_value: B
+            display: Binary
       wants_sort_key:
         type: prompt
         description: Add a sort key?
@@ -40,12 +40,12 @@ plan:
         type: prompt
         description: Sort key type
         choices:
-            - actual_value: S
-              display: String
-            - actual_value: N
-              display: Number
-            - actual_value: B
-              display:  Binary
+          - actual_value: S
+            display: String
+          - actual_value: N
+            display: Number
+          - actual_value: B
+            display: Binary
         condition:
           variable: wants_sort_key
           equals: yes

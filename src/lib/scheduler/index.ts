@@ -1,5 +1,5 @@
-import { DocumentType, PrismaClient } from '@prisma/client';
-import { logger } from '@/utils/logger';
+import { DocumentType, PrismaClient } from "@prisma/client";
+import { logger } from "@/utils/logger";
 
 interface MyOrder {
   type: DocumentType;
@@ -19,7 +19,7 @@ interface FetchOrdersResponse {
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 5000;
-const MIN_DATE = new Date('2025-01-01T00:00:00Z');
+const MIN_DATE = new Date("2025-01-01T00:00:00Z");
 
 const prisma = new PrismaClient();
 
@@ -65,17 +65,19 @@ export class DocumentScheduler {
 
   public start(): void {
     if (this.isRunning) {
-      logger.info('Scheduler is already running');
+      logger.info("Scheduler is already running");
       return;
     }
     this.isRunning = true;
     this.intervalId = setInterval(() => {
       void this.checkNewDocuments().catch((err) => {
-        logger.error('Error in scheduled check:', err);
+        logger.error("Error in scheduled check:", err);
       });
     }, this.intervalMinutes);
 
-    logger.info(`Scheduler started. Will run every ${this.intervalMinutes / 1000} seconds.`);
+    logger.info(
+      `Scheduler started. Will run every ${this.intervalMinutes / 1000} seconds.`,
+    );
   }
 
   public stop(): void {
@@ -87,7 +89,7 @@ export class DocumentScheduler {
       this.intervalId = null;
     }
     this.isRunning = false;
-    logger.info('Scheduler stopped');
+    logger.info("Scheduler stopped");
   }
 
   public async manualCheck(): Promise<void> {
@@ -96,14 +98,14 @@ export class DocumentScheduler {
 
   private async retryWithDelay<T>(
     fn: () => Promise<T>,
-    retries = MAX_RETRIES
+    retries = MAX_RETRIES,
   ): Promise<T> {
     try {
       return await fn();
     } catch (error) {
       if (retries > 1) {
         logger.warn(
-          `Retrying operation in ${RETRY_DELAY_MS}ms. Retries left: ${retries - 1}`
+          `Retrying operation in ${RETRY_DELAY_MS}ms. Retries left: ${retries - 1}`,
         );
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
         return this.retryWithDelay(fn, retries - 1);
@@ -114,7 +116,9 @@ export class DocumentScheduler {
 
   private async checkNewDocuments(): Promise<void> {
     try {
-      logger.info(`Starting document check. Last check: ${this.lastCheckTime?.toISOString() || 'N/A'}`);
+      logger.info(
+        `Starting document check. Last check: ${this.lastCheckTime?.toISOString() || "N/A"}`,
+      );
       this.consecutiveFailures = 0;
 
       const response = await this.retryWithDelay(() => fetchOrders());
@@ -130,18 +134,24 @@ export class DocumentScheduler {
         select: { link: true, number: true },
       });
 
-      const existingLinks = new Set(existingDocs.map((d) => d.link).filter(Boolean));
-      const existingNumbers = new Set(existingDocs.map((d) => d.number).filter(Boolean));
+      const existingLinks = new Set(
+        existingDocs.map((d) => d.link).filter(Boolean),
+      );
+      const existingNumbers = new Set(
+        existingDocs.map((d) => d.number).filter(Boolean),
+      );
 
       const newDocs = relevantDocs.filter((doc) => {
         return (
-          doc.link && !existingLinks.has(doc.link) &&
-          doc.number && !existingNumbers.has(doc.number)
+          doc.link &&
+          !existingLinks.has(doc.link) &&
+          doc.number &&
+          !existingNumbers.has(doc.number)
         );
       });
 
       if (newDocs.length === 0) {
-        logger.info('No new documents found');
+        logger.info("No new documents found");
         this.lastCheckTime = new Date();
         return;
       }
@@ -149,15 +159,23 @@ export class DocumentScheduler {
       const createdCount = await prisma.$transaction(async (tx) => {
         let count = 0;
         for (const doc of newDocs) {
-          const categoriesConnect = doc.category ? [{
-            where: { name: doc.category },
-            create: { name: doc.category }
-          }] : [];
+          const categoriesConnect = doc.category
+            ? [
+                {
+                  where: { name: doc.category },
+                  create: { name: doc.category },
+                },
+              ]
+            : [];
 
-          const agenciesConnect = doc.agency ? [{
-            where: { name: doc.agency },
-            create: { name: doc.agency }
-          }] : [];
+          const agenciesConnect = doc.agency
+            ? [
+                {
+                  where: { name: doc.agency },
+                  create: { name: doc.agency },
+                },
+              ]
+            : [];
 
           const orderData: OrderCreateData = {
             type: doc.type,
@@ -169,14 +187,14 @@ export class DocumentScheduler {
             statusId: doc.statusId,
             ...(categoriesConnect.length > 0 && {
               categories: {
-                connectOrCreate: categoriesConnect
-              }
+                connectOrCreate: categoriesConnect,
+              },
             }),
             ...(agenciesConnect.length > 0 && {
               agencies: {
-                connectOrCreate: agenciesConnect
-              }
-            })
+                connectOrCreate: agenciesConnect,
+              },
+            }),
           };
 
           await tx.order.create({
@@ -191,10 +209,10 @@ export class DocumentScheduler {
       this.lastCheckTime = new Date();
     } catch (error) {
       this.consecutiveFailures++;
-      logger.error('Error checking for new documents:', error);
+      logger.error("Error checking for new documents:", error);
 
       if (this.consecutiveFailures >= MAX_RETRIES) {
-        logger.error('Too many consecutive failures. Stopping scheduler.');
+        logger.error("Too many consecutive failures. Stopping scheduler.");
         this.stop();
       }
     }
@@ -202,5 +220,5 @@ export class DocumentScheduler {
 }
 
 export const documentScheduler = new DocumentScheduler(
-  parseInt(process.env.SCHEDULER_INTERVAL_MINUTES ?? '30', 10)
+  parseInt(process.env.SCHEDULER_INTERVAL_MINUTES ?? "30", 10),
 );

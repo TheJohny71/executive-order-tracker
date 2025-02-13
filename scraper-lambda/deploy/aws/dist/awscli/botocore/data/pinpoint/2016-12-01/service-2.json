@@ -9,9 +9,7 @@
     "jsonVersion": "1.1",
     "uid": "pinpoint-2016-12-01",
     "signatureVersion": "v4",
-    "auth": [
-      "aws.auth#sigv4"
-    ]
+    "auth": ["aws.auth#sigv4"]
   },
   "documentation": "<p>Doc Engage API - Amazon Pinpoint API</p>",
   "operations": {
@@ -3899,9 +3897,7 @@
         "shape": "ListTagsForResourceResponse",
         "documentation": "<p>The request succeeded.</p>"
       },
-      "errors": [
-
-      ],
+      "errors": [],
       "documentation": "<p>Retrieves all the tags (keys and values) that are associated with an application, campaign, message template, or segment.</p>"
     },
     "ListTemplateVersions": {
@@ -4320,9 +4316,7 @@
       "input": {
         "shape": "TagResourceRequest"
       },
-      "errors": [
-
-      ],
+      "errors": [],
       "documentation": "<p>Adds one or more tags (keys and values) to an application, campaign, message template, or segment.</p>"
     },
     "UntagResource": {
@@ -4335,9 +4329,7 @@
       "input": {
         "shape": "UntagResourceRequest"
       },
-      "errors": [
-
-      ],
+      "errors": [],
       "documentation": "<p>Removes one or more tags (keys and values) from an application, campaign, message template, or segment.</p>"
     },
     "UpdateAdmChannel": {
@@ -5513,10 +5505,7 @@
         }
       },
       "documentation": "<p>Specifies the status and settings of the ADM (Amazon Device Messaging) channel for an application.</p>",
-      "required": [
-        "ClientSecret",
-        "ClientId"
-      ]
+      "required": ["ClientSecret", "ClientId"]
     },
     "ADMChannelResponse": {
       "type": "structure",
@@ -5563,9 +5552,7 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of the ADM (Amazon Device Messaging) channel for an application.</p>",
-      "required": [
-        "Platform"
-      ]
+      "required": ["Platform"]
     },
     "ADMMessage": {
       "type": "structure",
@@ -5728,9 +5715,7 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of the APNs (Apple Push Notification service) channel for an application.</p>",
-      "required": [
-        "Platform"
-      ]
+      "required": ["Platform"]
     },
     "APNSMessage": {
       "type": "structure",
@@ -5935,9 +5920,7 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of the APNs (Apple Push Notification service) sandbox channel for an application.</p>",
-      "required": [
-        "Platform"
-      ]
+      "required": ["Platform"]
     },
     "APNSVoipChannelRequest": {
       "type": "structure",
@@ -6030,9 +6013,7 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of the APNs (Apple Push Notification service) VoIP channel for an application.</p>",
-      "required": [
-        "Platform"
-      ]
+      "required": ["Platform"]
     },
     "APNSVoipSandboxChannelRequest": {
       "type": "structure",
@@ -6125,17 +6106,11 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of the APNs (Apple Push Notification service) VoIP sandbox channel for an application.</p>",
-      "required": [
-        "Platform"
-      ]
+      "required": ["Platform"]
     },
     "Action": {
       "type": "string",
-      "enum": [
-        "OPEN_APP",
-        "DEEP_LINK",
-        "URL"
-      ]
+      "enum": ["OPEN_APP", "DEEP_LINK", "URL"]
     },
     "ActivitiesResponse": {
       "type": "structure",
@@ -6150,9 +6125,7 @@
         }
       },
       "documentation": "<p>Provides information about the activities that were performed by a campaign.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "Activity": {
       "type": "structure",
@@ -6265,11 +6238,7 @@
         }
       },
       "documentation": "<p>Provides information about an activity that was performed by a campaign.</p>",
-      "required": [
-        "CampaignId",
-        "Id",
-        "ApplicationId"
-      ]
+      "required": ["CampaignId", "Id", "ApplicationId"]
     },
     "AddressConfiguration": {
       "type": "structure",
@@ -6303,11 +6272,7 @@
     },
     "Alignment": {
       "type": "string",
-      "enum": [
-        "LEFT",
-        "CENTER",
-        "RIGHT"
-      ]
+      "enum": ["LEFT", "CENTER", "RIGHT"]
     },
     "AndroidPushNotificationTemplate": {
       "type": "structure",
@@ -6414,11 +6379,7 @@
         }
       },
       "documentation": "<p>Provides information about an application.</p>",
-      "required": [
-        "Id",
-        "Arn",
-        "Name"
-      ]
+      "required": ["Id", "Arn", "Name"]
     },
     "ApplicationSettingsJourneyLimits": {
       "type": "structure",
@@ -6467,9 +6428,7 @@
         }
       },
       "documentation": "<p>Provides information about an application, including the default settings for an application.</p>",
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "ApplicationsResponse": {
       "type": "structure",
@@ -6498,9 +6457,7 @@
         }
       },
       "documentation": "<p>Specifies attribute-based criteria for including or excluding endpoints from a segment.</p>",
-      "required": [
-        "Values"
-      ]
+      "required": ["Values"]
     },
     "AttributeType": {
       "type": "string",
@@ -6531,10 +6488,7 @@
         }
       },
       "documentation": "<p>Provides information about the type and the names of attributes that were removed from all the endpoints that are associated with an application.</p>",
-      "required": [
-        "AttributeType",
-        "ApplicationId"
-      ]
+      "required": ["AttributeType", "ApplicationId"]
     },
     "BadRequestException": {
       "type": "structure",
@@ -6571,10 +6525,7 @@
         }
       },
       "documentation": "<p>Specifies the status and settings of the Baidu (Baidu Cloud Push) channel for an application.</p>",
-      "required": [
-        "SecretKey",
-        "ApiKey"
-      ]
+      "required": ["SecretKey", "ApiKey"]
     },
     "BaiduChannelResponse": {
       "type": "structure",
@@ -6625,10 +6576,7 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of the Baidu (Baidu Cloud Push) channel for an application.</p>",
-      "required": [
-        "Credential",
-        "Platform"
-      ]
+      "required": ["Credential", "Platform"]
     },
     "BaiduMessage": {
       "type": "structure",
@@ -6701,17 +6649,11 @@
         }
       },
       "documentation": "<p>Provides the results of a query that retrieved the data for a standard metric that applies to an application, campaign, or journey.</p>",
-      "required": [
-        "Rows"
-      ]
+      "required": ["Rows"]
     },
     "ButtonAction": {
       "type": "string",
-      "enum": [
-        "LINK",
-        "DEEP_LINK",
-        "CLOSE"
-      ]
+      "enum": ["LINK", "DEEP_LINK", "CLOSE"]
     },
     "CampaignCustomMessage": {
       "type": "structure",
@@ -6804,10 +6746,7 @@
         }
       },
       "documentation": "<p>Specifies the settings for events that cause a campaign to be sent.</p>",
-      "required": [
-        "FilterType",
-        "Dimensions"
-      ]
+      "required": ["FilterType", "Dimensions"]
     },
     "CampaignHook": {
       "type": "structure",
@@ -7056,9 +6995,7 @@
         }
       },
       "documentation": "<p>Provides information about the configuration and other settings for all the campaigns that are associated with an application.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "ChannelResponse": {
       "type": "structure",
@@ -7129,9 +7066,7 @@
         }
       },
       "documentation": "<p>Provides information about the general settings and status of all channels for an application, including channels that aren't enabled for the application.</p>",
-      "required": [
-        "Channels"
-      ]
+      "required": ["Channels"]
     },
     "Condition": {
       "type": "structure",
@@ -7203,9 +7138,7 @@
           "shape": "CreateApplicationRequest"
         }
       },
-      "required": [
-        "CreateApplicationRequest"
-      ],
+      "required": ["CreateApplicationRequest"],
       "payload": "CreateApplicationRequest"
     },
     "CreateAppResponse": {
@@ -7215,9 +7148,7 @@
           "shape": "ApplicationResponse"
         }
       },
-      "required": [
-        "ApplicationResponse"
-      ],
+      "required": ["ApplicationResponse"],
       "payload": "ApplicationResponse"
     },
     "CreateApplicationRequest": {
@@ -7234,9 +7165,7 @@
         }
       },
       "documentation": "<p>Specifies the display name of an application and the tags to associate with the application.</p>",
-      "required": [
-        "Name"
-      ]
+      "required": ["Name"]
     },
     "CreateCampaignRequest": {
       "type": "structure",
@@ -7251,10 +7180,7 @@
           "shape": "WriteCampaignRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "WriteCampaignRequest"
-      ],
+      "required": ["ApplicationId", "WriteCampaignRequest"],
       "payload": "WriteCampaignRequest"
     },
     "CreateCampaignResponse": {
@@ -7264,9 +7190,7 @@
           "shape": "CampaignResponse"
         }
       },
-      "required": [
-        "CampaignResponse"
-      ],
+      "required": ["CampaignResponse"],
       "payload": "CampaignResponse"
     },
     "CreateEmailTemplateRequest": {
@@ -7282,10 +7206,7 @@
           "documentation": "<p>The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.</p>"
         }
       },
-      "required": [
-        "TemplateName",
-        "EmailTemplateRequest"
-      ],
+      "required": ["TemplateName", "EmailTemplateRequest"],
       "payload": "EmailTemplateRequest"
     },
     "CreateEmailTemplateResponse": {
@@ -7295,9 +7216,7 @@
           "shape": "CreateTemplateMessageBody"
         }
       },
-      "required": [
-        "CreateTemplateMessageBody"
-      ],
+      "required": ["CreateTemplateMessageBody"],
       "payload": "CreateTemplateMessageBody"
     },
     "CreateExportJobRequest": {
@@ -7313,10 +7232,7 @@
           "shape": "ExportJobRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "ExportJobRequest"
-      ],
+      "required": ["ApplicationId", "ExportJobRequest"],
       "payload": "ExportJobRequest"
     },
     "CreateExportJobResponse": {
@@ -7326,9 +7242,7 @@
           "shape": "ExportJobResponse"
         }
       },
-      "required": [
-        "ExportJobResponse"
-      ],
+      "required": ["ExportJobResponse"],
       "payload": "ExportJobResponse"
     },
     "CreateImportJobRequest": {
@@ -7344,10 +7258,7 @@
           "shape": "ImportJobRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "ImportJobRequest"
-      ],
+      "required": ["ApplicationId", "ImportJobRequest"],
       "payload": "ImportJobRequest"
     },
     "CreateImportJobResponse": {
@@ -7357,9 +7268,7 @@
           "shape": "ImportJobResponse"
         }
       },
-      "required": [
-        "ImportJobResponse"
-      ],
+      "required": ["ImportJobResponse"],
       "payload": "ImportJobResponse"
     },
     "CreateInAppTemplateRequest": {
@@ -7375,10 +7284,7 @@
           "documentation": "<p>The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.</p>"
         }
       },
-      "required": [
-        "TemplateName",
-        "InAppTemplateRequest"
-      ],
+      "required": ["TemplateName", "InAppTemplateRequest"],
       "payload": "InAppTemplateRequest"
     },
     "CreateInAppTemplateResponse": {
@@ -7388,9 +7294,7 @@
           "shape": "TemplateCreateMessageBody"
         }
       },
-      "required": [
-        "TemplateCreateMessageBody"
-      ],
+      "required": ["TemplateCreateMessageBody"],
       "payload": "TemplateCreateMessageBody"
     },
     "CreateJourneyRequest": {
@@ -7406,10 +7310,7 @@
           "shape": "WriteJourneyRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "WriteJourneyRequest"
-      ],
+      "required": ["ApplicationId", "WriteJourneyRequest"],
       "payload": "WriteJourneyRequest"
     },
     "CreateJourneyResponse": {
@@ -7419,9 +7320,7 @@
           "shape": "JourneyResponse"
         }
       },
-      "required": [
-        "JourneyResponse"
-      ],
+      "required": ["JourneyResponse"],
       "payload": "JourneyResponse"
     },
     "CreatePushTemplateRequest": {
@@ -7437,10 +7336,7 @@
           "documentation": "<p>The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.</p>"
         }
       },
-      "required": [
-        "TemplateName",
-        "PushNotificationTemplateRequest"
-      ],
+      "required": ["TemplateName", "PushNotificationTemplateRequest"],
       "payload": "PushNotificationTemplateRequest"
     },
     "CreatePushTemplateResponse": {
@@ -7450,9 +7346,7 @@
           "shape": "CreateTemplateMessageBody"
         }
       },
-      "required": [
-        "CreateTemplateMessageBody"
-      ],
+      "required": ["CreateTemplateMessageBody"],
       "payload": "CreateTemplateMessageBody"
     },
     "CreateRecommenderConfiguration": {
@@ -7496,10 +7390,7 @@
         }
       },
       "documentation": "<p>Specifies Amazon Pinpoint configuration settings for retrieving and processing recommendation data from a recommender model.</p>",
-      "required": [
-        "RecommendationProviderUri",
-        "RecommendationProviderRoleArn"
-      ]
+      "required": ["RecommendationProviderUri", "RecommendationProviderRoleArn"]
     },
     "CreateRecommenderConfigurationRequest": {
       "type": "structure",
@@ -7508,9 +7399,7 @@
           "shape": "CreateRecommenderConfiguration"
         }
       },
-      "required": [
-        "CreateRecommenderConfiguration"
-      ],
+      "required": ["CreateRecommenderConfiguration"],
       "payload": "CreateRecommenderConfiguration"
     },
     "CreateRecommenderConfigurationResponse": {
@@ -7520,9 +7409,7 @@
           "shape": "RecommenderConfigurationResponse"
         }
       },
-      "required": [
-        "RecommenderConfigurationResponse"
-      ],
+      "required": ["RecommenderConfigurationResponse"],
       "payload": "RecommenderConfigurationResponse"
     },
     "CreateSegmentRequest": {
@@ -7538,10 +7425,7 @@
           "shape": "WriteSegmentRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "WriteSegmentRequest"
-      ],
+      "required": ["ApplicationId", "WriteSegmentRequest"],
       "payload": "WriteSegmentRequest"
     },
     "CreateSegmentResponse": {
@@ -7551,9 +7435,7 @@
           "shape": "SegmentResponse"
         }
       },
-      "required": [
-        "SegmentResponse"
-      ],
+      "required": ["SegmentResponse"],
       "payload": "SegmentResponse"
     },
     "CreateSmsTemplateRequest": {
@@ -7569,10 +7451,7 @@
           "documentation": "<p>The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.</p>"
         }
       },
-      "required": [
-        "TemplateName",
-        "SMSTemplateRequest"
-      ],
+      "required": ["TemplateName", "SMSTemplateRequest"],
       "payload": "SMSTemplateRequest"
     },
     "CreateSmsTemplateResponse": {
@@ -7582,9 +7461,7 @@
           "shape": "CreateTemplateMessageBody"
         }
       },
-      "required": [
-        "CreateTemplateMessageBody"
-      ],
+      "required": ["CreateTemplateMessageBody"],
       "payload": "CreateTemplateMessageBody"
     },
     "CreateTemplateMessageBody": {
@@ -7618,10 +7495,7 @@
           "shape": "VoiceTemplateRequest"
         }
       },
-      "required": [
-        "TemplateName",
-        "VoiceTemplateRequest"
-      ],
+      "required": ["TemplateName", "VoiceTemplateRequest"],
       "payload": "VoiceTemplateRequest"
     },
     "CreateVoiceTemplateResponse": {
@@ -7631,9 +7505,7 @@
           "shape": "CreateTemplateMessageBody"
         }
       },
-      "required": [
-        "CreateTemplateMessageBody"
-      ],
+      "required": ["CreateTemplateMessageBody"],
       "payload": "CreateTemplateMessageBody"
     },
     "CustomDeliveryConfiguration": {
@@ -7649,9 +7521,7 @@
         }
       },
       "documentation": "<p>Specifies the delivery configuration settings for sending a campaign or campaign treatment through a custom channel. This object is required if you use the CampaignCustomMessage object to define the message to send for the campaign or campaign treatment.</p>",
-      "required": [
-        "DeliveryUri"
-      ]
+      "required": ["DeliveryUri"]
     },
     "CustomMessageActivity": {
       "type": "structure",
@@ -7712,10 +7582,7 @@
         }
       },
       "documentation": "<p>Default button configuration.</p>",
-      "required": [
-        "ButtonAction",
-        "Text"
-      ]
+      "required": ["ButtonAction", "Text"]
     },
     "DefaultMessage": {
       "type": "structure",
@@ -7801,9 +7668,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteAdmChannelResponse": {
       "type": "structure",
@@ -7812,9 +7677,7 @@
           "shape": "ADMChannelResponse"
         }
       },
-      "required": [
-        "ADMChannelResponse"
-      ],
+      "required": ["ADMChannelResponse"],
       "payload": "ADMChannelResponse"
     },
     "DeleteApnsChannelRequest": {
@@ -7827,9 +7690,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteApnsChannelResponse": {
       "type": "structure",
@@ -7838,9 +7699,7 @@
           "shape": "APNSChannelResponse"
         }
       },
-      "required": [
-        "APNSChannelResponse"
-      ],
+      "required": ["APNSChannelResponse"],
       "payload": "APNSChannelResponse"
     },
     "DeleteApnsSandboxChannelRequest": {
@@ -7853,9 +7712,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteApnsSandboxChannelResponse": {
       "type": "structure",
@@ -7864,9 +7721,7 @@
           "shape": "APNSSandboxChannelResponse"
         }
       },
-      "required": [
-        "APNSSandboxChannelResponse"
-      ],
+      "required": ["APNSSandboxChannelResponse"],
       "payload": "APNSSandboxChannelResponse"
     },
     "DeleteApnsVoipChannelRequest": {
@@ -7879,9 +7734,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteApnsVoipChannelResponse": {
       "type": "structure",
@@ -7890,9 +7743,7 @@
           "shape": "APNSVoipChannelResponse"
         }
       },
-      "required": [
-        "APNSVoipChannelResponse"
-      ],
+      "required": ["APNSVoipChannelResponse"],
       "payload": "APNSVoipChannelResponse"
     },
     "DeleteApnsVoipSandboxChannelRequest": {
@@ -7905,9 +7756,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteApnsVoipSandboxChannelResponse": {
       "type": "structure",
@@ -7916,9 +7765,7 @@
           "shape": "APNSVoipSandboxChannelResponse"
         }
       },
-      "required": [
-        "APNSVoipSandboxChannelResponse"
-      ],
+      "required": ["APNSVoipSandboxChannelResponse"],
       "payload": "APNSVoipSandboxChannelResponse"
     },
     "DeleteAppRequest": {
@@ -7931,9 +7778,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteAppResponse": {
       "type": "structure",
@@ -7942,9 +7787,7 @@
           "shape": "ApplicationResponse"
         }
       },
-      "required": [
-        "ApplicationResponse"
-      ],
+      "required": ["ApplicationResponse"],
       "payload": "ApplicationResponse"
     },
     "DeleteBaiduChannelRequest": {
@@ -7957,9 +7800,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteBaiduChannelResponse": {
       "type": "structure",
@@ -7968,9 +7809,7 @@
           "shape": "BaiduChannelResponse"
         }
       },
-      "required": [
-        "BaiduChannelResponse"
-      ],
+      "required": ["BaiduChannelResponse"],
       "payload": "BaiduChannelResponse"
     },
     "DeleteCampaignRequest": {
@@ -7989,10 +7828,7 @@
           "documentation": "<p>The unique identifier for the campaign.</p>"
         }
       },
-      "required": [
-        "CampaignId",
-        "ApplicationId"
-      ]
+      "required": ["CampaignId", "ApplicationId"]
     },
     "DeleteCampaignResponse": {
       "type": "structure",
@@ -8001,9 +7837,7 @@
           "shape": "CampaignResponse"
         }
       },
-      "required": [
-        "CampaignResponse"
-      ],
+      "required": ["CampaignResponse"],
       "payload": "CampaignResponse"
     },
     "DeleteEmailChannelRequest": {
@@ -8016,9 +7850,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteEmailChannelResponse": {
       "type": "structure",
@@ -8027,9 +7859,7 @@
           "shape": "EmailChannelResponse"
         }
       },
-      "required": [
-        "EmailChannelResponse"
-      ],
+      "required": ["EmailChannelResponse"],
       "payload": "EmailChannelResponse"
     },
     "DeleteEmailTemplateRequest": {
@@ -8048,9 +7878,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName"
-      ]
+      "required": ["TemplateName"]
     },
     "DeleteEmailTemplateResponse": {
       "type": "structure",
@@ -8059,9 +7887,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "DeleteEndpointRequest": {
@@ -8080,10 +7906,7 @@
           "documentation": "<p>The case insensitive unique identifier for the endpoint. The identifier can't contain <code>$</code>, <code>{</code> or <code>}</code>.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "EndpointId"
-      ]
+      "required": ["ApplicationId", "EndpointId"]
     },
     "DeleteEndpointResponse": {
       "type": "structure",
@@ -8092,9 +7915,7 @@
           "shape": "EndpointResponse"
         }
       },
-      "required": [
-        "EndpointResponse"
-      ],
+      "required": ["EndpointResponse"],
       "payload": "EndpointResponse"
     },
     "DeleteEventStreamRequest": {
@@ -8107,9 +7928,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteEventStreamResponse": {
       "type": "structure",
@@ -8118,9 +7937,7 @@
           "shape": "EventStream"
         }
       },
-      "required": [
-        "EventStream"
-      ],
+      "required": ["EventStream"],
       "payload": "EventStream"
     },
     "DeleteGcmChannelRequest": {
@@ -8133,9 +7950,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteGcmChannelResponse": {
       "type": "structure",
@@ -8144,9 +7959,7 @@
           "shape": "GCMChannelResponse"
         }
       },
-      "required": [
-        "GCMChannelResponse"
-      ],
+      "required": ["GCMChannelResponse"],
       "payload": "GCMChannelResponse"
     },
     "DeleteInAppTemplateRequest": {
@@ -8165,9 +7978,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName"
-      ]
+      "required": ["TemplateName"]
     },
     "DeleteInAppTemplateResponse": {
       "type": "structure",
@@ -8176,9 +7987,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "DeleteJourneyRequest": {
@@ -8197,10 +8006,7 @@
           "documentation": "<p>The unique identifier for the journey.</p>"
         }
       },
-      "required": [
-        "JourneyId",
-        "ApplicationId"
-      ]
+      "required": ["JourneyId", "ApplicationId"]
     },
     "DeleteJourneyResponse": {
       "type": "structure",
@@ -8209,9 +8015,7 @@
           "shape": "JourneyResponse"
         }
       },
-      "required": [
-        "JourneyResponse"
-      ],
+      "required": ["JourneyResponse"],
       "payload": "JourneyResponse"
     },
     "DeletePushTemplateRequest": {
@@ -8230,9 +8034,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName"
-      ]
+      "required": ["TemplateName"]
     },
     "DeletePushTemplateResponse": {
       "type": "structure",
@@ -8241,9 +8043,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "DeleteRecommenderConfigurationRequest": {
@@ -8256,9 +8056,7 @@
           "documentation": "<p>The unique identifier for the recommender model configuration. This identifier is displayed as the <b>Recommender ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "RecommenderId"
-      ]
+      "required": ["RecommenderId"]
     },
     "DeleteRecommenderConfigurationResponse": {
       "type": "structure",
@@ -8267,9 +8065,7 @@
           "shape": "RecommenderConfigurationResponse"
         }
       },
-      "required": [
-        "RecommenderConfigurationResponse"
-      ],
+      "required": ["RecommenderConfigurationResponse"],
       "payload": "RecommenderConfigurationResponse"
     },
     "DeleteSegmentRequest": {
@@ -8288,10 +8084,7 @@
           "documentation": "<p>The unique identifier for the segment.</p>"
         }
       },
-      "required": [
-        "SegmentId",
-        "ApplicationId"
-      ]
+      "required": ["SegmentId", "ApplicationId"]
     },
     "DeleteSegmentResponse": {
       "type": "structure",
@@ -8300,9 +8093,7 @@
           "shape": "SegmentResponse"
         }
       },
-      "required": [
-        "SegmentResponse"
-      ],
+      "required": ["SegmentResponse"],
       "payload": "SegmentResponse"
     },
     "DeleteSmsChannelRequest": {
@@ -8315,9 +8106,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteSmsChannelResponse": {
       "type": "structure",
@@ -8326,9 +8115,7 @@
           "shape": "SMSChannelResponse"
         }
       },
-      "required": [
-        "SMSChannelResponse"
-      ],
+      "required": ["SMSChannelResponse"],
       "payload": "SMSChannelResponse"
     },
     "DeleteSmsTemplateRequest": {
@@ -8347,9 +8134,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName"
-      ]
+      "required": ["TemplateName"]
     },
     "DeleteSmsTemplateResponse": {
       "type": "structure",
@@ -8358,9 +8143,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "DeleteUserEndpointsRequest": {
@@ -8379,10 +8162,7 @@
           "documentation": "<p>The unique identifier for the user.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "UserId"
-      ]
+      "required": ["ApplicationId", "UserId"]
     },
     "DeleteUserEndpointsResponse": {
       "type": "structure",
@@ -8391,9 +8171,7 @@
           "shape": "EndpointsResponse"
         }
       },
-      "required": [
-        "EndpointsResponse"
-      ],
+      "required": ["EndpointsResponse"],
       "payload": "EndpointsResponse"
     },
     "DeleteVoiceChannelRequest": {
@@ -8406,9 +8184,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "DeleteVoiceChannelResponse": {
       "type": "structure",
@@ -8417,9 +8193,7 @@
           "shape": "VoiceChannelResponse"
         }
       },
-      "required": [
-        "VoiceChannelResponse"
-      ],
+      "required": ["VoiceChannelResponse"],
       "payload": "VoiceChannelResponse"
     },
     "DeleteVoiceTemplateRequest": {
@@ -8438,9 +8212,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName"
-      ]
+      "required": ["TemplateName"]
     },
     "DeleteVoiceTemplateResponse": {
       "type": "structure",
@@ -8449,9 +8221,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "DeliveryStatus": {
@@ -8468,10 +8238,7 @@
     },
     "DimensionType": {
       "type": "string",
-      "enum": [
-        "INCLUSIVE",
-        "EXCLUSIVE"
-      ]
+      "enum": ["INCLUSIVE", "EXCLUSIVE"]
     },
     "DirectMessageConfiguration": {
       "type": "structure",
@@ -8517,12 +8284,7 @@
     },
     "Duration": {
       "type": "string",
-      "enum": [
-        "HR_24",
-        "DAY_7",
-        "DAY_14",
-        "DAY_30"
-      ]
+      "enum": ["HR_24", "DAY_7", "DAY_14", "DAY_30"]
     },
     "EmailChannelRequest": {
       "type": "structure",
@@ -8553,10 +8315,7 @@
         }
       },
       "documentation": "<p>Specifies the status and settings of the email channel for an application.</p>",
-      "required": [
-        "FromAddress",
-        "Identity"
-      ]
+      "required": ["FromAddress", "Identity"]
     },
     "EmailChannelResponse": {
       "type": "structure",
@@ -8627,9 +8386,7 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of the email channel for an application.</p>",
-      "required": [
-        "Platform"
-      ]
+      "required": ["Platform"]
     },
     "EmailMessage": {
       "type": "structure",
@@ -8858,9 +8615,7 @@
         }
       },
       "documentation": "<p>Specifies a batch of endpoints to create or update and the settings and attributes to set or change for each endpoint.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "EndpointDemographic": {
       "type": "structure",
@@ -8973,10 +8728,7 @@
         }
       },
       "documentation": "<p>Provides information about the delivery status and results of sending a message directly to an endpoint.</p>",
-      "required": [
-        "DeliveryStatus",
-        "StatusCode"
-      ]
+      "required": ["DeliveryStatus", "StatusCode"]
     },
     "EndpointRequest": {
       "type": "structure",
@@ -9143,9 +8895,7 @@
         }
       },
       "documentation": "<p>Provides information about all the endpoints that are associated with a user ID.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "Event": {
       "type": "structure",
@@ -9192,10 +8942,7 @@
         }
       },
       "documentation": "<p>Specifies information about an event that reports data to Amazon Pinpoint.</p>",
-      "required": [
-        "EventType",
-        "Timestamp"
-      ]
+      "required": ["EventType", "Timestamp"]
     },
     "EventCondition": {
       "type": "structure",
@@ -9242,10 +8989,7 @@
         }
       },
       "documentation": "<p>Specifies the settings for an event that causes a campaign to be sent or a journey activity to be performed.</p>",
-      "required": [
-        "FilterType",
-        "Dimensions"
-      ]
+      "required": ["FilterType", "Dimensions"]
     },
     "EventItemResponse": {
       "type": "structure",
@@ -9302,11 +9046,7 @@
         }
       },
       "documentation": "<p>Specifies settings for publishing event data to an Amazon Kinesis data stream or an Amazon Kinesis Data Firehose delivery stream.</p>",
-      "required": [
-        "ApplicationId",
-        "RoleArn",
-        "DestinationStreamArn"
-      ]
+      "required": ["ApplicationId", "RoleArn", "DestinationStreamArn"]
     },
     "EventsBatch": {
       "type": "structure",
@@ -9321,10 +9061,7 @@
         }
       },
       "documentation": "<p>Specifies a batch of endpoints and events to process.</p>",
-      "required": [
-        "Endpoint",
-        "Events"
-      ]
+      "required": ["Endpoint", "Events"]
     },
     "EventsRequest": {
       "type": "structure",
@@ -9335,9 +9072,7 @@
         }
       },
       "documentation": "<p>Specifies a batch of events to process.</p>",
-      "required": [
-        "BatchItem"
-      ]
+      "required": ["BatchItem"]
     },
     "EventsResponse": {
       "type": "structure",
@@ -9370,10 +9105,7 @@
         }
       },
       "documentation": "<p>Specifies the settings for a job that exports endpoint definitions to an Amazon Simple Storage Service (Amazon S3) bucket.</p>",
-      "required": [
-        "S3UrlPrefix",
-        "RoleArn"
-      ]
+      "required": ["S3UrlPrefix", "RoleArn"]
     },
     "ExportJobResource": {
       "type": "structure",
@@ -9396,10 +9128,7 @@
         }
       },
       "documentation": "<p>Provides information about the resource settings for a job that exports endpoint definitions to a file. The file can be added directly to an Amazon Simple Storage Service (Amazon S3) bucket by using the Amazon Pinpoint API or downloaded directly to a computer by using the Amazon Pinpoint console.</p>",
-      "required": [
-        "S3UrlPrefix",
-        "RoleArn"
-      ]
+      "required": ["S3UrlPrefix", "RoleArn"]
     },
     "ExportJobResponse": {
       "type": "structure",
@@ -9480,16 +9209,11 @@
         }
       },
       "documentation": "<p>Provides information about all the export jobs that are associated with an application or segment. An export job is a job that exports endpoint definitions to a file.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "FilterType": {
       "type": "string",
-      "enum": [
-        "SYSTEM",
-        "ENDPOINT"
-      ]
+      "enum": ["SYSTEM", "ENDPOINT"]
     },
     "ForbiddenException": {
       "type": "structure",
@@ -9511,10 +9235,7 @@
     },
     "Format": {
       "type": "string",
-      "enum": [
-        "CSV",
-        "JSON"
-      ]
+      "enum": ["CSV", "JSON"]
     },
     "Frequency": {
       "type": "string",
@@ -9607,9 +9328,7 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of the GCM channel for an application. The GCM channel enables Amazon Pinpoint to send push notifications through the Firebase Cloud Messaging (FCM), formerly Google Cloud Messaging (GCM), service.</p>",
-      "required": [
-        "Platform"
-      ]
+      "required": ["Platform"]
     },
     "GCMMessage": {
       "type": "structure",
@@ -9702,10 +9421,7 @@
         }
       },
       "documentation": "<p>Specifies the GPS coordinates of a location.</p>",
-      "required": [
-        "Latitude",
-        "Longitude"
-      ]
+      "required": ["Latitude", "Longitude"]
     },
     "GPSPointDimension": {
       "type": "structure",
@@ -9720,9 +9436,7 @@
         }
       },
       "documentation": "<p>Specifies GPS-based criteria for including or excluding endpoints from a segment.</p>",
-      "required": [
-        "Coordinates"
-      ]
+      "required": ["Coordinates"]
     },
     "GetAdmChannelRequest": {
       "type": "structure",
@@ -9734,9 +9448,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetAdmChannelResponse": {
       "type": "structure",
@@ -9745,9 +9457,7 @@
           "shape": "ADMChannelResponse"
         }
       },
-      "required": [
-        "ADMChannelResponse"
-      ],
+      "required": ["ADMChannelResponse"],
       "payload": "ADMChannelResponse"
     },
     "GetApnsChannelRequest": {
@@ -9760,9 +9470,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetApnsChannelResponse": {
       "type": "structure",
@@ -9771,9 +9479,7 @@
           "shape": "APNSChannelResponse"
         }
       },
-      "required": [
-        "APNSChannelResponse"
-      ],
+      "required": ["APNSChannelResponse"],
       "payload": "APNSChannelResponse"
     },
     "GetApnsSandboxChannelRequest": {
@@ -9786,9 +9492,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetApnsSandboxChannelResponse": {
       "type": "structure",
@@ -9797,9 +9501,7 @@
           "shape": "APNSSandboxChannelResponse"
         }
       },
-      "required": [
-        "APNSSandboxChannelResponse"
-      ],
+      "required": ["APNSSandboxChannelResponse"],
       "payload": "APNSSandboxChannelResponse"
     },
     "GetApnsVoipChannelRequest": {
@@ -9812,9 +9514,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetApnsVoipChannelResponse": {
       "type": "structure",
@@ -9823,9 +9523,7 @@
           "shape": "APNSVoipChannelResponse"
         }
       },
-      "required": [
-        "APNSVoipChannelResponse"
-      ],
+      "required": ["APNSVoipChannelResponse"],
       "payload": "APNSVoipChannelResponse"
     },
     "GetApnsVoipSandboxChannelRequest": {
@@ -9838,9 +9536,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetApnsVoipSandboxChannelResponse": {
       "type": "structure",
@@ -9849,9 +9545,7 @@
           "shape": "APNSVoipSandboxChannelResponse"
         }
       },
-      "required": [
-        "APNSVoipSandboxChannelResponse"
-      ],
+      "required": ["APNSVoipSandboxChannelResponse"],
       "payload": "APNSVoipSandboxChannelResponse"
     },
     "GetAppRequest": {
@@ -9864,9 +9558,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetAppResponse": {
       "type": "structure",
@@ -9875,9 +9567,7 @@
           "shape": "ApplicationResponse"
         }
       },
-      "required": [
-        "ApplicationResponse"
-      ],
+      "required": ["ApplicationResponse"],
       "payload": "ApplicationResponse"
     },
     "GetApplicationDateRangeKpiRequest": {
@@ -9920,10 +9610,7 @@
           "documentation": "<p>The first date and time to retrieve data for, as part of an inclusive date range that filters the query results. This value should be in extended ISO 8601 format and use Coordinated Universal Time (UTC), for example: 2019-07-19T20:00:00Z for 8:00 PM UTC July 19, 2019. This value should also be fewer than 90 days from the current day.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "KpiName"
-      ]
+      "required": ["ApplicationId", "KpiName"]
     },
     "GetApplicationDateRangeKpiResponse": {
       "type": "structure",
@@ -9932,9 +9619,7 @@
           "shape": "ApplicationDateRangeKpiResponse"
         }
       },
-      "required": [
-        "ApplicationDateRangeKpiResponse"
-      ],
+      "required": ["ApplicationDateRangeKpiResponse"],
       "payload": "ApplicationDateRangeKpiResponse"
     },
     "GetApplicationSettingsRequest": {
@@ -9947,9 +9632,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetApplicationSettingsResponse": {
       "type": "structure",
@@ -9958,9 +9641,7 @@
           "shape": "ApplicationSettingsResource"
         }
       },
-      "required": [
-        "ApplicationSettingsResource"
-      ],
+      "required": ["ApplicationSettingsResource"],
       "payload": "ApplicationSettingsResource"
     },
     "GetAppsRequest": {
@@ -9987,9 +9668,7 @@
           "shape": "ApplicationsResponse"
         }
       },
-      "required": [
-        "ApplicationsResponse"
-      ],
+      "required": ["ApplicationsResponse"],
       "payload": "ApplicationsResponse"
     },
     "GetBaiduChannelRequest": {
@@ -10002,9 +9681,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetBaiduChannelResponse": {
       "type": "structure",
@@ -10013,9 +9690,7 @@
           "shape": "BaiduChannelResponse"
         }
       },
-      "required": [
-        "BaiduChannelResponse"
-      ],
+      "required": ["BaiduChannelResponse"],
       "payload": "BaiduChannelResponse"
     },
     "GetCampaignActivitiesRequest": {
@@ -10046,10 +9721,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "CampaignId"
-      ]
+      "required": ["ApplicationId", "CampaignId"]
     },
     "GetCampaignActivitiesResponse": {
       "type": "structure",
@@ -10058,9 +9730,7 @@
           "shape": "ActivitiesResponse"
         }
       },
-      "required": [
-        "ActivitiesResponse"
-      ],
+      "required": ["ActivitiesResponse"],
       "payload": "ActivitiesResponse"
     },
     "GetCampaignDateRangeKpiRequest": {
@@ -10109,11 +9779,7 @@
           "documentation": "<p>The first date and time to retrieve data for, as part of an inclusive date range that filters the query results. This value should be in extended ISO 8601 format and use Coordinated Universal Time (UTC), for example: 2019-07-19T20:00:00Z for 8:00 PM UTC July 19, 2019. This value should also be fewer than 90 days from the current day.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "KpiName",
-        "CampaignId"
-      ]
+      "required": ["ApplicationId", "KpiName", "CampaignId"]
     },
     "GetCampaignDateRangeKpiResponse": {
       "type": "structure",
@@ -10122,9 +9788,7 @@
           "shape": "CampaignDateRangeKpiResponse"
         }
       },
-      "required": [
-        "CampaignDateRangeKpiResponse"
-      ],
+      "required": ["CampaignDateRangeKpiResponse"],
       "payload": "CampaignDateRangeKpiResponse"
     },
     "GetCampaignRequest": {
@@ -10143,10 +9807,7 @@
           "documentation": "<p>The unique identifier for the campaign.</p>"
         }
       },
-      "required": [
-        "CampaignId",
-        "ApplicationId"
-      ]
+      "required": ["CampaignId", "ApplicationId"]
     },
     "GetCampaignResponse": {
       "type": "structure",
@@ -10155,9 +9816,7 @@
           "shape": "CampaignResponse"
         }
       },
-      "required": [
-        "CampaignResponse"
-      ],
+      "required": ["CampaignResponse"],
       "payload": "CampaignResponse"
     },
     "GetCampaignVersionRequest": {
@@ -10182,11 +9841,7 @@
           "documentation": "<p>The unique version number (Version property) for the campaign version.</p>"
         }
       },
-      "required": [
-        "Version",
-        "ApplicationId",
-        "CampaignId"
-      ]
+      "required": ["Version", "ApplicationId", "CampaignId"]
     },
     "GetCampaignVersionResponse": {
       "type": "structure",
@@ -10195,9 +9850,7 @@
           "shape": "CampaignResponse"
         }
       },
-      "required": [
-        "CampaignResponse"
-      ],
+      "required": ["CampaignResponse"],
       "payload": "CampaignResponse"
     },
     "GetCampaignVersionsRequest": {
@@ -10228,10 +9881,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "CampaignId"
-      ]
+      "required": ["ApplicationId", "CampaignId"]
     },
     "GetCampaignVersionsResponse": {
       "type": "structure",
@@ -10240,9 +9890,7 @@
           "shape": "CampaignsResponse"
         }
       },
-      "required": [
-        "CampaignsResponse"
-      ],
+      "required": ["CampaignsResponse"],
       "payload": "CampaignsResponse"
     },
     "GetCampaignsRequest": {
@@ -10267,9 +9915,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetCampaignsResponse": {
       "type": "structure",
@@ -10278,9 +9924,7 @@
           "shape": "CampaignsResponse"
         }
       },
-      "required": [
-        "CampaignsResponse"
-      ],
+      "required": ["CampaignsResponse"],
       "payload": "CampaignsResponse"
     },
     "GetChannelsRequest": {
@@ -10293,9 +9937,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetChannelsResponse": {
       "type": "structure",
@@ -10304,9 +9946,7 @@
           "shape": "ChannelsResponse"
         }
       },
-      "required": [
-        "ChannelsResponse"
-      ],
+      "required": ["ChannelsResponse"],
       "payload": "ChannelsResponse"
     },
     "GetEmailChannelRequest": {
@@ -10319,9 +9959,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetEmailChannelResponse": {
       "type": "structure",
@@ -10330,9 +9968,7 @@
           "shape": "EmailChannelResponse"
         }
       },
-      "required": [
-        "EmailChannelResponse"
-      ],
+      "required": ["EmailChannelResponse"],
       "payload": "EmailChannelResponse"
     },
     "GetEmailTemplateRequest": {
@@ -10351,9 +9987,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName"
-      ]
+      "required": ["TemplateName"]
     },
     "GetEmailTemplateResponse": {
       "type": "structure",
@@ -10362,9 +9996,7 @@
           "shape": "EmailTemplateResponse"
         }
       },
-      "required": [
-        "EmailTemplateResponse"
-      ],
+      "required": ["EmailTemplateResponse"],
       "payload": "EmailTemplateResponse"
     },
     "GetEndpointRequest": {
@@ -10383,10 +10015,7 @@
           "documentation": "<p>The case insensitive unique identifier for the endpoint. The identifier can't contain <code>$</code>, <code>{</code> or <code>}</code>.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "EndpointId"
-      ]
+      "required": ["ApplicationId", "EndpointId"]
     },
     "GetEndpointResponse": {
       "type": "structure",
@@ -10395,9 +10024,7 @@
           "shape": "EndpointResponse"
         }
       },
-      "required": [
-        "EndpointResponse"
-      ],
+      "required": ["EndpointResponse"],
       "payload": "EndpointResponse"
     },
     "GetEventStreamRequest": {
@@ -10410,9 +10037,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetEventStreamResponse": {
       "type": "structure",
@@ -10421,9 +10046,7 @@
           "shape": "EventStream"
         }
       },
-      "required": [
-        "EventStream"
-      ],
+      "required": ["EventStream"],
       "payload": "EventStream"
     },
     "GetExportJobRequest": {
@@ -10442,10 +10065,7 @@
           "documentation": "<p>The unique identifier for the job.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "JobId"
-      ]
+      "required": ["ApplicationId", "JobId"]
     },
     "GetExportJobResponse": {
       "type": "structure",
@@ -10454,9 +10074,7 @@
           "shape": "ExportJobResponse"
         }
       },
-      "required": [
-        "ExportJobResponse"
-      ],
+      "required": ["ExportJobResponse"],
       "payload": "ExportJobResponse"
     },
     "GetExportJobsRequest": {
@@ -10481,9 +10099,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetExportJobsResponse": {
       "type": "structure",
@@ -10492,9 +10108,7 @@
           "shape": "ExportJobsResponse"
         }
       },
-      "required": [
-        "ExportJobsResponse"
-      ],
+      "required": ["ExportJobsResponse"],
       "payload": "ExportJobsResponse"
     },
     "GetGcmChannelRequest": {
@@ -10507,9 +10121,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetGcmChannelResponse": {
       "type": "structure",
@@ -10518,9 +10130,7 @@
           "shape": "GCMChannelResponse"
         }
       },
-      "required": [
-        "GCMChannelResponse"
-      ],
+      "required": ["GCMChannelResponse"],
       "payload": "GCMChannelResponse"
     },
     "GetImportJobRequest": {
@@ -10539,10 +10149,7 @@
           "documentation": "<p>The unique identifier for the job.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "JobId"
-      ]
+      "required": ["ApplicationId", "JobId"]
     },
     "GetImportJobResponse": {
       "type": "structure",
@@ -10551,9 +10158,7 @@
           "shape": "ImportJobResponse"
         }
       },
-      "required": [
-        "ImportJobResponse"
-      ],
+      "required": ["ImportJobResponse"],
       "payload": "ImportJobResponse"
     },
     "GetImportJobsRequest": {
@@ -10578,9 +10183,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetImportJobsResponse": {
       "type": "structure",
@@ -10589,9 +10192,7 @@
           "shape": "ImportJobsResponse"
         }
       },
-      "required": [
-        "ImportJobsResponse"
-      ],
+      "required": ["ImportJobsResponse"],
       "payload": "ImportJobsResponse"
     },
     "GetInAppMessagesRequest": {
@@ -10610,10 +10211,7 @@
           "documentation": "<p>The unique identifier for the endpoint.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "EndpointId"
-      ]
+      "required": ["ApplicationId", "EndpointId"]
     },
     "GetInAppMessagesResponse": {
       "type": "structure",
@@ -10622,9 +10220,7 @@
           "shape": "InAppMessagesResponse"
         }
       },
-      "required": [
-        "InAppMessagesResponse"
-      ],
+      "required": ["InAppMessagesResponse"],
       "payload": "InAppMessagesResponse"
     },
     "GetInAppTemplateRequest": {
@@ -10643,9 +10239,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName"
-      ]
+      "required": ["TemplateName"]
     },
     "GetInAppTemplateResponse": {
       "type": "structure",
@@ -10654,9 +10248,7 @@
           "shape": "InAppTemplateResponse"
         }
       },
-      "required": [
-        "InAppTemplateResponse"
-      ],
+      "required": ["InAppTemplateResponse"],
       "payload": "InAppTemplateResponse"
     },
     "GetJourneyDateRangeKpiRequest": {
@@ -10705,11 +10297,7 @@
           "documentation": "<p>The first date and time to retrieve data for, as part of an inclusive date range that filters the query results. This value should be in extended ISO 8601 format and use Coordinated Universal Time (UTC), for example: 2019-07-19T20:00:00Z for 8:00 PM UTC July 19, 2019. This value should also be fewer than 90 days from the current day.</p>"
         }
       },
-      "required": [
-        "JourneyId",
-        "ApplicationId",
-        "KpiName"
-      ]
+      "required": ["JourneyId", "ApplicationId", "KpiName"]
     },
     "GetJourneyDateRangeKpiResponse": {
       "type": "structure",
@@ -10718,9 +10306,7 @@
           "shape": "JourneyDateRangeKpiResponse"
         }
       },
-      "required": [
-        "JourneyDateRangeKpiResponse"
-      ],
+      "required": ["JourneyDateRangeKpiResponse"],
       "payload": "JourneyDateRangeKpiResponse"
     },
     "GetJourneyExecutionActivityMetricsRequest": {
@@ -10757,11 +10343,7 @@
           "documentation": "<p>The maximum number of items to include in each page of a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
         }
       },
-      "required": [
-        "JourneyActivityId",
-        "ApplicationId",
-        "JourneyId"
-      ]
+      "required": ["JourneyActivityId", "ApplicationId", "JourneyId"]
     },
     "GetJourneyExecutionActivityMetricsResponse": {
       "type": "structure",
@@ -10770,9 +10352,7 @@
           "shape": "JourneyExecutionActivityMetricsResponse"
         }
       },
-      "required": [
-        "JourneyExecutionActivityMetricsResponse"
-      ],
+      "required": ["JourneyExecutionActivityMetricsResponse"],
       "payload": "JourneyExecutionActivityMetricsResponse"
     },
     "GetJourneyExecutionMetricsRequest": {
@@ -10803,10 +10383,7 @@
           "documentation": "<p>The maximum number of items to include in each page of a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "JourneyId"
-      ]
+      "required": ["ApplicationId", "JourneyId"]
     },
     "GetJourneyExecutionMetricsResponse": {
       "type": "structure",
@@ -10815,9 +10392,7 @@
           "shape": "JourneyExecutionMetricsResponse"
         }
       },
-      "required": [
-        "JourneyExecutionMetricsResponse"
-      ],
+      "required": ["JourneyExecutionMetricsResponse"],
       "payload": "JourneyExecutionMetricsResponse"
     },
     "GetJourneyRequest": {
@@ -10836,10 +10411,7 @@
           "documentation": "<p>The unique identifier for the journey.</p>"
         }
       },
-      "required": [
-        "JourneyId",
-        "ApplicationId"
-      ]
+      "required": ["JourneyId", "ApplicationId"]
     },
     "GetJourneyResponse": {
       "type": "structure",
@@ -10848,9 +10420,7 @@
           "shape": "JourneyResponse"
         }
       },
-      "required": [
-        "JourneyResponse"
-      ],
+      "required": ["JourneyResponse"],
       "payload": "JourneyResponse"
     },
     "GetJourneyRunExecutionActivityMetricsRequest": {
@@ -10893,12 +10463,7 @@
           "documentation": "<p>The unique identifier for the journey run.</p>"
         }
       },
-      "required": [
-        "RunId",
-        "JourneyActivityId",
-        "JourneyId",
-        "ApplicationId"
-      ]
+      "required": ["RunId", "JourneyActivityId", "JourneyId", "ApplicationId"]
     },
     "GetJourneyRunExecutionActivityMetricsResponse": {
       "type": "structure",
@@ -10907,9 +10472,7 @@
           "shape": "JourneyRunExecutionActivityMetricsResponse"
         }
       },
-      "required": [
-        "JourneyRunExecutionActivityMetricsResponse"
-      ],
+      "required": ["JourneyRunExecutionActivityMetricsResponse"],
       "payload": "JourneyRunExecutionActivityMetricsResponse"
     },
     "GetJourneyRunExecutionMetricsRequest": {
@@ -10946,11 +10509,7 @@
           "documentation": "<p>The unique identifier for the journey run.</p>"
         }
       },
-      "required": [
-        "RunId",
-        "ApplicationId",
-        "JourneyId"
-      ]
+      "required": ["RunId", "ApplicationId", "JourneyId"]
     },
     "GetJourneyRunExecutionMetricsResponse": {
       "type": "structure",
@@ -10959,9 +10518,7 @@
           "shape": "JourneyRunExecutionMetricsResponse"
         }
       },
-      "required": [
-        "JourneyRunExecutionMetricsResponse"
-      ],
+      "required": ["JourneyRunExecutionMetricsResponse"],
       "payload": "JourneyRunExecutionMetricsResponse"
     },
     "GetJourneyRunsRequest": {
@@ -10992,10 +10549,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "JourneyId"
-      ]
+      "required": ["ApplicationId", "JourneyId"]
     },
     "GetJourneyRunsResponse": {
       "type": "structure",
@@ -11004,9 +10558,7 @@
           "shape": "JourneyRunsResponse"
         }
       },
-      "required": [
-        "JourneyRunsResponse"
-      ],
+      "required": ["JourneyRunsResponse"],
       "payload": "JourneyRunsResponse"
     },
     "GetPushTemplateRequest": {
@@ -11025,9 +10577,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName"
-      ]
+      "required": ["TemplateName"]
     },
     "GetPushTemplateResponse": {
       "type": "structure",
@@ -11036,9 +10586,7 @@
           "shape": "PushNotificationTemplateResponse"
         }
       },
-      "required": [
-        "PushNotificationTemplateResponse"
-      ],
+      "required": ["PushNotificationTemplateResponse"],
       "payload": "PushNotificationTemplateResponse"
     },
     "GetRecommenderConfigurationRequest": {
@@ -11051,9 +10599,7 @@
           "documentation": "<p>The unique identifier for the recommender model configuration. This identifier is displayed as the <b>Recommender ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "RecommenderId"
-      ]
+      "required": ["RecommenderId"]
     },
     "GetRecommenderConfigurationResponse": {
       "type": "structure",
@@ -11062,9 +10608,7 @@
           "shape": "RecommenderConfigurationResponse"
         }
       },
-      "required": [
-        "RecommenderConfigurationResponse"
-      ],
+      "required": ["RecommenderConfigurationResponse"],
       "payload": "RecommenderConfigurationResponse"
     },
     "GetRecommenderConfigurationsRequest": {
@@ -11091,9 +10635,7 @@
           "shape": "ListRecommenderConfigurationsResponse"
         }
       },
-      "required": [
-        "ListRecommenderConfigurationsResponse"
-      ],
+      "required": ["ListRecommenderConfigurationsResponse"],
       "payload": "ListRecommenderConfigurationsResponse"
     },
     "GetSegmentExportJobsRequest": {
@@ -11124,10 +10666,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "SegmentId",
-        "ApplicationId"
-      ]
+      "required": ["SegmentId", "ApplicationId"]
     },
     "GetSegmentExportJobsResponse": {
       "type": "structure",
@@ -11136,9 +10675,7 @@
           "shape": "ExportJobsResponse"
         }
       },
-      "required": [
-        "ExportJobsResponse"
-      ],
+      "required": ["ExportJobsResponse"],
       "payload": "ExportJobsResponse"
     },
     "GetSegmentImportJobsRequest": {
@@ -11169,10 +10706,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "SegmentId",
-        "ApplicationId"
-      ]
+      "required": ["SegmentId", "ApplicationId"]
     },
     "GetSegmentImportJobsResponse": {
       "type": "structure",
@@ -11181,9 +10715,7 @@
           "shape": "ImportJobsResponse"
         }
       },
-      "required": [
-        "ImportJobsResponse"
-      ],
+      "required": ["ImportJobsResponse"],
       "payload": "ImportJobsResponse"
     },
     "GetSegmentRequest": {
@@ -11202,10 +10734,7 @@
           "documentation": "<p>The unique identifier for the segment.</p>"
         }
       },
-      "required": [
-        "SegmentId",
-        "ApplicationId"
-      ]
+      "required": ["SegmentId", "ApplicationId"]
     },
     "GetSegmentResponse": {
       "type": "structure",
@@ -11214,9 +10743,7 @@
           "shape": "SegmentResponse"
         }
       },
-      "required": [
-        "SegmentResponse"
-      ],
+      "required": ["SegmentResponse"],
       "payload": "SegmentResponse"
     },
     "GetSegmentVersionRequest": {
@@ -11241,11 +10768,7 @@
           "documentation": "<p>The unique version number (Version property) for the campaign version.</p>"
         }
       },
-      "required": [
-        "SegmentId",
-        "Version",
-        "ApplicationId"
-      ]
+      "required": ["SegmentId", "Version", "ApplicationId"]
     },
     "GetSegmentVersionResponse": {
       "type": "structure",
@@ -11254,9 +10777,7 @@
           "shape": "SegmentResponse"
         }
       },
-      "required": [
-        "SegmentResponse"
-      ],
+      "required": ["SegmentResponse"],
       "payload": "SegmentResponse"
     },
     "GetSegmentVersionsRequest": {
@@ -11287,10 +10808,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "SegmentId",
-        "ApplicationId"
-      ]
+      "required": ["SegmentId", "ApplicationId"]
     },
     "GetSegmentVersionsResponse": {
       "type": "structure",
@@ -11299,9 +10817,7 @@
           "shape": "SegmentsResponse"
         }
       },
-      "required": [
-        "SegmentsResponse"
-      ],
+      "required": ["SegmentsResponse"],
       "payload": "SegmentsResponse"
     },
     "GetSegmentsRequest": {
@@ -11326,9 +10842,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetSegmentsResponse": {
       "type": "structure",
@@ -11337,9 +10851,7 @@
           "shape": "SegmentsResponse"
         }
       },
-      "required": [
-        "SegmentsResponse"
-      ],
+      "required": ["SegmentsResponse"],
       "payload": "SegmentsResponse"
     },
     "GetSmsChannelRequest": {
@@ -11352,9 +10864,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetSmsChannelResponse": {
       "type": "structure",
@@ -11363,9 +10873,7 @@
           "shape": "SMSChannelResponse"
         }
       },
-      "required": [
-        "SMSChannelResponse"
-      ],
+      "required": ["SMSChannelResponse"],
       "payload": "SMSChannelResponse"
     },
     "GetSmsTemplateRequest": {
@@ -11384,9 +10892,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName"
-      ]
+      "required": ["TemplateName"]
     },
     "GetSmsTemplateResponse": {
       "type": "structure",
@@ -11395,9 +10901,7 @@
           "shape": "SMSTemplateResponse"
         }
       },
-      "required": [
-        "SMSTemplateResponse"
-      ],
+      "required": ["SMSTemplateResponse"],
       "payload": "SMSTemplateResponse"
     },
     "GetUserEndpointsRequest": {
@@ -11416,10 +10920,7 @@
           "documentation": "<p>The unique identifier for the user.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "UserId"
-      ]
+      "required": ["ApplicationId", "UserId"]
     },
     "GetUserEndpointsResponse": {
       "type": "structure",
@@ -11428,9 +10929,7 @@
           "shape": "EndpointsResponse"
         }
       },
-      "required": [
-        "EndpointsResponse"
-      ],
+      "required": ["EndpointsResponse"],
       "payload": "EndpointsResponse"
     },
     "GetVoiceChannelRequest": {
@@ -11443,9 +10942,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "GetVoiceChannelResponse": {
       "type": "structure",
@@ -11454,9 +10951,7 @@
           "shape": "VoiceChannelResponse"
         }
       },
-      "required": [
-        "VoiceChannelResponse"
-      ],
+      "required": ["VoiceChannelResponse"],
       "payload": "VoiceChannelResponse"
     },
     "GetVoiceTemplateRequest": {
@@ -11475,9 +10970,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName"
-      ]
+      "required": ["TemplateName"]
     },
     "GetVoiceTemplateResponse": {
       "type": "structure",
@@ -11486,9 +10979,7 @@
           "shape": "VoiceTemplateResponse"
         }
       },
-      "required": [
-        "VoiceTemplateResponse"
-      ],
+      "required": ["VoiceTemplateResponse"],
       "payload": "VoiceTemplateResponse"
     },
     "HoldoutActivity": {
@@ -11504,9 +10995,7 @@
         }
       },
       "documentation": "<p>Specifies the settings for a holdout activity in a journey. This type of activity stops a journey for a specified percentage of participants.</p>",
-      "required": [
-        "Percentage"
-      ]
+      "required": ["Percentage"]
     },
     "ImportJobRequest": {
       "type": "structure",
@@ -11545,11 +11034,7 @@
         }
       },
       "documentation": "<p>Specifies the settings for a job that imports endpoint definitions from an Amazon Simple Storage Service (Amazon S3) bucket.</p>",
-      "required": [
-        "Format",
-        "S3Url",
-        "RoleArn"
-      ]
+      "required": ["Format", "S3Url", "RoleArn"]
     },
     "ImportJobResource": {
       "type": "structure",
@@ -11588,11 +11073,7 @@
         }
       },
       "documentation": "<p>Provides information about the resource settings for a job that imports endpoint definitions from one or more files. The files can be stored in an Amazon Simple Storage Service (Amazon S3) bucket or uploaded directly from a computer by using the Amazon Pinpoint console.</p>",
-      "required": [
-        "Format",
-        "S3Url",
-        "RoleArn"
-      ]
+      "required": ["Format", "S3Url", "RoleArn"]
     },
     "ImportJobResponse": {
       "type": "structure",
@@ -11673,9 +11154,7 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of all the import jobs that are associated with an application or segment. An import job is a job that imports endpoint definitions from one or more files.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "InAppCampaignSchedule": {
       "type": "structure",
@@ -11730,11 +11209,7 @@
         }
       },
       "documentation": "<p>Text config for Message Body.</p>",
-      "required": [
-        "Alignment",
-        "TextColor",
-        "Body"
-      ]
+      "required": ["Alignment", "TextColor", "Body"]
     },
     "InAppMessageButton": {
       "type": "structure",
@@ -11843,11 +11318,7 @@
         }
       },
       "documentation": "<p>Text config for Message Header.</p>",
-      "required": [
-        "Alignment",
-        "Header",
-        "TextColor"
-      ]
+      "required": ["Alignment", "Header", "TextColor"]
     },
     "InAppMessagesResponse": {
       "type": "structure",
@@ -11945,11 +11416,7 @@
     },
     "Include": {
       "type": "string",
-      "enum": [
-        "ALL",
-        "ANY",
-        "NONE"
-      ]
+      "enum": ["ALL", "ANY", "NONE"]
     },
     "InternalServerErrorException": {
       "type": "structure",
@@ -12118,12 +11585,7 @@
         }
       },
       "documentation": "<p>Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey, and provides information about that query.</p>",
-      "required": [
-        "Metrics",
-        "JourneyId",
-        "LastEvaluatedTime",
-        "ApplicationId"
-      ]
+      "required": ["Metrics", "JourneyId", "LastEvaluatedTime", "ApplicationId"]
     },
     "JourneyLimits": {
       "type": "structure",
@@ -12273,11 +11735,7 @@
         }
       },
       "documentation": "<p>Provides information about the status, configuration, and other settings for a journey.</p>",
-      "required": [
-        "Name",
-        "Id",
-        "ApplicationId"
-      ]
+      "required": ["Name", "Id", "ApplicationId"]
     },
     "JourneyRunExecutionActivityMetricsResponse": {
       "type": "structure",
@@ -12376,12 +11834,7 @@
         }
       },
       "documentation": "<p>Provides information from a specified run of a journey.</p>",
-      "required": [
-        "Status",
-        "LastUpdateTime",
-        "CreationTime",
-        "RunId"
-      ]
+      "required": ["Status", "LastUpdateTime", "CreationTime", "RunId"]
     },
     "JourneyRunsResponse": {
       "type": "structure",
@@ -12396,18 +11849,11 @@
         }
       },
       "documentation": "<p>Provides information from all runs of a journey.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "JourneyRunStatus": {
       "type": "string",
-      "enum": [
-        "SCHEDULED",
-        "RUNNING",
-        "COMPLETED",
-        "CANCELLED"
-      ]
+      "enum": ["SCHEDULED", "RUNNING", "COMPLETED", "CANCELLED"]
     },
     "JourneySMSMessage": {
       "type": "structure",
@@ -12490,9 +11936,7 @@
         }
       },
       "documentation": "<p>Provides information about the status, configuration, and other settings for all the journeys that are associated with an application.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "Layout": {
       "type": "string",
@@ -12527,9 +11971,7 @@
           "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
         }
       },
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "ListJourneysResponse": {
       "type": "structure",
@@ -12538,9 +11980,7 @@
           "shape": "JourneysResponse"
         }
       },
-      "required": [
-        "JourneysResponse"
-      ],
+      "required": ["JourneysResponse"],
       "payload": "JourneysResponse"
     },
     "ListRecommenderConfigurationsResponse": {
@@ -12556,9 +11996,7 @@
         }
       },
       "documentation": "<p>Provides information about all the recommender model configurations that are associated with your Amazon Pinpoint account.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "ListTagsForResourceRequest": {
       "type": "structure",
@@ -12570,9 +12008,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the resource.</p>"
         }
       },
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "ListTagsForResourceResponse": {
       "type": "structure",
@@ -12581,9 +12017,7 @@
           "shape": "TagsModel"
         }
       },
-      "required": [
-        "TagsModel"
-      ],
+      "required": ["TagsModel"],
       "payload": "TagsModel"
     },
     "ListTemplateVersionsRequest": {
@@ -12614,10 +12048,7 @@
           "documentation": "<p>The type of channel that the message template is designed for. Valid values are: EMAIL, PUSH, SMS, and VOICE.</p>"
         }
       },
-      "required": [
-        "TemplateName",
-        "TemplateType"
-      ]
+      "required": ["TemplateName", "TemplateType"]
     },
     "ListTemplateVersionsResponse": {
       "type": "structure",
@@ -12626,9 +12057,7 @@
           "shape": "TemplateVersionsResponse"
         }
       },
-      "required": [
-        "TemplateVersionsResponse"
-      ],
+      "required": ["TemplateVersionsResponse"],
       "payload": "TemplateVersionsResponse"
     },
     "ListTemplatesRequest": {
@@ -12667,9 +12096,7 @@
           "shape": "TemplatesResponse"
         }
       },
-      "required": [
-        "TemplatesResponse"
-      ],
+      "required": ["TemplatesResponse"],
       "payload": "TemplatesResponse"
     },
     "Message": {
@@ -12811,9 +12238,7 @@
         }
       },
       "documentation": "<p>Specifies the configuration and other settings for a message.</p>",
-      "required": [
-        "MessageConfiguration"
-      ]
+      "required": ["MessageConfiguration"]
     },
     "MessageResponse": {
       "type": "structure",
@@ -12836,9 +12261,7 @@
         }
       },
       "documentation": "<p>Provides information about the results of a request to send a message to an endpoint address.</p>",
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "MessageResult": {
       "type": "structure",
@@ -12865,17 +12288,11 @@
         }
       },
       "documentation": "<p>Provides information about the results of sending a message directly to an endpoint address.</p>",
-      "required": [
-        "DeliveryStatus",
-        "StatusCode"
-      ]
+      "required": ["DeliveryStatus", "StatusCode"]
     },
     "MessageType": {
       "type": "string",
-      "enum": [
-        "TRANSACTIONAL",
-        "PROMOTIONAL"
-      ]
+      "enum": ["TRANSACTIONAL", "PROMOTIONAL"]
     },
     "MethodNotAllowedException": {
       "type": "structure",
@@ -12908,17 +12325,11 @@
         }
       },
       "documentation": "<p>Specifies metric-based criteria for including or excluding endpoints from a segment. These criteria derive from custom metrics that you define for endpoints.</p>",
-      "required": [
-        "ComparisonOperator",
-        "Value"
-      ]
+      "required": ["ComparisonOperator", "Value"]
     },
     "Mode": {
       "type": "string",
-      "enum": [
-        "DELIVERY",
-        "FILTER"
-      ]
+      "enum": ["DELIVERY", "FILTER"]
     },
     "MultiConditionalBranch": {
       "type": "structure",
@@ -13048,10 +12459,7 @@
     },
     "Operator": {
       "type": "string",
-      "enum": [
-        "ALL",
-        "ANY"
-      ]
+      "enum": ["ALL", "ANY"]
     },
     "OverrideButtonConfiguration": {
       "type": "structure",
@@ -13066,9 +12474,7 @@
         }
       },
       "documentation": "<p>Override button configuration.</p>",
-      "required": [
-        "ButtonAction"
-      ]
+      "required": ["ButtonAction"]
     },
     "PayloadTooLargeException": {
       "type": "structure",
@@ -13095,9 +12501,7 @@
           "shape": "NumberValidateRequest"
         }
       },
-      "required": [
-        "NumberValidateRequest"
-      ],
+      "required": ["NumberValidateRequest"],
       "payload": "NumberValidateRequest"
     },
     "PhoneNumberValidateResponse": {
@@ -13107,9 +12511,7 @@
           "shape": "NumberValidateResponse"
         }
       },
-      "required": [
-        "NumberValidateResponse"
-      ],
+      "required": ["NumberValidateResponse"],
       "payload": "NumberValidateResponse"
     },
     "PublicEndpoint": {
@@ -13313,10 +12715,7 @@
           "shape": "WriteEventStream"
         }
       },
-      "required": [
-        "ApplicationId",
-        "WriteEventStream"
-      ],
+      "required": ["ApplicationId", "WriteEventStream"],
       "payload": "WriteEventStream"
     },
     "PutEventStreamResponse": {
@@ -13326,9 +12725,7 @@
           "shape": "EventStream"
         }
       },
-      "required": [
-        "EventStream"
-      ],
+      "required": ["EventStream"],
       "payload": "EventStream"
     },
     "PutEventsRequest": {
@@ -13344,10 +12741,7 @@
           "shape": "EventsRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "EventsRequest"
-      ],
+      "required": ["ApplicationId", "EventsRequest"],
       "payload": "EventsRequest"
     },
     "PutEventsResponse": {
@@ -13357,9 +12751,7 @@
           "shape": "EventsResponse"
         }
       },
-      "required": [
-        "EventsResponse"
-      ],
+      "required": ["EventsResponse"],
       "payload": "EventsResponse"
     },
     "QuietTime": {
@@ -13426,17 +12818,11 @@
         }
       },
       "documentation": "<p>Specifies criteria for including or excluding endpoints from a segment based on how recently an endpoint was active.</p>",
-      "required": [
-        "Duration",
-        "RecencyType"
-      ]
+      "required": ["Duration", "RecencyType"]
     },
     "RecencyType": {
       "type": "string",
-      "enum": [
-        "ACTIVE",
-        "INACTIVE"
-      ]
+      "enum": ["ACTIVE", "INACTIVE"]
     },
     "RecommenderConfigurationResponse": {
       "type": "structure",
@@ -13518,11 +12904,7 @@
           "shape": "UpdateAttributesRequest"
         }
       },
-      "required": [
-        "AttributeType",
-        "ApplicationId",
-        "UpdateAttributesRequest"
-      ],
+      "required": ["AttributeType", "ApplicationId", "UpdateAttributesRequest"],
       "payload": "UpdateAttributesRequest"
     },
     "RemoveAttributesResponse": {
@@ -13532,9 +12914,7 @@
           "shape": "AttributesResource"
         }
       },
-      "required": [
-        "AttributesResource"
-      ],
+      "required": ["AttributesResource"],
       "payload": "AttributesResource"
     },
     "ResultRow": {
@@ -13550,10 +12930,7 @@
         }
       },
       "documentation": "<p>Provides the results of a query that retrieved the data for a standard metric that applies to an application, campaign, or journey.</p>",
-      "required": [
-        "GroupedBys",
-        "Values"
-      ]
+      "required": ["GroupedBys", "Values"]
     },
     "ResultRowValue": {
       "type": "structure",
@@ -13572,11 +12949,7 @@
         }
       },
       "documentation": "<p>Provides a single value and metadata about that value as part of an array of query results for a standard metric that applies to an application, campaign, or journey.</p>",
-      "required": [
-        "Type",
-        "Value",
-        "Key"
-      ]
+      "required": ["Type", "Value", "Key"]
     },
     "SMSChannelRequest": {
       "type": "structure",
@@ -13657,9 +13030,7 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of the SMS channel for an application.</p>",
-      "required": [
-        "Platform"
-      ]
+      "required": ["Platform"]
     },
     "SMSMessage": {
       "type": "structure",
@@ -13842,9 +13213,7 @@
         }
       },
       "documentation": "<p>Specifies the schedule settings for a campaign.</p>",
-      "required": [
-        "StartTime"
-      ]
+      "required": ["StartTime"]
     },
     "SegmentBehaviors": {
       "type": "structure",
@@ -13865,9 +13234,7 @@
         }
       },
       "documentation": "<p>Specifies a segment to associate with an activity in a journey.</p>",
-      "required": [
-        "SegmentId"
-      ]
+      "required": ["SegmentId"]
     },
     "SegmentDemographics": {
       "type": "structure",
@@ -13994,13 +13361,7 @@
         }
       },
       "documentation": "<p>Provides information about the import job that created a segment. An import job is a job that creates a user segment by importing endpoint definitions.</p>",
-      "required": [
-        "Format",
-        "S3Url",
-        "Size",
-        "ExternalId",
-        "RoleArn"
-      ]
+      "required": ["Format", "S3Url", "Size", "ExternalId", "RoleArn"]
     },
     "SegmentLocation": {
       "type": "structure",
@@ -14029,9 +13390,7 @@
         }
       },
       "documentation": "<p>Specifies the segment identifier and version of a segment.</p>",
-      "required": [
-        "Id"
-      ]
+      "required": ["Id"]
     },
     "SegmentResponse": {
       "type": "structure",
@@ -14087,20 +13446,11 @@
         }
       },
       "documentation": "<p>Provides information about the configuration, dimension, and other settings for a segment.</p>",
-      "required": [
-        "SegmentType",
-        "CreationDate",
-        "Id",
-        "Arn",
-        "ApplicationId"
-      ]
+      "required": ["SegmentType", "CreationDate", "Id", "Arn", "ApplicationId"]
     },
     "SegmentType": {
       "type": "string",
-      "enum": [
-        "DIMENSIONAL",
-        "IMPORT"
-      ]
+      "enum": ["DIMENSIONAL", "IMPORT"]
     },
     "SegmentsResponse": {
       "type": "structure",
@@ -14115,9 +13465,7 @@
         }
       },
       "documentation": "<p>Provides information about all the segments that are associated with an application.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "SendMessagesRequest": {
       "type": "structure",
@@ -14132,10 +13480,7 @@
           "shape": "MessageRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "MessageRequest"
-      ],
+      "required": ["ApplicationId", "MessageRequest"],
       "payload": "MessageRequest"
     },
     "SendMessagesResponse": {
@@ -14145,9 +13490,7 @@
           "shape": "MessageResponse"
         }
       },
-      "required": [
-        "MessageResponse"
-      ],
+      "required": ["MessageResponse"],
       "payload": "MessageResponse"
     },
     "SendOTPMessageRequest": {
@@ -14163,10 +13506,7 @@
           "shape": "SendOTPMessageRequestParameters"
         }
       },
-      "required": [
-        "ApplicationId",
-        "SendOTPMessageRequestParameters"
-      ],
+      "required": ["ApplicationId", "SendOTPMessageRequestParameters"],
       "payload": "SendOTPMessageRequestParameters"
     },
     "SendOTPMessageRequestParameters": {
@@ -14233,9 +13573,7 @@
           "shape": "MessageResponse"
         }
       },
-      "required": [
-        "MessageResponse"
-      ],
+      "required": ["MessageResponse"],
       "payload": "MessageResponse"
     },
     "SendUsersMessageRequest": {
@@ -14263,10 +13601,7 @@
         }
       },
       "documentation": "<p>Specifies the configuration and other settings for a message to send to all the endpoints that are associated with a list of users.</p>",
-      "required": [
-        "MessageConfiguration",
-        "Users"
-      ]
+      "required": ["MessageConfiguration", "Users"]
     },
     "SendUsersMessageResponse": {
       "type": "structure",
@@ -14285,9 +13620,7 @@
         }
       },
       "documentation": "<p>Provides information about which users and endpoints a message was sent to.</p>",
-      "required": [
-        "ApplicationId"
-      ]
+      "required": ["ApplicationId"]
     },
     "SendUsersMessagesRequest": {
       "type": "structure",
@@ -14302,10 +13635,7 @@
           "shape": "SendUsersMessageRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "SendUsersMessageRequest"
-      ],
+      "required": ["ApplicationId", "SendUsersMessageRequest"],
       "payload": "SendUsersMessageRequest"
     },
     "SendUsersMessagesResponse": {
@@ -14315,9 +13645,7 @@
           "shape": "SendUsersMessageResponse"
         }
       },
-      "required": [
-        "SendUsersMessageResponse"
-      ],
+      "required": ["SendUsersMessageResponse"],
       "payload": "SendUsersMessageResponse"
     },
     "Session": {
@@ -14341,10 +13669,7 @@
         }
       },
       "documentation": "<p>Provides information about a session.</p>",
-      "required": [
-        "StartTimestamp",
-        "Id"
-      ]
+      "required": ["StartTimestamp", "Id"]
     },
     "SetDimension": {
       "type": "structure",
@@ -14359,9 +13684,7 @@
         }
       },
       "documentation": "<p>Specifies the dimension type and values for a segment dimension.</p>",
-      "required": [
-        "Values"
-      ]
+      "required": ["Values"]
     },
     "SimpleCondition": {
       "type": "structure",
@@ -14440,11 +13763,7 @@
     },
     "SourceType": {
       "type": "string",
-      "enum": [
-        "ALL",
-        "ANY",
-        "NONE"
-      ]
+      "enum": ["ALL", "ANY", "NONE"]
     },
     "StartCondition": {
       "type": "structure",
@@ -14465,14 +13784,7 @@
     },
     "State": {
       "type": "string",
-      "enum": [
-        "DRAFT",
-        "ACTIVE",
-        "COMPLETED",
-        "CANCELLED",
-        "CLOSED",
-        "PAUSED"
-      ]
+      "enum": ["DRAFT", "ACTIVE", "COMPLETED", "CANCELLED", "CLOSED", "PAUSED"]
     },
     "TagResourceRequest": {
       "type": "structure",
@@ -14487,10 +13799,7 @@
           "shape": "TagsModel"
         }
       },
-      "required": [
-        "ResourceArn",
-        "TagsModel"
-      ],
+      "required": ["ResourceArn", "TagsModel"],
       "payload": "TagsModel"
     },
     "TagsModel": {
@@ -14503,9 +13812,7 @@
         }
       },
       "documentation": "<p>Specifies the tags (keys and values) for an application, campaign, message template, or segment.</p>",
-      "required": [
-        "tags"
-      ]
+      "required": ["tags"]
     },
     "Template": {
       "type": "structure",
@@ -14626,13 +13933,7 @@
     },
     "TemplateType": {
       "type": "string",
-      "enum": [
-        "EMAIL",
-        "SMS",
-        "VOICE",
-        "PUSH",
-        "INAPP"
-      ]
+      "enum": ["EMAIL", "SMS", "VOICE", "PUSH", "INAPP"]
     },
     "TemplateVersionResponse": {
       "type": "structure",
@@ -14695,9 +13996,7 @@
         }
       },
       "documentation": "<p>Provides information about all the versions of a specific message template.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "TemplatesResponse": {
       "type": "structure",
@@ -14712,9 +14011,7 @@
         }
       },
       "documentation": "<p>Provides information about all the message templates that are associated with your Amazon Pinpoint account.</p>",
-      "required": [
-        "Item"
-      ]
+      "required": ["Item"]
     },
     "TooManyRequestsException": {
       "type": "structure",
@@ -14775,18 +14072,11 @@
         }
       },
       "documentation": "<p>Specifies the settings for a campaign treatment. A <i>treatment</i> is a variation of a campaign that's used for A/B testing of a campaign.</p>",
-      "required": [
-        "Id",
-        "SizePercent"
-      ]
+      "required": ["Id", "SizePercent"]
     },
     "Type": {
       "type": "string",
-      "enum": [
-        "ALL",
-        "ANY",
-        "NONE"
-      ]
+      "enum": ["ALL", "ANY", "NONE"]
     },
     "UntagResourceRequest": {
       "type": "structure",
@@ -14804,10 +14094,7 @@
           "documentation": "<p>The key of the tag to remove from the resource. To remove multiple tags, append the tagKeys parameter and argument for each additional tag to remove, separated by an ampersand (&amp;).</p>"
         }
       },
-      "required": [
-        "TagKeys",
-        "ResourceArn"
-      ]
+      "required": ["TagKeys", "ResourceArn"]
     },
     "UpdateAdmChannelRequest": {
       "type": "structure",
@@ -14822,10 +14109,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "ADMChannelRequest"
-      ],
+      "required": ["ApplicationId", "ADMChannelRequest"],
       "payload": "ADMChannelRequest"
     },
     "UpdateAdmChannelResponse": {
@@ -14835,9 +14119,7 @@
           "shape": "ADMChannelResponse"
         }
       },
-      "required": [
-        "ADMChannelResponse"
-      ],
+      "required": ["ADMChannelResponse"],
       "payload": "ADMChannelResponse"
     },
     "UpdateApnsChannelRequest": {
@@ -14853,10 +14135,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "APNSChannelRequest"
-      ],
+      "required": ["ApplicationId", "APNSChannelRequest"],
       "payload": "APNSChannelRequest"
     },
     "UpdateApnsChannelResponse": {
@@ -14866,9 +14145,7 @@
           "shape": "APNSChannelResponse"
         }
       },
-      "required": [
-        "APNSChannelResponse"
-      ],
+      "required": ["APNSChannelResponse"],
       "payload": "APNSChannelResponse"
     },
     "UpdateApnsSandboxChannelRequest": {
@@ -14884,10 +14161,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "APNSSandboxChannelRequest"
-      ],
+      "required": ["ApplicationId", "APNSSandboxChannelRequest"],
       "payload": "APNSSandboxChannelRequest"
     },
     "UpdateApnsSandboxChannelResponse": {
@@ -14897,9 +14171,7 @@
           "shape": "APNSSandboxChannelResponse"
         }
       },
-      "required": [
-        "APNSSandboxChannelResponse"
-      ],
+      "required": ["APNSSandboxChannelResponse"],
       "payload": "APNSSandboxChannelResponse"
     },
     "UpdateApnsVoipChannelRequest": {
@@ -14915,10 +14187,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "APNSVoipChannelRequest"
-      ],
+      "required": ["ApplicationId", "APNSVoipChannelRequest"],
       "payload": "APNSVoipChannelRequest"
     },
     "UpdateApnsVoipChannelResponse": {
@@ -14928,9 +14197,7 @@
           "shape": "APNSVoipChannelResponse"
         }
       },
-      "required": [
-        "APNSVoipChannelResponse"
-      ],
+      "required": ["APNSVoipChannelResponse"],
       "payload": "APNSVoipChannelResponse"
     },
     "UpdateApnsVoipSandboxChannelRequest": {
@@ -14946,10 +14213,7 @@
           "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
         }
       },
-      "required": [
-        "ApplicationId",
-        "APNSVoipSandboxChannelRequest"
-      ],
+      "required": ["ApplicationId", "APNSVoipSandboxChannelRequest"],
       "payload": "APNSVoipSandboxChannelRequest"
     },
     "UpdateApnsVoipSandboxChannelResponse": {
@@ -14959,9 +14223,7 @@
           "shape": "APNSVoipSandboxChannelResponse"
         }
       },
-      "required": [
-        "APNSVoipSandboxChannelResponse"
-      ],
+      "required": ["APNSVoipSandboxChannelResponse"],
       "payload": "APNSVoipSandboxChannelResponse"
     },
     "UpdateApplicationSettingsRequest": {
@@ -14977,10 +14239,7 @@
           "shape": "WriteApplicationSettingsRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "WriteApplicationSettingsRequest"
-      ],
+      "required": ["ApplicationId", "WriteApplicationSettingsRequest"],
       "payload": "WriteApplicationSettingsRequest"
     },
     "UpdateApplicationSettingsResponse": {
@@ -14990,9 +14249,7 @@
           "shape": "ApplicationSettingsResource"
         }
       },
-      "required": [
-        "ApplicationSettingsResource"
-      ],
+      "required": ["ApplicationSettingsResource"],
       "payload": "ApplicationSettingsResource"
     },
     "UpdateAttributesRequest": {
@@ -15018,10 +14275,7 @@
           "shape": "BaiduChannelRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "BaiduChannelRequest"
-      ],
+      "required": ["ApplicationId", "BaiduChannelRequest"],
       "payload": "BaiduChannelRequest"
     },
     "UpdateBaiduChannelResponse": {
@@ -15031,9 +14285,7 @@
           "shape": "BaiduChannelResponse"
         }
       },
-      "required": [
-        "BaiduChannelResponse"
-      ],
+      "required": ["BaiduChannelResponse"],
       "payload": "BaiduChannelResponse"
     },
     "UpdateCampaignRequest": {
@@ -15055,11 +14307,7 @@
           "shape": "WriteCampaignRequest"
         }
       },
-      "required": [
-        "CampaignId",
-        "ApplicationId",
-        "WriteCampaignRequest"
-      ],
+      "required": ["CampaignId", "ApplicationId", "WriteCampaignRequest"],
       "payload": "WriteCampaignRequest"
     },
     "UpdateCampaignResponse": {
@@ -15069,9 +14317,7 @@
           "shape": "CampaignResponse"
         }
       },
-      "required": [
-        "CampaignResponse"
-      ],
+      "required": ["CampaignResponse"],
       "payload": "CampaignResponse"
     },
     "UpdateEmailChannelRequest": {
@@ -15087,10 +14333,7 @@
           "shape": "EmailChannelRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "EmailChannelRequest"
-      ],
+      "required": ["ApplicationId", "EmailChannelRequest"],
       "payload": "EmailChannelRequest"
     },
     "UpdateEmailChannelResponse": {
@@ -15100,9 +14343,7 @@
           "shape": "EmailChannelResponse"
         }
       },
-      "required": [
-        "EmailChannelResponse"
-      ],
+      "required": ["EmailChannelResponse"],
       "payload": "EmailChannelResponse"
     },
     "UpdateEmailTemplateRequest": {
@@ -15130,10 +14371,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName",
-        "EmailTemplateRequest"
-      ],
+      "required": ["TemplateName", "EmailTemplateRequest"],
       "payload": "EmailTemplateRequest"
     },
     "UpdateEmailTemplateResponse": {
@@ -15143,9 +14381,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "UpdateEndpointRequest": {
@@ -15167,11 +14403,7 @@
           "shape": "EndpointRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "EndpointId",
-        "EndpointRequest"
-      ],
+      "required": ["ApplicationId", "EndpointId", "EndpointRequest"],
       "payload": "EndpointRequest"
     },
     "UpdateEndpointResponse": {
@@ -15181,9 +14413,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "UpdateEndpointsBatchRequest": {
@@ -15199,10 +14429,7 @@
           "shape": "EndpointBatchRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "EndpointBatchRequest"
-      ],
+      "required": ["ApplicationId", "EndpointBatchRequest"],
       "payload": "EndpointBatchRequest"
     },
     "UpdateEndpointsBatchResponse": {
@@ -15212,9 +14439,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "UpdateGcmChannelRequest": {
@@ -15230,10 +14455,7 @@
           "shape": "GCMChannelRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "GCMChannelRequest"
-      ],
+      "required": ["ApplicationId", "GCMChannelRequest"],
       "payload": "GCMChannelRequest"
     },
     "UpdateGcmChannelResponse": {
@@ -15243,9 +14465,7 @@
           "shape": "GCMChannelResponse"
         }
       },
-      "required": [
-        "GCMChannelResponse"
-      ],
+      "required": ["GCMChannelResponse"],
       "payload": "GCMChannelResponse"
     },
     "UpdateInAppTemplateRequest": {
@@ -15273,10 +14493,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName",
-        "InAppTemplateRequest"
-      ],
+      "required": ["TemplateName", "InAppTemplateRequest"],
       "payload": "InAppTemplateRequest"
     },
     "UpdateInAppTemplateResponse": {
@@ -15286,9 +14503,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "UpdateJourneyRequest": {
@@ -15310,11 +14525,7 @@
           "shape": "WriteJourneyRequest"
         }
       },
-      "required": [
-        "JourneyId",
-        "ApplicationId",
-        "WriteJourneyRequest"
-      ],
+      "required": ["JourneyId", "ApplicationId", "WriteJourneyRequest"],
       "payload": "WriteJourneyRequest"
     },
     "UpdateJourneyResponse": {
@@ -15324,9 +14535,7 @@
           "shape": "JourneyResponse"
         }
       },
-      "required": [
-        "JourneyResponse"
-      ],
+      "required": ["JourneyResponse"],
       "payload": "JourneyResponse"
     },
     "UpdateJourneyStateRequest": {
@@ -15348,11 +14557,7 @@
           "shape": "JourneyStateRequest"
         }
       },
-      "required": [
-        "JourneyId",
-        "ApplicationId",
-        "JourneyStateRequest"
-      ],
+      "required": ["JourneyId", "ApplicationId", "JourneyStateRequest"],
       "payload": "JourneyStateRequest"
     },
     "UpdateJourneyStateResponse": {
@@ -15362,9 +14567,7 @@
           "shape": "JourneyResponse"
         }
       },
-      "required": [
-        "JourneyResponse"
-      ],
+      "required": ["JourneyResponse"],
       "payload": "JourneyResponse"
     },
     "UpdatePushTemplateRequest": {
@@ -15392,10 +14595,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName",
-        "PushNotificationTemplateRequest"
-      ],
+      "required": ["TemplateName", "PushNotificationTemplateRequest"],
       "payload": "PushNotificationTemplateRequest"
     },
     "UpdatePushTemplateResponse": {
@@ -15405,9 +14605,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "UpdateRecommenderConfiguration": {
@@ -15451,10 +14649,7 @@
         }
       },
       "documentation": "<p>Specifies Amazon Pinpoint configuration settings for retrieving and processing recommendation data from a recommender model.</p>",
-      "required": [
-        "RecommendationProviderUri",
-        "RecommendationProviderRoleArn"
-      ]
+      "required": ["RecommendationProviderUri", "RecommendationProviderRoleArn"]
     },
     "UpdateRecommenderConfigurationRequest": {
       "type": "structure",
@@ -15469,10 +14664,7 @@
           "shape": "UpdateRecommenderConfiguration"
         }
       },
-      "required": [
-        "RecommenderId",
-        "UpdateRecommenderConfiguration"
-      ],
+      "required": ["RecommenderId", "UpdateRecommenderConfiguration"],
       "payload": "UpdateRecommenderConfiguration"
     },
     "UpdateRecommenderConfigurationResponse": {
@@ -15482,9 +14674,7 @@
           "shape": "RecommenderConfigurationResponse"
         }
       },
-      "required": [
-        "RecommenderConfigurationResponse"
-      ],
+      "required": ["RecommenderConfigurationResponse"],
       "payload": "RecommenderConfigurationResponse"
     },
     "UpdateSegmentRequest": {
@@ -15506,11 +14696,7 @@
           "shape": "WriteSegmentRequest"
         }
       },
-      "required": [
-        "SegmentId",
-        "ApplicationId",
-        "WriteSegmentRequest"
-      ],
+      "required": ["SegmentId", "ApplicationId", "WriteSegmentRequest"],
       "payload": "WriteSegmentRequest"
     },
     "UpdateSegmentResponse": {
@@ -15520,9 +14706,7 @@
           "shape": "SegmentResponse"
         }
       },
-      "required": [
-        "SegmentResponse"
-      ],
+      "required": ["SegmentResponse"],
       "payload": "SegmentResponse"
     },
     "UpdateSmsChannelRequest": {
@@ -15538,10 +14722,7 @@
           "shape": "SMSChannelRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "SMSChannelRequest"
-      ],
+      "required": ["ApplicationId", "SMSChannelRequest"],
       "payload": "SMSChannelRequest"
     },
     "UpdateSmsChannelResponse": {
@@ -15551,9 +14732,7 @@
           "shape": "SMSChannelResponse"
         }
       },
-      "required": [
-        "SMSChannelResponse"
-      ],
+      "required": ["SMSChannelResponse"],
       "payload": "SMSChannelResponse"
     },
     "UpdateSmsTemplateRequest": {
@@ -15581,10 +14760,7 @@
           "documentation": "<p>The unique identifier for the version of the message template to update, retrieve information about, or delete. To retrieve identifiers and other information for all the versions of a template, use the <link  linkend=\"templates-template-name-template-type-versions\">Template Versions</link> resource.</p> <p>If specified, this value must match the identifier for an existing template version. If specified for an update operation, this value must match the identifier for the latest existing version of the template. This restriction helps ensure that race conditions don't occur.</p> <p>If you don't specify a value for this parameter, Amazon Pinpoint does the following:</p> <ul><li><p>For a get operation, retrieves information about the active version of the template.</p></li> <li><p>For an update operation, saves the updates to (overwrites) the latest existing version of the template, if the create-new-version parameter isn't used or is set to false.</p></li> <li><p>For a delete operation, deletes the template, including all versions of the template.</p></li></ul>"
         }
       },
-      "required": [
-        "TemplateName",
-        "SMSTemplateRequest"
-      ],
+      "required": ["TemplateName", "SMSTemplateRequest"],
       "payload": "SMSTemplateRequest"
     },
     "UpdateSmsTemplateResponse": {
@@ -15594,9 +14770,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "UpdateTemplateActiveVersionRequest": {
@@ -15632,9 +14806,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "UpdateVoiceChannelRequest": {
@@ -15650,10 +14822,7 @@
           "shape": "VoiceChannelRequest"
         }
       },
-      "required": [
-        "ApplicationId",
-        "VoiceChannelRequest"
-      ],
+      "required": ["ApplicationId", "VoiceChannelRequest"],
       "payload": "VoiceChannelRequest"
     },
     "UpdateVoiceChannelResponse": {
@@ -15663,9 +14832,7 @@
           "shape": "VoiceChannelResponse"
         }
       },
-      "required": [
-        "VoiceChannelResponse"
-      ],
+      "required": ["VoiceChannelResponse"],
       "payload": "VoiceChannelResponse"
     },
     "UpdateVoiceTemplateRequest": {
@@ -15693,10 +14860,7 @@
           "shape": "VoiceTemplateRequest"
         }
       },
-      "required": [
-        "TemplateName",
-        "VoiceTemplateRequest"
-      ],
+      "required": ["TemplateName", "VoiceTemplateRequest"],
       "payload": "VoiceTemplateRequest"
     },
     "UpdateVoiceTemplateResponse": {
@@ -15706,9 +14870,7 @@
           "shape": "MessageBody"
         }
       },
-      "required": [
-        "MessageBody"
-      ],
+      "required": ["MessageBody"],
       "payload": "MessageBody"
     },
     "VerificationResponse": {
@@ -15734,10 +14896,7 @@
           "shape": "VerifyOTPMessageRequestParameters"
         }
       },
-      "required": [
-        "ApplicationId",
-        "VerifyOTPMessageRequestParameters"
-      ],
+      "required": ["ApplicationId", "VerifyOTPMessageRequestParameters"],
       "payload": "VerifyOTPMessageRequestParameters"
     },
     "VerifyOTPMessageRequestParameters": {
@@ -15757,11 +14916,7 @@
         }
       },
       "documentation": "<p>Verify OTP message request.</p>",
-      "required": [
-        "ReferenceId",
-        "Otp",
-        "DestinationIdentity"
-      ]
+      "required": ["ReferenceId", "Otp", "DestinationIdentity"]
     },
     "VerifyOTPMessageResponse": {
       "type": "structure",
@@ -15770,9 +14925,7 @@
           "shape": "VerificationResponse"
         }
       },
-      "required": [
-        "VerificationResponse"
-      ],
+      "required": ["VerificationResponse"],
       "payload": "VerificationResponse"
     },
     "VoiceChannelRequest": {
@@ -15830,9 +14983,7 @@
         }
       },
       "documentation": "<p>Provides information about the status and settings of the voice channel for an application.</p>",
-      "required": [
-        "Platform"
-      ]
+      "required": ["Platform"]
     },
     "VoiceMessage": {
       "type": "structure",
@@ -16097,10 +15248,7 @@
         }
       },
       "documentation": "<p>Specifies the Amazon Resource Name (ARN) of an event stream to publish events to and the AWS Identity and Access Management (IAM) role to use when publishing those events.</p>",
-      "required": [
-        "RoleArn",
-        "DestinationStreamArn"
-      ]
+      "required": ["RoleArn", "DestinationStreamArn"]
     },
     "WriteJourneyRequest": {
       "type": "structure",
@@ -16183,9 +15331,7 @@
         }
       },
       "documentation": "<p>Specifies the configuration and other settings for a journey.</p>",
-      "required": [
-        "Name"
-      ]
+      "required": ["Name"]
     },
     "WriteSegmentRequest": {
       "type": "structure",
@@ -16243,9 +15389,7 @@
         }
       },
       "documentation": "<p>Specifies the settings for a campaign treatment. A <i>treatment</i> is a variation of a campaign that's used for A/B testing of a campaign.</p>",
-      "required": [
-        "SizePercent"
-      ]
+      "required": ["SizePercent"]
     },
     "__EndpointTypesElement": {
       "type": "string",
@@ -16267,10 +15411,7 @@
     },
     "__TimezoneEstimationMethodsElement": {
       "type": "string",
-      "enum": [
-        "PHONE_NUMBER",
-        "POSTAL_CODE"
-      ]
+      "enum": ["PHONE_NUMBER", "POSTAL_CODE"]
     },
     "__boolean": {
       "type": "boolean"

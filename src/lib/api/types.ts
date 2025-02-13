@@ -1,5 +1,5 @@
 // src/lib/api/types.ts
-import type { DocumentType } from '@prisma/client';
+import type { DocumentType } from "@prisma/client";
 
 export type APIResponse<T> = {
   success: boolean;

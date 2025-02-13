@@ -10,9 +10,7 @@
     "jsonVersion": "1.1",
     "uid": "kafka-2018-11-14",
     "signatureVersion": "v4",
-    "auth": [
-      "aws.auth#sigv4"
-    ]
+    "auth": ["aws.auth#sigv4"]
   },
   "operations": {
     "BatchAssociateScramSecret": {
@@ -2107,9 +2105,7 @@
         }
       },
       "documentation": "<p>Details of an Amazon MSK Cluster.</p>",
-      "required": [
-        "MskClusterArn"
-      ]
+      "required": ["MskClusterArn"]
     },
     "BatchAssociateScramSecretRequest": {
       "type": "structure",
@@ -2127,10 +2123,7 @@
         }
       },
       "documentation": "\n            <p>Associates sasl scram secrets to cluster.</p>\n         ",
-      "required": [
-        "ClusterArn",
-        "SecretArnList"
-      ]
+      "required": ["ClusterArn", "SecretArnList"]
     },
     "BatchAssociateScramSecretResponse": {
       "type": "structure",
@@ -2170,9 +2163,7 @@
     "BrokerAZDistribution": {
       "type": "string",
       "documentation": "\n            <p>The distribution of broker nodes across Availability Zones. This is an optional parameter. If you don't specify it, Amazon MSK gives it the value DEFAULT. You can also explicitly set this parameter to the value DEFAULT. No other values are currently allowed.</p>\n         <p>Amazon MSK distributes the broker nodes evenly across the Availability Zones that correspond to the subnets you provide when you create the cluster.</p>\n         ",
-      "enum": [
-        "DEFAULT"
-      ]
+      "enum": ["DEFAULT"]
     },
     "BrokerCountUpdateInfo": {
       "type": "structure",
@@ -2210,9 +2201,7 @@
         }
       },
       "documentation": "\n            <p>Specifies the EBS volume upgrade information. The broker identifier must be set to the keyword ALL. This means the changes apply to all the brokers in the cluster.</p>\n         ",
-      "required": [
-        "KafkaBrokerNodeId"
-      ]
+      "required": ["KafkaBrokerNodeId"]
     },
     "BrokerLogs": {
       "type": "structure",
@@ -2271,10 +2260,7 @@
         }
       },
       "documentation": "\n            <p>Describes the setup to be used for Apache Kafka broker nodes in the cluster.</p>\n         ",
-      "required": [
-        "ClientSubnets",
-        "InstanceType"
-      ]
+      "required": ["ClientSubnets", "InstanceType"]
     },
     "BrokerNodeInfo": {
       "type": "structure",
@@ -2384,11 +2370,7 @@
     "ClientBroker": {
       "type": "string",
       "documentation": "\n            <p>Client-broker encryption in transit setting.</p>\n         ",
-      "enum": [
-        "TLS",
-        "TLS_PLAINTEXT",
-        "PLAINTEXT"
-      ]
+      "enum": ["TLS", "TLS_PLAINTEXT", "PLAINTEXT"]
     },
     "CloudWatchLogs": {
       "type": "structure",
@@ -2402,9 +2384,7 @@
           "locationName": "logGroup"
         }
       },
-      "required": [
-        "Enabled"
-      ]
+      "required": ["Enabled"]
     },
     "ClusterInfo": {
       "type": "structure",
@@ -2681,10 +2661,7 @@
     "ClusterType": {
       "type": "string",
       "documentation": "\n            <p>The type of cluster.</p>\n         ",
-      "enum": [
-        "PROVISIONED",
-        "SERVERLESS"
-      ]
+      "enum": ["PROVISIONED", "SERVERLESS"]
     },
     "ProvisionedRequest": {
       "type": "structure",
@@ -2741,11 +2718,7 @@
           "documentation": "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         }
       },
-      "required": [
-        "BrokerNodeGroupInfo",
-        "KafkaVersion",
-        "NumberOfBrokerNodes"
-      ]
+      "required": ["BrokerNodeGroupInfo", "KafkaVersion", "NumberOfBrokerNodes"]
     },
     "Provisioned": {
       "type": "structure",
@@ -2812,10 +2785,7 @@
           "documentation": "\n            <p>Determines if there is an action required from the customer.</p>\n         "
         }
       },
-      "required": [
-        "BrokerNodeGroupInfo",
-        "NumberOfBrokerNodes"
-      ]
+      "required": ["BrokerNodeGroupInfo", "NumberOfBrokerNodes"]
     },
     "VpcConfig": {
       "type": "structure",
@@ -2832,9 +2802,7 @@
           "documentation": "\n            <p>The IDs of the security groups associated with the cluster.</p>\n         "
         }
       },
-      "required": [
-        "SubnetIds"
-      ]
+      "required": ["SubnetIds"]
     },
     "ServerlessRequest": {
       "type": "structure",
@@ -2851,9 +2819,7 @@
           "documentation": "\n            <p>Includes all client authentication information.</p>\n         "
         }
       },
-      "required": [
-        "VpcConfigs"
-      ]
+      "required": ["VpcConfigs"]
     },
     "Serverless": {
       "type": "structure",
@@ -2870,9 +2836,7 @@
           "documentation": "\n            <p>Includes all client authentication information.</p>\n         "
         }
       },
-      "required": [
-        "VpcConfigs"
-      ]
+      "required": ["VpcConfigs"]
     },
     "ClientVpcConnection": {
       "type": "structure",
@@ -2904,9 +2868,7 @@
           "documentation": "\n            <p>The Owner of the Vpc Connection.</p>\n         "
         }
       },
-      "required": [
-        "VpcConnectionArn"
-      ]
+      "required": ["VpcConnectionArn"]
     },
     "VpcConnection": {
       "type": "structure",
@@ -2943,10 +2905,7 @@
           "documentation": "\n            <p>State of the Vpc Connection.</p>\n         "
         }
       },
-      "required": [
-        "VpcConnectionArn",
-        "TargetClusterArn"
-      ]
+      "required": ["VpcConnectionArn", "TargetClusterArn"]
     },
     "CompatibleKafkaVersion": {
       "type": "structure",
@@ -3029,10 +2988,7 @@
         }
       },
       "documentation": "\n            <p>Specifies the configuration to use for the brokers.</p>\n         ",
-      "required": [
-        "Revision",
-        "Arn"
-      ]
+      "required": ["Revision", "Arn"]
     },
     "ConfigurationRevision": {
       "type": "structure",
@@ -3054,19 +3010,12 @@
         }
       },
       "documentation": "\n            <p>Describes a configuration revision.</p>\n         ",
-      "required": [
-        "Revision",
-        "CreationTime"
-      ]
+      "required": ["Revision", "CreationTime"]
     },
     "ConfigurationState": {
       "type": "string",
       "documentation": "\n            <p>The state of a configuration.</p>\n         ",
-      "enum": [
-        "ACTIVE",
-        "DELETING",
-        "DELETE_FAILED"
-      ]
+      "enum": ["ACTIVE", "DELETING", "DELETE_FAILED"]
     },
     "ConflictException": {
       "type": "structure",
@@ -3129,9 +3078,7 @@
         }
       },
       "documentation": "<p>Details about consumer group replication.</p>",
-      "required": [
-        "ConsumerGroupsToReplicate"
-      ]
+      "required": ["ConsumerGroupsToReplicate"]
     },
     "ConsumerGroupReplicationUpdate": {
       "type": "structure",
@@ -3189,9 +3136,7 @@
           "documentation": "\n            <p>Information about the serverless cluster.</p>\n         "
         }
       },
-      "required": [
-        "ClusterName"
-      ]
+      "required": ["ClusterName"]
     },
     "CreateClusterRequest": {
       "type": "structure",
@@ -3332,10 +3277,7 @@
           "documentation": "\n            <p>Contents of the <filename>server.properties</filename> file. When using the API, you must ensure that the contents of the file are base64 encoded. \n               When using the AWS Management Console, the SDK, or the AWS CLI, the contents of <filename>server.properties</filename> can be in plaintext.</p>\n         "
         }
       },
-      "required": [
-        "ServerProperties",
-        "Name"
-      ]
+      "required": ["ServerProperties", "Name"]
     },
     "CreateConfigurationResponse": {
       "type": "structure",
@@ -3664,11 +3606,7 @@
     "CustomerActionStatus": {
       "type": "string",
       "documentation": "\n            <p>A type of an action required from the customer.</p>",
-      "enum": [
-        "CRITICAL_ACTION_REQUIRED",
-        "ACTION_RECOMMENDED",
-        "NONE"
-      ]
+      "enum": ["CRITICAL_ACTION_REQUIRED", "ACTION_RECOMMENDED", "NONE"]
     },
     "DeleteClusterRequest": {
       "type": "structure",
@@ -3686,9 +3624,7 @@
           "documentation": "\n            <p>The current version of the MSK cluster.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "DeleteClusterResponse": {
       "type": "structure",
@@ -3715,14 +3651,11 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "DeleteClusterPolicyResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DeleteConfigurationRequest": {
       "type": "structure",
@@ -3734,9 +3667,7 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies an MSK configuration.</p>\n         "
         }
       },
-      "required": [
-        "Arn"
-      ]
+      "required": ["Arn"]
     },
     "DeleteConfigurationResponse": {
       "type": "structure",
@@ -3769,9 +3700,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the replicator to be deleted.</p>"
         }
       },
-      "required": [
-        "ReplicatorArn"
-      ]
+      "required": ["ReplicatorArn"]
     },
     "DeleteReplicatorResponse": {
       "type": "structure",
@@ -3798,9 +3727,7 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies an MSK VPC connection.</p>\n         "
         }
       },
-      "required": [
-        "Arn"
-      ]
+      "required": ["Arn"]
     },
     "DeleteVpcConnectionResponse": {
       "type": "structure",
@@ -3827,9 +3754,7 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the MSK cluster operation.</p>\n         "
         }
       },
-      "required": [
-        "ClusterOperationArn"
-      ]
+      "required": ["ClusterOperationArn"]
     },
     "DescribeClusterOperationV2Request": {
       "type": "structure",
@@ -3841,9 +3766,7 @@
           "documentation": "ARN of the cluster operation to describe."
         }
       },
-      "required": [
-        "ClusterOperationArn"
-      ]
+      "required": ["ClusterOperationArn"]
     },
     "DescribeClusterOperationResponse": {
       "type": "structure",
@@ -3875,9 +3798,7 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "DescribeClusterV2Request": {
       "type": "structure",
@@ -3889,9 +3810,7 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "DescribeClusterResponse": {
       "type": "structure",
@@ -3923,9 +3842,7 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies an MSK configuration and all of its revisions.</p>\n         "
         }
       },
-      "required": [
-        "Arn"
-      ]
+      "required": ["Arn"]
     },
     "DescribeConfigurationResponse": {
       "type": "structure",
@@ -3983,10 +3900,7 @@
           "documentation": "\n            <p>A string that uniquely identifies a revision of an MSK configuration.</p>\n         "
         }
       },
-      "required": [
-        "Revision",
-        "Arn"
-      ]
+      "required": ["Revision", "Arn"]
     },
     "DescribeConfigurationRevisionResponse": {
       "type": "structure",
@@ -4028,9 +3942,7 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies a MSK VPC connection.</p>\n   "
         }
       },
-      "required": [
-        "Arn"
-      ]
+      "required": ["Arn"]
     },
     "DescribeReplicatorRequest": {
       "type": "structure",
@@ -4042,9 +3954,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the replicator to be described.</p>"
         }
       },
-      "required": [
-        "ReplicatorArn"
-      ]
+      "required": ["ReplicatorArn"]
     },
     "DescribeReplicatorResponse": {
       "type": "structure",
@@ -4182,10 +4092,7 @@
         }
       },
       "documentation": "\n            <p>Disassociates sasl scram secrets to cluster.</p>\n         ",
-      "required": [
-        "ClusterArn",
-        "SecretArnList"
-      ]
+      "required": ["ClusterArn", "SecretArnList"]
     },
     "BatchDisassociateScramSecretResponse": {
       "type": "structure",
@@ -4228,9 +4135,7 @@
         }
       },
       "documentation": "\n            <p>The data-volume encryption details.</p>\n         ",
-      "required": [
-        "DataVolumeKMSKeyId"
-      ]
+      "required": ["DataVolumeKMSKeyId"]
     },
     "EncryptionInTransit": {
       "type": "structure",
@@ -4318,9 +4223,7 @@
           "locationName": "enabled"
         }
       },
-      "required": [
-        "Enabled"
-      ]
+      "required": ["Enabled"]
     },
     "ForbiddenException": {
       "type": "structure",
@@ -4352,9 +4255,7 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "GetBootstrapBrokersResponse": {
       "type": "structure",
@@ -4442,9 +4343,7 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n            "
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "GetClusterPolicyResponse": {
       "type": "structure",
@@ -4496,10 +4395,7 @@
         }
       },
       "documentation": "<p>Information about Kafka Cluster to be used as source / target for replication.</p>",
-      "required": [
-        "VpcConfig",
-        "AmazonMskCluster"
-      ]
+      "required": ["VpcConfig", "AmazonMskCluster"]
     },
     "KafkaClusterClientVpcConfig": {
       "type": "structure",
@@ -4516,9 +4412,7 @@
         }
       },
       "documentation": "<p>Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.</p>",
-      "required": [
-        "SubnetIds"
-      ]
+      "required": ["SubnetIds"]
     },
     "KafkaClusterDescription": {
       "type": "structure",
@@ -4572,10 +4466,7 @@
     },
     "KafkaVersionStatus": {
       "type": "string",
-      "enum": [
-        "ACTIVE",
-        "DEPRECATED"
-      ]
+      "enum": ["ACTIVE", "DEPRECATED"]
     },
     "ListClusterOperationsRequest": {
       "type": "structure",
@@ -4599,9 +4490,7 @@
           "documentation": "\n            <p>The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. \n            To get the next batch, provide this token in your next request.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "ListClusterOperationsV2Request": {
       "type": "structure",
@@ -4625,9 +4514,7 @@
           "documentation": "The nextToken of the query."
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "ListClusterOperationsResponse": {
       "type": "structure",
@@ -4763,9 +4650,7 @@
           "documentation": "\n            <p>The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. \n            To get the next batch, provide this token in your next request.</p>\n         "
         }
       },
-      "required": [
-        "Arn"
-      ]
+      "required": ["Arn"]
     },
     "ListConfigurationRevisionsResponse": {
       "type": "structure",
@@ -4866,9 +4751,7 @@
           "documentation": "\n            <p>The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. \n            To get the next batch, provide this token in your next request.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "ListNodesResponse": {
       "type": "structure",
@@ -4945,9 +4828,7 @@
           "documentation": "\n            <p>The nextToken of the query.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "ListScramSecretsResponse": {
       "type": "structure",
@@ -4974,9 +4855,7 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the resource that's associated with the tags.</p>\n         "
         }
       },
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "ListTagsForResourceResponse": {
       "type": "structure",
@@ -5010,9 +4889,7 @@
           "documentation": "\n            <p>The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. \n            To get the next batch, provide this token in your next request.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "ListClientVpcConnectionsResponse": {
       "type": "structure",
@@ -5076,15 +4953,11 @@
           "documentation": "\n            <p>The VPC connection ARN.</p>\n         "
         }
       },
-      "required": [
-        "VpcConnectionArn",
-        "ClusterArn"
-      ]
+      "required": ["VpcConnectionArn", "ClusterArn"]
     },
     "RejectClientVpcConnectionResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "MaxResults": {
       "type": "integer",
@@ -5099,9 +4972,7 @@
           "locationName": "brokerLogs"
         }
       },
-      "required": [
-        "BrokerLogs"
-      ]
+      "required": ["BrokerLogs"]
     },
     "MutableClusterInfo": {
       "type": "structure",
@@ -5184,9 +5055,7 @@
         }
       },
       "documentation": "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         ",
-      "required": [
-        "EnabledInBroker"
-      ]
+      "required": ["EnabledInBroker"]
     },
     "NodeExporterInfo": {
       "type": "structure",
@@ -5198,9 +5067,7 @@
         }
       },
       "documentation": "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         ",
-      "required": [
-        "EnabledInBroker"
-      ]
+      "required": ["EnabledInBroker"]
     },
     "JmxExporter": {
       "type": "structure",
@@ -5212,9 +5079,7 @@
         }
       },
       "documentation": "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         ",
-      "required": [
-        "EnabledInBroker"
-      ]
+      "required": ["EnabledInBroker"]
     },
     "JmxExporterInfo": {
       "type": "structure",
@@ -5226,9 +5091,7 @@
         }
       },
       "documentation": "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         ",
-      "required": [
-        "EnabledInBroker"
-      ]
+      "required": ["EnabledInBroker"]
     },
     "OpenMonitoring": {
       "type": "structure",
@@ -5240,9 +5103,7 @@
         }
       },
       "documentation": "\n            <p>JMX and Node monitoring for the MSK cluster.</p>\n         ",
-      "required": [
-        "Prometheus"
-      ]
+      "required": ["Prometheus"]
     },
     "OpenMonitoringInfo": {
       "type": "structure",
@@ -5254,9 +5115,7 @@
         }
       },
       "documentation": "\n            <p>JMX and Node monitoring for the MSK cluster.</p>\n         ",
-      "required": [
-        "Prometheus"
-      ]
+      "required": ["Prometheus"]
     },
     "Prometheus": {
       "type": "structure",
@@ -5337,10 +5196,7 @@
           "documentation": "\n            <p>The policy.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn",
-        "Policy"
-      ]
+      "required": ["ClusterArn", "Policy"]
     },
     "PutClusterPolicyResponse": {
       "type": "structure",
@@ -5368,10 +5224,7 @@
         }
       },
       "documentation": "Reboots a node.",
-      "required": [
-        "ClusterArn",
-        "BrokerIds"
-      ]
+      "required": ["ClusterArn", "BrokerIds"]
     },
     "RebootBrokerResponse": {
       "type": "structure",
@@ -5404,9 +5257,7 @@
           "locationName": "prefix"
         }
       },
-      "required": [
-        "Enabled"
-      ]
+      "required": ["Enabled"]
     },
     "ServerlessSasl": {
       "type": "structure",
@@ -5539,9 +5390,7 @@
     "NodeType": {
       "type": "string",
       "documentation": "\n            <p>The broker or Zookeeper node.</p>\n         ",
-      "enum": [
-        "BROKER"
-      ]
+      "enum": ["BROKER"]
     },
     "NotFoundException": {
       "type": "structure",
@@ -5661,10 +5510,7 @@
     },
     "ReplicationStartingPositionType": {
       "type": "string",
-      "enum": [
-        "LATEST",
-        "EARLIEST"
-      ],
+      "enum": ["LATEST", "EARLIEST"],
       "documentation": "<p>The type of replication starting position.</p>"
     },
     "ReplicationTopicNameConfiguration": {
@@ -5680,10 +5526,7 @@
     },
     "ReplicationTopicNameConfigurationType": {
       "type": "string",
-      "enum": [
-        "PREFIXED_WITH_SOURCE_CLUSTER_ALIAS",
-        "IDENTICAL"
-      ],
+      "enum": ["PREFIXED_WITH_SOURCE_CLUSTER_ALIAS", "IDENTICAL"],
       "documentation": "<p>The type of replicated topic name.</p>"
     },
     "ReplicationStateInfo": {
@@ -5705,13 +5548,7 @@
     "ReplicatorState": {
       "type": "string",
       "documentation": "<p>The state of a replicator.</p>",
-      "enum": [
-        "RUNNING",
-        "CREATING",
-        "UPDATING",
-        "DELETING",
-        "FAILED"
-      ]
+      "enum": ["RUNNING", "CREATING", "UPDATING", "DELETING", "FAILED"]
     },
     "ReplicatorSummary": {
       "type": "structure",
@@ -5811,10 +5648,7 @@
     "StorageMode": {
       "type": "string",
       "documentation": "Controls storage mode for various supported storage tiers.",
-      "enum": [
-        "LOCAL",
-        "TIERED"
-      ]
+      "enum": ["LOCAL", "TIERED"]
     },
     "TagResourceRequest": {
       "type": "structure",
@@ -5831,21 +5665,12 @@
           "documentation": "\n            <p>The key-value pair for the resource tag.</p>\n         "
         }
       },
-      "required": [
-        "ResourceArn",
-        "Tags"
-      ]
+      "required": ["ResourceArn", "Tags"]
     },
     "TargetCompressionType": {
       "type": "string",
       "documentation": "<p>The type of compression to use producing records to the target cluster.</p>",
-      "enum": [
-        "NONE",
-        "GZIP",
-        "SNAPPY",
-        "LZ4",
-        "ZSTD"
-      ]
+      "enum": ["NONE", "GZIP", "SNAPPY", "LZ4", "ZSTD"]
     },
     "Tls": {
       "type": "structure",
@@ -5934,9 +5759,7 @@
         }
       },
       "documentation": "<p>Details about topic replication.</p>",
-      "required": [
-        "TopicsToReplicate"
-      ]
+      "required": ["TopicsToReplicate"]
     },
     "TopicReplicationUpdate": {
       "type": "structure",
@@ -6043,10 +5866,7 @@
           "documentation": "\n            <p>Tag keys must be unique for a given cluster. In addition, the following restrictions apply:</p>\n            <ul>\n               <li>\n                  <p>Each tag key must be unique. If you add a tag with a key that's already in\n                  use, your new tag overwrites the existing key-value pair. </p>\n               </li>\n               <li>\n                  <p>You can't start a tag key with aws: because this prefix is reserved for use\n                  by  AWS.  AWS creates tags that begin with this prefix on your behalf, but\n                  you can't edit or delete them.</p>\n               </li>\n               <li>\n                  <p>Tag keys must be between 1 and 128 Unicode characters in length.</p>\n               </li>\n               <li>\n                  <p>Tag keys must consist of the following characters: Unicode letters, digits,\n                  white space, and the following special characters: _ . / = + -\n                     @.</p>\n               </li>\n            </ul>\n         "
         }
       },
-      "required": [
-        "TagKeys",
-        "ResourceArn"
-      ]
+      "required": ["TagKeys", "ResourceArn"]
     },
     "UpdateBrokerCountRequest": {
       "type": "structure",
@@ -6068,11 +5888,7 @@
           "documentation": "\n            <p>The number of broker nodes that you want the cluster to have after this operation completes successfully.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn",
-        "CurrentVersion",
-        "TargetNumberOfBrokerNodes"
-      ]
+      "required": ["ClusterArn", "CurrentVersion", "TargetNumberOfBrokerNodes"]
     },
     "UpdateBrokerCountResponse": {
       "type": "structure",
@@ -6109,11 +5925,7 @@
           "documentation": "\n            <p>The Amazon MSK broker type that you want all of the brokers in this cluster to be.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn",
-        "CurrentVersion",
-        "TargetInstanceType"
-      ]
+      "required": ["ClusterArn", "CurrentVersion", "TargetInstanceType"]
     },
     "UpdateBrokerTypeResponse": {
       "type": "structure",
@@ -6150,11 +5962,7 @@
           "documentation": "\n            <p>Describes the target volume size and the ID of the broker to apply the update to.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn",
-        "TargetBrokerEBSVolumeInfo",
-        "CurrentVersion"
-      ]
+      "required": ["ClusterArn", "TargetBrokerEBSVolumeInfo", "CurrentVersion"]
     },
     "UpdateBrokerStorageResponse": {
       "type": "structure",
@@ -6191,11 +5999,7 @@
           "documentation": "\n            <p>The version of the cluster that needs to be updated.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn",
-        "CurrentVersion",
-        "ConfigurationInfo"
-      ]
+      "required": ["ClusterArn", "CurrentVersion", "ConfigurationInfo"]
     },
     "UpdateClusterConfigurationResponse": {
       "type": "structure",
@@ -6237,11 +6041,7 @@
           "documentation": "\n            <p>Target Kafka version.</p>\n            "
         }
       },
-      "required": [
-        "ClusterArn",
-        "TargetKafkaVersion",
-        "CurrentVersion"
-      ]
+      "required": ["ClusterArn", "TargetKafkaVersion", "CurrentVersion"]
     },
     "UpdateClusterKafkaVersionResponse": {
       "type": "structure",
@@ -6288,10 +6088,7 @@
         }
       },
       "documentation": "Request body for UpdateMonitoring.",
-      "required": [
-        "ClusterArn",
-        "CurrentVersion"
-      ]
+      "required": ["ClusterArn", "CurrentVersion"]
     },
     "UpdateMonitoringResponse": {
       "type": "structure",
@@ -6391,10 +6188,7 @@
           "documentation": "\n            <p>Includes all encryption-related information.</p>\n         "
         }
       },
-      "required": [
-        "ClusterArn",
-        "CurrentVersion"
-      ]
+      "required": ["ClusterArn", "CurrentVersion"]
     },
     "UpdateSecurityResponse": {
       "type": "structure",
@@ -6442,10 +6236,7 @@
         }
       },
       "documentation": "\n            <p>Request object for UpdateStorage api. Its used to update the storage attributes for the cluster.</p>\n         ",
-      "required": [
-        "ClusterArn",
-        "CurrentVersion"
-      ]
+      "required": ["ClusterArn", "CurrentVersion"]
     },
     "UpdateStorageResponse": {
       "type": "structure",
@@ -6482,10 +6273,7 @@
           "documentation": "\n            <p>Contents of the <filename>server.properties</filename> file. When using the API, you must ensure that the contents of the file are base64 encoded. \n               When using the AWS Management Console, the SDK, or the AWS CLI, the contents of <filename>server.properties</filename> can be in plaintext.</p>\n         "
         }
       },
-      "required": [
-        "Arn",
-        "ServerProperties"
-      ]
+      "required": ["Arn", "ServerProperties"]
     },
     "UpdateConfigurationResponse": {
       "type": "structure",
@@ -6523,11 +6311,7 @@
         }
       },
       "documentation": "Request body for UpdateConnectivity.",
-      "required": [
-        "ClusterArn",
-        "ConnectivityInfo",
-        "CurrentVersion"
-      ]
+      "required": ["ClusterArn", "ConnectivityInfo", "CurrentVersion"]
     },
     "UpdateConnectivityResponse": {
       "type": "structure",
@@ -6563,10 +6347,7 @@
     "UserIdentityType": {
       "type": "string",
       "documentation": "\n            <p>The identity type of the requester that calls the API operation.</p>\n         ",
-      "enum": [
-        "AWSACCOUNT",
-        "AWSSERVICE"
-      ]
+      "enum": ["AWSACCOUNT", "AWSSERVICE"]
     },
     "VpcConnectionInfo": {
       "type": "structure",

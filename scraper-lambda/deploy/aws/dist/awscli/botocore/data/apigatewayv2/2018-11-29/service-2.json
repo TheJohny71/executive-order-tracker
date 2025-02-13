@@ -9,9 +9,7 @@
     "jsonVersion": "1.1",
     "uid": "apigatewayv2-2018-11-29",
     "signatureVersion": "v4",
-    "auth": [
-      "aws.auth#sigv4"
-    ]
+    "auth": ["aws.auth#sigv4"]
   },
   "operations": {
     "CreateApi": {
@@ -2213,11 +2211,7 @@
         }
       },
       "documentation": "<p>Represents an API.</p>",
-      "required": [
-        "RouteSelectionExpression",
-        "Name",
-        "ProtocolType"
-      ]
+      "required": ["RouteSelectionExpression", "Name", "ProtocolType"]
     },
     "ApiMapping": {
       "type": "structure",
@@ -2244,10 +2238,7 @@
         }
       },
       "documentation": "<p>Represents an API mapping.</p>",
-      "required": [
-        "Stage",
-        "ApiId"
-      ]
+      "required": ["Stage", "ApiId"]
     },
     "ApiMappings": {
       "type": "structure",
@@ -2295,12 +2286,7 @@
     "AuthorizationType": {
       "type": "string",
       "documentation": "<p>The authorization type. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer. For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.</p>",
-      "enum": [
-        "NONE",
-        "AWS_IAM",
-        "CUSTOM",
-        "JWT"
-      ]
+      "enum": ["NONE", "AWS_IAM", "CUSTOM", "JWT"]
     },
     "Authorizer": {
       "type": "structure",
@@ -2362,17 +2348,12 @@
         }
       },
       "documentation": "<p>Represents an authorizer.</p>",
-      "required": [
-        "Name"
-      ]
+      "required": ["Name"]
     },
     "AuthorizerType": {
       "type": "string",
       "documentation": "<p>The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).</p>",
-      "enum": [
-        "REQUEST",
-        "JWT"
-      ]
+      "enum": ["REQUEST", "JWT"]
     },
     "Authorizers": {
       "type": "structure",
@@ -2423,18 +2404,12 @@
     "ConnectionType": {
       "type": "string",
       "documentation": "<p>Represents a connection type.</p>",
-      "enum": [
-        "INTERNET",
-        "VPC_LINK"
-      ]
+      "enum": ["INTERNET", "VPC_LINK"]
     },
     "ContentHandlingStrategy": {
       "type": "string",
       "documentation": "<p>Specifies how to handle response payload content type conversions. Supported only for WebSocket APIs.</p>",
-      "enum": [
-        "CONVERT_TO_BINARY",
-        "CONVERT_TO_TEXT"
-      ]
+      "enum": ["CONVERT_TO_BINARY", "CONVERT_TO_TEXT"]
     },
     "Cors": {
       "type": "structure",
@@ -2563,10 +2538,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for a CreateApi request.</p>",
-      "required": [
-        "ProtocolType",
-        "Name"
-      ]
+      "required": ["ProtocolType", "Name"]
     },
     "CreateApiMappingInput": {
       "type": "structure",
@@ -2588,10 +2560,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for a CreateApiMapping request.</p>",
-      "required": [
-        "Stage",
-        "ApiId"
-      ]
+      "required": ["Stage", "ApiId"]
     },
     "CreateApiMappingRequest": {
       "type": "structure",
@@ -2619,11 +2588,7 @@
         }
       },
       "documentation": "<p>Creates a new ApiMapping resource to represent an API mapping.</p>",
-      "required": [
-        "DomainName",
-        "Stage",
-        "ApiId"
-      ]
+      "required": ["DomainName", "Stage", "ApiId"]
     },
     "CreateApiMappingResponse": {
       "type": "structure",
@@ -2720,10 +2685,7 @@
         }
       },
       "documentation": "<p>Creates a new Api resource to represent an API.</p>",
-      "required": [
-        "ProtocolType",
-        "Name"
-      ]
+      "required": ["ProtocolType", "Name"]
     },
     "CreateApiResponse": {
       "type": "structure",
@@ -2865,11 +2827,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for a CreateAuthorizer request.</p>",
-      "required": [
-        "AuthorizerType",
-        "IdentitySource",
-        "Name"
-      ]
+      "required": ["AuthorizerType", "IdentitySource", "Name"]
     },
     "CreateAuthorizerRequest": {
       "type": "structure",
@@ -2932,12 +2890,7 @@
         }
       },
       "documentation": "<p>Creates a new Authorizer resource to represent an authorizer.</p>",
-      "required": [
-        "ApiId",
-        "AuthorizerType",
-        "IdentitySource",
-        "Name"
-      ]
+      "required": ["ApiId", "AuthorizerType", "IdentitySource", "Name"]
     },
     "CreateAuthorizerResponse": {
       "type": "structure",
@@ -3036,9 +2989,7 @@
         }
       },
       "documentation": "<p>Creates a new Deployment resource to represent a deployment.</p>",
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "CreateDeploymentResponse": {
       "type": "structure",
@@ -3100,9 +3051,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for a CreateDomainName request.</p>",
-      "required": [
-        "DomainName"
-      ]
+      "required": ["DomainName"]
     },
     "CreateDomainNameRequest": {
       "type": "structure",
@@ -3129,9 +3078,7 @@
         }
       },
       "documentation": "<p>Creates a new DomainName resource to represent a domain name.</p>",
-      "required": [
-        "DomainName"
-      ]
+      "required": ["DomainName"]
     },
     "CreateDomainNameResponse": {
       "type": "structure",
@@ -3253,9 +3200,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for a CreateIntegration request.</p>",
-      "required": [
-        "IntegrationType"
-      ]
+      "required": ["IntegrationType"]
     },
     "CreateIntegrationRequest": {
       "type": "structure",
@@ -3353,10 +3298,7 @@
         }
       },
       "documentation": "<p>Creates a new Integration resource to represent an integration.</p>",
-      "required": [
-        "ApiId",
-        "IntegrationType"
-      ]
+      "required": ["ApiId", "IntegrationType"]
     },
     "CreateIntegrationResult": {
       "type": "structure",
@@ -3493,9 +3435,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for a CreateIntegrationResponse request.</p>",
-      "required": [
-        "IntegrationResponseKey"
-      ]
+      "required": ["IntegrationResponseKey"]
     },
     "CreateIntegrationResponseRequest": {
       "type": "structure",
@@ -3539,11 +3479,7 @@
         }
       },
       "documentation": "<p>Creates a new IntegrationResponse resource to represent an integration response.</p>",
-      "required": [
-        "ApiId",
-        "IntegrationId",
-        "IntegrationResponseKey"
-      ]
+      "required": ["ApiId", "IntegrationId", "IntegrationResponseKey"]
     },
     "CreateIntegrationResponseResponse": {
       "type": "structure",
@@ -3605,10 +3541,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for a CreateModel request.</p>",
-      "required": [
-        "Schema",
-        "Name"
-      ]
+      "required": ["Schema", "Name"]
     },
     "CreateModelRequest": {
       "type": "structure",
@@ -3641,11 +3574,7 @@
         }
       },
       "documentation": "<p>Creates a new Model.</p>",
-      "required": [
-        "ApiId",
-        "Schema",
-        "Name"
-      ]
+      "required": ["ApiId", "Schema", "Name"]
     },
     "CreateModelResponse": {
       "type": "structure",
@@ -3737,9 +3666,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for a CreateRoute request.</p>",
-      "required": [
-        "RouteKey"
-      ]
+      "required": ["RouteKey"]
     },
     "CreateRouteRequest": {
       "type": "structure",
@@ -3807,10 +3734,7 @@
         }
       },
       "documentation": "<p>Creates a new Route resource to represent a route.</p>",
-      "required": [
-        "ApiId",
-        "RouteKey"
-      ]
+      "required": ["ApiId", "RouteKey"]
     },
     "CreateRouteResult": {
       "type": "structure",
@@ -3907,9 +3831,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for an CreateRouteResponse request.</p>",
-      "required": [
-        "RouteResponseKey"
-      ]
+      "required": ["RouteResponseKey"]
     },
     "CreateRouteResponseRequest": {
       "type": "structure",
@@ -3948,11 +3870,7 @@
         }
       },
       "documentation": "<p>Creates a new RouteResponse resource to represent a route response.</p>",
-      "required": [
-        "ApiId",
-        "RouteId",
-        "RouteResponseKey"
-      ]
+      "required": ["ApiId", "RouteId", "RouteResponseKey"]
     },
     "CreateRouteResponseResponse": {
       "type": "structure",
@@ -4039,9 +3957,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for a CreateStage request.</p>",
-      "required": [
-        "StageName"
-      ]
+      "required": ["StageName"]
     },
     "CreateStageRequest": {
       "type": "structure",
@@ -4104,10 +4020,7 @@
         }
       },
       "documentation": "<p>Creates a new Stage resource to represent a stage.</p>",
-      "required": [
-        "ApiId",
-        "StageName"
-      ]
+      "required": ["ApiId", "StageName"]
     },
     "CreateStageResponse": {
       "type": "structure",
@@ -4209,10 +4122,7 @@
         }
       },
       "documentation": "<p>Represents the input parameters for a CreateVpcLink request.</p>",
-      "required": [
-        "SubnetIds",
-        "Name"
-      ]
+      "required": ["SubnetIds", "Name"]
     },
     "CreateVpcLinkRequest": {
       "type": "structure",
@@ -4239,10 +4149,7 @@
         }
       },
       "documentation": "<p>Creates a VPC link</p>",
-      "required": [
-        "SubnetIds",
-        "Name"
-      ]
+      "required": ["SubnetIds", "Name"]
     },
     "CreateVpcLinkResponse": {
       "type": "structure",
@@ -4310,10 +4217,7 @@
           "documentation": "<p>The stage name. Stage names can only contain alphanumeric characters, hyphens, and underscores. Maximum length is 128 characters.</p>"
         }
       },
-      "required": [
-        "StageName",
-        "ApiId"
-      ]
+      "required": ["StageName", "ApiId"]
     },
     "DeleteApiMappingRequest": {
       "type": "structure",
@@ -4331,10 +4235,7 @@
           "documentation": "<p>The domain name.</p>"
         }
       },
-      "required": [
-        "ApiMappingId",
-        "DomainName"
-      ]
+      "required": ["ApiMappingId", "DomainName"]
     },
     "DeleteApiRequest": {
       "type": "structure",
@@ -4346,9 +4247,7 @@
           "documentation": "<p>The API identifier.</p>"
         }
       },
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "DeleteAuthorizerRequest": {
       "type": "structure",
@@ -4366,10 +4265,7 @@
           "documentation": "<p>The authorizer identifier.</p>"
         }
       },
-      "required": [
-        "AuthorizerId",
-        "ApiId"
-      ]
+      "required": ["AuthorizerId", "ApiId"]
     },
     "DeleteCorsConfigurationRequest": {
       "type": "structure",
@@ -4381,9 +4277,7 @@
           "documentation": "<p>The API identifier.</p>"
         }
       },
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "DeleteDeploymentRequest": {
       "type": "structure",
@@ -4401,10 +4295,7 @@
           "documentation": "<p>The deployment ID.</p>"
         }
       },
-      "required": [
-        "ApiId",
-        "DeploymentId"
-      ]
+      "required": ["ApiId", "DeploymentId"]
     },
     "DeleteDomainNameRequest": {
       "type": "structure",
@@ -4416,9 +4307,7 @@
           "documentation": "<p>The domain name.</p>"
         }
       },
-      "required": [
-        "DomainName"
-      ]
+      "required": ["DomainName"]
     },
     "DeleteIntegrationRequest": {
       "type": "structure",
@@ -4436,10 +4325,7 @@
           "documentation": "<p>The integration ID.</p>"
         }
       },
-      "required": [
-        "ApiId",
-        "IntegrationId"
-      ]
+      "required": ["ApiId", "IntegrationId"]
     },
     "DeleteIntegrationResponseRequest": {
       "type": "structure",
@@ -4463,11 +4349,7 @@
           "documentation": "<p>The integration response ID.</p>"
         }
       },
-      "required": [
-        "ApiId",
-        "IntegrationResponseId",
-        "IntegrationId"
-      ]
+      "required": ["ApiId", "IntegrationResponseId", "IntegrationId"]
     },
     "DeleteModelRequest": {
       "type": "structure",
@@ -4485,10 +4367,7 @@
           "documentation": "<p>The model ID.</p>"
         }
       },
-      "required": [
-        "ModelId",
-        "ApiId"
-      ]
+      "required": ["ModelId", "ApiId"]
     },
     "DeleteRouteRequest": {
       "type": "structure",
@@ -4506,10 +4385,7 @@
           "documentation": "<p>The route ID.</p>"
         }
       },
-      "required": [
-        "ApiId",
-        "RouteId"
-      ]
+      "required": ["ApiId", "RouteId"]
     },
     "DeleteRouteRequestParameterRequest": {
       "type": "structure",
@@ -4533,11 +4409,7 @@
           "documentation": "<p>The route ID.</p>"
         }
       },
-      "required": [
-        "RequestParameterKey",
-        "ApiId",
-        "RouteId"
-      ]
+      "required": ["RequestParameterKey", "ApiId", "RouteId"]
     },
     "DeleteRouteResponseRequest": {
       "type": "structure",
@@ -4561,11 +4433,7 @@
           "documentation": "<p>The route response ID.</p>"
         }
       },
-      "required": [
-        "RouteResponseId",
-        "ApiId",
-        "RouteId"
-      ]
+      "required": ["RouteResponseId", "ApiId", "RouteId"]
     },
     "DeleteRouteSettingsRequest": {
       "type": "structure",
@@ -4589,11 +4457,7 @@
           "documentation": "<p>The stage name. Stage names can only contain alphanumeric characters, hyphens, and underscores. Maximum length is 128 characters.</p>"
         }
       },
-      "required": [
-        "StageName",
-        "RouteKey",
-        "ApiId"
-      ]
+      "required": ["StageName", "RouteKey", "ApiId"]
     },
     "DeleteStageRequest": {
       "type": "structure",
@@ -4611,10 +4475,7 @@
           "documentation": "<p>The stage name. Stage names can only contain alphanumeric characters, hyphens, and underscores. Maximum length is 128 characters.</p>"
         }
       },
-      "required": [
-        "StageName",
-        "ApiId"
-      ]
+      "required": ["StageName", "ApiId"]
     },
     "DeleteVpcLinkRequest": {
       "type": "structure",
@@ -4626,14 +4487,11 @@
           "documentation": "<p>The ID of the VPC link.</p>"
         }
       },
-      "required": [
-        "VpcLinkId"
-      ]
+      "required": ["VpcLinkId"]
     },
     "DeleteVpcLinkResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "Deployment": {
       "type": "structure",
@@ -4674,11 +4532,7 @@
     "DeploymentStatus": {
       "type": "string",
       "documentation": "<p>Represents a deployment status.</p>",
-      "enum": [
-        "PENDING",
-        "FAILED",
-        "DEPLOYED"
-      ]
+      "enum": ["PENDING", "FAILED", "DEPLOYED"]
     },
     "Deployments": {
       "type": "structure",
@@ -4726,9 +4580,7 @@
         }
       },
       "documentation": "<p>Represents a domain name.</p>",
-      "required": [
-        "DomainName"
-      ]
+      "required": ["DomainName"]
     },
     "DomainNameConfiguration": {
       "type": "structure",
@@ -4822,10 +4674,7 @@
     "EndpointType": {
       "type": "string",
       "documentation": "<p>Represents an endpoint type.</p>",
-      "enum": [
-        "REGIONAL",
-        "EDGE"
-      ]
+      "enum": ["REGIONAL", "EDGE"]
     },
     "ExportApiRequest": {
       "type": "structure",
@@ -4850,19 +4699,14 @@
         },
         "OutputType": {
           "shape": "__string",
-          "enum": [
-            "YAML",
-            "JSON"
-          ],
+          "enum": ["YAML", "JSON"],
           "location": "querystring",
           "locationName": "outputType",
           "documentation": "<p>The output type of the exported definition file. Valid values are JSON and YAML.</p>"
         },
         "Specification": {
           "shape": "__string",
-          "enum": [
-            "OAS30"
-          ],
+          "enum": ["OAS30"],
           "location": "uri",
           "locationName": "specification",
           "documentation": "<p>The version of the API specification to use. OAS30, for OpenAPI 3.0, is the only supported value.</p>"
@@ -4874,11 +4718,7 @@
           "documentation": "<p>The name of the API stage to export. If you don't specify this property, a representation of the latest API configuration is exported.</p>"
         }
       },
-      "required": [
-        "Specification",
-        "OutputType",
-        "ApiId"
-      ]
+      "required": ["Specification", "OutputType", "ApiId"]
     },
     "ExportApiResponse": {
       "type": "structure",
@@ -4909,10 +4749,7 @@
           "documentation": "<p>The stage name. Stage names can contain only alphanumeric characters, hyphens, and underscores, or be $default. Maximum length is 128 characters.</p>"
         }
       },
-      "required": [
-        "StageName",
-        "ApiId"
-      ]
+      "required": ["StageName", "ApiId"]
     },
     "GetApiMappingRequest": {
       "type": "structure",
@@ -4930,10 +4767,7 @@
           "documentation": "<p>The domain name.</p>"
         }
       },
-      "required": [
-        "ApiMappingId",
-        "DomainName"
-      ]
+      "required": ["ApiMappingId", "DomainName"]
     },
     "GetApiMappingResponse": {
       "type": "structure",
@@ -4982,9 +4816,7 @@
           "documentation": "<p>The next page of elements from this collection. Not valid for the last element of the collection.</p>"
         }
       },
-      "required": [
-        "DomainName"
-      ]
+      "required": ["DomainName"]
     },
     "GetApiMappingsResponse": {
       "type": "structure",
@@ -5011,9 +4843,7 @@
           "documentation": "<p>The API identifier.</p>"
         }
       },
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "GetApiResponse": {
       "type": "structure",
@@ -5148,10 +4978,7 @@
           "documentation": "<p>The authorizer identifier.</p>"
         }
       },
-      "required": [
-        "AuthorizerId",
-        "ApiId"
-      ]
+      "required": ["AuthorizerId", "ApiId"]
     },
     "GetAuthorizerResponse": {
       "type": "structure",
@@ -5235,9 +5062,7 @@
           "documentation": "<p>The next page of elements from this collection. Not valid for the last element of the collection.</p>"
         }
       },
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "GetAuthorizersResponse": {
       "type": "structure",
@@ -5270,10 +5095,7 @@
           "documentation": "<p>The deployment ID.</p>"
         }
       },
-      "required": [
-        "ApiId",
-        "DeploymentId"
-      ]
+      "required": ["ApiId", "DeploymentId"]
     },
     "GetDeploymentResponse": {
       "type": "structure",
@@ -5332,9 +5154,7 @@
           "documentation": "<p>The next page of elements from this collection. Not valid for the last element of the collection.</p>"
         }
       },
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "GetDeploymentsResponse": {
       "type": "structure",
@@ -5361,9 +5181,7 @@
           "documentation": "<p>The domain name.</p>"
         }
       },
-      "required": [
-        "DomainName"
-      ]
+      "required": ["DomainName"]
     },
     "GetDomainNameResponse": {
       "type": "structure",
@@ -5443,10 +5261,7 @@
           "documentation": "<p>The integration ID.</p>"
         }
       },
-      "required": [
-        "ApiId",
-        "IntegrationId"
-      ]
+      "required": ["ApiId", "IntegrationId"]
     },
     "GetIntegrationResult": {
       "type": "structure",
@@ -5575,11 +5390,7 @@
           "documentation": "<p>The integration response ID.</p>"
         }
       },
-      "required": [
-        "ApiId",
-        "IntegrationResponseId",
-        "IntegrationId"
-      ]
+      "required": ["ApiId", "IntegrationResponseId", "IntegrationId"]
     },
     "GetIntegrationResponseResponse": {
       "type": "structure",
@@ -5644,10 +5455,7 @@
           "documentation": "<p>The next page of elements from this collection. Not valid for the last element of the collection.</p>"
         }
       },
-      "required": [
-        "IntegrationId",
-        "ApiId"
-      ]
+      "required": ["IntegrationId", "ApiId"]
     },
     "GetIntegrationResponsesResponse": {
       "type": "structure",
@@ -5686,9 +5494,7 @@
           "documentation": "<p>The next page of elements from this collection. Not valid for the last element of the collection.</p>"
         }
       },
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "GetIntegrationsResponse": {
       "type": "structure",
@@ -5721,10 +5527,7 @@
           "documentation": "<p>The model ID.</p>"
         }
       },
-      "required": [
-        "ModelId",
-        "ApiId"
-      ]
+      "required": ["ModelId", "ApiId"]
     },
     "GetModelResponse": {
       "type": "structure",
@@ -5772,10 +5575,7 @@
           "documentation": "<p>The model ID.</p>"
         }
       },
-      "required": [
-        "ModelId",
-        "ApiId"
-      ]
+      "required": ["ModelId", "ApiId"]
     },
     "GetModelTemplateResponse": {
       "type": "structure",
@@ -5809,9 +5609,7 @@
           "documentation": "<p>The next page of elements from this collection. Not valid for the last element of the collection.</p>"
         }
       },
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "GetModelsResponse": {
       "type": "structure",
@@ -5844,10 +5642,7 @@
           "documentation": "<p>The route ID.</p>"
         }
       },
-      "required": [
-        "ApiId",
-        "RouteId"
-      ]
+      "required": ["ApiId", "RouteId"]
     },
     "GetRouteResult": {
       "type": "structure",
@@ -5941,11 +5736,7 @@
           "documentation": "<p>The route response ID.</p>"
         }
       },
-      "required": [
-        "RouteResponseId",
-        "ApiId",
-        "RouteId"
-      ]
+      "required": ["RouteResponseId", "ApiId", "RouteId"]
     },
     "GetRouteResponseResponse": {
       "type": "structure",
@@ -6005,10 +5796,7 @@
           "documentation": "<p>The route ID.</p>"
         }
       },
-      "required": [
-        "RouteId",
-        "ApiId"
-      ]
+      "required": ["RouteId", "ApiId"]
     },
     "GetRouteResponsesResponse": {
       "type": "structure",
@@ -6047,9 +5835,7 @@
           "documentation": "<p>The next page of elements from this collection. Not valid for the last element of the collection.</p>"
         }
       },
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "GetRoutesResponse": {
       "type": "structure",
@@ -6082,10 +5868,7 @@
           "documentation": "<p>The stage name. Stage names can only contain alphanumeric characters, hyphens, and underscores. Maximum length is 128 characters.</p>"
         }
       },
-      "required": [
-        "StageName",
-        "ApiId"
-      ]
+      "required": ["StageName", "ApiId"]
     },
     "GetStageResponse": {
       "type": "structure",
@@ -6184,9 +5967,7 @@
           "documentation": "<p>The next page of elements from this collection. Not valid for the last element of the collection.</p>"
         }
       },
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "GetStagesResponse": {
       "type": "structure",
@@ -6213,9 +5994,7 @@
           "documentation": "<p>The resource ARN for the tag.</p>"
         }
       },
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "GetTagsResponse": {
       "type": "structure",
@@ -6236,9 +6015,7 @@
           "documentation": "<p>The ID of the VPC link.</p>"
         }
       },
-      "required": [
-        "VpcLinkId"
-      ]
+      "required": ["VpcLinkId"]
     },
     "GetVpcLinkResponse": {
       "type": "structure",
@@ -6343,9 +6120,7 @@
         }
       },
       "documentation": "<p>Represents the input to ImportAPI. Supported only for HTTP APIs.</p>",
-      "required": [
-        "Body"
-      ]
+      "required": ["Body"]
     },
     "ImportApiRequest": {
       "type": "structure",
@@ -6369,9 +6144,7 @@
         }
       },
       "documentation": "<p></p>",
-      "required": [
-        "Body"
-      ]
+      "required": ["Body"]
     },
     "ImportApiResponse": {
       "type": "structure",
@@ -6627,9 +6400,7 @@
         }
       },
       "documentation": "<p>Represents an integration response.</p>",
-      "required": [
-        "IntegrationResponseKey"
-      ]
+      "required": ["IntegrationResponseKey"]
     },
     "IntegrationResponses": {
       "type": "structure",
@@ -6650,13 +6421,7 @@
     "IntegrationType": {
       "type": "string",
       "documentation": "<p>Represents an API method integration type.</p>",
-      "enum": [
-        "AWS",
-        "HTTP",
-        "MOCK",
-        "HTTP_PROXY",
-        "AWS_PROXY"
-      ]
+      "enum": ["AWS", "HTTP", "MOCK", "HTTP_PROXY", "AWS_PROXY"]
     },
     "Integrations": {
       "type": "structure",
@@ -6709,11 +6474,7 @@
     "LoggingLevel": {
       "type": "string",
       "documentation": "<p>The logging level.</p>",
-      "enum": [
-        "ERROR",
-        "INFO",
-        "OFF"
-      ]
+      "enum": ["ERROR", "INFO", "OFF"]
     },
     "Model": {
       "type": "structure",
@@ -6745,9 +6506,7 @@
         }
       },
       "documentation": "<p>Represents a data model for an API. Supported only for WebSocket APIs. See <a href=\"https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html\">Create Models and Mapping Templates for Request and Response Mappings</a>.</p>",
-      "required": [
-        "Name"
-      ]
+      "required": ["Name"]
     },
     "Models": {
       "type": "structure",
@@ -6838,19 +6597,12 @@
     "PassthroughBehavior": {
       "type": "string",
       "documentation": "<p>Represents passthrough behavior for an integration response. Supported only for WebSocket APIs.</p>",
-      "enum": [
-        "WHEN_NO_MATCH",
-        "NEVER",
-        "WHEN_NO_TEMPLATES"
-      ]
+      "enum": ["WHEN_NO_MATCH", "NEVER", "WHEN_NO_TEMPLATES"]
     },
     "ProtocolType": {
       "type": "string",
       "documentation": "Represents a protocol type.",
-      "enum": [
-        "WEBSOCKET",
-        "HTTP"
-      ]
+      "enum": ["WEBSOCKET", "HTTP"]
     },
     "ReimportApiInput": {
       "type": "structure",
@@ -6862,9 +6614,7 @@
         }
       },
       "documentation": "<p>Overwrites the configuration of an existing API using the provided definition. Supported only for HTTP APIs.</p>",
-      "required": [
-        "Body"
-      ]
+      "required": ["Body"]
     },
     "ReimportApiRequest": {
       "type": "structure",
@@ -6894,10 +6644,7 @@
         }
       },
       "documentation": "<p></p>",
-      "required": [
-        "ApiId",
-        "Body"
-      ]
+      "required": ["ApiId", "Body"]
     },
     "ReimportApiResponse": {
       "type": "structure",
@@ -7064,9 +6811,7 @@
         }
       },
       "documentation": "<p>Represents a route.</p>",
-      "required": [
-        "RouteKey"
-      ]
+      "required": ["RouteKey"]
     },
     "RouteModels": {
       "type": "map",
@@ -7118,9 +6863,7 @@
         }
       },
       "documentation": "<p>Represents a route response.</p>",
-      "required": [
-        "RouteResponseKey"
-      ]
+      "required": ["RouteResponseKey"]
     },
     "RouteResponses": {
       "type": "structure",
@@ -7205,10 +6948,7 @@
     "SecurityPolicy": {
       "type": "string",
       "documentation": "<p>The Transport Layer Security (TLS) version of the security policy for this domain name. The valid values are TLS_1_0 and TLS_1_2.</p>",
-      "enum": [
-        "TLS_1_0",
-        "TLS_1_2"
-      ]
+      "enum": ["TLS_1_0", "TLS_1_2"]
     },
     "SelectionExpression": {
       "type": "string",
@@ -7293,9 +7033,7 @@
         }
       },
       "documentation": "<p>Represents an API stage.</p>",
-      "required": [
-        "StageName"
-      ]
+      "required": ["StageName"]
     },
     "StageVariablesMap": {
       "type": "map",
@@ -7393,14 +7131,11 @@
         }
       },
       "documentation": "<p>Creates a new Tag resource to represent a tag.</p>",
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "TagResourceResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "Tags": {
       "type": "map",
@@ -7491,10 +7226,7 @@
           "documentation": "<p>The Tag keys to delete</p>"
         }
       },
-      "required": [
-        "ResourceArn",
-        "TagKeys"
-      ]
+      "required": ["ResourceArn", "TagKeys"]
     },
     "UpdateApiInput": {
       "type": "structure",
@@ -7610,11 +7342,7 @@
         }
       },
       "documentation": "<p>Updates an ApiMapping.</p>",
-      "required": [
-        "ApiMappingId",
-        "ApiId",
-        "DomainName"
-      ]
+      "required": ["ApiMappingId", "ApiId", "DomainName"]
     },
     "UpdateApiMappingResponse": {
       "type": "structure",
@@ -7707,9 +7435,7 @@
         }
       },
       "documentation": "<p>Updates an Api.</p>",
-      "required": [
-        "ApiId"
-      ]
+      "required": ["ApiId"]
     },
     "UpdateApiResponse": {
       "type": "structure",
@@ -7919,10 +7645,7 @@
         }
       },
       "documentation": "<p>Updates an Authorizer.</p>",
-      "required": [
-        "AuthorizerId",
-        "ApiId"
-      ]
+      "required": ["AuthorizerId", "ApiId"]
     },
     "UpdateAuthorizerResponse": {
       "type": "structure",
@@ -8017,10 +7740,7 @@
         }
       },
       "documentation": "<p>Updates a Deployment.</p>",
-      "required": [
-        "ApiId",
-        "DeploymentId"
-      ]
+      "required": ["ApiId", "DeploymentId"]
     },
     "UpdateDeploymentResponse": {
       "type": "structure",
@@ -8094,9 +7814,7 @@
         }
       },
       "documentation": "<p>Updates a DomainName.</p>",
-      "required": [
-        "DomainName"
-      ]
+      "required": ["DomainName"]
     },
     "UpdateDomainNameResponse": {
       "type": "structure",
@@ -8321,10 +8039,7 @@
         }
       },
       "documentation": "<p>Updates an Integration.</p>",
-      "required": [
-        "ApiId",
-        "IntegrationId"
-      ]
+      "required": ["ApiId", "IntegrationId"]
     },
     "UpdateIntegrationResult": {
       "type": "structure",
@@ -8510,11 +8225,7 @@
         }
       },
       "documentation": "<p>Updates an IntegrationResponses.</p>",
-      "required": [
-        "ApiId",
-        "IntegrationResponseId",
-        "IntegrationId"
-      ]
+      "required": ["ApiId", "IntegrationResponseId", "IntegrationId"]
     },
     "UpdateIntegrationResponseResponse": {
       "type": "structure",
@@ -8614,10 +8325,7 @@
         }
       },
       "documentation": "<p>Updates a Model.</p>",
-      "required": [
-        "ModelId",
-        "ApiId"
-      ]
+      "required": ["ModelId", "ApiId"]
     },
     "UpdateModelResponse": {
       "type": "structure",
@@ -8782,10 +8490,7 @@
         }
       },
       "documentation": "<p>Updates a Route.</p>",
-      "required": [
-        "ApiId",
-        "RouteId"
-      ]
+      "required": ["ApiId", "RouteId"]
     },
     "UpdateRouteResult": {
       "type": "structure",
@@ -8926,11 +8631,7 @@
         }
       },
       "documentation": "<p>Updates a RouteResponse.</p>",
-      "required": [
-        "RouteResponseId",
-        "ApiId",
-        "RouteId"
-      ]
+      "required": ["RouteResponseId", "ApiId", "RouteId"]
     },
     "UpdateRouteResponseResponse": {
       "type": "structure",
@@ -9065,10 +8766,7 @@
         }
       },
       "documentation": "<p>Updates a Stage.</p>",
-      "required": [
-        "StageName",
-        "ApiId"
-      ]
+      "required": ["StageName", "ApiId"]
     },
     "UpdateStageResponse": {
       "type": "structure",
@@ -9172,9 +8870,7 @@
         }
       },
       "documentation": "<p>Updates a VPC link.</p>",
-      "required": [
-        "VpcLinkId"
-      ]
+      "required": ["VpcLinkId"]
     },
     "UpdateVpcLinkResponse": {
       "type": "structure",
@@ -9280,30 +8976,17 @@
         }
       },
       "documentation": "<p>Represents a VPC link.</p>",
-      "required": [
-        "VpcLinkId",
-        "SecurityGroupIds",
-        "SubnetIds",
-        "Name"
-      ]
+      "required": ["VpcLinkId", "SecurityGroupIds", "SubnetIds", "Name"]
     },
     "VpcLinkStatus": {
       "type": "string",
       "documentation": "<p>The status of the VPC link.</p>",
-      "enum": [
-        "PENDING",
-        "AVAILABLE",
-        "DELETING",
-        "FAILED",
-        "INACTIVE"
-      ]
+      "enum": ["PENDING", "AVAILABLE", "DELETING", "FAILED", "INACTIVE"]
     },
     "VpcLinkVersion": {
       "type": "string",
       "documentation": "<p>The version of the VPC link.</p>",
-      "enum": [
-        "V2"
-      ]
+      "enum": ["V2"]
     },
     "VpcLinks": {
       "type": "structure",

@@ -16,7 +16,6 @@
 /* .. _2-Clause BSD license: http://www.spdx.org/licenses/BSD-2-Clause     */
 /* .. _CSS3: https://www.w3.org/Style/CSS/                                 */
 
-
 /* Document Structure */
 /* ****************** */
 
@@ -26,8 +25,10 @@ body {
   background-color: #dbdbdb;
   --field-indent: 9em; /* default indent of fields in field lists */
 }
-main, footer, header {
-  line-height:1.6;
+main,
+footer,
+header {
+  line-height: 1.6;
   /* avoid long lines --> better reading */
   /* optimum is 45…75 characters/line <http://webtypography.net/2.1.2> */
   /* OTOH: lines should not be too short because of missing hyphenation, */
@@ -39,7 +40,8 @@ main {
   counter-reset: table figure;
   background-color: white;
 }
-footer, header {
+footer,
+header {
   font-size: smaller;
   padding: 0.5em 2%;
   border: none;
@@ -54,10 +56,10 @@ nav.contents ul {
   padding-left: 1em;
 }
 main > nav.contents ul ul ul ul:not(.auto-toc) {
-  list-style-type: '\2B29\ ';
+  list-style-type: "\2B29\ ";
 }
 main > nav.contents ul ul ul ul ul:not(.auto-toc) {
-  list-style-type: '\2B1D\ ';
+  list-style-type: "\2B1D\ ";
 }
 
 /* Transitions */
@@ -71,17 +73,28 @@ hr.docutils {
 /* Paragraphs */
 
 /* vertical space (parskip) */
-p, ol, ul, dl, li,
+p,
+ol,
+ul,
+dl,
+li,
 div.line-block,
-.footnote, .citation,
+.footnote,
+.citation,
 div > math,
 table {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
 
-h1, h2, h3, h4, h5, h6,
-dd, details > p:last-child {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+dd,
+details > p:last-child {
   margin-bottom: 0.5em;
 }
 
@@ -90,7 +103,10 @@ dd, details > p:last-child {
 
 /* Definition Lists */
 /* Indent lists nested in definition lists */
-dd > ul:only-child, dd > ol:only-child { padding-left: 1em; }
+dd > ul:only-child,
+dd > ol:only-child {
+  padding-left: 1em;
+}
 
 /* Description Lists */
 /* styled like in most dictionaries, encyclopedias etc. */
@@ -144,20 +160,28 @@ div.dedication p.topic-title {
 }
 
 /* disclosures */
-details { padding-left: 1em; }
-summary { margin-left: -1em; }
+details {
+  padding-left: 1em;
+}
+summary {
+  margin-left: -1em;
+}
 
 /* Text Blocks */
 /* =========== */
 
 /* Literal Blocks */
-pre.literal-block, pre.doctest-block,
-pre.math, pre.code {
+pre.literal-block,
+pre.doctest-block,
+pre.math,
+pre.code {
   font-family: monospace;
 }
 
 /* Block Quotes and Topics */
-bockquote { margin: 1em 2em; }
+bockquote {
+  margin: 1em 2em;
+}
 blockquote p.attribution,
 .topic p.attribution {
   text-align: right;
@@ -169,7 +193,9 @@ blockquote p.attribution,
 
 /* th { vertical-align: bottom; } */
 
-table tr { text-align: left; }
+table tr {
+  text-align: left;
+}
 
 /* "booktabs" style (no vertical lines) */
 table.booktabs {
@@ -230,7 +256,14 @@ object.align-right {
   margin-left: 1em;
 }
 /* Stop floating sidebars, images and figures */
-h1, h2, h3, h4, footer, header { clear: both; }
+h1,
+h2,
+h3,
+h4,
+footer,
+header {
+  clear: both;
+}
 
 /* Numbered figures */
 figure.numbered > figcaption > p:before {
@@ -262,25 +295,49 @@ aside.sidebar {
   background-color: #fffffa;
 }
 
-
 /* Code */
-pre.code { padding: 0.7ex }
-pre.code, code { background-color: #eeeeee }
+pre.code {
+  padding: 0.7ex;
+}
+pre.code,
+code {
+  background-color: #eeeeee;
+}
 /* basic highlighting: for a complete scheme, see */
 /* https://docutils.sourceforge.io/sandbox/stylesheets/ */
-pre.code .comment, code .comment { color: #5C6576 }
-pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
-pre.code .literal.string, code .literal.string { color: #0C5404 }
-pre.code .name.builtin, code .name.builtin { color: #352B84 }
-pre.code .deleted, code .deleted { background-color: #DEB0A1}
-pre.code .inserted, code .inserted { background-color: #A3D289}
+pre.code .comment,
+code .comment {
+  color: #5c6576;
+}
+pre.code .keyword,
+code .keyword {
+  color: #3b0d06;
+  font-weight: bold;
+}
+pre.code .literal.string,
+code .literal.string {
+  color: #0c5404;
+}
+pre.code .name.builtin,
+code .name.builtin {
+  color: #352b84;
+}
+pre.code .deleted,
+code .deleted {
+  background-color: #deb0a1;
+}
+pre.code .inserted,
+code .inserted {
+  background-color: #a3d289;
+}
 
 /* Math */
 /* for math-output=MathML (for math-output=HTML, see math.css) */
 math .boldsymbol {
   font-weight: bold;
 }
-mstyle.mathscr, mi.mathscr {
+mstyle.mathscr,
+mi.mathscr {
   font-family: STIX;
 }
 
@@ -293,14 +350,19 @@ mstyle.mathscr, mi.mathscr {
 /* Inline Markup */
 /* ============= */
 
-sup, sub { line-height: 0.8; } /* do not add leading for lines with sup/sub */
+sup,
+sub {
+  line-height: 0.8;
+} /* do not add leading for lines with sup/sub */
 
 /* Inline Literals                                          */
 /* possible values: normal, nowrap, pre, pre-wrap, pre-line */
 /*   span.docutils.literal { white-space: pre-wrap; }       */
 
 /* Hyperlink References */
-a { text-decoration: none; }
+a {
+  text-decoration: none;
+}
 
 /* External Targets       */
 /*   span.target.external */

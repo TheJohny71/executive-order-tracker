@@ -169,7 +169,7 @@ plan:
       existing_groups:
         type: apicall
         operation: logs.DescribeLogGroups
-        params: { }
+        params: {}
         query: "sort_by(logGroups[].{display: logGroupName, actual_value: arn}, &display)"
         cache: true
         paginate: true

@@ -3,9 +3,7 @@
   "merge": {
     "pagination": {
       "ExecuteQuery": {
-        "non_aggregate_keys": [
-          "columns"
-        ]
+        "non_aggregate_keys": ["columns"]
       }
     }
   }

@@ -1069,10 +1069,7 @@
   "shapes": {
     "AuthResources": {
       "type": "string",
-      "enum": [
-        "USER_POOL_ONLY",
-        "IDENTITY_POOL_AND_USER_POOL"
-      ]
+      "enum": ["USER_POOL_ONLY", "IDENTITY_POOL_AND_USER_POOL"]
     },
     "BackendAPIAppSyncAuthSettings": {
       "type": "structure",
@@ -1146,9 +1143,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ResourceName"
-      ]
+      "required": ["ResourceName"]
     },
     "BackendAPICodegenRespObj": {
       "type": "structure",
@@ -1185,10 +1180,7 @@
         }
       },
       "documentation": "<p>The response object sent when a backend is created.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "BackendAPIConflictResolution": {
       "type": "structure",
@@ -1216,9 +1208,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ResourceName"
-      ]
+      "required": ["ResourceName"]
     },
     "BackendAPIResourceConfig": {
       "type": "structure",
@@ -1291,10 +1281,7 @@
         }
       },
       "documentation": "<p>The response object sent when a backend is created.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "BackendAuthAppleProviderConfig": {
       "type": "structure",
@@ -1358,10 +1345,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "BackendAuthSocialProviderConfig": {
       "type": "structure",
@@ -1467,10 +1451,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "BackendStoragePermissions": {
       "type": "structure",
@@ -1487,9 +1468,7 @@
         }
       },
       "documentation": "<p>Describes the read, write, and delete permissions users have against your storage S3 bucket.</p>",
-      "required": [
-        "Authenticated"
-      ]
+      "required": ["Authenticated"]
     },
     "BackendStorageRespObj": {
       "type": "structure",
@@ -1516,12 +1495,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "Status",
-        "AppId",
-        "BackendEnvironmentName",
-        "JobId"
-      ]
+      "required": ["Status", "AppId", "BackendEnvironmentName", "JobId"]
     },
     "BadRequestException": {
       "type": "structure",
@@ -1548,9 +1522,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "TargetEnvironmentName"
-      ]
+      "required": ["TargetEnvironmentName"]
     },
     "CloneBackendRequest": {
       "type": "structure",
@@ -1574,11 +1546,7 @@
         }
       },
       "documentation": "<p>The request body for CloneBackend.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "TargetEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "TargetEnvironmentName"]
     },
     "CloneBackendRespObj": {
       "type": "structure",
@@ -1615,10 +1583,7 @@
         }
       },
       "documentation": "<p>The response object sent when a backend is created.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "CloneBackendResponse": {
       "type": "structure",
@@ -1675,11 +1640,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ResourceName",
-        "BackendEnvironmentName",
-        "ResourceConfig"
-      ]
+      "required": ["ResourceName", "BackendEnvironmentName", "ResourceConfig"]
     },
     "CreateBackendAPIRequest": {
       "type": "structure",
@@ -1769,9 +1730,7 @@
         }
       },
       "documentation": "<p><b>(DEPRECATED)</b> Describes the forgot password policy for authenticating into the Amplify app.</p>",
-      "required": [
-        "DeliveryMethod"
-      ]
+      "required": ["DeliveryMethod"]
     },
     "CreateBackendAuthIdentityPoolConfig": {
       "type": "structure",
@@ -1788,10 +1747,7 @@
         }
       },
       "documentation": "<p>Describes authorization configurations for the auth resources, configured as a part of your Amplify project.</p>",
-      "required": [
-        "UnauthenticatedLogin",
-        "IdentityPoolName"
-      ]
+      "required": ["UnauthenticatedLogin", "IdentityPoolName"]
     },
     "CreateBackendAuthMFAConfig": {
       "type": "structure",
@@ -1807,9 +1763,7 @@
         }
       },
       "documentation": "<p>Describes whether to apply multi-factor authentication policies for your Amazon Cognito user pool configured as a part of your Amplify project.</p>",
-      "required": [
-        "MFAMode"
-      ]
+      "required": ["MFAMode"]
     },
     "CreateBackendAuthOAuthConfig": {
       "type": "structure",
@@ -1868,9 +1822,7 @@
         }
       },
       "documentation": "<p>The password policy configuration for the backend to your Amplify project.</p>",
-      "required": [
-        "MinimumLength"
-      ]
+      "required": ["MinimumLength"]
     },
     "CreateBackendAuthReqObj": {
       "type": "structure",
@@ -1892,11 +1844,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ResourceName",
-        "BackendEnvironmentName",
-        "ResourceConfig"
-      ]
+      "required": ["ResourceName", "BackendEnvironmentName", "ResourceConfig"]
     },
     "CreateBackendAuthRequest": {
       "type": "structure",
@@ -1956,11 +1904,7 @@
         }
       },
       "documentation": "<p>Defines the resource configuration when creating an auth resource in your Amplify project.</p>",
-      "required": [
-        "AuthResources",
-        "UserPoolConfigs",
-        "Service"
-      ]
+      "required": ["AuthResources", "UserPoolConfigs", "Service"]
     },
     "CreateBackendAuthResponse": {
       "type": "structure",
@@ -2042,11 +1986,7 @@
         }
       },
       "documentation": "<p>Describes the Amazon Cognito user pool configuration for the auth resource to be configured for your Amplify project.</p>",
-      "required": [
-        "RequiredSignUpAttributes",
-        "SignInMethod",
-        "UserPoolName"
-      ]
+      "required": ["RequiredSignUpAttributes", "SignInMethod", "UserPoolName"]
     },
     "CreateBackendAuthVerificationMessageConfig": {
       "type": "structure",
@@ -2068,9 +2008,7 @@
         }
       },
       "documentation": "<p>Creates an email or SMS verification message for the auth resource configured for your Amplify project.</p>",
-      "required": [
-        "DeliveryMethod"
-      ]
+      "required": ["DeliveryMethod"]
     },
     "CreateBackendConfigReqObj": {
       "type": "structure",
@@ -2099,9 +2037,7 @@
         }
       },
       "documentation": "<p>The request body for CreateBackendConfig.</p>",
-      "required": [
-        "AppId"
-      ]
+      "required": ["AppId"]
     },
     "CreateBackendConfigRespObj": {
       "type": "structure",
@@ -2128,9 +2064,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "AppId"
-      ]
+      "required": ["AppId"]
     },
     "CreateBackendConfigResponse": {
       "type": "structure",
@@ -2187,11 +2121,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "AppName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "AppName"]
     },
     "CreateBackendRequest": {
       "type": "structure",
@@ -2223,11 +2153,7 @@
         }
       },
       "documentation": "<p>The request body for CreateBackend.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "AppName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "AppName"]
     },
     "CreateBackendRespObj": {
       "type": "structure",
@@ -2264,10 +2190,7 @@
         }
       },
       "documentation": "<p>The response object sent when a backend is created.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "CreateBackendResponse": {
       "type": "structure",
@@ -2324,11 +2247,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ResourceName",
-        "BackendEnvironmentName",
-        "ResourceConfig"
-      ]
+      "required": ["ResourceName", "BackendEnvironmentName", "ResourceConfig"]
     },
     "CreateBackendStorageRequest": {
       "type": "structure",
@@ -2383,10 +2302,7 @@
         }
       },
       "documentation": "<p>The resource configuration for creating backend storage.</p>",
-      "required": [
-        "ServiceName",
-        "Permissions"
-      ]
+      "required": ["ServiceName", "Permissions"]
     },
     "CreateBackendStorageResponse": {
       "type": "structure",
@@ -2423,9 +2339,7 @@
           "documentation": "<p>The app ID.</p>"
         }
       },
-      "required": [
-        "AppId"
-      ]
+      "required": ["AppId"]
     },
     "CreateTokenRespObj": {
       "type": "structure",
@@ -2452,12 +2366,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "AppId",
-        "Ttl",
-        "SessionId",
-        "ChallengeCode"
-      ]
+      "required": ["AppId", "Ttl", "SessionId", "ChallengeCode"]
     },
     "CreateTokenResponse": {
       "type": "structure",
@@ -2511,11 +2420,7 @@
         }
       },
       "documentation": "<p>The request body for DeleteBackendAPI.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "ResourceName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "ResourceName"]
     },
     "DeleteBackendAPIResponse": {
       "type": "structure",
@@ -2574,11 +2479,7 @@
         }
       },
       "documentation": "<p>The request body for DeleteBackendAuth.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "ResourceName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "ResourceName"]
     },
     "DeleteBackendAuthResponse": {
       "type": "structure",
@@ -2631,10 +2532,7 @@
           "documentation": "<p>The name of the backend environment.</p>"
         }
       },
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "DeleteBackendRespObj": {
       "type": "structure",
@@ -2671,10 +2569,7 @@
         }
       },
       "documentation": "<p>The returned object for a request to delete a backend.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "DeleteBackendResponse": {
       "type": "structure",
@@ -2786,10 +2681,7 @@
           "documentation": "<p>The session ID.</p>"
         }
       },
-      "required": [
-        "SessionId",
-        "AppId"
-      ]
+      "required": ["SessionId", "AppId"]
     },
     "DeleteTokenRespObj": {
       "type": "structure",
@@ -2801,9 +2693,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "IsSuccess"
-      ]
+      "required": ["IsSuccess"]
     },
     "DeleteTokenResponse": {
       "type": "structure",
@@ -2818,10 +2708,7 @@
     "DeliveryMethod": {
       "type": "string",
       "documentation": "<p>The type of verification message to send.</p>",
-      "enum": [
-        "EMAIL",
-        "SMS"
-      ]
+      "enum": ["EMAIL", "SMS"]
     },
     "EmailSettings": {
       "type": "structure",
@@ -2877,11 +2764,7 @@
         }
       },
       "documentation": "<p>The request body for GenerateBackendAPIModels.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "ResourceName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "ResourceName"]
     },
     "GenerateBackendAPIModelsResponse": {
       "type": "structure",
@@ -2940,11 +2823,7 @@
         }
       },
       "documentation": "<p>The request body for GetBackendAPIModels.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "ResourceName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "ResourceName"]
     },
     "GetBackendAPIModelsResponse": {
       "type": "structure",
@@ -2993,11 +2872,7 @@
         }
       },
       "documentation": "<p>The request body for GetBackendAPI.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "ResourceName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "ResourceName"]
     },
     "GetBackendAPIRespObj": {
       "type": "structure",
@@ -3029,10 +2904,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "GetBackendAPIResponse": {
       "type": "structure",
@@ -3074,9 +2946,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ResourceName"
-      ]
+      "required": ["ResourceName"]
     },
     "GetBackendAuthRequest": {
       "type": "structure",
@@ -3100,11 +2970,7 @@
         }
       },
       "documentation": "<p>The request body for GetBackendAuth.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "ResourceName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "ResourceName"]
     },
     "GetBackendAuthRespObj": {
       "type": "structure",
@@ -3136,10 +3002,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "GetBackendAuthResponse": {
       "type": "structure",
@@ -3193,11 +3056,7 @@
           "documentation": "<p>The ID for the job.</p>"
         }
       },
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "JobId"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "JobId"]
     },
     "GetBackendJobResponse": {
       "type": "structure",
@@ -3271,9 +3130,7 @@
         }
       },
       "documentation": "<p>The request body for GetBackend.</p>",
-      "required": [
-        "AppId"
-      ]
+      "required": ["AppId"]
     },
     "GetBackendRespObj": {
       "type": "structure",
@@ -3315,9 +3172,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "AppId"
-      ]
+      "required": ["AppId"]
     },
     "GetBackendResponse": {
       "type": "structure",
@@ -3369,9 +3224,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ResourceName"
-      ]
+      "required": ["ResourceName"]
     },
     "GetBackendStorageRequest": {
       "type": "structure",
@@ -3395,11 +3248,7 @@
         }
       },
       "documentation": "<p>The request body for GetBackendStorage.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "ResourceName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "ResourceName"]
     },
     "GetBackendStorageResourceConfig": {
       "type": "structure",
@@ -3426,10 +3275,7 @@
         }
       },
       "documentation": "<p>The details for a backend storage resource.</p>",
-      "required": [
-        "ServiceName",
-        "Imported"
-      ]
+      "required": ["ServiceName", "Imported"]
     },
     "GetBackendStorageRespObj": {
       "type": "structure",
@@ -3456,10 +3302,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "GetBackendStorageResponse": {
       "type": "structure",
@@ -3502,10 +3345,7 @@
           "documentation": "<p>The session ID.</p>"
         }
       },
-      "required": [
-        "SessionId",
-        "AppId"
-      ]
+      "required": ["SessionId", "AppId"]
     },
     "GetTokenRespObj": {
       "type": "structure",
@@ -3532,12 +3372,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "AppId",
-        "Ttl",
-        "SessionId",
-        "ChallengeCode"
-      ]
+      "required": ["AppId", "Ttl", "SessionId", "ChallengeCode"]
     },
     "GetTokenResponse": {
       "type": "structure",
@@ -3589,11 +3424,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "UserPoolId",
-        "NativeClientId",
-        "WebClientId"
-      ]
+      "required": ["UserPoolId", "NativeClientId", "WebClientId"]
     },
     "ImportBackendAuthRequest": {
       "type": "structure",
@@ -3690,9 +3521,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ServiceName"
-      ]
+      "required": ["ServiceName"]
     },
     "ImportBackendStorageRequest": {
       "type": "structure",
@@ -3721,11 +3550,7 @@
         }
       },
       "documentation": "<p>The request body for ImportBackendStorage.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "ServiceName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "ServiceName"]
     },
     "ImportBackendStorageResponse": {
       "type": "structure",
@@ -3868,10 +3693,7 @@
         }
       },
       "documentation": "<p>The request body for ListBackendJobs.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName"]
     },
     "ListBackendJobsResponse": {
       "type": "structure",
@@ -3925,9 +3747,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "Buckets"
-      ]
+      "required": ["Buckets"]
     },
     "ListS3BucketsResponse": {
       "type": "structure",
@@ -3972,11 +3792,7 @@
     },
     "MFAMode": {
       "type": "string",
-      "enum": [
-        "ON",
-        "OFF",
-        "OPTIONAL"
-      ]
+      "enum": ["ON", "OFF", "OPTIONAL"]
     },
     "Mode": {
       "type": "string",
@@ -4009,10 +3825,7 @@
     },
     "OAuthGrantType": {
       "type": "string",
-      "enum": [
-        "CODE",
-        "IMPLICIT"
-      ]
+      "enum": ["CODE", "IMPLICIT"]
     },
     "RemoveAllBackendsReqObj": {
       "type": "structure",
@@ -4041,9 +3854,7 @@
         }
       },
       "documentation": "<p>The request body for RemoveAllBackends.</p>",
-      "required": [
-        "AppId"
-      ]
+      "required": ["AppId"]
     },
     "RemoveAllBackendsRespObj": {
       "type": "structure",
@@ -4075,9 +3886,7 @@
         }
       },
       "documentation": "<p>The response object for this operation.</p>",
-      "required": [
-        "AppId"
-      ]
+      "required": ["AppId"]
     },
     "RemoveAllBackendsResponse": {
       "type": "structure",
@@ -4119,9 +3928,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ResourceName"
-      ]
+      "required": ["ResourceName"]
     },
     "RemoveBackendConfigRequest": {
       "type": "structure",
@@ -4133,9 +3940,7 @@
           "documentation": "<p>The app ID.</p>"
         }
       },
-      "required": [
-        "AppId"
-      ]
+      "required": ["AppId"]
     },
     "RemoveBackendConfigRespObj": {
       "type": "structure",
@@ -4173,19 +3978,11 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ServiceName",
-        "ResourceName"
-      ]
+      "required": ["ServiceName", "ResourceName"]
     },
     "ResolutionStrategy": {
       "type": "string",
-      "enum": [
-        "OPTIMISTIC_CONCURRENCY",
-        "LAMBDA",
-        "AUTOMERGE",
-        "NONE"
-      ]
+      "enum": ["OPTIMISTIC_CONCURRENCY", "LAMBDA", "AUTOMERGE", "NONE"]
     },
     "ResourceConfig": {
       "type": "structure",
@@ -4210,15 +4007,11 @@
     },
     "Service": {
       "type": "string",
-      "enum": [
-        "COGNITO"
-      ]
+      "enum": ["COGNITO"]
     },
     "ServiceName": {
       "type": "string",
-      "enum": [
-        "S3"
-      ]
+      "enum": ["S3"]
     },
     "Settings": {
       "type": "structure",
@@ -4238,12 +4031,7 @@
     },
     "SignInMethod": {
       "type": "string",
-      "enum": [
-        "EMAIL",
-        "EMAIL_AND_PHONE_NUMBER",
-        "PHONE_NUMBER",
-        "USERNAME"
-      ]
+      "enum": ["EMAIL", "EMAIL_AND_PHONE_NUMBER", "PHONE_NUMBER", "USERNAME"]
     },
     "SmsSettings": {
       "type": "structure",
@@ -4277,10 +4065,7 @@
     },
     "Status": {
       "type": "string",
-      "enum": [
-        "LATEST",
-        "STALE"
-      ]
+      "enum": ["LATEST", "STALE"]
     },
     "TooManyRequestsException": {
       "type": "structure",
@@ -4329,11 +4114,7 @@
         }
       },
       "documentation": "<p>The request body for UpdateBackendAPI.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "ResourceName"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "ResourceName"]
     },
     "UpdateBackendAPIResponse": {
       "type": "structure",
@@ -4484,10 +4265,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ResourceName",
-        "ResourceConfig"
-      ]
+      "required": ["ResourceName", "ResourceConfig"]
     },
     "UpdateBackendAuthRequest": {
       "type": "structure",
@@ -4548,11 +4326,7 @@
         }
       },
       "documentation": "<p>Defines the resource configuration when updating an authentication resource in your Amplify project.</p>",
-      "required": [
-        "AuthResources",
-        "UserPoolConfigs",
-        "Service"
-      ]
+      "required": ["AuthResources", "UserPoolConfigs", "Service"]
     },
     "UpdateBackendAuthResponse": {
       "type": "structure",
@@ -4640,9 +4414,7 @@
         }
       },
       "documentation": "<p>Updates the configuration of the email or SMS message for the auth resource configured for your Amplify project.</p>",
-      "required": [
-        "DeliveryMethod"
-      ]
+      "required": ["DeliveryMethod"]
     },
     "UpdateBackendConfigReqObj": {
       "type": "structure",
@@ -4671,9 +4443,7 @@
         }
       },
       "documentation": "<p>The request body for UpdateBackendConfig.</p>",
-      "required": [
-        "AppId"
-      ]
+      "required": ["AppId"]
     },
     "UpdateBackendConfigResponse": {
       "type": "structure",
@@ -4733,11 +4503,7 @@
         }
       },
       "documentation": "<p>The request body for GetBackendJob.</p>",
-      "required": [
-        "AppId",
-        "BackendEnvironmentName",
-        "JobId"
-      ]
+      "required": ["AppId", "BackendEnvironmentName", "JobId"]
     },
     "UpdateBackendJobResponse": {
       "type": "structure",
@@ -4799,10 +4565,7 @@
         }
       },
       "documentation": "<p>The request object for this operation.</p>",
-      "required": [
-        "ResourceName",
-        "ResourceConfig"
-      ]
+      "required": ["ResourceName", "ResourceConfig"]
     },
     "UpdateBackendStorageRequest": {
       "type": "structure",
@@ -4853,10 +4616,7 @@
         }
       },
       "documentation": "<p>The resource configuration for updating backend storage.</p>",
-      "required": [
-        "ServiceName",
-        "Permissions"
-      ]
+      "required": ["ServiceName", "Permissions"]
     },
     "UpdateBackendStorageResponse": {
       "type": "structure",
@@ -4894,18 +4654,11 @@
     },
     "AuthenticatedElement": {
       "type": "string",
-      "enum": [
-        "READ",
-        "CREATE_AND_UPDATE",
-        "DELETE"
-      ]
+      "enum": ["READ", "CREATE_AND_UPDATE", "DELETE"]
     },
     "MfaTypesElement": {
       "type": "string",
-      "enum": [
-        "SMS",
-        "TOTP"
-      ]
+      "enum": ["SMS", "TOTP"]
     },
     "OAuthScopesElement": {
       "type": "string",
@@ -4941,11 +4694,7 @@
     },
     "UnAuthenticatedElement": {
       "type": "string",
-      "enum": [
-        "READ",
-        "CREATE_AND_UPDATE",
-        "DELETE"
-      ]
+      "enum": ["READ", "CREATE_AND_UPDATE", "DELETE"]
     },
     "__boolean": {
       "type": "boolean"

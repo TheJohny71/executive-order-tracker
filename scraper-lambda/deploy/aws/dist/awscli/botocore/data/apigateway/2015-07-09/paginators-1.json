@@ -53,11 +53,7 @@
       "output_token": "position",
       "limit_key": "limit",
       "result_key": "items",
-      "non_aggregate_keys": [
-        "usagePlanId",
-        "startDate",
-        "endDate"
-      ]
+      "non_aggregate_keys": ["usagePlanId", "startDate", "endDate"]
     },
     "GetUsagePlans": {
       "input_token": "position",

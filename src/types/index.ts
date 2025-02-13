@@ -1,7 +1,17 @@
-import { DocumentType } from '@prisma/client';
+import { DocumentType } from "@prisma/client";
 
 // Filter Types
-export type FilterType = 'type' | 'category' | 'agency' | 'dateFrom' | 'dateTo' | 'search' | 'page' | 'limit' | 'statusId' | 'sort';
+export type FilterType =
+  | "type"
+  | "category"
+  | "agency"
+  | "dateFrom"
+  | "dateTo"
+  | "search"
+  | "page"
+  | "limit"
+  | "statusId"
+  | "sort";
 export type SelectableValue = string | number | null;
 
 // Database Record Type (matches Prisma schema)
@@ -16,8 +26,8 @@ export interface OrderDbRecord {
   link: string | null;
   createdAt: Date;
   updatedAt: Date;
-  categories: Array<{ id: number; name: string; }>;
-  agencies: Array<{ id: number; name: string; }>;
+  categories: Array<{ id: number; name: string }>;
+  agencies: Array<{ id: number; name: string }>;
   status: {
     id: number;
     name: string;
@@ -47,7 +57,7 @@ export interface Order {
 }
 
 export interface OrderFilters {
-  type: DocumentType | 'all' | '';
+  type: DocumentType | "all" | "";
   category: string;
   agency: string;
   dateFrom?: string;
@@ -56,7 +66,7 @@ export interface OrderFilters {
   page: number;
   limit: number;
   statusId?: number;
-  sort?: 'asc' | 'desc' | string;
+  sort?: "asc" | "desc" | string;
 }
 
 // Metadata and Status Interfaces
@@ -127,14 +137,14 @@ export interface WhereClause {
     lte?: Date;
   };
   OR?: Array<{
-    title?: { contains: string; mode: 'insensitive' };
-    summary?: { contains: string; mode: 'insensitive' };
-    number?: { contains: string; mode: 'insensitive' };
+    title?: { contains: string; mode: "insensitive" };
+    summary?: { contains: string; mode: "insensitive" };
+    number?: { contains: string; mode: "insensitive" };
   }>;
 }
 
 export interface OrderByClause {
-  [key: string]: 'asc' | 'desc';
+  [key: string]: "asc" | "desc";
 }
 
 export interface QueryResult<T> {

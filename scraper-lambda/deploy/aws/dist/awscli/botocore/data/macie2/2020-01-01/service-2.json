@@ -9,9 +9,7 @@
     "jsonVersion": "1.1",
     "uid": "macie2-2020-01-01",
     "signatureVersion": "v4",
-    "auth": [
-      "aws.auth#sigv4"
-    ]
+    "auth": ["aws.auth#sigv4"]
   },
   "operations": {
     "AcceptInvitation": {
@@ -2485,9 +2483,7 @@
         "shape": "ListManagedDataIdentifiersResponse",
         "documentation": "<p>The request succeeded.</p>"
       },
-      "errors": [
-
-      ],
+      "errors": [],
       "documentation": "<p>Retrieves information about all the managed data identifiers that Amazon Macie currently provides.</p>"
     },
     "ListMembers": {
@@ -2714,9 +2710,7 @@
         "shape": "ListTagsForResourceResponse",
         "documentation": "<p>The request succeeded.</p>"
       },
-      "errors": [
-
-      ],
+      "errors": [],
       "documentation": "<p>Retrieves the tags (keys and values) that are associated with an Amazon Macie resource.</p>"
     },
     "PutClassificationExportConfiguration": {
@@ -2871,9 +2865,7 @@
         "shape": "TagResourceResponse",
         "documentation": "<p>The request succeeded and there isn't any content to include in the body of the response (No Content).</p>"
       },
-      "errors": [
-
-      ],
+      "errors": [],
       "documentation": "<p>Adds or updates one or more tags (keys and values) that are associated with an Amazon Macie resource.</p>"
     },
     "TestCustomDataIdentifier": {
@@ -2936,9 +2928,7 @@
         "shape": "UntagResourceResponse",
         "documentation": "<p>The request succeeded and there isn't any content to include in the body of the response (No Content).</p>"
       },
-      "errors": [
-
-      ],
+      "errors": [],
       "documentation": "<p>Removes one or more tags (keys and values) from an Amazon Macie resource.</p>"
     },
     "UpdateAllowList": {
@@ -3458,14 +3448,11 @@
           "documentation": "<p>(Deprecated) The Amazon Web Services account ID for the account that sent the invitation. This property has been replaced by the administratorAccountId property and is retained only for backward compatibility.</p>"
         }
       },
-      "required": [
-        "invitationId"
-      ]
+      "required": ["invitationId"]
     },
     "AcceptInvitationResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "AccessControlList": {
       "type": "structure",
@@ -3513,10 +3500,7 @@
         }
       },
       "documentation": "<p>Specifies the details of an account to associate with an Amazon Macie administrator account.</p>",
-      "required": [
-        "email",
-        "accountId"
-      ]
+      "required": ["email", "accountId"]
     },
     "AccountLevelPermissions": {
       "type": "structure",
@@ -3548,10 +3532,7 @@
     "AdminStatus": {
       "type": "string",
       "documentation": "<p>The current status of an account as the delegated Amazon Macie administrator account for an organization in Organizations. Possible values are:</p>",
-      "enum": [
-        "ENABLED",
-        "DISABLING_IN_PROGRESS"
-      ]
+      "enum": ["ENABLED", "DISABLING_IN_PROGRESS"]
     },
     "AllowListCriteria": {
       "type": "structure",
@@ -3584,9 +3565,7 @@
         }
       },
       "documentation": "<p>Provides information about the current status of an allow list, which indicates whether Amazon Macie can access and use the list's criteria.</p>",
-      "required": [
-        "code"
-      ]
+      "required": ["code"]
     },
     "AllowListStatusCode": {
       "type": "string",
@@ -3640,11 +3619,7 @@
     },
     "AllowsUnencryptedObjectUploads": {
       "type": "string",
-      "enum": [
-        "TRUE",
-        "FALSE",
-        "UNKNOWN"
-      ]
+      "enum": ["TRUE", "FALSE", "UNKNOWN"]
     },
     "ApiCallDetails": {
       "type": "structure",
@@ -3706,11 +3681,7 @@
     "AutoEnableMode": {
       "type": "string",
       "documentation": "<p>Specifies whether to automatically enable automated sensitive data discovery for accounts that are part of an organization in Amazon Macie. Valid values are:</p>",
-      "enum": [
-        "ALL",
-        "NEW",
-        "NONE"
-      ]
+      "enum": ["ALL", "NEW", "NONE"]
     },
     "AutomatedDiscoveryAccount": {
       "type": "structure",
@@ -3731,10 +3702,7 @@
     "AutomatedDiscoveryAccountStatus": {
       "type": "string",
       "documentation": "<p>The status of automated sensitive data discovery for an Amazon Macie account. Valid values are:</p>",
-      "enum": [
-        "ENABLED",
-        "DISABLED"
-      ]
+      "enum": ["ENABLED", "DISABLED"]
     },
     "AutomatedDiscoveryAccountUpdate": {
       "type": "structure",
@@ -3771,34 +3739,22 @@
     "AutomatedDiscoveryAccountUpdateErrorCode": {
       "type": "string",
       "documentation": "<p>The error code that indicates why a request failed to change the status of automated sensitive data discovery for an Amazon Macie account. Possible values are:</p>",
-      "enum": [
-        "ACCOUNT_PAUSED",
-        "ACCOUNT_NOT_FOUND"
-      ]
+      "enum": ["ACCOUNT_PAUSED", "ACCOUNT_NOT_FOUND"]
     },
     "AutomatedDiscoveryMonitoringStatus": {
       "type": "string",
       "documentation": "<p>Specifies whether automated sensitive data discovery is currently configured to analyze objects in an S3 bucket. Possible values are:</p>",
-      "enum": [
-        "MONITORED",
-        "NOT_MONITORED"
-      ]
+      "enum": ["MONITORED", "NOT_MONITORED"]
     },
     "AutomatedDiscoveryStatus": {
       "type": "string",
       "documentation": "<p>The status of the automated sensitive data discovery configuration for an organization in Amazon Macie or a standalone Macie account. Valid values are:</p>",
-      "enum": [
-        "ENABLED",
-        "DISABLED"
-      ]
+      "enum": ["ENABLED", "DISABLED"]
     },
     "AvailabilityCode": {
       "type": "string",
       "documentation": "<p>Specifies whether occurrences of sensitive data can be retrieved for a finding. Possible values are:</p>",
-      "enum": [
-        "AVAILABLE",
-        "UNAVAILABLE"
-      ]
+      "enum": ["AVAILABLE", "UNAVAILABLE"]
     },
     "AwsAccount": {
       "type": "structure",
@@ -4249,10 +4205,7 @@
     "BucketMetadataErrorCode": {
       "type": "string",
       "documentation": "<p>The code for an error or issue that prevented Amazon Macie from retrieving and processing information about an S3 bucket and the bucket's objects.</p>",
-      "enum": [
-        "ACCESS_DENIED",
-        "BUCKET_COUNT_EXCEEDS_QUOTA"
-      ]
+      "enum": ["ACCESS_DENIED", "BUCKET_COUNT_EXCEEDS_QUOTA"]
     },
     "BucketPermissionConfiguration": {
       "type": "structure",
@@ -4516,11 +4469,7 @@
     "ClassificationScopeUpdateOperation": {
       "type": "string",
       "documentation": "<p>Specifies how to apply changes to the S3 bucket exclusion list defined by the classification scope for an Amazon Macie account. Valid values are:</p>",
-      "enum": [
-        "ADD",
-        "REPLACE",
-        "REMOVE"
-      ]
+      "enum": ["ADD", "REPLACE", "REMOVE"]
     },
     "ConflictException": {
       "type": "structure",
@@ -4567,11 +4516,7 @@
           "documentation": "<p>A map of key-value pairs that specifies the tags to associate with the allow list.</p> <p>An allow list can have a maximum of 50 tags. Each tag consists of a tag key and an associated tag value. The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.</p>"
         }
       },
-      "required": [
-        "criteria",
-        "clientToken",
-        "name"
-      ]
+      "required": ["criteria", "clientToken", "name"]
     },
     "CreateAllowListResponse": {
       "type": "structure",
@@ -4658,12 +4603,7 @@
           "documentation": "<p>A map of key-value pairs that specifies the tags to associate with the job.</p> <p>A job can have a maximum of 50 tags. Each tag consists of a tag key and an associated tag value. The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.</p>"
         }
       },
-      "required": [
-        "s3JobDefinition",
-        "jobType",
-        "clientToken",
-        "name"
-      ]
+      "required": ["s3JobDefinition", "jobType", "clientToken", "name"]
     },
     "CreateClassificationJobResponse": {
       "type": "structure",
@@ -4730,10 +4670,7 @@
           "documentation": "<p>A map of key-value pairs that specifies the tags to associate with the custom data identifier.</p> <p>A custom data identifier can have a maximum of 50 tags. Each tag consists of a tag key and an associated tag value. The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.</p>"
         }
       },
-      "required": [
-        "regex",
-        "name"
-      ]
+      "required": ["regex", "name"]
     },
     "CreateCustomDataIdentifierResponse": {
       "type": "structure",
@@ -4785,11 +4722,7 @@
           "documentation": "<p>A map of key-value pairs that specifies the tags to associate with the filter.</p> <p>A findings filter can have a maximum of 50 tags. Each tag consists of a tag key and an associated tag value. The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.</p>"
         }
       },
-      "required": [
-        "action",
-        "findingCriteria",
-        "name"
-      ]
+      "required": ["action", "findingCriteria", "name"]
     },
     "CreateFindingsFilterResponse": {
       "type": "structure",
@@ -4825,9 +4758,7 @@
           "documentation": "<p>Custom text to include in the email message that contains the invitation. The text can contain as many as 80 alphanumeric characters.</p>"
         }
       },
-      "required": [
-        "accountIds"
-      ]
+      "required": ["accountIds"]
     },
     "CreateInvitationsResponse": {
       "type": "structure",
@@ -4853,9 +4784,7 @@
           "documentation": "<p>A map of key-value pairs that specifies the tags to associate with the account in Amazon Macie.</p> <p>An account can have a maximum of 50 tags. Each tag consists of a tag key and an associated tag value. The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.</p>"
         }
       },
-      "required": [
-        "account"
-      ]
+      "required": ["account"]
     },
     "CreateMemberResponse": {
       "type": "structure",
@@ -4879,8 +4808,7 @@
     },
     "CreateSampleFindingsResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "CriteriaBlockForJob": {
       "type": "structure",
@@ -4963,9 +4891,7 @@
     "Currency": {
       "type": "string",
       "documentation": "<p>The type of currency that the data for an Amazon Macie usage metric is reported in. Possible values are:</p>",
-      "enum": [
-        "USD"
-      ]
+      "enum": ["USD"]
     },
     "CustomDataIdentifierSummary": {
       "type": "structure",
@@ -5049,26 +4975,18 @@
     },
     "DailySchedule": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "<p>Specifies that a classification job runs once a day, every day. This is an empty object.</p>"
     },
     "DataIdentifierSeverity": {
       "type": "string",
       "documentation": "<p>The severity of a finding, ranging from LOW, for least severe, to HIGH, for most severe. Valid values are:</p>",
-      "enum": [
-        "LOW",
-        "MEDIUM",
-        "HIGH"
-      ]
+      "enum": ["LOW", "MEDIUM", "HIGH"]
     },
     "DataIdentifierType": {
       "type": "string",
       "documentation": "<p>The type of data identifier that detected a specific type of sensitive data in an S3 bucket. Possible values are:</p>",
-      "enum": [
-        "CUSTOM",
-        "MANAGED"
-      ]
+      "enum": ["CUSTOM", "MANAGED"]
     },
     "DayOfWeek": {
       "type": "string",
@@ -5091,9 +5009,7 @@
           "documentation": "<p>An array that lists Amazon Web Services account IDs, one for each account that sent an invitation to decline.</p>"
         }
       },
-      "required": [
-        "accountIds"
-      ]
+      "required": ["accountIds"]
     },
     "DeclineInvitationsResponse": {
       "type": "structure",
@@ -5149,14 +5065,11 @@
           "documentation": "<p>Specifies whether to force deletion of the allow list, even if active classification jobs are configured to use the list.</p> <p>When you try to delete an allow list, Amazon Macie checks for classification jobs that use the list and have a status other than COMPLETE or CANCELLED. By default, Macie rejects your request if any jobs meet these criteria. To skip these checks and delete the list, set this value to true. To delete the list only if no active jobs are configured to use it, set this value to false.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "DeleteAllowListResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DeleteCustomDataIdentifierRequest": {
       "type": "structure",
@@ -5168,14 +5081,11 @@
           "documentation": "<p>The unique identifier for the Amazon Macie resource that the request applies to.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "DeleteCustomDataIdentifierResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DeleteFindingsFilterRequest": {
       "type": "structure",
@@ -5187,14 +5097,11 @@
           "documentation": "<p>The unique identifier for the Amazon Macie resource that the request applies to.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "DeleteFindingsFilterResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DeleteInvitationsRequest": {
       "type": "structure",
@@ -5205,9 +5112,7 @@
           "documentation": "<p>An array that lists Amazon Web Services account IDs, one for each account that sent an invitation to delete.</p>"
         }
       },
-      "required": [
-        "accountIds"
-      ]
+      "required": ["accountIds"]
     },
     "DeleteInvitationsResponse": {
       "type": "structure",
@@ -5229,14 +5134,11 @@
           "documentation": "<p>The unique identifier for the Amazon Macie resource that the request applies to.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "DeleteMemberResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DescribeBucketsRequest": {
       "type": "structure",
@@ -5288,9 +5190,7 @@
           "documentation": "<p>The unique identifier for the classification job.</p>"
         }
       },
-      "required": [
-        "jobId"
-      ]
+      "required": ["jobId"]
     },
     "DescribeClassificationJobResponse": {
       "type": "structure",
@@ -5405,8 +5305,7 @@
     },
     "DescribeOrganizationConfigurationRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DescribeOrganizationConfigurationResponse": {
       "type": "structure",
@@ -5433,9 +5332,7 @@
         }
       },
       "documentation": "<p>Specifies 1-10 occurrences of a specific type of sensitive data reported by a finding.</p>",
-      "required": [
-        "value"
-      ]
+      "required": ["value"]
     },
     "Detection": {
       "type": "structure",
@@ -5475,13 +5372,11 @@
     },
     "DisableMacieRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DisableMacieResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DisableOrganizationAdminAccountRequest": {
       "type": "structure",
@@ -5493,34 +5388,27 @@
           "documentation": "<p>The Amazon Web Services account ID of the delegated Amazon Macie administrator account.</p>"
         }
       },
-      "required": [
-        "adminAccountId"
-      ]
+      "required": ["adminAccountId"]
     },
     "DisableOrganizationAdminAccountResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DisassociateFromAdministratorAccountRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DisassociateFromAdministratorAccountResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DisassociateFromMasterAccountRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DisassociateFromMasterAccountResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DisassociateMemberRequest": {
       "type": "structure",
@@ -5532,14 +5420,11 @@
           "documentation": "<p>The unique identifier for the Amazon Macie resource that the request applies to.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "DisassociateMemberResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DomainDetails": {
       "type": "structure",
@@ -5554,16 +5439,11 @@
     },
     "EffectivePermission": {
       "type": "string",
-      "enum": [
-        "PUBLIC",
-        "NOT_PUBLIC",
-        "UNKNOWN"
-      ]
+      "enum": ["PUBLIC", "NOT_PUBLIC", "UNKNOWN"]
     },
     "Empty": {
       "type": "structure",
-      "members": {
-      },
+      "members": {},
       "documentation": "<p>The request succeeded and there isn't any content to include in the body of the response (No Content).</p>"
     },
     "EnableMacieRequest": {
@@ -5589,8 +5469,7 @@
     },
     "EnableMacieResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "EnableOrganizationAdminAccountRequest": {
       "type": "structure",
@@ -5607,33 +5486,21 @@
           "idempotencyToken": true
         }
       },
-      "required": [
-        "adminAccountId"
-      ]
+      "required": ["adminAccountId"]
     },
     "EnableOrganizationAdminAccountResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "EncryptionType": {
       "type": "string",
       "documentation": "<p>The server-side encryption algorithm that was used to encrypt an S3 object or is used by default to encrypt objects that are added to an S3 bucket. Possible values are:</p>",
-      "enum": [
-        "NONE",
-        "AES256",
-        "aws:kms",
-        "UNKNOWN",
-        "aws:kms:dsse"
-      ]
+      "enum": ["NONE", "AES256", "aws:kms", "UNKNOWN", "aws:kms:dsse"]
     },
     "ErrorCode": {
       "type": "string",
       "documentation": "<p>The source of an issue or delay. Possible values are:</p>",
-      "enum": [
-        "ClientError",
-        "InternalError"
-      ]
+      "enum": ["ClientError", "InternalError"]
     },
     "FederatedUser": {
       "type": "structure",
@@ -5781,9 +5648,7 @@
     "FindingActionType": {
       "type": "string",
       "documentation": "<p>The type of action that occurred for the resource and produced the policy finding:</p>",
-      "enum": [
-        "AWS_API_CALL"
-      ]
+      "enum": ["AWS_API_CALL"]
     },
     "FindingActor": {
       "type": "structure",
@@ -5809,10 +5674,7 @@
     "FindingCategory": {
       "type": "string",
       "documentation": "<p>The category of the finding. Possible values are:</p>",
-      "enum": [
-        "CLASSIFICATION",
-        "POLICY"
-      ]
+      "enum": ["CLASSIFICATION", "POLICY"]
     },
     "FindingCriteria": {
       "type": "structure",
@@ -5828,19 +5690,12 @@
     "FindingPublishingFrequency": {
       "type": "string",
       "documentation": "<p>The frequency with which Amazon Macie publishes updates to policy findings for an account. This includes publishing updates to Security Hub and Amazon EventBridge (formerly Amazon CloudWatch Events). For more information, see <a href=\"https://docs.aws.amazon.com/macie/latest/user/findings-monitor.html\">Monitoring and processing findings</a> in the <i>Amazon Macie User Guide</i>. Valid values are:</p>",
-      "enum": [
-        "FIFTEEN_MINUTES",
-        "ONE_HOUR",
-        "SIX_HOURS"
-      ]
+      "enum": ["FIFTEEN_MINUTES", "ONE_HOUR", "SIX_HOURS"]
     },
     "FindingStatisticsSortAttributeName": {
       "type": "string",
       "documentation": "<p>The grouping to sort the results by. Valid values are:</p>",
-      "enum": [
-        "groupKey",
-        "count"
-      ]
+      "enum": ["groupKey", "count"]
     },
     "FindingStatisticsSortCriteria": {
       "type": "structure",
@@ -5878,10 +5733,7 @@
     "FindingsFilterAction": {
       "type": "string",
       "documentation": "<p>The action to perform on findings that match the filter criteria. To suppress (automatically archive) findings that match the criteria, set this value to ARCHIVE. Valid values are:</p>",
-      "enum": [
-        "ARCHIVE",
-        "NOOP"
-      ]
+      "enum": ["ARCHIVE", "NOOP"]
     },
     "FindingsFilterListItem": {
       "type": "structure",
@@ -5916,8 +5768,7 @@
     },
     "GetAdministratorAccountRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "GetAdministratorAccountResponse": {
       "type": "structure",
@@ -5939,9 +5790,7 @@
           "documentation": "<p>The unique identifier for the Amazon Macie resource that the request applies to.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "GetAllowListResponse": {
       "type": "structure",
@@ -5995,8 +5844,7 @@
     },
     "GetAutomatedDiscoveryConfigurationRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "GetAutomatedDiscoveryConfigurationResponse": {
       "type": "structure",
@@ -6125,8 +5973,7 @@
     },
     "GetClassificationExportConfigurationRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "GetClassificationExportConfigurationResponse": {
       "type": "structure",
@@ -6148,9 +5995,7 @@
           "documentation": "<p>The unique identifier for the Amazon Macie resource that the request applies to.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "GetClassificationScopeResponse": {
       "type": "structure",
@@ -6182,9 +6027,7 @@
           "documentation": "<p>The unique identifier for the Amazon Macie resource that the request applies to.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "GetCustomDataIdentifierResponse": {
       "type": "structure",
@@ -6275,9 +6118,7 @@
           "documentation": "<p>The criteria to use to sort the query results.</p>"
         }
       },
-      "required": [
-        "groupBy"
-      ]
+      "required": ["groupBy"]
     },
     "GetFindingStatisticsResponse": {
       "type": "structure",
@@ -6299,9 +6140,7 @@
           "documentation": "<p>The unique identifier for the Amazon Macie resource that the request applies to.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "GetFindingsFilterResponse": {
       "type": "structure",
@@ -6350,8 +6189,7 @@
     },
     "GetFindingsPublicationConfigurationRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "GetFindingsPublicationConfigurationResponse": {
       "type": "structure",
@@ -6377,9 +6215,7 @@
           "documentation": "<p>The criteria for sorting the results of the request.</p>"
         }
       },
-      "required": [
-        "findingIds"
-      ]
+      "required": ["findingIds"]
     },
     "GetFindingsResponse": {
       "type": "structure",
@@ -6393,8 +6229,7 @@
     },
     "GetInvitationsCountRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "GetInvitationsCountResponse": {
       "type": "structure",
@@ -6408,8 +6243,7 @@
     },
     "GetMacieSessionRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "GetMacieSessionResponse": {
       "type": "structure",
@@ -6443,8 +6277,7 @@
     },
     "GetMasterAccountRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "GetMasterAccountResponse": {
       "type": "structure",
@@ -6466,9 +6299,7 @@
           "documentation": "<p>The unique identifier for the Amazon Macie resource that the request applies to.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "GetMemberResponse": {
       "type": "structure",
@@ -6530,9 +6361,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the S3 bucket that the request applies to.</p>"
         }
       },
-      "required": [
-        "resourceArn"
-      ]
+      "required": ["resourceArn"]
     },
     "GetResourceProfileResponse": {
       "type": "structure",
@@ -6561,8 +6390,7 @@
     },
     "GetRevealConfigurationRequest": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "GetRevealConfigurationResponse": {
       "type": "structure",
@@ -6589,9 +6417,7 @@
           "documentation": "<p>The unique identifier for the finding.</p>"
         }
       },
-      "required": [
-        "findingId"
-      ]
+      "required": ["findingId"]
     },
     "GetSensitiveDataOccurrencesAvailabilityResponse": {
       "type": "structure",
@@ -6618,9 +6444,7 @@
           "documentation": "<p>The unique identifier for the finding.</p>"
         }
       },
-      "required": [
-        "findingId"
-      ]
+      "required": ["findingId"]
     },
     "GetSensitiveDataOccurrencesResponse": {
       "type": "structure",
@@ -6652,9 +6476,7 @@
           "documentation": "<p>The unique identifier for the Amazon Macie resource that the request applies to.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "GetSensitivityInspectionTemplateResponse": {
       "type": "structure",
@@ -6956,33 +6778,16 @@
     },
     "IsDefinedInJob": {
       "type": "string",
-      "enum": [
-        "TRUE",
-        "FALSE",
-        "UNKNOWN"
-      ]
+      "enum": ["TRUE", "FALSE", "UNKNOWN"]
     },
     "IsMonitoredByJob": {
       "type": "string",
-      "enum": [
-        "TRUE",
-        "FALSE",
-        "UNKNOWN"
-      ]
+      "enum": ["TRUE", "FALSE", "UNKNOWN"]
     },
     "JobComparator": {
       "type": "string",
       "documentation": "<p>The operator to use in a condition. Depending on the type of condition, possible values are:</p>",
-      "enum": [
-        "EQ",
-        "GT",
-        "GTE",
-        "LT",
-        "LTE",
-        "NE",
-        "CONTAINS",
-        "STARTS_WITH"
-      ]
+      "enum": ["EQ", "GT", "GTE", "LT", "LTE", "NE", "CONTAINS", "STARTS_WITH"]
     },
     "JobDetails": {
       "type": "structure",
@@ -7124,10 +6929,7 @@
     "JobType": {
       "type": "string",
       "documentation": "<p>The schedule for running a classification job. Valid values are:</p>",
-      "enum": [
-        "ONE_TIME",
-        "SCHEDULED"
-      ]
+      "enum": ["ONE_TIME", "SCHEDULED"]
     },
     "KeyValuePair": {
       "type": "structure",
@@ -7166,10 +6968,7 @@
     "LastRunErrorStatusCode": {
       "type": "string",
       "documentation": "<p>Specifies whether any account- or bucket-level access errors occurred during the run of a one-time classification job or the most recent run of a recurring classification job. Possible values are:</p>",
-      "enum": [
-        "NONE",
-        "ERROR"
-      ]
+      "enum": ["NONE", "ERROR"]
     },
     "ListAllowListsRequest": {
       "type": "structure",
@@ -7466,12 +7265,7 @@
     "ListJobsFilterKey": {
       "type": "string",
       "documentation": "<p>The property to use to filter the results. Valid values are:</p>",
-      "enum": [
-        "jobType",
-        "jobStatus",
-        "createdAt",
-        "name"
-      ]
+      "enum": ["jobType", "jobStatus", "createdAt", "name"]
     },
     "ListJobsFilterTerm": {
       "type": "structure",
@@ -7497,12 +7291,7 @@
     "ListJobsSortAttributeName": {
       "type": "string",
       "documentation": "<p>The property to sort the results by. Valid values are:</p>",
-      "enum": [
-        "createdAt",
-        "jobStatus",
-        "name",
-        "jobType"
-      ]
+      "enum": ["createdAt", "jobStatus", "name", "jobType"]
     },
     "ListJobsSortCriteria": {
       "type": "structure",
@@ -7631,9 +7420,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the S3 bucket that the request applies to.</p>"
         }
       },
-      "required": [
-        "resourceArn"
-      ]
+      "required": ["resourceArn"]
     },
     "ListResourceProfileArtifactsResponse": {
       "type": "structure",
@@ -7672,9 +7459,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the S3 bucket that the request applies to.</p>"
         }
       },
-      "required": [
-        "resourceArn"
-      ]
+      "required": ["resourceArn"]
     },
     "ListResourceProfileDetectionsResponse": {
       "type": "structure",
@@ -7733,9 +7518,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the resource.</p>"
         }
       },
-      "required": [
-        "resourceArn"
-      ]
+      "required": ["resourceArn"]
     },
     "ListTagsForResourceResponse": {
       "type": "structure",
@@ -7750,21 +7533,12 @@
     "MacieStatus": {
       "type": "string",
       "documentation": "<p>The status of an Amazon Macie account. Valid values are:</p>",
-      "enum": [
-        "PAUSED",
-        "ENABLED"
-      ]
+      "enum": ["PAUSED", "ENABLED"]
     },
     "ManagedDataIdentifierSelector": {
       "type": "string",
       "documentation": "<p>The selection type that determines which managed data identifiers a classification job uses to analyze data. Valid values are:</p>",
-      "enum": [
-        "ALL",
-        "EXCLUDE",
-        "INCLUDE",
-        "NONE",
-        "RECOMMENDED"
-      ]
+      "enum": ["ALL", "EXCLUDE", "INCLUDE", "NONE", "RECOMMENDED"]
     },
     "ManagedDataIdentifierSummary": {
       "type": "structure",
@@ -8036,10 +7810,7 @@
     },
     "OrderBy": {
       "type": "string",
-      "enum": [
-        "ASC",
-        "DESC"
-      ]
+      "enum": ["ASC", "DESC"]
     },
     "OriginType": {
       "type": "string",
@@ -8102,9 +7873,7 @@
           "documentation": "<p>The location to store data classification results in, and the encryption settings to use when storing results in that location.</p>"
         }
       },
-      "required": [
-        "configuration"
-      ]
+      "required": ["configuration"]
     },
     "PutClassificationExportConfigurationResponse": {
       "type": "structure",
@@ -8134,8 +7903,7 @@
     },
     "PutFindingsPublicationConfigurationResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "Range": {
       "type": "structure",
@@ -8260,10 +8028,7 @@
         }
       },
       "documentation": "<p>Provides information about an S3 object that Amazon Macie selected for analysis while performing automated sensitive data discovery for an account, and the status and results of the analysis. This information is available only if automated sensitive data discovery has been enabled for the account.</p>",
-      "required": [
-        "classificationResultStatus",
-        "arn"
-      ]
+      "required": ["classificationResultStatus", "arn"]
     },
     "ResourceStatistics": {
       "type": "structure",
@@ -8352,17 +8117,12 @@
         }
       },
       "documentation": "<p>Provides information about the access method and settings that are used to retrieve occurrences of sensitive data reported by findings.</p>",
-      "required": [
-        "retrievalMode"
-      ]
+      "required": ["retrievalMode"]
     },
     "RetrievalMode": {
       "type": "string",
       "documentation": "<p>The access method to use when retrieving occurrences of sensitive data reported by findings. Valid values are:</p>",
-      "enum": [
-        "CALLER_CREDENTIALS",
-        "ASSUME_ROLE"
-      ]
+      "enum": ["CALLER_CREDENTIALS", "ASSUME_ROLE"]
     },
     "RevealConfiguration": {
       "type": "structure",
@@ -8379,26 +8139,17 @@
         }
       },
       "documentation": "<p>Specifies the status of the Amazon Macie configuration for retrieving occurrences of sensitive data reported by findings, and the Key Management Service (KMS) key to use to encrypt sensitive data that's retrieved. When you enable the configuration for the first time, your request must specify an KMS key. Otherwise, an error occurs.</p>",
-      "required": [
-        "status"
-      ]
+      "required": ["status"]
     },
     "RevealRequestStatus": {
       "type": "string",
       "documentation": "<p>The status of a request to retrieve occurrences of sensitive data reported by a finding. Possible values are:</p>",
-      "enum": [
-        "SUCCESS",
-        "PROCESSING",
-        "ERROR"
-      ]
+      "enum": ["SUCCESS", "PROCESSING", "ERROR"]
     },
     "RevealStatus": {
       "type": "string",
       "documentation": "<p>The status of the configuration for retrieving occurrences of sensitive data reported by findings. Valid values are:</p>",
-      "enum": [
-        "ENABLED",
-        "DISABLED"
-      ]
+      "enum": ["ENABLED", "DISABLED"]
     },
     "S3Bucket": {
       "type": "structure",
@@ -8477,10 +8228,7 @@
         }
       },
       "documentation": "<p>Specifies an Amazon Web Services account that owns S3 buckets for a classification job to analyze, and one or more specific buckets to analyze for that account.</p>",
-      "required": [
-        "accountId",
-        "buckets"
-      ]
+      "required": ["accountId", "buckets"]
     },
     "S3BucketName": {
       "type": "string",
@@ -8513,9 +8261,7 @@
         }
       },
       "documentation": "<p>Specifies the S3 buckets that are excluded from automated sensitive data discovery for an Amazon Macie account.</p>",
-      "required": [
-        "excludes"
-      ]
+      "required": ["excludes"]
     },
     "S3ClassificationScopeExclusion": {
       "type": "structure",
@@ -8527,9 +8273,7 @@
         }
       },
       "documentation": "<p>Specifies the names of the S3 buckets that are excluded from automated sensitive data discovery.</p>",
-      "required": [
-        "bucketNames"
-      ]
+      "required": ["bucketNames"]
     },
     "S3ClassificationScopeExclusionUpdate": {
       "type": "structure",
@@ -8546,10 +8290,7 @@
         }
       },
       "documentation": "<p>Specifies S3 buckets to add or remove from the exclusion list defined by the classification scope for an Amazon Macie account.</p>",
-      "required": [
-        "bucketNames",
-        "operation"
-      ]
+      "required": ["bucketNames", "operation"]
     },
     "S3ClassificationScopeUpdate": {
       "type": "structure",
@@ -8561,9 +8302,7 @@
         }
       },
       "documentation": "<p>Specifies changes to the list of S3 buckets that are excluded from automated sensitive data discovery for an Amazon Macie account.</p>",
-      "required": [
-        "excludes"
-      ]
+      "required": ["excludes"]
     },
     "S3Destination": {
       "type": "structure",
@@ -8585,10 +8324,7 @@
         }
       },
       "documentation": "<p>Specifies an S3 bucket to store data classification results in, and the encryption settings to use when storing results in that bucket.</p>",
-      "required": [
-        "bucketName",
-        "kmsKeyArn"
-      ]
+      "required": ["bucketName", "kmsKeyArn"]
     },
     "S3JobDefinition": {
       "type": "structure",
@@ -8692,10 +8428,7 @@
         }
       },
       "documentation": "<p>Provides information about an S3 object that lists specific text to ignore.</p>",
-      "required": [
-        "bucketName",
-        "objectKey"
-      ]
+      "required": ["bucketName", "objectKey"]
     },
     "ScopeFilterKey": {
       "type": "string",
@@ -8742,10 +8475,7 @@
     "SearchResourcesComparator": {
       "type": "string",
       "documentation": "<p>The operator to use in a condition that filters the results of a query. Valid values are:</p>",
-      "enum": [
-        "EQ",
-        "NE"
-      ]
+      "enum": ["EQ", "NE"]
     },
     "SearchResourcesCriteria": {
       "type": "structure",
@@ -8919,10 +8649,7 @@
         }
       },
       "documentation": "<p>Specifies configuration settings that determine which findings are published to Security Hub automatically. For information about how Macie publishes findings to Security Hub, see <a href=\"https://docs.aws.amazon.com/macie/latest/user/securityhub-integration.html\">Evaluating findings with Security Hub</a> in the <i>Amazon Macie User Guide</i>.</p>",
-      "required": [
-        "publishPolicyFindings",
-        "publishClassificationFindings"
-      ]
+      "required": ["publishPolicyFindings", "publishClassificationFindings"]
     },
     "SensitiveData": {
       "type": "list",
@@ -9184,11 +8911,7 @@
     "SeverityDescription": {
       "type": "string",
       "documentation": "<p>The qualitative representation of the finding's severity. Possible values are:</p>",
-      "enum": [
-        "Low",
-        "Medium",
-        "High"
-      ]
+      "enum": ["Low", "Medium", "High"]
     },
     "SeverityLevel": {
       "type": "structure",
@@ -9205,10 +8928,7 @@
         }
       },
       "documentation": "<p>Specifies a severity level for findings that a custom data identifier produces. A severity level determines which severity is assigned to the findings, based on the number of occurrences of text that match the custom data identifier's detection criteria.</p>",
-      "required": [
-        "occurrencesThreshold",
-        "severity"
-      ]
+      "required": ["occurrencesThreshold", "severity"]
     },
     "SeverityLevelList": {
       "type": "list",
@@ -9219,12 +8939,7 @@
     },
     "SharedAccess": {
       "type": "string",
-      "enum": [
-        "EXTERNAL",
-        "INTERNAL",
-        "NOT_SHARED",
-        "UNKNOWN"
-      ]
+      "enum": ["EXTERNAL", "INTERNAL", "NOT_SHARED", "UNKNOWN"]
     },
     "SimpleCriterionForJob": {
       "type": "structure",
@@ -9398,15 +9113,11 @@
           "documentation": "<p>A map of key-value pairs that specifies the tags to associate with the resource.</p> <p>A resource can have a maximum of 50 tags. Each tag consists of a tag key and an associated tag value. The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.</p>"
         }
       },
-      "required": [
-        "resourceArn",
-        "tags"
-      ]
+      "required": ["resourceArn", "tags"]
     },
     "TagResourceResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "TagScopeTerm": {
       "type": "structure",
@@ -9437,9 +9148,7 @@
     "TagTarget": {
       "type": "string",
       "documentation": "<p>The type of object to apply a tag-based condition to. Valid values are:</p>",
-      "enum": [
-        "S3_OBJECT"
-      ]
+      "enum": ["S3_OBJECT"]
     },
     "TagValuePair": {
       "type": "structure",
@@ -9486,10 +9195,7 @@
           "documentation": "<p>The sample text to inspect by using the custom data identifier. The text can contain as many as 1,000 characters.</p>"
         }
       },
-      "required": [
-        "regex",
-        "sampleText"
-      ]
+      "required": ["regex", "sampleText"]
     },
     "TestCustomDataIdentifierResponse": {
       "type": "structure",
@@ -9519,10 +9225,7 @@
     "TimeRange": {
       "type": "string",
       "documentation": "<p>An inclusive time period that Amazon Macie usage data applies to. Possible values are:</p>",
-      "enum": [
-        "MONTH_TO_DATE",
-        "PAST_30_DAYS"
-      ]
+      "enum": ["MONTH_TO_DATE", "PAST_30_DAYS"]
     },
     "Timestamp": {
       "type": "timestamp",
@@ -9531,12 +9234,7 @@
     },
     "Type": {
       "type": "string",
-      "enum": [
-        "NONE",
-        "AES256",
-        "aws:kms",
-        "aws:kms:dsse"
-      ]
+      "enum": ["NONE", "AES256", "aws:kms", "aws:kms:dsse"]
     },
     "UnavailabilityReasonCode": {
       "type": "string",
@@ -9557,9 +9255,7 @@
     },
     "Unit": {
       "type": "string",
-      "enum": [
-        "TERABYTES"
-      ]
+      "enum": ["TERABYTES"]
     },
     "UnprocessableEntityException": {
       "type": "structure",
@@ -9571,9 +9267,7 @@
         }
       },
       "documentation": "<p>Provides information about an error that occurred due to an unprocessable entity.</p>",
-      "required": [
-        "message"
-      ],
+      "required": ["message"],
       "exception": true,
       "error": {
         "httpStatusCode": 422
@@ -9616,15 +9310,11 @@
           "documentation": "<p>One or more tags (keys) to remove from the resource. In an HTTP request to remove multiple tags, append the tagKeys parameter and argument for each tag to remove, separated by an ampersand (&amp;).</p>"
         }
       },
-      "required": [
-        "tagKeys",
-        "resourceArn"
-      ]
+      "required": ["tagKeys", "resourceArn"]
     },
     "UntagResourceResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "UpdateAllowListRequest": {
       "type": "structure",
@@ -9651,11 +9341,7 @@
           "documentation": "<p>A custom name for the allow list. The name can contain as many as 128 characters.</p>"
         }
       },
-      "required": [
-        "id",
-        "criteria",
-        "name"
-      ]
+      "required": ["id", "criteria", "name"]
     },
     "UpdateAllowListResponse": {
       "type": "structure",
@@ -9686,14 +9372,11 @@
           "documentation": "<p>The new status of automated sensitive data discovery for the organization or account. Valid values are: ENABLED, start or resume all automated sensitive data discovery activities; and, DISABLED, stop performing all automated sensitive data discovery activities.</p> <p>If you specify DISABLED for an administrator account, you also disable automated sensitive data discovery for all member accounts in the organization.</p>"
         }
       },
-      "required": [
-        "status"
-      ]
+      "required": ["status"]
     },
     "UpdateAutomatedDiscoveryConfigurationResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "UpdateClassificationJobRequest": {
       "type": "structure",
@@ -9710,15 +9393,11 @@
           "documentation": "<p>The new status for the job. Valid values are:</p> <ul><li><p>CANCELLED - Stops the job permanently and cancels it. This value is valid only if the job's current status is IDLE, PAUSED, RUNNING, or USER_PAUSED.</p> <p>If you specify this value and the job's current status is RUNNING, Amazon Macie immediately begins to stop all processing tasks for the job. You can't resume or restart a job after you cancel it.</p></li> <li><p>RUNNING - Resumes the job. This value is valid only if the job's current status is USER_PAUSED.</p> <p>If you paused the job while it was actively running and you specify this value less than 30 days after you paused the job, Macie immediately resumes processing from the point where you paused the job. Otherwise, Macie resumes the job according to the schedule and other settings for the job.</p></li> <li><p>USER_PAUSED - Pauses the job temporarily. This value is valid only if the job's current status is IDLE, PAUSED, or RUNNING. If you specify this value and the job's current status is RUNNING, Macie immediately begins to pause all processing tasks for the job.</p> <p>If you pause a one-time job and you don't resume it within 30 days, the job expires and Macie cancels the job. If you pause a recurring job when its status is RUNNING and you don't resume it within 30 days, the job run expires and Macie cancels the run. To check the expiration date, refer to the UserPausedDetails.jobExpiresAt property.</p></li></ul>"
         }
       },
-      "required": [
-        "jobId",
-        "jobStatus"
-      ]
+      "required": ["jobId", "jobStatus"]
     },
     "UpdateClassificationJobResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "UpdateClassificationScopeRequest": {
       "type": "structure",
@@ -9735,14 +9414,11 @@
           "documentation": "<p>The S3 buckets to add or remove from the exclusion list defined by the classification scope.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "UpdateClassificationScopeResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "UpdateFindingsFilterRequest": {
       "type": "structure",
@@ -9785,9 +9461,7 @@
           "documentation": "<p>The position of the filter in the list of saved filters on the Amazon Macie console. This value also determines the order in which the filter is applied to findings, relative to other filters that are also applied to the findings.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "UpdateFindingsFilterResponse": {
       "type": "structure",
@@ -9821,8 +9495,7 @@
     },
     "UpdateMacieSessionResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "UpdateMemberSessionRequest": {
       "type": "structure",
@@ -9839,15 +9512,11 @@
           "documentation": "<p>Specifies the new status for the account. Valid values are: ENABLED, resume all Amazon Macie activities for the account; and, PAUSED, suspend all Macie activities for the account.</p>"
         }
       },
-      "required": [
-        "id",
-        "status"
-      ]
+      "required": ["id", "status"]
     },
     "UpdateMemberSessionResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "UpdateOrganizationConfigurationRequest": {
       "type": "structure",
@@ -9858,14 +9527,11 @@
           "documentation": "<p>Specifies whether to enable Amazon Macie automatically for accounts that are added to the organization in Organizations.</p>"
         }
       },
-      "required": [
-        "autoEnable"
-      ]
+      "required": ["autoEnable"]
     },
     "UpdateOrganizationConfigurationResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "UpdateResourceProfileDetectionsRequest": {
       "type": "structure",
@@ -9882,14 +9548,11 @@
           "documentation": "<p>An array of objects, one for each custom data identifier or managed data identifier that detected a type of sensitive data to exclude from the bucket's score. To include all sensitive data types in the score, don't specify any values for this array.</p>"
         }
       },
-      "required": [
-        "resourceArn"
-      ]
+      "required": ["resourceArn"]
     },
     "UpdateResourceProfileDetectionsResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "UpdateResourceProfileRequest": {
       "type": "structure",
@@ -9906,14 +9569,11 @@
           "documentation": "<p>The new sensitivity score for the bucket. Valid values are: 100, assign the maximum score and apply the <i>Sensitive</i> label to the bucket; and, null (empty), assign a score that Amazon Macie calculates automatically after you submit the request.</p>"
         }
       },
-      "required": [
-        "resourceArn"
-      ]
+      "required": ["resourceArn"]
     },
     "UpdateResourceProfileResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "UpdateRetrievalConfiguration": {
       "type": "structure",
@@ -9930,9 +9590,7 @@
         }
       },
       "documentation": "<p>Specifies the access method and settings to use when retrieving occurrences of sensitive data reported by findings. If your request specifies an Identity and Access Management (IAM) role to assume, Amazon Macie verifies that the role exists and the attached policies are configured correctly. If there's an issue, Macie returns an error. For information about addressing the issue, see <a href=\"https://docs.aws.amazon.com/macie/latest/user/findings-retrieve-sd-options.html\">Configuration options for retrieving sensitive data samples</a> in the <i>Amazon Macie User Guide</i>.</p>",
-      "required": [
-        "retrievalMode"
-      ]
+      "required": ["retrievalMode"]
     },
     "UpdateRevealConfigurationRequest": {
       "type": "structure",
@@ -9948,9 +9606,7 @@
           "documentation": "<p>The access method and settings to use when retrieving the sensitive data.</p>"
         }
       },
-      "required": [
-        "configuration"
-      ]
+      "required": ["configuration"]
     },
     "UpdateRevealConfigurationResponse": {
       "type": "structure",
@@ -9992,14 +9648,11 @@
           "documentation": "<p>The allow lists, custom data identifiers, and managed data identifiers to explicitly include (use) when performing automated sensitive data discovery.</p>"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "UpdateSensitivityInspectionTemplateResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "UsageByAccount": {
       "type": "structure",
@@ -10077,25 +9730,12 @@
     "UsageStatisticsFilterComparator": {
       "type": "string",
       "documentation": "<p>The operator to use in a condition that filters the results of a query for Amazon Macie account quotas and usage data. Valid values are:</p>",
-      "enum": [
-        "GT",
-        "GTE",
-        "LT",
-        "LTE",
-        "EQ",
-        "NE",
-        "CONTAINS"
-      ]
+      "enum": ["GT", "GTE", "LT", "LTE", "EQ", "NE", "CONTAINS"]
     },
     "UsageStatisticsFilterKey": {
       "type": "string",
       "documentation": "<p>The field to use in a condition that filters the results of a query for Amazon Macie account quotas and usage data. Valid values are:</p>",
-      "enum": [
-        "accountId",
-        "serviceLimit",
-        "freeTrialStartDate",
-        "total"
-      ]
+      "enum": ["accountId", "serviceLimit", "freeTrialStartDate", "total"]
     },
     "UsageStatisticsSortBy": {
       "type": "structure",
@@ -10116,12 +9756,7 @@
     "UsageStatisticsSortKey": {
       "type": "string",
       "documentation": "<p>The field to use to sort the results of a query for Amazon Macie account quotas and usage data. Valid values are:</p>",
-      "enum": [
-        "accountId",
-        "total",
-        "serviceLimitValue",
-        "freeTrialStartDate"
-      ]
+      "enum": ["accountId", "total", "serviceLimitValue", "freeTrialStartDate"]
     },
     "UsageTotal": {
       "type": "structure",

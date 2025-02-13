@@ -1,5 +1,5 @@
 // src/scripts/check-duplicates.ts
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -14,14 +14,16 @@ async function checkDuplicateUrls() {
     `;
 
     if (Array.isArray(duplicates) && duplicates.length > 0) {
-      console.log('Found duplicate URLs:');
+      console.log("Found duplicate URLs:");
       console.log(JSON.stringify(duplicates, null, 2));
-      console.log('\nPlease resolve these duplicates before adding the unique constraint.');
+      console.log(
+        "\nPlease resolve these duplicates before adding the unique constraint.",
+      );
     } else {
-      console.log('No duplicate URLs found. Safe to add unique constraint.');
+      console.log("No duplicate URLs found. Safe to add unique constraint.");
     }
   } catch (error) {
-    console.error('Error checking duplicates:', error);
+    console.error("Error checking duplicates:", error);
   } finally {
     await prisma.$disconnect();
   }

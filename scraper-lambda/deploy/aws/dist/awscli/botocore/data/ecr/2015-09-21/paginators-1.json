@@ -56,9 +56,7 @@
     "DescribeRepositoryCreationTemplates": {
       "input_token": "nextToken",
       "limit_key": "maxResults",
-      "non_aggregate_keys": [
-        "registryId"
-      ],
+      "non_aggregate_keys": ["registryId"],
       "output_token": "nextToken",
       "result_key": "repositoryCreationTemplates"
     }

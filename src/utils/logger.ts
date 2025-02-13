@@ -3,12 +3,12 @@
 /* A minimal logger wrapper. */
 export const logger = {
   info: (...args: any[]) => {
-    console.log('[INFO]', ...args);
+    console.log("[INFO]", ...args);
   },
   warn: (...args: any[]) => {
-    console.warn('[WARN]', ...args);
+    console.warn("[WARN]", ...args);
   },
   error: (...args: any[]) => {
-    console.error('[ERROR]', ...args);
+    console.error("[ERROR]", ...args);
   },
 };

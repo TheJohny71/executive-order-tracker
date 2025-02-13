@@ -634,12 +634,7 @@
   },
   "shapes": {
     "AdMarkers": {
-      "enum": [
-        "NONE",
-        "SCTE35_ENHANCED",
-        "PASSTHROUGH",
-        "DATERANGE"
-      ],
+      "enum": ["NONE", "SCTE35_ENHANCED", "PASSTHROUGH", "DATERANGE"],
       "type": "string"
     },
     "AdTriggers": {
@@ -651,12 +646,7 @@
     },
     "AdsOnDeliveryRestrictions": {
       "documentation": "This setting allows the delivery restriction flags on SCTE-35 segmentation descriptors to\ndetermine whether a message signals an ad.  Choosing \"NONE\" means no SCTE-35 messages become\nads.  Choosing \"RESTRICTED\" means SCTE-35 messages of the types specified in AdTriggers that\ncontain delivery restrictions will be treated as ads.  Choosing \"UNRESTRICTED\" means SCTE-35\nmessages of the types specified in AdTriggers that do not contain delivery restrictions will\nbe treated as ads.  Choosing \"BOTH\" means all SCTE-35 messages of the types specified in\nAdTriggers will be treated as ads.  Note that Splice Insert messages do not have these flags\nand are always treated as ads if specified in AdTriggers.\n",
-      "enum": [
-        "NONE",
-        "RESTRICTED",
-        "UNRESTRICTED",
-        "BOTH"
-      ],
+      "enum": ["NONE", "RESTRICTED", "UNRESTRICTED", "BOTH"],
       "type": "string"
     },
     "Authorization": {
@@ -673,10 +663,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "SecretsRoleArn",
-        "CdnIdentifierSecret"
-      ],
+      "required": ["SecretsRoleArn", "CdnIdentifierSecret"],
       "type": "structure"
     },
     "Channel": {
@@ -739,9 +726,7 @@
           "shape": "Tags"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "ChannelList": {
@@ -793,17 +778,12 @@
           "shape": "SpekeKeyProvider"
         }
       },
-      "required": [
-        "SpekeKeyProvider"
-      ],
+      "required": ["SpekeKeyProvider"],
       "type": "structure"
     },
     "CmafEncryptionMethod": {
       "documentation": "The encryption method to use.",
-      "enum": [
-        "SAMPLE_AES",
-        "AES_CTR"
-      ],
+      "enum": ["SAMPLE_AES", "AES_CTR"],
       "type": "string"
     },
     "CmafPackage": {
@@ -896,9 +876,7 @@
           "shape": "IngressAccessLogs"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "ConfigureLogsResponse": {
@@ -960,9 +938,7 @@
           "shape": "Tags"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "CreateChannelResponse": {
@@ -1160,10 +1136,7 @@
           "shape": "__listOf__string"
         }
       },
-      "required": [
-        "ChannelId",
-        "Id"
-      ],
+      "required": ["ChannelId", "Id"],
       "type": "structure"
     },
     "CreateOriginEndpointResponse": {
@@ -1263,9 +1236,7 @@
           "shape": "SpekeKeyProvider"
         }
       },
-      "required": [
-        "SpekeKeyProvider"
-      ],
+      "required": ["SpekeKeyProvider"],
       "type": "structure"
     },
     "DashPackage": {
@@ -1359,9 +1330,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DeleteChannelResponse": {
@@ -1377,9 +1346,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DeleteOriginEndpointResponse": {
@@ -1395,9 +1362,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DescribeChannelResponse": {
@@ -1450,9 +1415,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DescribeHarvestJobResponse": {
@@ -1513,9 +1476,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DescribeOriginEndpointResponse": {
@@ -1627,17 +1588,11 @@
           "shape": "PresetSpeke20Video"
         }
       },
-      "required": [
-        "PresetSpeke20Audio",
-        "PresetSpeke20Video"
-      ],
+      "required": ["PresetSpeke20Audio", "PresetSpeke20Video"],
       "type": "structure"
     },
     "EncryptionMethod": {
-      "enum": [
-        "AES_128",
-        "SAMPLE_AES"
-      ],
+      "enum": ["AES_128", "SAMPLE_AES"],
       "type": "string"
     },
     "ForbiddenException": {
@@ -1785,9 +1740,7 @@
           "shape": "SpekeKeyProvider"
         }
       },
-      "required": [
-        "SpekeKeyProvider"
-      ],
+      "required": ["SpekeKeyProvider"],
       "type": "structure"
     },
     "HlsIngest": {
@@ -1853,9 +1806,7 @@
           "shape": "AdsOnDeliveryRestrictions"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "HlsManifestCreateOrUpdateParameters": {
@@ -1905,9 +1856,7 @@
           "shape": "__integer"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "HlsPackage": {
@@ -2145,9 +2094,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "ResourceArn"
-      ],
+      "required": ["ResourceArn"],
       "type": "structure"
     },
     "ListTagsForResourceResponse": {
@@ -2160,11 +2107,7 @@
       "type": "structure"
     },
     "ManifestLayout": {
-      "enum": [
-        "FULL",
-        "COMPACT",
-        "DRM_TOP_LEVEL_COMPACT"
-      ],
+      "enum": ["FULL", "COMPACT", "DRM_TOP_LEVEL_COMPACT"],
       "type": "string"
     },
     "MaxResults": {
@@ -2180,9 +2123,7 @@
           "shape": "SpekeKeyProvider"
         }
       },
-      "required": [
-        "SpekeKeyProvider"
-      ],
+      "required": ["SpekeKeyProvider"],
       "type": "structure"
     },
     "MssPackage": {
@@ -2376,10 +2317,7 @@
           "shape": "__listOf__string"
         }
       },
-      "required": [
-        "ChannelId",
-        "Id"
-      ],
+      "required": ["ChannelId", "Id"],
       "type": "structure"
     },
     "OriginEndpointList": {
@@ -2455,18 +2393,11 @@
       "type": "structure"
     },
     "Origination": {
-      "enum": [
-        "ALLOW",
-        "DENY"
-      ],
+      "enum": ["ALLOW", "DENY"],
       "type": "string"
     },
     "PlaylistType": {
-      "enum": [
-        "NONE",
-        "EVENT",
-        "VOD"
-      ],
+      "enum": ["NONE", "EVENT", "VOD"],
       "type": "string"
     },
     "PresetSpeke20Audio": {
@@ -2495,12 +2426,7 @@
       "type": "string"
     },
     "Profile": {
-      "enum": [
-        "NONE",
-        "HBBTV_1_5",
-        "HYBRIDCAST",
-        "DVB_DASH_2014"
-      ],
+      "enum": ["NONE", "HBBTV_1_5", "HYBRIDCAST", "DVB_DASH_2014"],
       "type": "string"
     },
     "RotateChannelCredentialsRequest": {
@@ -2513,9 +2439,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "RotateChannelCredentialsResponse": {
@@ -2575,10 +2499,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "IngestEndpointId",
-        "Id"
-      ],
+      "required": ["IngestEndpointId", "Id"],
       "type": "structure"
     },
     "RotateIngestEndpointCredentialsResponse": {
@@ -2641,11 +2562,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "ManifestKey",
-        "BucketName",
-        "RoleArn"
-      ],
+      "required": ["ManifestKey", "BucketName", "RoleArn"],
       "type": "structure"
     },
     "SegmentTemplateFormat": {
@@ -2707,20 +2624,11 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "ResourceId",
-        "SystemIds",
-        "Url",
-        "RoleArn"
-      ],
+      "required": ["ResourceId", "SystemIds", "Url", "RoleArn"],
       "type": "structure"
     },
     "Status": {
-      "enum": [
-        "IN_PROGRESS",
-        "SUCCEEDED",
-        "FAILED"
-      ],
+      "enum": ["IN_PROGRESS", "SUCCEEDED", "FAILED"],
       "type": "string"
     },
     "StreamOrder": {
@@ -2764,10 +2672,7 @@
           "shape": "__mapOf__string"
         }
       },
-      "required": [
-        "ResourceArn",
-        "Tags"
-      ],
+      "required": ["ResourceArn", "Tags"],
       "type": "structure"
     },
     "Tags": {
@@ -2787,9 +2692,7 @@
           "shape": "__mapOf__string"
         }
       },
-      "required": [
-        "Tags"
-      ],
+      "required": ["Tags"],
       "type": "structure"
     },
     "TooManyRequestsException": {
@@ -2834,10 +2737,7 @@
           "shape": "__listOf__string"
         }
       },
-      "required": [
-        "TagKeys",
-        "ResourceArn"
-      ],
+      "required": ["TagKeys", "ResourceArn"],
       "type": "structure"
     },
     "UpdateChannelRequest": {
@@ -2855,9 +2755,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "UpdateChannelResponse": {
@@ -2961,9 +2859,7 @@
           "shape": "__listOf__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "UpdateOriginEndpointResponse": {
@@ -3051,12 +2947,7 @@
       "type": "structure"
     },
     "UtcTiming": {
-      "enum": [
-        "NONE",
-        "HTTP-HEAD",
-        "HTTP-ISO",
-        "HTTP-XSDATE"
-      ],
+      "enum": ["NONE", "HTTP-HEAD", "HTTP-ISO", "HTTP-XSDATE"],
       "type": "string"
     },
     "__AdTriggersElement": {
@@ -3073,9 +2964,7 @@
       "type": "string"
     },
     "__PeriodTriggersElement": {
-      "enum": [
-        "ADS"
-      ],
+      "enum": ["ADS"],
       "type": "string"
     },
     "__boolean": {

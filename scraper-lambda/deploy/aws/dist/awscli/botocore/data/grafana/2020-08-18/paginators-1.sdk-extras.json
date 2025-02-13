@@ -3,15 +3,10 @@
   "merge": {
     "pagination": {
       "ListWorkspaceServiceAccounts": {
-        "non_aggregate_keys": [
-          "workspaceId"
-        ]
+        "non_aggregate_keys": ["workspaceId"]
       },
       "ListWorkspaceServiceAccountTokens": {
-        "non_aggregate_keys": [
-          "serviceAccountId",
-          "workspaceId"
-        ]
+        "non_aggregate_keys": ["serviceAccountId", "workspaceId"]
       }
     }
   }

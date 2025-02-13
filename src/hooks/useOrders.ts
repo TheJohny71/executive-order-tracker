@@ -1,6 +1,6 @@
 // src/hooks/useOrders.ts
-import { useState, useEffect, useCallback } from 'react';
-import type { OrderFilters, OrdersResponse } from '@/types';
+import { useState, useEffect, useCallback } from "react";
+import type { OrderFilters, OrdersResponse } from "@/types";
 
 interface UseOrdersReturn {
   data: OrdersResponse | null;
@@ -23,7 +23,7 @@ export function useOrders(filters: OrderFilters): UseOrdersReturn {
 
       const queryParams = new URLSearchParams();
       Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== '') {
+        if (value !== undefined && value !== "") {
           queryParams.append(key, value.toString());
         }
       });
@@ -37,7 +37,7 @@ export function useOrders(filters: OrderFilters): UseOrdersReturn {
       setData(result);
       setLastUpdate(new Date().toISOString());
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }

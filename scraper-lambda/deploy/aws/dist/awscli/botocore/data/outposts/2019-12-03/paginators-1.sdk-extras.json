@@ -3,10 +3,7 @@
   "merge": {
     "pagination": {
       "GetOutpostInstanceTypes": {
-        "non_aggregate_keys": [
-          "OutpostArn",
-          "OutpostId"
-        ]
+        "non_aggregate_keys": ["OutpostArn", "OutpostId"]
       }
     }
   }

@@ -3,9 +3,7 @@
   "merge": {
     "pagination": {
       "SearchImageSets": {
-        "non_aggregate_keys": [
-          "sort"
-        ]
+        "non_aggregate_keys": ["sort"]
       }
     }
   }

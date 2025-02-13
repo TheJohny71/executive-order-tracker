@@ -41,37 +41,28 @@
       "output_token": "NextToken",
       "limit_key": "MaxResults",
       "result_key": "ReadinessChecks",
-      "non_aggregate_keys": [
-        "Readiness"
-      ]
+      "non_aggregate_keys": ["Readiness"]
     },
     "GetRecoveryGroupReadinessSummary": {
       "input_token": "NextToken",
       "output_token": "NextToken",
       "limit_key": "MaxResults",
       "result_key": "ReadinessChecks",
-      "non_aggregate_keys": [
-        "Readiness"
-      ]
+      "non_aggregate_keys": ["Readiness"]
     },
     "GetReadinessCheckStatus": {
       "input_token": "NextToken",
       "output_token": "NextToken",
       "limit_key": "MaxResults",
       "result_key": "Resources",
-      "non_aggregate_keys": [
-        "Readiness",
-        "Messages"
-      ]
+      "non_aggregate_keys": ["Readiness", "Messages"]
     },
     "GetReadinessCheckResourceStatus": {
       "input_token": "NextToken",
       "output_token": "NextToken",
       "limit_key": "MaxResults",
       "result_key": "Rules",
-      "non_aggregate_keys": [
-        "Readiness"
-      ]
+      "non_aggregate_keys": ["Readiness"]
     }
   }
 }

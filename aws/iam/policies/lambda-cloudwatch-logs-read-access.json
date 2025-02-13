@@ -1,21 +1,21 @@
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:GetLogEvents",
-                "logs:DescribeLogStreams",
-                "logs:DescribeLogGroups",
-                "logs:GetLogGroupFields",
-                "logs:GetLogRecord",
-                "logs:StartQuery",
-                "logs:GetQueryResults"
-            ],
-            "Resource": [
-                "arn:aws:logs:us-east-2:565393056361:log-group:/aws/lambda/executive-order-scraper:*",
-                "arn:aws:logs:us-east-2:565393056361:log-group:/aws/lambda/executive-order-scraper:log-stream:*"
-            ]
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:DescribeLogStreams",
+        "logs:DescribeLogGroups",
+        "logs:GetLogGroupFields",
+        "logs:GetLogRecord",
+        "logs:StartQuery",
+        "logs:GetQueryResults"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-east-2:565393056361:log-group:/aws/lambda/executive-order-scraper:*",
+        "arn:aws:logs:us-east-2:565393056361:log-group:/aws/lambda/executive-order-scraper:log-stream:*"
+      ]
+    }
+  ]
 }

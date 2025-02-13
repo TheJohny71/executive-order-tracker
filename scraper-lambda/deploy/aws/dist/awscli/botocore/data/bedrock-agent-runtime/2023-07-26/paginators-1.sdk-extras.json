@@ -3,9 +3,7 @@
   "merge": {
     "pagination": {
       "Retrieve": {
-        "non_aggregate_keys": [
-          "guardrailAction"
-        ]
+        "non_aggregate_keys": ["guardrailAction"]
       }
     }
   }

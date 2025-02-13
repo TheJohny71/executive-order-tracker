@@ -69,10 +69,7 @@
     "ListAssociatedAccessPolicies": {
       "input_token": "nextToken",
       "limit_key": "maxResults",
-      "non_aggregate_keys": [
-        "clusterName",
-        "principalArn"
-      ],
+      "non_aggregate_keys": ["clusterName", "principalArn"],
       "output_token": "nextToken",
       "result_key": "associatedAccessPolicies"
     },

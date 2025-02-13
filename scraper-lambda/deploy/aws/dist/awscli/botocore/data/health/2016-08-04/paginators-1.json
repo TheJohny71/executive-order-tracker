@@ -29,16 +29,12 @@
       "limit_key": "maxResults",
       "output_token": "nextToken",
       "result_key": "affectedAccounts",
-      "non_aggregate_keys": [
-        "eventScopeCode"
-      ]
+      "non_aggregate_keys": ["eventScopeCode"]
     },
     "DescribeAffectedEntitiesForOrganization": {
       "input_token": "nextToken",
       "limit_key": "maxResults",
-      "non_aggregate_keys": [
-        "failedSet"
-      ],
+      "non_aggregate_keys": ["failedSet"],
       "output_token": "nextToken",
       "result_key": "entities"
     },

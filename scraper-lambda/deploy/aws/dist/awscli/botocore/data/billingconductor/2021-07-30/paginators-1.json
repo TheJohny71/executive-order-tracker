@@ -26,47 +26,35 @@
     "ListPricingPlans": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "BillingPeriod"
-      ],
+      "non_aggregate_keys": ["BillingPeriod"],
       "output_token": "NextToken",
       "result_key": "PricingPlans"
     },
     "ListPricingPlansAssociatedWithPricingRule": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "BillingPeriod",
-        "PricingRuleArn"
-      ],
+      "non_aggregate_keys": ["BillingPeriod", "PricingRuleArn"],
       "output_token": "NextToken",
       "result_key": "PricingPlanArns"
     },
     "ListPricingRules": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "BillingPeriod"
-      ],
+      "non_aggregate_keys": ["BillingPeriod"],
       "output_token": "NextToken",
       "result_key": "PricingRules"
     },
     "ListPricingRulesAssociatedToPricingPlan": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "BillingPeriod",
-        "PricingPlanArn"
-      ],
+      "non_aggregate_keys": ["BillingPeriod", "PricingPlanArn"],
       "output_token": "NextToken",
       "result_key": "PricingRuleArns"
     },
     "ListResourcesAssociatedToCustomLineItem": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "Arn"
-      ],
+      "non_aggregate_keys": ["Arn"],
       "output_token": "NextToken",
       "result_key": "AssociatedResources"
     },

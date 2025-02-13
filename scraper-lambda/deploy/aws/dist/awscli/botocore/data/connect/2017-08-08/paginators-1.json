@@ -65,10 +65,7 @@
       "limit_key": "MaxResults",
       "output_token": "NextToken",
       "result_key": "RoutingProfileQueueConfigSummaryList",
-      "non_aggregate_keys": [
-        "LastModifiedRegion",
-        "LastModifiedTime"
-      ]
+      "non_aggregate_keys": ["LastModifiedRegion", "LastModifiedTime"]
     },
     "ListApprovedOrigins": {
       "input_token": "NextToken",
@@ -135,10 +132,7 @@
       "limit_key": "MaxResults",
       "output_token": "NextToken",
       "result_key": "QuickConnectSummaryList",
-      "non_aggregate_keys": [
-        "LastModifiedRegion",
-        "LastModifiedTime"
-      ]
+      "non_aggregate_keys": ["LastModifiedRegion", "LastModifiedTime"]
     },
     "ListBots": {
       "input_token": "NextToken",
@@ -157,10 +151,7 @@
       "limit_key": "MaxResults",
       "output_token": "NextToken",
       "result_key": "Permissions",
-      "non_aggregate_keys": [
-        "LastModifiedRegion",
-        "LastModifiedTime"
-      ]
+      "non_aggregate_keys": ["LastModifiedRegion", "LastModifiedTime"]
     },
     "ListContactReferences": {
       "input_token": "NextToken",
@@ -200,9 +191,7 @@
     "SearchUsers": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "Users"
     },
@@ -215,27 +204,21 @@
     "SearchSecurityProfiles": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "SecurityProfiles"
     },
     "SearchQueues": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "Queues"
     },
     "SearchRoutingProfiles": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "RoutingProfiles"
     },
@@ -271,27 +254,21 @@
     "SearchHoursOfOperations": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "HoursOfOperations"
     },
     "SearchPrompts": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "Prompts"
     },
     "SearchQuickConnects": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "QuickConnects"
     },
@@ -324,10 +301,7 @@
       "limit_key": "MaxResults",
       "output_token": "NextToken",
       "result_key": "Applications",
-      "non_aggregate_keys": [
-        "LastModifiedRegion",
-        "LastModifiedTime"
-      ]
+      "non_aggregate_keys": ["LastModifiedRegion", "LastModifiedTime"]
     },
     "ListFlowAssociations": {
       "input_token": "NextToken",
@@ -344,46 +318,35 @@
     "ListUserProficiencies": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "LastModifiedTime",
-        "LastModifiedRegion"
-      ],
+      "non_aggregate_keys": ["LastModifiedTime", "LastModifiedRegion"],
       "output_token": "NextToken",
       "result_key": "UserProficiencyList"
     },
     "SearchContacts": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "TotalCount"
-      ],
+      "non_aggregate_keys": ["TotalCount"],
       "output_token": "NextToken",
       "result_key": "Contacts"
     },
     "SearchPredefinedAttributes": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "PredefinedAttributes"
     },
     "SearchContactFlowModules": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "ContactFlowModules"
     },
     "SearchContactFlows": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "ContactFlows"
     },
@@ -396,18 +359,14 @@
     "SearchAgentStatuses": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "AgentStatuses"
     },
     "SearchUserHierarchyGroups": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "UserHierarchyGroups"
     },
@@ -420,19 +379,14 @@
     "ListHoursOfOperationOverrides": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "LastModifiedRegion",
-        "LastModifiedTime"
-      ],
+      "non_aggregate_keys": ["LastModifiedRegion", "LastModifiedTime"],
       "output_token": "NextToken",
       "result_key": "HoursOfOperationOverrideList"
     },
     "SearchHoursOfOperationOverrides": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
-      "non_aggregate_keys": [
-        "ApproximateTotalCount"
-      ],
+      "non_aggregate_keys": ["ApproximateTotalCount"],
       "output_token": "NextToken",
       "result_key": "HoursOfOperationOverrides"
     }

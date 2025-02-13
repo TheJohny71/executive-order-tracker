@@ -1201,12 +1201,7 @@
         }
       },
       "documentation": "<p>Information about a cell.</p>",
-      "required": [
-        "ParentReadinessScopes",
-        "CellArn",
-        "CellName",
-        "Cells"
-      ]
+      "required": ["ParentReadinessScopes", "CellArn", "CellName", "Cells"]
     },
     "ConflictException": {
       "type": "structure",
@@ -1240,9 +1235,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "CellName"
-      ]
+      "required": ["CellName"]
     },
     "CreateCellResponse": {
       "type": "structure",
@@ -1283,9 +1276,7 @@
           "documentation": "<p>The cross-account authorization.</p>"
         }
       },
-      "required": [
-        "CrossAccountAuthorization"
-      ]
+      "required": ["CrossAccountAuthorization"]
     },
     "CreateCrossAccountAuthorizationResponse": {
       "type": "structure",
@@ -1315,10 +1306,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "ResourceSetName",
-        "ReadinessCheckName"
-      ]
+      "required": ["ResourceSetName", "ReadinessCheckName"]
     },
     "CreateReadinessCheckResponse": {
       "type": "structure",
@@ -1362,9 +1350,7 @@
           "locationName": "tags"
         }
       },
-      "required": [
-        "RecoveryGroupName"
-      ]
+      "required": ["RecoveryGroupName"]
     },
     "CreateRecoveryGroupResponse": {
       "type": "structure",
@@ -1415,11 +1401,7 @@
           "documentation": "<p>A tag to associate with the parameters for a resource set.</p>"
         }
       },
-      "required": [
-        "ResourceSetType",
-        "ResourceSetName",
-        "Resources"
-      ]
+      "required": ["ResourceSetType", "ResourceSetName", "Resources"]
     },
     "CreateResourceSetResponse": {
       "type": "structure",
@@ -1495,9 +1477,7 @@
           "documentation": "<p>The name of the cell.</p>"
         }
       },
-      "required": [
-        "CellName"
-      ]
+      "required": ["CellName"]
     },
     "DeleteCrossAccountAuthorizationRequest": {
       "type": "structure",
@@ -1509,9 +1489,7 @@
           "documentation": "<p>The cross-account authorization.</p>"
         }
       },
-      "required": [
-        "CrossAccountAuthorization"
-      ]
+      "required": ["CrossAccountAuthorization"]
     },
     "DeleteCrossAccountAuthorizationResponse": {
       "type": "structure",
@@ -1527,9 +1505,7 @@
           "documentation": "<p>Name of a readiness check.</p>"
         }
       },
-      "required": [
-        "ReadinessCheckName"
-      ]
+      "required": ["ReadinessCheckName"]
     },
     "DeleteRecoveryGroupRequest": {
       "type": "structure",
@@ -1541,9 +1517,7 @@
           "documentation": "<p>The name of a recovery group.</p>"
         }
       },
-      "required": [
-        "RecoveryGroupName"
-      ]
+      "required": ["RecoveryGroupName"]
     },
     "DeleteResourceSetRequest": {
       "type": "structure",
@@ -1555,9 +1529,7 @@
           "documentation": "<p>Name of a resource set.</p>"
         }
       },
-      "required": [
-        "ResourceSetName"
-      ]
+      "required": ["ResourceSetName"]
     },
     "GetArchitectureRecommendationsRequest": {
       "type": "structure",
@@ -1581,9 +1553,7 @@
           "documentation": "<p>The name of a recovery group.</p>"
         }
       },
-      "required": [
-        "RecoveryGroupName"
-      ]
+      "required": ["RecoveryGroupName"]
     },
     "GetArchitectureRecommendationsResponse": {
       "type": "structure",
@@ -1627,9 +1597,7 @@
           "documentation": "<p>The token that identifies which batch of results you want to see.</p>"
         }
       },
-      "required": [
-        "CellName"
-      ]
+      "required": ["CellName"]
     },
     "GetCellReadinessSummaryResponse": {
       "type": "structure",
@@ -1661,9 +1629,7 @@
           "documentation": "<p>The name of the cell.</p>"
         }
       },
-      "required": [
-        "CellName"
-      ]
+      "required": ["CellName"]
     },
     "GetCellResponse": {
       "type": "structure",
@@ -1705,9 +1671,7 @@
           "documentation": "<p>Name of a readiness check.</p>"
         }
       },
-      "required": [
-        "ReadinessCheckName"
-      ]
+      "required": ["ReadinessCheckName"]
     },
     "GetReadinessCheckResourceStatusRequest": {
       "type": "structure",
@@ -1737,10 +1701,7 @@
           "documentation": "<p>The resource identifier, which is the Amazon Resource Name (ARN) or the identifier generated for the resource by Application Recovery Controller (for example, for a DNS target resource).</p>"
         }
       },
-      "required": [
-        "ReadinessCheckName",
-        "ResourceIdentifier"
-      ]
+      "required": ["ReadinessCheckName", "ResourceIdentifier"]
     },
     "GetReadinessCheckResourceStatusResponse": {
       "type": "structure",
@@ -1808,9 +1769,7 @@
           "documentation": "<p>Name of a readiness check.</p>"
         }
       },
-      "required": [
-        "ReadinessCheckName"
-      ]
+      "required": ["ReadinessCheckName"]
     },
     "GetReadinessCheckStatusResponse": {
       "type": "structure",
@@ -1859,9 +1818,7 @@
           "documentation": "<p>The name of a recovery group.</p>"
         }
       },
-      "required": [
-        "RecoveryGroupName"
-      ]
+      "required": ["RecoveryGroupName"]
     },
     "GetRecoveryGroupReadinessSummaryResponse": {
       "type": "structure",
@@ -1893,9 +1850,7 @@
           "documentation": "<p>The name of a recovery group.</p>"
         }
       },
-      "required": [
-        "RecoveryGroupName"
-      ]
+      "required": ["RecoveryGroupName"]
     },
     "GetRecoveryGroupResponse": {
       "type": "structure",
@@ -1932,9 +1887,7 @@
           "documentation": "<p>Name of a resource set.</p>"
         }
       },
-      "required": [
-        "ResourceSetName"
-      ]
+      "required": ["ResourceSetName"]
     },
     "GetResourceSetResponse": {
       "type": "structure",
@@ -2164,11 +2117,7 @@
         }
       },
       "documentation": "<p>Readiness rule information, including the resource type, rule ID, and rule description.</p>",
-      "required": [
-        "RuleDescription",
-        "RuleId",
-        "ResourceType"
-      ]
+      "required": ["RuleDescription", "RuleId", "ResourceType"]
     },
     "ListRulesRequest": {
       "type": "structure",
@@ -2218,9 +2167,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) for a resource.</p>"
         }
       },
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "ListTagsForResourcesResponse": {
       "type": "structure",
@@ -2278,12 +2225,7 @@
     "Readiness": {
       "type": "string",
       "documentation": "<p>The readiness status.</p>",
-      "enum": [
-        "READY",
-        "NOT_READY",
-        "UNKNOWN",
-        "NOT_AUTHORIZED"
-      ]
+      "enum": ["READY", "NOT_READY", "UNKNOWN", "NOT_AUTHORIZED"]
     },
     "ReadinessCheckOutput": {
       "type": "structure",
@@ -2309,10 +2251,7 @@
         }
       },
       "documentation": "<p>A readiness check.</p>",
-      "required": [
-        "ReadinessCheckArn",
-        "ResourceSet"
-      ]
+      "required": ["ReadinessCheckArn", "ResourceSet"]
     },
     "ReadinessCheckSummary": {
       "type": "structure",
@@ -2345,9 +2284,7 @@
         }
       },
       "documentation": "<p>Recommendations that are provided to make an application more recovery resilient.</p>",
-      "required": [
-        "RecommendationText"
-      ]
+      "required": ["RecommendationText"]
     },
     "RecoveryGroupOutput": {
       "type": "structure",
@@ -2374,11 +2311,7 @@
         }
       },
       "documentation": "<p>A representation of the application, typically containing multiple cells.</p>",
-      "required": [
-        "RecoveryGroupArn",
-        "RecoveryGroupName",
-        "Cells"
-      ]
+      "required": ["RecoveryGroupArn", "RecoveryGroupName", "Cells"]
     },
     "Resource": {
       "type": "structure",
@@ -2445,10 +2378,7 @@
         }
       },
       "documentation": "<p>The result of a successful Resource request, with status for an individual resource.</p>",
-      "required": [
-        "Readiness",
-        "LastCheckedTimestamp"
-      ]
+      "required": ["Readiness", "LastCheckedTimestamp"]
     },
     "ResourceSetOutput": {
       "type": "structure",
@@ -2511,12 +2441,7 @@
         }
       },
       "documentation": "<p>The result of a successful Rule request, with status for an individual rule.</p>",
-      "required": [
-        "Messages",
-        "Readiness",
-        "RuleId",
-        "LastCheckedTimestamp"
-      ]
+      "required": ["Messages", "Readiness", "RuleId", "LastCheckedTimestamp"]
     },
     "TagResourceRequest": {
       "type": "structure",
@@ -2533,10 +2458,7 @@
           "documentation": "<p></p>"
         }
       },
-      "required": [
-        "ResourceArn",
-        "Tags"
-      ]
+      "required": ["ResourceArn", "Tags"]
     },
     "TagResourceResponse": {
       "type": "structure",
@@ -2598,10 +2520,7 @@
           "documentation": "<p>The keys for tags you add to resources.</p>"
         }
       },
-      "required": [
-        "TagKeys",
-        "ResourceArn"
-      ]
+      "required": ["TagKeys", "ResourceArn"]
     },
     "UpdateCellRequest": {
       "type": "structure",
@@ -2618,10 +2537,7 @@
           "documentation": "<p>A list of cell Amazon Resource Names (ARNs), which completely replaces the previous list.</p>"
         }
       },
-      "required": [
-        "CellName",
-        "Cells"
-      ]
+      "required": ["CellName", "Cells"]
     },
     "UpdateCellResponse": {
       "type": "structure",
@@ -2669,10 +2585,7 @@
         }
       },
       "documentation": "<p>Name of a readiness check to describe.</p>",
-      "required": [
-        "ReadinessCheckName",
-        "ResourceSetName"
-      ]
+      "required": ["ReadinessCheckName", "ResourceSetName"]
     },
     "UpdateReadinessCheckResponse": {
       "type": "structure",
@@ -2714,10 +2627,7 @@
         }
       },
       "documentation": "<p>Name of a recovery group.</p>",
-      "required": [
-        "RecoveryGroupName",
-        "Cells"
-      ]
+      "required": ["RecoveryGroupName", "Cells"]
     },
     "UpdateRecoveryGroupResponse": {
       "type": "structure",
@@ -2765,11 +2675,7 @@
         }
       },
       "documentation": "<p>Name of a resource set.</p>",
-      "required": [
-        "ResourceSetName",
-        "ResourceSetType",
-        "Resources"
-      ]
+      "required": ["ResourceSetName", "ResourceSetType", "Resources"]
     },
     "UpdateResourceSetResponse": {
       "type": "structure",

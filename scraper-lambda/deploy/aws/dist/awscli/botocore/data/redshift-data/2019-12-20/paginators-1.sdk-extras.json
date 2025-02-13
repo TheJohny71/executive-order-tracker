@@ -3,22 +3,13 @@
   "merge": {
     "pagination": {
       "GetStatementResult": {
-        "non_aggregate_keys": [
-          "ColumnMetadata",
-          "TotalNumRows"
-        ]
+        "non_aggregate_keys": ["ColumnMetadata", "TotalNumRows"]
       },
       "GetStatementResultV2": {
-        "non_aggregate_keys": [
-          "ColumnMetadata",
-          "TotalNumRows",
-          "ResultFormat"
-        ]
+        "non_aggregate_keys": ["ColumnMetadata", "TotalNumRows", "ResultFormat"]
       },
       "DescribeTable": {
-        "non_aggregate_keys": [
-          "TableName"
-        ]
+        "non_aggregate_keys": ["TableName"]
       }
     }
   }

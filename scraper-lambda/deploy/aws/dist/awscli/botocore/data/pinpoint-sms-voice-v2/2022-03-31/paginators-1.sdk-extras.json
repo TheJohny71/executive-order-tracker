@@ -3,15 +3,10 @@
   "merge": {
     "pagination": {
       "DescribeKeywords": {
-        "non_aggregate_keys": [
-          "OriginationIdentity",
-          "OriginationIdentityArn"
-        ]
+        "non_aggregate_keys": ["OriginationIdentity", "OriginationIdentityArn"]
       },
       "DescribeRegistrationFieldDefinitions": {
-        "non_aggregate_keys": [
-          "RegistrationType"
-        ]
+        "non_aggregate_keys": ["RegistrationType"]
       },
       "DescribeRegistrationFieldValues": {
         "non_aggregate_keys": [
@@ -21,33 +16,22 @@
         ]
       },
       "DescribeRegistrationSectionDefinitions": {
-        "non_aggregate_keys": [
-          "RegistrationType"
-        ]
+        "non_aggregate_keys": ["RegistrationType"]
       },
       "DescribeRegistrationVersions": {
-        "non_aggregate_keys": [
-          "RegistrationId",
-          "RegistrationArn"
-        ]
+        "non_aggregate_keys": ["RegistrationId", "RegistrationArn"]
       },
       "DescribeOptedOutNumbers": {
-        "non_aggregate_keys": [
-          "OptOutListArn",
-          "OptOutListName"
-        ]
+        "non_aggregate_keys": ["OptOutListArn", "OptOutListName"]
       },
       "ListPoolOriginationIdentities": {
-        "non_aggregate_keys": [
-          "PoolArn",
-          "PoolId"
-        ]
+        "non_aggregate_keys": ["PoolArn", "PoolId"]
       },
       "ListProtectConfigurationRuleSetNumberOverrides": {
-          "non_aggregate_keys": [
-            "ProtectConfigurationId",
-            "ProtectConfigurationArn"
-          ]
+        "non_aggregate_keys": [
+          "ProtectConfigurationId",
+          "ProtectConfigurationArn"
+        ]
       },
       "ListRegistrationAssociations": {
         "non_aggregate_keys": [

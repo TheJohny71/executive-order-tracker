@@ -4,19 +4,13 @@
       "input_token": "NextToken",
       "output_token": "NextToken",
       "result_key": "Traces",
-      "non_aggregate_keys": [
-        "UnprocessedTraceIds"
-      ]
+      "non_aggregate_keys": ["UnprocessedTraceIds"]
     },
     "GetServiceGraph": {
       "input_token": "NextToken",
       "output_token": "NextToken",
       "result_key": "Services",
-      "non_aggregate_keys": [
-        "StartTime",
-        "EndTime",
-        "ContainsOldGroupVersions"
-      ]
+      "non_aggregate_keys": ["StartTime", "EndTime", "ContainsOldGroupVersions"]
     },
     "GetTraceGraph": {
       "input_token": "NextToken",
@@ -27,10 +21,7 @@
       "input_token": "NextToken",
       "output_token": "NextToken",
       "result_key": "TraceSummaries",
-      "non_aggregate_keys": [
-        "TracesProcessedCount",
-        "ApproximateTime"
-      ]
+      "non_aggregate_keys": ["TracesProcessedCount", "ApproximateTime"]
     },
     "GetGroups": {
       "input_token": "NextToken",
@@ -49,9 +40,7 @@
     },
     "GetTimeSeriesServiceStatistics": {
       "input_token": "NextToken",
-      "non_aggregate_keys": [
-        "ContainsOldGroupVersions"
-      ],
+      "non_aggregate_keys": ["ContainsOldGroupVersions"],
       "output_token": "NextToken",
       "result_key": "TimeSeriesServiceStatistics"
     },

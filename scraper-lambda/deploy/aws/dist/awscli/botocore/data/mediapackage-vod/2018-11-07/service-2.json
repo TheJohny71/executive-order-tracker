@@ -563,11 +563,7 @@
   },
   "shapes": {
     "AdMarkers": {
-      "enum": [
-        "NONE",
-        "SCTE35_ENHANCED",
-        "PASSTHROUGH"
-      ],
+      "enum": ["NONE", "SCTE35_ENHANCED", "PASSTHROUGH"],
       "type": "string"
     },
     "Asset": {
@@ -653,12 +649,7 @@
           "shape": "Tags"
         }
       },
-      "required": [
-        "SourceArn",
-        "Id",
-        "PackagingGroupId",
-        "SourceRoleArn"
-      ],
+      "required": ["SourceArn", "Id", "PackagingGroupId", "SourceRoleArn"],
       "type": "structure"
     },
     "AssetList": {
@@ -736,10 +727,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "SecretsRoleArn",
-        "CdnIdentifierSecret"
-      ],
+      "required": ["SecretsRoleArn", "CdnIdentifierSecret"],
       "type": "structure"
     },
     "CmafEncryption": {
@@ -755,9 +743,7 @@
           "shape": "SpekeKeyProvider"
         }
       },
-      "required": [
-        "SpekeKeyProvider"
-      ],
+      "required": ["SpekeKeyProvider"],
       "type": "structure"
     },
     "CmafPackage": {
@@ -783,9 +769,7 @@
           "shape": "__integer"
         }
       },
-      "required": [
-        "HlsManifests"
-      ],
+      "required": ["HlsManifests"],
       "type": "structure"
     },
     "ConfigureLogsParameters": {
@@ -812,9 +796,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "ConfigureLogsResponse": {
@@ -887,12 +869,7 @@
           "shape": "Tags"
         }
       },
-      "required": [
-        "SourceArn",
-        "Id",
-        "PackagingGroupId",
-        "SourceRoleArn"
-      ],
+      "required": ["SourceArn", "Id", "PackagingGroupId", "SourceRoleArn"],
       "type": "structure"
     },
     "CreateAssetResponse": {
@@ -978,10 +955,7 @@
           "shape": "Tags"
         }
       },
-      "required": [
-        "Id",
-        "PackagingGroupId"
-      ],
+      "required": ["Id", "PackagingGroupId"],
       "type": "structure"
     },
     "CreatePackagingConfigurationResponse": {
@@ -1050,9 +1024,7 @@
           "shape": "Tags"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "CreatePackagingGroupResponse": {
@@ -1100,9 +1072,7 @@
           "shape": "SpekeKeyProvider"
         }
       },
-      "required": [
-        "SpekeKeyProvider"
-      ],
+      "required": ["SpekeKeyProvider"],
       "type": "structure"
     },
     "DashManifest": {
@@ -1178,9 +1148,7 @@
           "shape": "SegmentTemplateFormat"
         }
       },
-      "required": [
-        "DashManifests"
-      ],
+      "required": ["DashManifests"],
       "type": "structure"
     },
     "DeleteAssetRequest": {
@@ -1192,9 +1160,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DeleteAssetResponse": {
@@ -1210,9 +1176,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DeletePackagingConfigurationResponse": {
@@ -1228,9 +1192,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DeletePackagingGroupResponse": {
@@ -1246,9 +1208,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DescribeAssetResponse": {
@@ -1309,9 +1269,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DescribePackagingConfigurationResponse": {
@@ -1368,9 +1326,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "DescribePackagingGroupResponse": {
@@ -1461,17 +1417,11 @@
           "shape": "PresetSpeke20Video"
         }
       },
-      "required": [
-        "PresetSpeke20Audio",
-        "PresetSpeke20Video"
-      ],
+      "required": ["PresetSpeke20Audio", "PresetSpeke20Video"],
       "type": "structure"
     },
     "EncryptionMethod": {
-      "enum": [
-        "AES_128",
-        "SAMPLE_AES"
-      ],
+      "enum": ["AES_128", "SAMPLE_AES"],
       "type": "string"
     },
     "ForbiddenException": {
@@ -1506,9 +1456,7 @@
           "shape": "SpekeKeyProvider"
         }
       },
-      "required": [
-        "SpekeKeyProvider"
-      ],
+      "required": ["SpekeKeyProvider"],
       "type": "structure"
     },
     "HlsManifest": {
@@ -1574,9 +1522,7 @@
           "shape": "__boolean"
         }
       },
-      "required": [
-        "HlsManifests"
-      ],
+      "required": ["HlsManifests"],
       "type": "structure"
     },
     "InternalServerErrorException": {
@@ -1710,9 +1656,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "ResourceArn"
-      ],
+      "required": ["ResourceArn"],
       "type": "structure"
     },
     "ListTagsForResourceResponse": {
@@ -1726,10 +1670,7 @@
       "type": "structure"
     },
     "ManifestLayout": {
-      "enum": [
-        "FULL",
-        "COMPACT"
-      ],
+      "enum": ["FULL", "COMPACT"],
       "type": "string"
     },
     "MaxResults": {
@@ -1745,9 +1686,7 @@
           "shape": "SpekeKeyProvider"
         }
       },
-      "required": [
-        "SpekeKeyProvider"
-      ],
+      "required": ["SpekeKeyProvider"],
       "type": "structure"
     },
     "MssManifest": {
@@ -1783,9 +1722,7 @@
           "shape": "__integer"
         }
       },
-      "required": [
-        "MssManifests"
-      ],
+      "required": ["MssManifests"],
       "type": "structure"
     },
     "NotFoundException": {
@@ -1882,10 +1819,7 @@
           "shape": "Tags"
         }
       },
-      "required": [
-        "Id",
-        "PackagingGroupId"
-      ],
+      "required": ["Id", "PackagingGroupId"],
       "type": "structure"
     },
     "PackagingConfigurationList": {
@@ -1968,9 +1902,7 @@
           "shape": "Tags"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "PackagingGroupList": {
@@ -2025,17 +1957,11 @@
       "type": "string"
     },
     "Profile": {
-      "enum": [
-        "NONE",
-        "HBBTV_1_5"
-      ],
+      "enum": ["NONE", "HBBTV_1_5"],
       "type": "string"
     },
     "ScteMarkersSource": {
-      "enum": [
-        "SEGMENTS",
-        "MANIFEST"
-      ],
+      "enum": ["SEGMENTS", "MANIFEST"],
       "type": "string"
     },
     "SegmentTemplateFormat": {
@@ -2083,11 +2009,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "SystemIds",
-        "Url",
-        "RoleArn"
-      ],
+      "required": ["SystemIds", "Url", "RoleArn"],
       "type": "structure"
     },
     "StreamOrder": {
@@ -2133,10 +2055,7 @@
           "shape": "__mapOf__string"
         }
       },
-      "required": [
-        "ResourceArn",
-        "Tags"
-      ],
+      "required": ["ResourceArn", "Tags"],
       "type": "structure"
     },
     "Tags": {
@@ -2157,9 +2076,7 @@
           "shape": "__mapOf__string"
         }
       },
-      "required": [
-        "Tags"
-      ],
+      "required": ["Tags"],
       "type": "structure"
     },
     "TooManyRequestsException": {
@@ -2205,10 +2122,7 @@
           "shape": "__listOf__string"
         }
       },
-      "required": [
-        "TagKeys",
-        "ResourceArn"
-      ],
+      "required": ["TagKeys", "ResourceArn"],
       "type": "structure"
     },
     "UpdatePackagingGroupRequest": {
@@ -2225,9 +2139,7 @@
           "shape": "__string"
         }
       },
-      "required": [
-        "Id"
-      ],
+      "required": ["Id"],
       "type": "structure"
     },
     "UpdatePackagingGroupResponse": {
@@ -2273,9 +2185,7 @@
       "type": "structure"
     },
     "__PeriodTriggersElement": {
-      "enum": [
-        "ADS"
-      ],
+      "enum": ["ADS"],
       "type": "string"
     },
     "__boolean": {

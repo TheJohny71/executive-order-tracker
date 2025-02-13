@@ -1,25 +1,25 @@
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-                "lambda:InvokeFunction",
-                "lambda:ListFunctions",
-                "lambda:GetFunction"
-            ],
-            "Resource": [
-                "arn:aws:dynamodb:us-east-2:565393056361:table/*",
-                "arn:aws:lambda:us-east-2:565393056361:function/*"
-            ]
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:GetItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "lambda:InvokeFunction",
+        "lambda:ListFunctions",
+        "lambda:GetFunction"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:us-east-2:565393056361:table/*",
+        "arn:aws:lambda:us-east-2:565393056361:function/*"
+      ]
+    }
+  ]
 }

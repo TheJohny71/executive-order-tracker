@@ -1,24 +1,28 @@
-import { DocumentType } from '@prisma/client';
-import { prisma } from '@/lib/db';
-import { logger } from '@/utils/logger';
-import type { ScrapedOrder } from '@/types';
-import axios from 'axios';
-import * as cheerio from 'cheerio';
+import { DocumentType } from "@prisma/client";
+import { prisma } from "@/lib/db";
+import { logger } from "@/utils/logger";
+import type { ScrapedOrder } from "@/types";
+import axios from "axios";
+import * as cheerio from "cheerio";
 
-const BASE_URL = 'https://www.whitehouse.gov/briefing-room/presidential-actions/';
+const BASE_URL =
+  "https://www.whitehouse.gov/briefing-room/presidential-actions/";
 const RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 1000;
 
 async function delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function fetchWithRetry(url: string, attempts = RETRY_ATTEMPTS): Promise<string> {
+async function fetchWithRetry(
+  url: string,
+  attempts = RETRY_ATTEMPTS,
+): Promise<string> {
   try {
     const response = await axios.get(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; ExecutiveOrderTracker/1.0)',
-      }
+        "User-Agent": "Mozilla/5.0 (compatible; ExecutiveOrderTracker/1.0)",
+      },
     });
     return response.data as string;
   } catch (error) {
@@ -38,11 +42,11 @@ function extractOrderNumber(title: string): string {
 
 function determineDocumentType(title: string): DocumentType {
   const lowerTitle = title.toLowerCase();
-  if (lowerTitle.includes('executive order')) {
+  if (lowerTitle.includes("executive order")) {
     return DocumentType.EXECUTIVE_ORDER;
-  } else if (lowerTitle.includes('memorandum')) {
+  } else if (lowerTitle.includes("memorandum")) {
     return DocumentType.MEMORANDUM;
-  } else if (lowerTitle.includes('proclamation')) {
+  } else if (lowerTitle.includes("proclamation")) {
     return DocumentType.PROCLAMATION;
   }
   return DocumentType.EXECUTIVE_ORDER;
@@ -67,12 +71,12 @@ async function extractOrderDetails(url: string): Promise<OrderDetails> {
     const html = await fetchWithRetry(url);
     const $ = cheerio.load(html);
 
-    const content = $('.body-content').text().trim();
+    const content = $(".body-content").text().trim();
     const agencies: Array<{ name: string }> = [];
     const categories: Array<{ name: string }> = [];
 
     // Extract agencies and categories from content
-    if (content.includes('Department of')) {
+    if (content.includes("Department of")) {
       const deptMatch = content.match(/Department of [A-Za-z]+/);
       if (deptMatch?.[0]) {
         agencies.push({ name: deptMatch[0] });
@@ -87,42 +91,46 @@ async function extractOrderDetails(url: string): Promise<OrderDetails> {
   } catch (error) {
     logger.error(`Error extracting order details from ${url}:`, error);
     return {
-      content: '',
+      content: "",
       agencies: [],
-      categories: []
+      categories: [],
     };
   }
 }
 
 export async function scrapeExecutiveOrders() {
   try {
-    logger.info('Starting executive orders scrape');
+    logger.info("Starting executive orders scrape");
     const html = await fetchWithRetry(BASE_URL);
     const $ = cheerio.load(html);
     const orders: ScrapedOrder[] = [];
 
     // Select the container that holds all presidential actions
-    $('.presidential-actions article').each((_, element) => {
+    $(".presidential-actions article").each((_, element) => {
       try {
         const $element = $(element);
-        const title: string = $element.find('h3').text().trim();
-        const dateText: string = $element.find('time').attr('datetime') ?? '';
-        const url: string = $element.find('a').attr('href') ?? '';
-        
+        const title: string = $element.find("h3").text().trim();
+        const dateText: string = $element.find("time").attr("datetime") ?? "";
+        const url: string = $element.find("a").attr("href") ?? "";
+
         // Skip if we don't have required data
         if (!url || !dateText) {
-          logger.warn('Missing required data for article:', title);
+          logger.warn("Missing required data for article:", title);
           return;
         }
 
-        const summary: string = $element.find('.presidential-action-content').text().trim();
+        const summary: string = $element
+          .find(".presidential-action-content")
+          .text()
+          .trim();
         const type: DocumentType = determineDocumentType(title);
         const date: Date = parseDate(dateText);
-        const identifier: string = type === DocumentType.EXECUTIVE_ORDER ? 
-          extractOrderNumber(title) : 
-          title;
+        const identifier: string =
+          type === DocumentType.EXECUTIVE_ORDER
+            ? extractOrderNumber(title)
+            : title;
 
-        if (date >= new Date('2025-01-01')) {
+        if (date >= new Date("2025-01-01")) {
           const orderData: ScrapedOrder = {
             identifier,
             type,
@@ -130,22 +138,25 @@ export async function scrapeExecutiveOrders() {
             date,
             url,
             summary,
-            content: '',
-            notes: '',
-            statusId: '1', // Assuming 1 is 'Active'
+            content: "",
+            notes: "",
+            statusId: "1", // Assuming 1 is 'Active'
             isNew: true,
             categories: [],
             agencies: [],
             metadata: {
-              orderNumber: type === DocumentType.EXECUTIVE_ORDER ? extractOrderNumber(title) : '',
+              orderNumber:
+                type === DocumentType.EXECUTIVE_ORDER
+                  ? extractOrderNumber(title)
+                  : "",
               categories: [],
-              agencies: []
-            }
+              agencies: [],
+            },
           };
           orders.push(orderData);
         }
       } catch (error) {
-        logger.error('Error processing article element:', error);
+        logger.error("Error processing article element:", error);
       }
     });
 
@@ -164,9 +175,9 @@ export async function scrapeExecutiveOrders() {
           where: {
             OR: [
               { number: order.metadata?.orderNumber || null },
-              { title: order.title }
-            ]
-          }
+              { title: order.title },
+            ],
+          },
         });
 
         if (!existingOrder) {
@@ -180,22 +191,22 @@ export async function scrapeExecutiveOrders() {
               link: order.url,
               status: {
                 connect: {
-                  id: 1 // Active status
-                }
+                  id: 1, // Active status
+                },
               },
               categories: {
-                connectOrCreate: order.categories.map(cat => ({
+                connectOrCreate: order.categories.map((cat) => ({
                   where: { name: cat.name },
-                  create: { name: cat.name }
-                }))
+                  create: { name: cat.name },
+                })),
               },
               agencies: {
-                connectOrCreate: order.agencies.map(agency => ({
+                connectOrCreate: order.agencies.map((agency) => ({
                   where: { name: agency.name },
-                  create: { name: agency.name }
-                }))
-              }
-            }
+                  create: { name: agency.name },
+                })),
+              },
+            },
           });
           logger.info(`Created new order: ${order.title}`);
         }
@@ -207,15 +218,14 @@ export async function scrapeExecutiveOrders() {
     return {
       success: true,
       message: `Successfully processed ${orders.length} orders`,
-      data: orders
+      data: orders,
     };
-
   } catch (error) {
-    logger.error('Error in scrapeExecutiveOrders:', error);
+    logger.error("Error in scrapeExecutiveOrders:", error);
     return {
       success: false,
-      message: 'Failed to scrape executive orders',
-      error: error instanceof Error ? error.message : String(error)
+      message: "Failed to scrape executive orders",
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 }

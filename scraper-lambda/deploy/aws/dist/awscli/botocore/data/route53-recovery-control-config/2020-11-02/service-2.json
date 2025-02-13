@@ -906,9 +906,7 @@
         }
       },
       "documentation": "<p>403 response - You do not have sufficient access to perform this action.</p>",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 403
@@ -978,11 +976,7 @@
         }
       },
       "documentation": "<p>An update to an assertion rule. You can update the name or the evaluation period (wait period). If you don't specify one of the items to update, the item is unchanged.</p>",
-      "required": [
-        "SafetyRuleArn",
-        "WaitPeriodMs",
-        "Name"
-      ]
+      "required": ["SafetyRuleArn", "WaitPeriodMs", "Name"]
     },
     "Cluster": {
       "type": "structure",
@@ -1033,9 +1027,7 @@
         }
       },
       "documentation": "<p>409 response - ConflictException. You might be using a predefined variable.</p>",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 409
@@ -1093,9 +1085,7 @@
         }
       },
       "documentation": "<p>Creates a cluster.</p>",
-      "required": [
-        "ClusterName"
-      ]
+      "required": ["ClusterName"]
     },
     "CreateClusterResponse": {
       "type": "structure",
@@ -1128,10 +1118,7 @@
         }
       },
       "documentation": "<p>The details of the control panel that you're creating.</p>",
-      "required": [
-        "ClusterArn",
-        "ControlPanelName"
-      ]
+      "required": ["ClusterArn", "ControlPanelName"]
     },
     "CreateControlPanelResponse": {
       "type": "structure",
@@ -1164,10 +1151,7 @@
         }
       },
       "documentation": "<p>The details of the routing control that you're creating.</p>",
-      "required": [
-        "ClusterArn",
-        "RoutingControlName"
-      ]
+      "required": ["ClusterArn", "RoutingControlName"]
     },
     "CreateRoutingControlResponse": {
       "type": "structure",
@@ -1224,9 +1208,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the cluster that you're deleting.</p>"
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "DeleteClusterResponse": {
       "type": "structure",
@@ -1242,9 +1224,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         }
       },
-      "required": [
-        "ControlPanelArn"
-      ]
+      "required": ["ControlPanelArn"]
     },
     "DeleteControlPanelResponse": {
       "type": "structure",
@@ -1260,9 +1240,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the routing control that you're deleting.</p>"
         }
       },
-      "required": [
-        "RoutingControlArn"
-      ]
+      "required": ["RoutingControlArn"]
     },
     "DeleteRoutingControlResponse": {
       "type": "structure",
@@ -1278,9 +1256,7 @@
           "documentation": "<p>The ARN of the safety rule.</p>"
         }
       },
-      "required": [
-        "SafetyRuleArn"
-      ]
+      "required": ["SafetyRuleArn"]
     },
     "DeleteSafetyRuleResponse": {
       "type": "structure",
@@ -1296,9 +1272,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
         }
       },
-      "required": [
-        "ClusterArn"
-      ]
+      "required": ["ClusterArn"]
     },
     "DescribeClusterResponse": {
       "type": "structure",
@@ -1319,9 +1293,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         }
       },
-      "required": [
-        "ControlPanelArn"
-      ]
+      "required": ["ControlPanelArn"]
     },
     "DescribeControlPanelResponse": {
       "type": "structure",
@@ -1342,9 +1314,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the routing control.</p>"
         }
       },
-      "required": [
-        "RoutingControlArn"
-      ]
+      "required": ["RoutingControlArn"]
     },
     "DescribeRoutingControlResponse": {
       "type": "structure",
@@ -1365,9 +1335,7 @@
           "documentation": "<p>The ARN of the safety rule.</p>"
         }
       },
-      "required": [
-        "SafetyRuleArn"
-      ]
+      "required": ["SafetyRuleArn"]
     },
     "DescribeSafetyRuleResponse": {
       "type": "structure",
@@ -1451,11 +1419,7 @@
         }
       },
       "documentation": "<p>Update to a gating rule. You can update the name or the evaluation period (wait period). If you don't specify one of the items to update, the item is unchanged.</p>",
-      "required": [
-        "SafetyRuleArn",
-        "WaitPeriodMs",
-        "Name"
-      ]
+      "required": ["SafetyRuleArn", "WaitPeriodMs", "Name"]
     },
     "GetResourcePolicyRequest": {
       "type": "structure",
@@ -1467,9 +1431,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the resource.</p>"
         }
       },
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "GetResourcePolicyResponse": {
       "type": "structure",
@@ -1489,9 +1451,7 @@
         }
       },
       "documentation": "<p>500 response - InternalServiceError. Temporary service error. Retry the request.</p>",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 500
@@ -1519,9 +1479,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the routing control.</p>"
         }
       },
-      "required": [
-        "RoutingControlArn"
-      ]
+      "required": ["RoutingControlArn"]
     },
     "ListAssociatedRoute53HealthChecksResponse": {
       "type": "structure",
@@ -1624,9 +1582,7 @@
           "documentation": "<p>The token that identifies which batch of results you want to see.</p>"
         }
       },
-      "required": [
-        "ControlPanelArn"
-      ]
+      "required": ["ControlPanelArn"]
     },
     "ListRoutingControlsResponse": {
       "type": "structure",
@@ -1663,9 +1619,7 @@
           "documentation": "<p>The token that identifies which batch of results you want to see.</p>"
         }
       },
-      "required": [
-        "ControlPanelArn"
-      ]
+      "required": ["ControlPanelArn"]
     },
     "ListSafetyRulesResponse": {
       "type": "structure",
@@ -1690,9 +1644,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) for the resource that's tagged.</p>"
         }
       },
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "ListTagsForResourceResponse": {
       "type": "structure",
@@ -1788,9 +1740,7 @@
         }
       },
       "documentation": "<p>404 response - MalformedQueryString. The query string contains a syntax error or resource not found.</p>",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 404
@@ -1853,20 +1803,12 @@
         }
       },
       "documentation": "<p>The rule configuration for an assertion rule. That is, the criteria that you set for specific assertion controls (routing controls) that specify how many control states must be ON after a transaction completes.</p>",
-      "required": [
-        "Type",
-        "Inverted",
-        "Threshold"
-      ]
+      "required": ["Type", "Inverted", "Threshold"]
     },
     "RuleType": {
       "type": "string",
       "documentation": "<p>An enumerated type that determines how the evaluated rules are processed. RuleType can be one of the following:</p> <p>ATLEAST - At least N routing controls must be set. You specify N as the Threshold in the rule configuration.</p> <p>AND - All routing controls must be set. This is a shortcut for \"At least N,\" where N is the total number of controls in the rule.</p> <p>OR - Any control must be set. This is a shortcut for \"At least N,\" where N is 1.</p>",
-      "enum": [
-        "ATLEAST",
-        "AND",
-        "OR"
-      ]
+      "enum": ["ATLEAST", "AND", "OR"]
     },
     "ServiceQuotaExceededException": {
       "type": "structure",
@@ -1877,9 +1819,7 @@
         }
       },
       "documentation": "<p>402 response - You attempted to create more resources than the service allows based on service quotas.</p>",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 402
@@ -1888,11 +1828,7 @@
     "Status": {
       "type": "string",
       "documentation": "<p>The deployment status of a resource. Status can be one of the following:</p> <p>PENDING: Amazon Route 53 Application Recovery Controller is creating the resource.</p> <p>DEPLOYED: The resource is deployed and ready to use.</p> <p>PENDING_DELETION: Amazon Route 53 Application Recovery Controller is deleting the resource.</p>",
-      "enum": [
-        "PENDING",
-        "DEPLOYED",
-        "PENDING_DELETION"
-      ]
+      "enum": ["PENDING", "DEPLOYED", "PENDING_DELETION"]
     },
     "TagResourceRequest": {
       "type": "structure",
@@ -1909,10 +1845,7 @@
         }
       },
       "documentation": "<p>Request of adding tag to the resource</p>",
-      "required": [
-        "ResourceArn",
-        "Tags"
-      ]
+      "required": ["ResourceArn", "Tags"]
     },
     "TagResourceResponse": {
       "type": "structure",
@@ -1927,9 +1860,7 @@
         }
       },
       "documentation": "<p>429 response - LimitExceededException or TooManyRequestsException.</p>",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 429
@@ -1951,10 +1882,7 @@
           "documentation": "<p>Keys for the tags to be removed.</p>"
         }
       },
-      "required": [
-        "ResourceArn",
-        "TagKeys"
-      ]
+      "required": ["ResourceArn", "TagKeys"]
     },
     "UntagResourceResponse": {
       "type": "structure",
@@ -1973,10 +1901,7 @@
         }
       },
       "documentation": "<p>The details of the control panel that you're updating.</p>",
-      "required": [
-        "ControlPanelArn",
-        "ControlPanelName"
-      ]
+      "required": ["ControlPanelArn", "ControlPanelName"]
     },
     "UpdateControlPanelResponse": {
       "type": "structure",
@@ -2000,10 +1925,7 @@
         }
       },
       "documentation": "<p>The details of the routing control that you're updating.</p>",
-      "required": [
-        "RoutingControlName",
-        "RoutingControlArn"
-      ]
+      "required": ["RoutingControlName", "RoutingControlArn"]
     },
     "UpdateRoutingControlResponse": {
       "type": "structure",
@@ -2050,9 +1972,7 @@
         }
       },
       "documentation": "<p>400 response - Multiple causes. For example, you might have a malformed query string and input parameter might be out of range, or you might have used parameters together incorrectly.</p>",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 400

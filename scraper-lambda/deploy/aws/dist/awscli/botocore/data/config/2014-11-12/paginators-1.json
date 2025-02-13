@@ -167,18 +167,14 @@
     "SelectAggregateResourceConfig": {
       "input_token": "NextToken",
       "limit_key": "Limit",
-      "non_aggregate_keys": [
-        "QueryInfo"
-      ],
+      "non_aggregate_keys": ["QueryInfo"],
       "output_token": "NextToken",
       "result_key": "Results"
     },
     "SelectResourceConfig": {
       "input_token": "NextToken",
       "limit_key": "Limit",
-      "non_aggregate_keys": [
-        "QueryInfo"
-      ],
+      "non_aggregate_keys": ["QueryInfo"],
       "output_token": "NextToken",
       "result_key": "Results"
     },

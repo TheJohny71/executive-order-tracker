@@ -3,14 +3,10 @@
   "merge": {
     "pagination": {
       "ListFindingAggregations": {
-        "non_aggregate_keys": [
-          "aggregationType"
-        ]
+        "non_aggregate_keys": ["aggregationType"]
       },
       "ListCoverageStatistics": {
-        "non_aggregate_keys": [
-          "totalCounts"
-        ]
+        "non_aggregate_keys": ["totalCounts"]
       }
     }
   }

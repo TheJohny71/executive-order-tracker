@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -53,10 +53,12 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground antialiased min-h-screen;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 
   :focus-visible {
@@ -68,11 +70,11 @@
   .bg-background {
     @apply bg-[hsl(var(--background))] transition-colors duration-200;
   }
-  
+
   .text-foreground {
     @apply text-[hsl(var(--foreground))] transition-colors duration-200;
   }
-  
+
   .border-border {
     @apply border-[hsl(var(--border))] transition-colors duration-200;
   }

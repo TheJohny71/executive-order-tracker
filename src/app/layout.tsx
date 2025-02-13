@@ -1,19 +1,19 @@
-import { Inter } from 'next/font/google';
-import React from 'react';
+import { Inter } from "next/font/google";
+import React from "react";
 
-import { Providers } from '@/components/providers';
-import { ThemeProvider } from '@/components/theme-provider';
-import './globals.css';
+import { Providers } from "@/components/providers";
+import { ThemeProvider } from "@/components/theme-provider";
+import "./globals.css";
 
 const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
 });
 
 export const metadata = {
-  title: 'Executive Order Tracker',
-  description: 'Track and monitor executive orders and related documents',
+  title: "Executive Order Tracker",
+  description: "Track and monitor executive orders and related documents",
 };
 
 interface RootLayoutProps {
@@ -31,9 +31,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           disableTransitionOnChange
         >
           <Providers>
-            <main className="min-h-screen bg-background">
-              {children}
-            </main>
+            <main className="min-h-screen bg-background">{children}</main>
           </Providers>
         </ThemeProvider>
       </body>

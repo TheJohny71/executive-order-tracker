@@ -9,9 +9,7 @@
     "jsonVersion": "1.1",
     "uid": "mq-2017-11-27",
     "signatureVersion": "v4",
-    "auth": [
-      "aws.auth#sigv4"
-    ]
+    "auth": ["aws.auth#sigv4"]
   },
   "operations": {
     "CreateBroker": {
@@ -813,10 +811,7 @@
     "AuthenticationStrategy": {
       "type": "string",
       "documentation": "<p>Optional. The authentication strategy used to secure the broker. The default is SIMPLE.</p>",
-      "enum": [
-        "SIMPLE",
-        "LDAP"
-      ]
+      "enum": ["SIMPLE", "LDAP"]
     },
     "AvailabilityZone": {
       "type": "structure",
@@ -885,9 +880,7 @@
         }
       },
       "documentation": "<p>Returns a list of broker engine type.</p>",
-      "required": [
-        "MaxResults"
-      ]
+      "required": ["MaxResults"]
     },
     "BrokerInstance": {
       "type": "structure",
@@ -966,9 +959,7 @@
         }
       },
       "documentation": "<p>Returns a list of broker instance options.</p>",
-      "required": [
-        "MaxResults"
-      ]
+      "required": ["MaxResults"]
     },
     "BrokerState": {
       "type": "string",
@@ -986,10 +977,7 @@
     "BrokerStorageType": {
       "type": "string",
       "documentation": "<p>The broker's storage type.</p> <important><p>EFS is not supported for RabbitMQ engine type.</p></important>",
-      "enum": [
-        "EBS",
-        "EFS"
-      ]
+      "enum": ["EBS", "EFS"]
     },
     "BrokerSummary": {
       "type": "structure",
@@ -1036,19 +1024,12 @@
         }
       },
       "documentation": "<p>Returns information about all brokers.</p>",
-      "required": [
-        "DeploymentMode",
-        "EngineType"
-      ]
+      "required": ["DeploymentMode", "EngineType"]
     },
     "ChangeType": {
       "type": "string",
       "documentation": "<p>The type of change pending for the ActiveMQ user.</p>",
-      "enum": [
-        "CREATE",
-        "UPDATE",
-        "DELETE"
-      ]
+      "enum": ["CREATE", "UPDATE", "DELETE"]
     },
     "Configuration": {
       "type": "structure",
@@ -1132,9 +1113,7 @@
         }
       },
       "documentation": "<p>A list of information about the configuration.</p>",
-      "required": [
-        "Id"
-      ]
+      "required": ["Id"]
     },
     "ConfigurationRevision": {
       "type": "structure",
@@ -1156,10 +1135,7 @@
         }
       },
       "documentation": "<p>Returns information about the specified configuration revision.</p>",
-      "required": [
-        "Revision",
-        "Created"
-      ]
+      "required": ["Revision", "Created"]
     },
     "Configurations": {
       "type": "structure",
@@ -1503,10 +1479,7 @@
         }
       },
       "documentation": "<p>Creates a new configuration for the specified configuration name. Amazon MQ uses the default configuration (the engine type and version).</p>",
-      "required": [
-        "EngineType",
-        "Name"
-      ]
+      "required": ["EngineType", "Name"]
     },
     "CreateConfigurationOutput": {
       "type": "structure",
@@ -1543,13 +1516,7 @@
         }
       },
       "documentation": "<p>Returns information about the created configuration.</p>",
-      "required": [
-        "AuthenticationStrategy",
-        "Id",
-        "Arn",
-        "Name",
-        "Created"
-      ]
+      "required": ["AuthenticationStrategy", "Id", "Arn", "Name", "Created"]
     },
     "CreateConfigurationRequest": {
       "type": "structure",
@@ -1581,10 +1548,7 @@
         }
       },
       "documentation": "<p>Creates a new configuration for the specified configuration name. Amazon MQ uses the default configuration (the engine type and version).</p>",
-      "required": [
-        "EngineType",
-        "Name"
-      ]
+      "required": ["EngineType", "Name"]
     },
     "CreateConfigurationResponse": {
       "type": "structure",
@@ -1637,9 +1601,7 @@
         }
       },
       "documentation": "<p>A map of the key-value pairs for the resource tag.</p>",
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "CreateUserInput": {
       "type": "structure",
@@ -1666,9 +1628,7 @@
         }
       },
       "documentation": "<p>Creates a new ActiveMQ user.</p>",
-      "required": [
-        "Password"
-      ]
+      "required": ["Password"]
     },
     "CreateUserRequest": {
       "type": "structure",
@@ -1707,16 +1667,11 @@
         }
       },
       "documentation": "<p>Creates a new ActiveMQ user.</p>",
-      "required": [
-        "Username",
-        "BrokerId",
-        "Password"
-      ]
+      "required": ["Username", "BrokerId", "Password"]
     },
     "CreateUserResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DataReplicationCounterpart": {
       "type": "structure",
@@ -1733,10 +1688,7 @@
         }
       },
       "documentation": "<p>Specifies a broker in a data replication pair.</p>",
-      "required": [
-        "BrokerId",
-        "Region"
-      ]
+      "required": ["BrokerId", "Region"]
     },
     "DataReplicationMetadataOutput": {
       "type": "structure",
@@ -1753,17 +1705,12 @@
         }
       },
       "documentation": "<p>The replication details of the data replication-enabled broker. Only returned if dataReplicationMode or pendingDataReplicationMode is set to CRDR.</p>",
-      "required": [
-        "DataReplicationRole"
-      ]
+      "required": ["DataReplicationRole"]
     },
     "DataReplicationMode": {
       "type": "string",
       "documentation": "<p>Specifies whether a broker is a part of a data replication pair.</p>",
-      "enum": [
-        "NONE",
-        "CRDR"
-      ]
+      "enum": ["NONE", "CRDR"]
     },
     "DayOfWeek": {
       "type": "string",
@@ -1798,9 +1745,7 @@
           "documentation": "<p>The unique ID that Amazon MQ generates for the broker.</p>"
         }
       },
-      "required": [
-        "BrokerId"
-      ]
+      "required": ["BrokerId"]
     },
     "DeleteBrokerResponse": {
       "type": "structure",
@@ -1828,10 +1773,7 @@
           "documentation": "<p>An array of tag keys to delete</p>"
         }
       },
-      "required": [
-        "TagKeys",
-        "ResourceArn"
-      ]
+      "required": ["TagKeys", "ResourceArn"]
     },
     "DeleteUserRequest": {
       "type": "structure",
@@ -1849,24 +1791,16 @@
           "documentation": "<p>The username of the ActiveMQ user. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.</p>"
         }
       },
-      "required": [
-        "Username",
-        "BrokerId"
-      ]
+      "required": ["Username", "BrokerId"]
     },
     "DeleteUserResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "DeploymentMode": {
       "type": "string",
       "documentation": "<p>The broker's deployment mode.</p>",
-      "enum": [
-        "SINGLE_INSTANCE",
-        "ACTIVE_STANDBY_MULTI_AZ",
-        "CLUSTER_MULTI_AZ"
-      ]
+      "enum": ["SINGLE_INSTANCE", "ACTIVE_STANDBY_MULTI_AZ", "CLUSTER_MULTI_AZ"]
     },
     "DescribeBrokerEngineTypesRequest": {
       "type": "structure",
@@ -2153,9 +2087,7 @@
           "documentation": "<p>The unique ID that Amazon MQ generates for the broker.</p>"
         }
       },
-      "required": [
-        "BrokerId"
-      ]
+      "required": ["BrokerId"]
     },
     "DescribeBrokerResponse": {
       "type": "structure",
@@ -2337,9 +2269,7 @@
           "documentation": "<p>The unique ID that Amazon MQ generates for the configuration.</p>"
         }
       },
-      "required": [
-        "ConfigurationId"
-      ]
+      "required": ["ConfigurationId"]
     },
     "DescribeConfigurationResponse": {
       "type": "structure",
@@ -2421,11 +2351,7 @@
         }
       },
       "documentation": "<p>Returns the specified configuration revision for the specified configuration.</p>",
-      "required": [
-        "Data",
-        "ConfigurationId",
-        "Created"
-      ]
+      "required": ["Data", "ConfigurationId", "Created"]
     },
     "DescribeConfigurationRevisionRequest": {
       "type": "structure",
@@ -2443,10 +2369,7 @@
           "documentation": "<p>The revision of the configuration.</p>"
         }
       },
-      "required": [
-        "ConfigurationRevision",
-        "ConfigurationId"
-      ]
+      "required": ["ConfigurationRevision", "ConfigurationId"]
     },
     "DescribeConfigurationRevisionResponse": {
       "type": "structure",
@@ -2508,10 +2431,7 @@
         }
       },
       "documentation": "<p>Returns information about an ActiveMQ user.</p>",
-      "required": [
-        "Username",
-        "BrokerId"
-      ]
+      "required": ["Username", "BrokerId"]
     },
     "DescribeUserRequest": {
       "type": "structure",
@@ -2529,10 +2449,7 @@
           "documentation": "<p>The username of the ActiveMQ user. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.</p>"
         }
       },
-      "required": [
-        "Username",
-        "BrokerId"
-      ]
+      "required": ["Username", "BrokerId"]
     },
     "DescribeUserResponse": {
       "type": "structure",
@@ -2584,17 +2501,12 @@
         }
       },
       "documentation": "<p>Encryption options for the broker.</p>",
-      "required": [
-        "UseAwsOwnedKey"
-      ]
+      "required": ["UseAwsOwnedKey"]
     },
     "EngineType": {
       "type": "string",
       "documentation": "<p>The type of broker engine. Amazon MQ supports ActiveMQ and RabbitMQ.</p>",
-      "enum": [
-        "ACTIVEMQ",
-        "RABBITMQ"
-      ]
+      "enum": ["ACTIVEMQ", "RABBITMQ"]
     },
     "EngineVersion": {
       "type": "structure",
@@ -2893,9 +2805,7 @@
           "documentation": "<p>The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.</p>"
         }
       },
-      "required": [
-        "ConfigurationId"
-      ]
+      "required": ["ConfigurationId"]
     },
     "ListConfigurationRevisionsResponse": {
       "type": "structure",
@@ -2990,9 +2900,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the resource tag.</p>"
         }
       },
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "ListTagsResponse": {
       "type": "structure",
@@ -3029,11 +2937,7 @@
         }
       },
       "documentation": "<p>Returns a list of all ActiveMQ users.</p>",
-      "required": [
-        "BrokerId",
-        "MaxResults",
-        "Users"
-      ]
+      "required": ["BrokerId", "MaxResults", "Users"]
     },
     "ListUsersRequest": {
       "type": "structure",
@@ -3057,9 +2961,7 @@
           "documentation": "<p>The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.</p>"
         }
       },
-      "required": [
-        "BrokerId"
-      ]
+      "required": ["BrokerId"]
     },
     "ListUsersResponse": {
       "type": "structure",
@@ -3132,10 +3034,7 @@
         }
       },
       "documentation": "<p>The list of information about logs currently enabled and pending to be deployed for the specified broker.</p>",
-      "required": [
-        "GeneralLogGroup",
-        "General"
-      ]
+      "required": ["GeneralLogGroup", "General"]
     },
     "MaxResults": {
       "type": "integer",
@@ -3188,17 +3087,12 @@
         }
       },
       "documentation": "<p>Creates a Promote request with the properties specified.</p>",
-      "required": [
-        "Mode"
-      ]
+      "required": ["Mode"]
     },
     "PromoteMode": {
       "type": "string",
       "documentation": "<p>The Promote mode requested.</p>",
-      "enum": [
-        "SWITCHOVER",
-        "FAILOVER"
-      ]
+      "enum": ["SWITCHOVER", "FAILOVER"]
     },
     "PromoteOutput": {
       "type": "structure",
@@ -3227,10 +3121,7 @@
         }
       },
       "documentation": "<p>Promotes a data replication replica broker to the primary broker role.</p>",
-      "required": [
-        "BrokerId",
-        "Mode"
-      ]
+      "required": ["BrokerId", "Mode"]
     },
     "PromoteResponse": {
       "type": "structure",
@@ -3252,14 +3143,11 @@
           "documentation": "<p>The unique ID that Amazon MQ generates for the broker.</p>"
         }
       },
-      "required": [
-        "BrokerId"
-      ]
+      "required": ["BrokerId"]
     },
     "RebootBrokerResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "SanitizationWarning": {
       "type": "structure",
@@ -3281,9 +3169,7 @@
         }
       },
       "documentation": "<p>Returns information about the configuration element or attribute that was sanitized in the configuration.</p>",
-      "required": [
-        "Reason"
-      ]
+      "required": ["Reason"]
     },
     "SanitizationWarningReason": {
       "type": "string",
@@ -3456,9 +3342,7 @@
         }
       },
       "documentation": "<p>Returns information about the updated broker.</p>",
-      "required": [
-        "BrokerId"
-      ]
+      "required": ["BrokerId"]
     },
     "UpdateBrokerRequest": {
       "type": "structure",
@@ -3521,9 +3405,7 @@
         }
       },
       "documentation": "<p>Updates the broker using the specified properties.</p>",
-      "required": [
-        "BrokerId"
-      ]
+      "required": ["BrokerId"]
     },
     "UpdateBrokerResponse": {
       "type": "structure",
@@ -3615,9 +3497,7 @@
         }
       },
       "documentation": "<p>Updates the specified configuration.</p>",
-      "required": [
-        "Data"
-      ]
+      "required": ["Data"]
     },
     "UpdateConfigurationOutput": {
       "type": "structure",
@@ -3654,12 +3534,7 @@
         }
       },
       "documentation": "<p>Returns information about the updated configuration.</p>",
-      "required": [
-        "Id",
-        "Arn",
-        "Name",
-        "Created"
-      ]
+      "required": ["Id", "Arn", "Name", "Created"]
     },
     "UpdateConfigurationRequest": {
       "type": "structure",
@@ -3682,10 +3557,7 @@
         }
       },
       "documentation": "<p>Updates the specified configuration.</p>",
-      "required": [
-        "ConfigurationId",
-        "Data"
-      ]
+      "required": ["ConfigurationId", "Data"]
     },
     "UpdateConfigurationResponse": {
       "type": "structure",
@@ -3785,15 +3657,11 @@
         }
       },
       "documentation": "<p>Updates the information for an ActiveMQ user.</p>",
-      "required": [
-        "Username",
-        "BrokerId"
-      ]
+      "required": ["Username", "BrokerId"]
     },
     "UpdateUserResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "User": {
       "type": "structure",
@@ -3825,10 +3693,7 @@
         }
       },
       "documentation": "<p>A user associated with the broker. For Amazon MQ for RabbitMQ brokers, one and only one administrative user is accepted and created when a broker is first provisioned. All subsequent broker users are created by making RabbitMQ API calls directly to brokers or via the RabbitMQ web console.</p>",
-      "required": [
-        "Username",
-        "Password"
-      ]
+      "required": ["Username", "Password"]
     },
     "UserPendingChanges": {
       "type": "structure",
@@ -3850,9 +3715,7 @@
         }
       },
       "documentation": "<p>Returns information about the status of the changes pending for the ActiveMQ user.</p>",
-      "required": [
-        "PendingChange"
-      ]
+      "required": ["PendingChange"]
     },
     "UserSummary": {
       "type": "structure",
@@ -3869,9 +3732,7 @@
         }
       },
       "documentation": "<p>Returns a list of all broker users. Does not apply to RabbitMQ brokers.</p>",
-      "required": [
-        "Username"
-      ]
+      "required": ["Username"]
     },
     "WeeklyStartTime": {
       "type": "structure",
@@ -3893,10 +3754,7 @@
         }
       },
       "documentation": "<p>The scheduled time period relative to UTC during which Amazon MQ begins to apply pending updates or patches to the broker.</p>",
-      "required": [
-        "TimeOfDay",
-        "DayOfWeek"
-      ]
+      "required": ["TimeOfDay", "DayOfWeek"]
     },
     "__boolean": {
       "type": "boolean"

@@ -21,7 +21,6 @@
 /* .. _tufte.css: https://edwardtufte.github.io/tufte-css/                 */
 /* .. _tufte-latex_: https://www.ctan.org/pkg/tufte-latex                  */
 
-
 /* General Settings */
 /* ================ */
 
@@ -35,7 +34,9 @@ body {
 main {
   counter-reset: figure table;
 }
-main, header, footer {
+main,
+header,
+footer {
   padding: 0.5em 5%;
   background-color: #fefef8;
   max-width: 100rem;
@@ -44,11 +45,21 @@ main, header, footer {
 /* Spacing */
 
 /* vertical space (parskip) */
-p, ol, ul, dl, li,
-h1, h2, h3, h4, h5, h6,
+p,
+ol,
+ul,
+dl,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 div.line-block,
 .topic,
-.footnote, .citation,
+.footnote,
+.citation,
 table {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
@@ -74,8 +85,10 @@ blockquote,
 div.line-block div.line-block,
 dl.option-list,
 figure > img,
-pre.literal-block, pre.math,
-pre.doctest-block, pre.code {
+pre.literal-block,
+pre.math,
+pre.doctest-block,
+pre.code {
   /* background-color: LightCyan; */
   margin-left: calc(2% + 1em);
 }
@@ -83,14 +96,21 @@ pre.doctest-block, pre.code {
 /* Object styling */
 /* ============== */
 
-footer, header {
+footer,
+header {
   font-size: smaller;
 }
 
 /* Titles and Headings */
 
-h2, h3, h4, p.subtitle, p.section-subtitle,
-p.topic-title, p.sidebar-title, p.sidebar-subtitle {
+h2,
+h3,
+h4,
+p.subtitle,
+p.section-subtitle,
+p.topic-title,
+p.sidebar-title,
+p.sidebar-subtitle {
   font-weight: normal;
   font-style: italic;
   text-align: left;
@@ -108,12 +128,13 @@ h1.title {
 h1 + p.subtitle {
   margin-top: -2em;
   margin-bottom: 2em;
-  font-size: 2.0em;
+  font-size: 2em;
 }
 section {
   margin-top: 2em;
 }
-h2, .contents > p.topic-title {
+h2,
+.contents > p.topic-title {
   font-size: 2.2em;
 }
 h2 + p.section-subtitle {
@@ -163,7 +184,6 @@ nav.contents ul {
   padding-left: 1em;
 }
 
-
 /* Transitions */
 hr {
   border: 0;
@@ -173,7 +193,8 @@ hr {
 
 /* Lists */
 /* Less indent per level */
-ul, ol {
+ul,
+ol {
   padding-left: 1.1em;
 }
 dd {
@@ -237,8 +258,10 @@ dl.description > dd:after {
 img {
   display: block;
 }
-p > img, p > a > img,
-figure > img, figure > a > img {
+p > img,
+p > a > img,
+figure > img,
+figure > a > img {
   display: inline;
 }
 /* Caption to the left (if there is space) or below: */
@@ -287,7 +310,8 @@ table.numbered > caption:before {
 }
 
 /* Admonitions and System Messages */
-.admonition, .system-message {
+.admonition,
+.system-message {
   border-style: solid;
   border-color: silver;
   border-width: thin;
@@ -303,24 +327,46 @@ div.error {
 }
 
 /* Literal and Code */
-pre.literal-block, pre.doctest-block,
-pre.math, pre.code {
+pre.literal-block,
+pre.doctest-block,
+pre.math,
+pre.code {
   /* font-family: Consolas, "Liberation Mono", Menlo, monospace; */
   /* font-size: 0.9em; */
   overflow: auto;
 }
 /* basic highlighting: for a complete scheme, see */
 /* https://docutils.sourceforge.io/sandbox/stylesheets/ */
-pre.code .comment, code .comment { color: #5C6576 }
-pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
-pre.code .literal.string, code .literal.string { color: #0C5404 }
-pre.code .name.builtin, code .name.builtin { color: #352B84 }
-pre.code .deleted, code .deleted { background-color: #DEB0A1}
-pre.code .inserted, code .inserted { background-color: #A3D289}
+pre.code .comment,
+code .comment {
+  color: #5c6576;
+}
+pre.code .keyword,
+code .keyword {
+  color: #3b0d06;
+  font-weight: bold;
+}
+pre.code .literal.string,
+code .literal.string {
+  color: #0c5404;
+}
+pre.code .name.builtin,
+code .name.builtin {
+  color: #352b84;
+}
+pre.code .deleted,
+code .deleted {
+  background-color: #deb0a1;
+}
+pre.code .inserted,
+code .inserted {
+  background-color: #a3d289;
+}
 
 .sans {
-    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Lucida Sans", "Noto Sans", sans-serif;
-    letter-spacing: .02em;
+  font-family:
+    "Gill Sans", "Gill Sans MT", Calibri, "Lucida Sans", "Noto Sans", sans-serif;
+  letter-spacing: 0.02em;
 }
 
 /* Hyperlink References */
@@ -333,8 +379,12 @@ a:link {
   /* text-decoration-skip-ink: auto; nonstandard selector */
 }
 /* undecorated links */
-.contents a:link, a.toc-backref:link, a.image-reference:link,
-a[role="doc-noteref"]:link, a[role="doc-backlink"]:link, .backrefs a:link,
+.contents a:link,
+a.toc-backref:link,
+a.image-reference:link,
+a[role="doc-noteref"]:link,
+a[role="doc-backlink"]:link,
+.backrefs a:link,
 a.citation-reference:link,
 a[href^="#system-message"] {
   text-decoration: none;
@@ -348,9 +398,13 @@ a:link:hover {
 /* (does not work if the image/figure is a grid element). */
 
 /* no floats around this elements */
-footer, header,
+footer,
+header,
 hr.docutils,
-h1, h2, h3, .contents > p.topic-title,
+h1,
+h2,
+h3,
+.contents > p.topic-title,
 .fullwidth {
   clear: both;
 }
@@ -368,7 +422,6 @@ figure.align-left > img {
   margin-left: 0;
   padding-left: 0;
 }
-
 
 img.align-right {
   padding-left: 0.5em;
@@ -425,9 +478,11 @@ figure.marginal > figcaption {
 /* no floating for very small Screens */
 /* (main text up to ca. 40 characters/line) */
 @media (min-width: 35em) {
-  main, header, footer {
+  main,
+  header,
+  footer {
     padding: 0.5em calc(15% - 3rem);
-    line-height: 1.6
+    line-height: 1.6;
   }
   aside.sidebar,
   .marginal,
@@ -449,16 +504,21 @@ figure.marginal > figcaption {
 /* 2 column layout with wide margin */
 @media (min-width: 65em) {
   /* use the same grid for main, all sections, and figures */
-  main, section {
+  main,
+  section {
     display: grid;
-    grid-template-columns: [content] minmax(0, 6fr)
-    			   [margin] 3fr [end];
+    grid-template-columns:
+      [content] minmax(0, 6fr)
+      [margin] 3fr [end];
     grid-column-gap: calc(3em + 1%);
   }
-  main > section, section > section {
+  main > section,
+  section > section {
     grid-column: 1 / end;
   }
-  main, header, footer {
+  main,
+  header,
+  footer {
     padding-right: 5%; /* less padding right of margin-column */
   }
   section > figure {
@@ -478,7 +538,8 @@ figure.marginal > figcaption {
   .citation.align-left .label {
     margin-left: -1.5em;
   }
-  figure > img { /* indent */
+  figure > img {
+    /* indent */
     margin: 0.5em 2%;
     padding-left: 1em;
   }
@@ -521,7 +582,8 @@ figure.marginal > figcaption {
   }
 
   /* Fullwidth Elements */
-  h1.title, p.subtitle,
+  h1.title,
+  p.subtitle,
   dl.docinfo,
   div.abstract,
   div.dedication,
@@ -541,7 +603,9 @@ figure.marginal > figcaption {
 /* 3 column layout */
 
 @media (min-width: 100em) {
-  main, header, footer {
+  main,
+  header,
+  footer {
     padding-left: 30%;
   }
   main > nav.contents {

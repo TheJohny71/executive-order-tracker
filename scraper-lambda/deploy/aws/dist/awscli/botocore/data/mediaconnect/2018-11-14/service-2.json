@@ -9,9 +9,7 @@
     "jsonVersion": "1.1",
     "uid": "mediaconnect-2018-11-14",
     "signatureVersion": "v4",
-    "auth": [
-      "aws.auth#sigv4"
-    ]
+    "auth": ["aws.auth#sigv4"]
   },
   "operations": {
     "AddBridgeOutputs": {
@@ -2201,10 +2199,7 @@
         }
       },
       "documentation": "Add a flow source to an existing bridge.",
-      "required": [
-        "FlowArn",
-        "Name"
-      ]
+      "required": ["FlowArn", "Name"]
     },
     "AddBridgeNetworkOutputRequest": {
       "type": "structure",
@@ -2284,13 +2279,7 @@
         }
       },
       "documentation": "Add a network source to an existing bridge.",
-      "required": [
-        "NetworkName",
-        "MulticastIp",
-        "Port",
-        "Protocol",
-        "Name"
-      ]
+      "required": ["NetworkName", "MulticastIp", "Port", "Protocol", "Name"]
     },
     "AddBridgeOutputRequest": {
       "type": "structure",
@@ -2319,10 +2308,7 @@
         }
       },
       "documentation": "A request to add outputs to the specified bridge.",
-      "required": [
-        "BridgeArn",
-        "Outputs"
-      ]
+      "required": ["BridgeArn", "Outputs"]
     },
     "AddBridgeOutputsResponse": {
       "type": "structure",
@@ -2370,10 +2356,7 @@
         }
       },
       "documentation": "A request to add sources to the specified bridge.",
-      "required": [
-        "BridgeArn",
-        "Sources"
-      ]
+      "required": ["BridgeArn", "Sources"]
     },
     "AddBridgeSourcesResponse": {
       "type": "structure",
@@ -2399,9 +2382,7 @@
           "documentation": "The maximum expected bitrate (in bps)."
         }
       },
-      "required": [
-        "MaxBitrate"
-      ]
+      "required": ["MaxBitrate"]
     },
     "AddFlowMediaStreamsRequest": {
       "type": "structure",
@@ -2420,10 +2401,7 @@
         }
       },
       "documentation": "A request to add media streams to the flow.",
-      "required": [
-        "FlowArn",
-        "MediaStreams"
-      ]
+      "required": ["FlowArn", "MediaStreams"]
     },
     "AddFlowMediaStreamsResponse": {
       "type": "structure",
@@ -2450,9 +2428,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 420
@@ -2475,10 +2451,7 @@
         }
       },
       "documentation": "A request to add outputs to the specified flow.",
-      "required": [
-        "FlowArn",
-        "Outputs"
-      ]
+      "required": ["FlowArn", "Outputs"]
     },
     "AddFlowOutputsResponse": {
       "type": "structure",
@@ -2512,10 +2485,7 @@
         }
       },
       "documentation": "A request to add sources to the flow.",
-      "required": [
-        "FlowArn",
-        "Sources"
-      ]
+      "required": ["FlowArn", "Sources"]
     },
     "AddFlowSourcesResponse": {
       "type": "structure",
@@ -2549,10 +2519,7 @@
         }
       },
       "documentation": "A request to add VPC interfaces to the flow.",
-      "required": [
-        "FlowArn",
-        "VpcInterfaces"
-      ]
+      "required": ["FlowArn", "VpcInterfaces"]
     },
     "AddFlowVpcInterfacesResponse": {
       "type": "structure",
@@ -2583,10 +2550,7 @@
           "documentation": "The maximum number of expected outputs."
         }
       },
-      "required": [
-        "MaxOutputs",
-        "MaxBitrate"
-      ]
+      "required": ["MaxOutputs", "MaxBitrate"]
     },
     "AddMaintenance": {
       "type": "structure",
@@ -2603,10 +2567,7 @@
         }
       },
       "documentation": "Create maintenance setting for a flow",
-      "required": [
-        "MaintenanceDay",
-        "MaintenanceStartHour"
-      ]
+      "required": ["MaintenanceDay", "MaintenanceStartHour"]
     },
     "AddMediaStreamRequest": {
       "type": "structure",
@@ -2648,11 +2609,7 @@
         }
       },
       "documentation": "The media stream that you want to add to the flow.",
-      "required": [
-        "MediaStreamType",
-        "MediaStreamId",
-        "MediaStreamName"
-      ]
+      "required": ["MediaStreamType", "MediaStreamId", "MediaStreamName"]
     },
     "AddOutputRequest": {
       "type": "structure",
@@ -2739,17 +2696,11 @@
         }
       },
       "documentation": "The output that you want to add to this flow.",
-      "required": [
-        "Protocol"
-      ]
+      "required": ["Protocol"]
     },
     "Algorithm": {
       "type": "string",
-      "enum": [
-        "aes128",
-        "aes192",
-        "aes256"
-      ]
+      "enum": ["aes128", "aes192", "aes256"]
     },
     "AudioMonitoringSetting": {
       "type": "structure",
@@ -2772,9 +2723,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 400
@@ -2846,12 +2795,7 @@
         }
       },
       "documentation": "A Bridge is the connection between your datacenter's Instances and the AWS cloud. A bridge can be used to send video from the AWS cloud to your datacenter or from your datacenter to the AWS cloud.",
-      "required": [
-        "BridgeArn",
-        "BridgeState",
-        "PlacementArn",
-        "Name"
-      ]
+      "required": ["BridgeArn", "BridgeState", "PlacementArn", "Name"]
     },
     "BridgeFlowOutput": {
       "type": "structure",
@@ -2873,11 +2817,7 @@
         }
       },
       "documentation": "The output of the bridge. A flow output is delivered to the AWS cloud.",
-      "required": [
-        "FlowSourceArn",
-        "FlowArn",
-        "Name"
-      ]
+      "required": ["FlowSourceArn", "FlowArn", "Name"]
     },
     "BridgeFlowSource": {
       "type": "structure",
@@ -2904,10 +2844,7 @@
         }
       },
       "documentation": "The source of the bridge. A flow source originates in MediaConnect as an existing cloud flow.",
-      "required": [
-        "FlowArn",
-        "Name"
-      ]
+      "required": ["FlowArn", "Name"]
     },
     "BridgeNetworkOutput": {
       "type": "structure",
@@ -2987,13 +2924,7 @@
         }
       },
       "documentation": "The source of the bridge. A network source originates at your premises.",
-      "required": [
-        "NetworkName",
-        "MulticastIp",
-        "Port",
-        "Protocol",
-        "Name"
-      ]
+      "required": ["NetworkName", "MulticastIp", "Port", "Protocol", "Name"]
     },
     "BridgeOutput": {
       "type": "structure",
@@ -3011,10 +2942,7 @@
     },
     "BridgePlacement": {
       "type": "string",
-      "enum": [
-        "AVAILABLE",
-        "LOCKED"
-      ]
+      "enum": ["AVAILABLE", "LOCKED"]
     },
     "BridgeSource": {
       "type": "structure",
@@ -3069,9 +2997,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 409
@@ -3079,17 +3005,11 @@
     },
     "ConnectionStatus": {
       "type": "string",
-      "enum": [
-        "CONNECTED",
-        "DISCONNECTED"
-      ]
+      "enum": ["CONNECTED", "DISCONNECTED"]
     },
     "ContentQualityAnalysisState": {
       "type": "string",
-      "enum": [
-        "ENABLED",
-        "DISABLED"
-      ]
+      "enum": ["ENABLED", "DISABLED"]
     },
     "CreateBridge420Exception": {
       "type": "structure",
@@ -3101,9 +3021,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 420
@@ -3149,11 +3067,7 @@
         }
       },
       "documentation": "Creates a new bridge. The request must include one source.",
-      "required": [
-        "Sources",
-        "PlacementArn",
-        "Name"
-      ]
+      "required": ["Sources", "PlacementArn", "Name"]
     },
     "CreateBridgeResponse": {
       "type": "structure",
@@ -3174,9 +3088,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 420
@@ -3237,9 +3149,7 @@
         }
       },
       "documentation": "Creates a new flow. The request must include one source. The request optionally can include outputs (up to 50) and entitlements (up to 50).",
-      "required": [
-        "Name"
-      ]
+      "required": ["Name"]
     },
     "CreateFlowResponse": {
       "type": "structure",
@@ -3260,9 +3170,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 420
@@ -3288,11 +3196,7 @@
         }
       },
       "documentation": "Creates a new gateway. The request must include at least one network (up to 4).",
-      "required": [
-        "Networks",
-        "EgressCidrBlocks",
-        "Name"
-      ]
+      "required": ["Networks", "EgressCidrBlocks", "Name"]
     },
     "CreateGatewayResponse": {
       "type": "structure",
@@ -3314,9 +3218,7 @@
           "documentation": "The ARN of the bridge that you want to delete."
         }
       },
-      "required": [
-        "BridgeArn"
-      ]
+      "required": ["BridgeArn"]
     },
     "DeleteBridgeResponse": {
       "type": "structure",
@@ -3339,9 +3241,7 @@
           "documentation": "The ARN of the flow that you want to delete."
         }
       },
-      "required": [
-        "FlowArn"
-      ]
+      "required": ["FlowArn"]
     },
     "DeleteFlowResponse": {
       "type": "structure",
@@ -3369,9 +3269,7 @@
           "documentation": "The ARN of the gateway that you want to delete."
         }
       },
-      "required": [
-        "GatewayArn"
-      ]
+      "required": ["GatewayArn"]
     },
     "DeleteGatewayResponse": {
       "type": "structure",
@@ -3400,9 +3298,7 @@
           "documentation": "The Amazon Resource Name (ARN) of the gateway that contains the instance that you want to deregister."
         }
       },
-      "required": [
-        "GatewayInstanceArn"
-      ]
+      "required": ["GatewayInstanceArn"]
     },
     "DeregisterGatewayInstanceResponse": {
       "type": "structure",
@@ -3430,9 +3326,7 @@
           "documentation": "The ARN of the bridge that you want to describe."
         }
       },
-      "required": [
-        "BridgeArn"
-      ]
+      "required": ["BridgeArn"]
     },
     "DescribeBridgeResponse": {
       "type": "structure",
@@ -3454,9 +3348,7 @@
           "documentation": "The ARN of the flow that you want to describe."
         }
       },
-      "required": [
-        "FlowArn"
-      ]
+      "required": ["FlowArn"]
     },
     "DescribeFlowResponse": {
       "type": "structure",
@@ -3481,9 +3373,7 @@
           "documentation": "The Amazon Resource Name (ARN) of the flow."
         }
       },
-      "required": [
-        "FlowArn"
-      ]
+      "required": ["FlowArn"]
     },
     "DescribeFlowSourceMetadataResponse": {
       "type": "structure",
@@ -3519,9 +3409,7 @@
           "documentation": "The Amazon Resource Name (ARN) of the flow."
         }
       },
-      "required": [
-        "FlowArn"
-      ]
+      "required": ["FlowArn"]
     },
     "DescribeFlowSourceThumbnailResponse": {
       "type": "structure",
@@ -3543,9 +3431,7 @@
           "documentation": "The Amazon Resource Name (ARN) of the gateway instance that you want to describe."
         }
       },
-      "required": [
-        "GatewayInstanceArn"
-      ]
+      "required": ["GatewayInstanceArn"]
     },
     "DescribeGatewayInstanceResponse": {
       "type": "structure",
@@ -3567,9 +3453,7 @@
           "documentation": "The Amazon Resource Name (ARN) of the gateway that you want to describe."
         }
       },
-      "required": [
-        "GatewayArn"
-      ]
+      "required": ["GatewayArn"]
     },
     "DescribeGatewayResponse": {
       "type": "structure",
@@ -3590,9 +3474,7 @@
           "documentation": "The Amazon Resource Name (ARN) of the offering."
         }
       },
-      "required": [
-        "OfferingArn"
-      ]
+      "required": ["OfferingArn"]
     },
     "DescribeOfferingResponse": {
       "type": "structure",
@@ -3613,9 +3495,7 @@
           "documentation": "The Amazon Resource Name (ARN) of the reservation."
         }
       },
-      "required": [
-        "ReservationArn"
-      ]
+      "required": ["ReservationArn"]
     },
     "DescribeReservationResponse": {
       "type": "structure",
@@ -3628,11 +3508,7 @@
     },
     "DesiredState": {
       "type": "string",
-      "enum": [
-        "ACTIVE",
-        "STANDBY",
-        "DELETED"
-      ]
+      "enum": ["ACTIVE", "STANDBY", "DELETED"]
     },
     "DestinationConfiguration": {
       "type": "structure",
@@ -3686,17 +3562,11 @@
         }
       },
       "documentation": "The transport parameters that you want to associate with an outbound media stream.",
-      "required": [
-        "DestinationIp",
-        "DestinationPort",
-        "Interface"
-      ]
+      "required": ["DestinationIp", "DestinationPort", "Interface"]
     },
     "DurationUnits": {
       "type": "string",
-      "enum": [
-        "MONTHS"
-      ]
+      "enum": ["MONTHS"]
     },
     "EgressGatewayBridge": {
       "type": "structure",
@@ -3712,25 +3582,15 @@
           "documentation": "The maximum expected bitrate (in bps) of the egress bridge."
         }
       },
-      "required": [
-        "MaxBitrate"
-      ]
+      "required": ["MaxBitrate"]
     },
     "EncoderProfile": {
       "type": "string",
-      "enum": [
-        "main",
-        "high"
-      ]
+      "enum": ["main", "high"]
     },
     "EncodingName": {
       "type": "string",
-      "enum": [
-        "jxsv",
-        "raw",
-        "smpte291",
-        "pcm"
-      ]
+      "enum": ["jxsv", "raw", "smpte291", "pcm"]
     },
     "EncodingParameters": {
       "type": "structure",
@@ -3747,10 +3607,7 @@
         }
       },
       "documentation": "A collection of parameters that determine how MediaConnect will convert the content. These fields only apply to outputs on flows that have a CDI source.",
-      "required": [
-        "EncoderProfile",
-        "CompressionFactor"
-      ]
+      "required": ["EncoderProfile", "CompressionFactor"]
     },
     "EncodingParametersRequest": {
       "type": "structure",
@@ -3767,10 +3624,7 @@
         }
       },
       "documentation": "A collection of parameters that determine how MediaConnect will convert the content. These fields only apply to outputs on flows that have a CDI source.",
-      "required": [
-        "EncoderProfile",
-        "CompressionFactor"
-      ]
+      "required": ["EncoderProfile", "CompressionFactor"]
     },
     "Encryption": {
       "type": "structure",
@@ -3822,9 +3676,7 @@
         }
       },
       "documentation": "Information about the encryption of the flow.",
-      "required": [
-        "RoleArn"
-      ]
+      "required": ["RoleArn"]
     },
     "Entitlement": {
       "type": "structure",
@@ -3866,18 +3718,11 @@
         }
       },
       "documentation": "The settings for a flow entitlement.",
-      "required": [
-        "EntitlementArn",
-        "Subscribers",
-        "Name"
-      ]
+      "required": ["EntitlementArn", "Subscribers", "Name"]
     },
     "EntitlementStatus": {
       "type": "string",
-      "enum": [
-        "ENABLED",
-        "DISABLED"
-      ]
+      "enum": ["ENABLED", "DISABLED"]
     },
     "FailoverConfig": {
       "type": "structure",
@@ -3906,10 +3751,7 @@
     },
     "FailoverMode": {
       "type": "string",
-      "enum": [
-        "MERGE",
-        "FAILOVER"
-      ]
+      "enum": ["MERGE", "FAILOVER"]
     },
     "Flow": {
       "type": "structure",
@@ -4088,9 +3930,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 403
@@ -4111,10 +3951,7 @@
         }
       },
       "documentation": "The frame resolution used by the video stream.",
-      "required": [
-        "FrameWidth",
-        "FrameHeight"
-      ]
+      "required": ["FrameWidth", "FrameHeight"]
     },
     "FrozenFrames": {
       "type": "structure",
@@ -4166,12 +4003,7 @@
         }
       },
       "documentation": "The settings for a gateway, including its networks.",
-      "required": [
-        "GatewayArn",
-        "Networks",
-        "EgressCidrBlocks",
-        "Name"
-      ]
+      "required": ["GatewayArn", "Networks", "EgressCidrBlocks", "Name"]
     },
     "GatewayBridgeSource": {
       "type": "structure",
@@ -4188,9 +4020,7 @@
         }
       },
       "documentation": "The source configuration for cloud flows receiving a stream from a bridge.",
-      "required": [
-        "BridgeArn"
-      ]
+      "required": ["BridgeArn"]
     },
     "GatewayInstance": {
       "type": "structure",
@@ -4261,21 +4091,11 @@
         }
       },
       "documentation": "The network settings for a gateway.",
-      "required": [
-        "CidrBlock",
-        "Name"
-      ]
+      "required": ["CidrBlock", "Name"]
     },
     "GatewayState": {
       "type": "string",
-      "enum": [
-        "CREATING",
-        "ACTIVE",
-        "UPDATING",
-        "ERROR",
-        "DELETING",
-        "DELETED"
-      ]
+      "enum": ["CREATING", "ACTIVE", "UPDATING", "ERROR", "DELETING", "DELETED"]
     },
     "GrantEntitlementRequest": {
       "type": "structure",
@@ -4312,9 +4132,7 @@
         }
       },
       "documentation": "The entitlements that you want to grant on a flow.",
-      "required": [
-        "Subscribers"
-      ]
+      "required": ["Subscribers"]
     },
     "GrantFlowEntitlements420Exception": {
       "type": "structure",
@@ -4326,9 +4144,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 420
@@ -4351,10 +4167,7 @@
         }
       },
       "documentation": "A request to grant entitlements on a flow.",
-      "required": [
-        "FlowArn",
-        "Entitlements"
-      ]
+      "required": ["FlowArn", "Entitlements"]
     },
     "GrantFlowEntitlementsResponse": {
       "type": "structure",
@@ -4390,10 +4203,7 @@
           "documentation": "The maximum number of outputs on the ingress bridge."
         }
       },
-      "required": [
-        "MaxOutputs",
-        "MaxBitrate"
-      ]
+      "required": ["MaxOutputs", "MaxBitrate"]
     },
     "InputConfiguration": {
       "type": "structure",
@@ -4415,11 +4225,7 @@
         }
       },
       "documentation": "The transport parameters that are associated with an incoming media stream.",
-      "required": [
-        "InputPort",
-        "InputIp",
-        "Interface"
-      ]
+      "required": ["InputPort", "InputIp", "Interface"]
     },
     "InputConfigurationRequest": {
       "type": "structure",
@@ -4436,10 +4242,7 @@
         }
       },
       "documentation": "The transport parameters that you want to associate with an incoming media stream.",
-      "required": [
-        "InputPort",
-        "Interface"
-      ]
+      "required": ["InputPort", "Interface"]
     },
     "InstanceState": {
       "type": "string",
@@ -4462,9 +4265,7 @@
         }
       },
       "documentation": "The VPC interface that is used for the media stream associated with the source or output.",
-      "required": [
-        "Name"
-      ]
+      "required": ["Name"]
     },
     "InterfaceRequest": {
       "type": "structure",
@@ -4476,9 +4277,7 @@
         }
       },
       "documentation": "The VPC interface that you want to designate where the media stream is coming from or going to.",
-      "required": [
-        "Name"
-      ]
+      "required": ["Name"]
     },
     "InternalServerErrorException": {
       "type": "structure",
@@ -4490,9 +4289,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 500
@@ -4500,11 +4297,7 @@
     },
     "KeyType": {
       "type": "string",
-      "enum": [
-        "speke",
-        "static-key",
-        "srt-password"
-      ]
+      "enum": ["speke", "static-key", "srt-password"]
     },
     "ListBridgesRequest": {
       "type": "structure",
@@ -4752,9 +4545,7 @@
           "documentation": "The Amazon Resource Name (ARN) that identifies the AWS Elemental MediaConnect resource for which to list the tags."
         }
       },
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "ListTagsForResourceResponse": {
       "type": "structure",
@@ -4823,10 +4614,7 @@
         }
       },
       "documentation": "An entitlement that has been granted to you from other AWS accounts.",
-      "required": [
-        "EntitlementArn",
-        "EntitlementName"
-      ]
+      "required": ["EntitlementArn", "EntitlementName"]
     },
     "ListedFlow": {
       "type": "structure",
@@ -4895,11 +4683,7 @@
         }
       },
       "documentation": "Provides a summary of a gateway, including its name, ARN, and status.",
-      "required": [
-        "GatewayArn",
-        "GatewayState",
-        "Name"
-      ]
+      "required": ["GatewayArn", "GatewayState", "Name"]
     },
     "ListedGatewayInstance": {
       "type": "structure",
@@ -4926,11 +4710,7 @@
         }
       },
       "documentation": "Provides a summary of an instance.",
-      "required": [
-        "GatewayArn",
-        "GatewayInstanceArn",
-        "InstanceId"
-      ]
+      "required": ["GatewayArn", "GatewayInstanceArn", "InstanceId"]
     },
     "Maintenance": {
       "type": "structure",
@@ -5020,12 +4800,7 @@
         }
       },
       "documentation": "A single track or stream of media that contains video, audio, or ancillary data. After you add a media stream to a flow, you can associate it with sources and outputs on that flow, as long as they use the CDI protocol or the ST 2110 JPEG XS protocol. Each source or output can consist of one or many media streams.",
-      "required": [
-        "MediaStreamType",
-        "MediaStreamId",
-        "MediaStreamName",
-        "Fmt"
-      ]
+      "required": ["MediaStreamType", "MediaStreamId", "MediaStreamName", "Fmt"]
     },
     "MediaStreamAttributes": {
       "type": "structure",
@@ -5042,9 +4817,7 @@
         }
       },
       "documentation": "Attributes that are related to the media stream.",
-      "required": [
-        "Fmtp"
-      ]
+      "required": ["Fmtp"]
     },
     "MediaStreamAttributesRequest": {
       "type": "structure",
@@ -5087,10 +4860,7 @@
         }
       },
       "documentation": "The media stream that is associated with the output, and the parameters for that association.",
-      "required": [
-        "MediaStreamName",
-        "EncodingName"
-      ]
+      "required": ["MediaStreamName", "EncodingName"]
     },
     "MediaStreamOutputConfigurationRequest": {
       "type": "structure",
@@ -5117,10 +4887,7 @@
         }
       },
       "documentation": "The media stream that you want to associate with the output, and the parameters for that association.",
-      "required": [
-        "MediaStreamName",
-        "EncodingName"
-      ]
+      "required": ["MediaStreamName", "EncodingName"]
     },
     "MediaStreamSourceConfiguration": {
       "type": "structure",
@@ -5142,10 +4909,7 @@
         }
       },
       "documentation": "The media stream that is associated with the source, and the parameters for that association.",
-      "required": [
-        "MediaStreamName",
-        "EncodingName"
-      ]
+      "required": ["MediaStreamName", "EncodingName"]
     },
     "MediaStreamSourceConfigurationRequest": {
       "type": "structure",
@@ -5167,18 +4931,11 @@
         }
       },
       "documentation": "The definition of a media stream that you want to associate with the source.",
-      "required": [
-        "MediaStreamName",
-        "EncodingName"
-      ]
+      "required": ["MediaStreamName", "EncodingName"]
     },
     "MediaStreamType": {
       "type": "string",
-      "enum": [
-        "video",
-        "audio",
-        "ancillary-data"
-      ]
+      "enum": ["video", "audio", "ancillary-data"]
     },
     "MessageDetail": {
       "type": "structure",
@@ -5199,10 +4956,7 @@
           "documentation": "The name of the resource."
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ]
+      "required": ["Message", "Code"]
     },
     "Messages": {
       "type": "structure",
@@ -5214,9 +4968,7 @@
         }
       },
       "documentation": "Messages that provide the state of the flow.",
-      "required": [
-        "Errors"
-      ]
+      "required": ["Errors"]
     },
     "MonitoringConfig": {
       "type": "structure",
@@ -5257,10 +5009,7 @@
     },
     "NetworkInterfaceType": {
       "type": "string",
-      "enum": [
-        "ena",
-        "efa"
-      ]
+      "enum": ["ena", "efa"]
     },
     "NotFoundException": {
       "type": "structure",
@@ -5272,9 +5021,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 404
@@ -5421,23 +5168,15 @@
         }
       },
       "documentation": "The settings for an output.",
-      "required": [
-        "OutputArn",
-        "Name"
-      ]
+      "required": ["OutputArn", "Name"]
     },
     "OutputStatus": {
       "type": "string",
-      "enum": [
-        "ENABLED",
-        "DISABLED"
-      ]
+      "enum": ["ENABLED", "DISABLED"]
     },
     "PriceUnits": {
       "type": "string",
-      "enum": [
-        "HOURLY"
-      ]
+      "enum": ["HOURLY"]
     },
     "Protocol": {
       "type": "string",
@@ -5476,11 +5215,7 @@
         }
       },
       "documentation": "A request to purchase a offering.",
-      "required": [
-        "OfferingArn",
-        "Start",
-        "ReservationName"
-      ]
+      "required": ["OfferingArn", "Start", "ReservationName"]
     },
     "PurchaseOfferingResponse": {
       "type": "structure",
@@ -5493,11 +5228,7 @@
     },
     "Range": {
       "type": "string",
-      "enum": [
-        "NARROW",
-        "FULL",
-        "FULLPROTECT"
-      ]
+      "enum": ["NARROW", "FULL", "FULLPROTECT"]
     },
     "RemoveBridgeOutputRequest": {
       "type": "structure",
@@ -5516,10 +5247,7 @@
           "documentation": "The name of the bridge output that you want to remove."
         }
       },
-      "required": [
-        "OutputName",
-        "BridgeArn"
-      ]
+      "required": ["OutputName", "BridgeArn"]
     },
     "RemoveBridgeOutputResponse": {
       "type": "structure",
@@ -5551,10 +5279,7 @@
           "documentation": "The name of the bridge source that you want to remove."
         }
       },
-      "required": [
-        "BridgeArn",
-        "SourceName"
-      ]
+      "required": ["BridgeArn", "SourceName"]
     },
     "RemoveBridgeSourceResponse": {
       "type": "structure",
@@ -5586,10 +5311,7 @@
           "documentation": "The name of the media stream that you want to remove."
         }
       },
-      "required": [
-        "FlowArn",
-        "MediaStreamName"
-      ]
+      "required": ["FlowArn", "MediaStreamName"]
     },
     "RemoveFlowMediaStreamResponse": {
       "type": "structure",
@@ -5624,10 +5346,7 @@
           "documentation": "The ARN of the output that you want to remove."
         }
       },
-      "required": [
-        "FlowArn",
-        "OutputArn"
-      ]
+      "required": ["FlowArn", "OutputArn"]
     },
     "RemoveFlowOutputResponse": {
       "type": "structure",
@@ -5662,10 +5381,7 @@
           "documentation": "The ARN of the source that you want to remove."
         }
       },
-      "required": [
-        "FlowArn",
-        "SourceArn"
-      ]
+      "required": ["FlowArn", "SourceArn"]
     },
     "RemoveFlowSourceResponse": {
       "type": "structure",
@@ -5699,10 +5415,7 @@
           "documentation": "The name of the VPC interface that you want to remove."
         }
       },
-      "required": [
-        "FlowArn",
-        "VpcInterfaceName"
-      ]
+      "required": ["FlowArn", "VpcInterfaceName"]
     },
     "RemoveFlowVpcInterfaceResponse": {
       "type": "structure",
@@ -5812,12 +5525,7 @@
     },
     "ReservationState": {
       "type": "string",
-      "enum": [
-        "ACTIVE",
-        "EXPIRED",
-        "PROCESSING",
-        "CANCELED"
-      ]
+      "enum": ["ACTIVE", "EXPIRED", "PROCESSING", "CANCELED"]
     },
     "ResourceSpecification": {
       "type": "structure",
@@ -5834,15 +5542,11 @@
         }
       },
       "documentation": "A definition of what is being billed for, including the type and amount.",
-      "required": [
-        "ResourceType"
-      ]
+      "required": ["ResourceType"]
     },
     "ResourceType": {
       "type": "string",
-      "enum": [
-        "Mbps_Outbound_Bandwidth"
-      ]
+      "enum": ["Mbps_Outbound_Bandwidth"]
     },
     "ResponseError": {
       "type": "structure",
@@ -5854,9 +5558,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ]
+      "required": ["Message"]
     },
     "RevokeFlowEntitlementRequest": {
       "type": "structure",
@@ -5876,10 +5578,7 @@
           "documentation": "The flow that you want to revoke an entitlement from."
         }
       },
-      "required": [
-        "FlowArn",
-        "EntitlementArn"
-      ]
+      "required": ["FlowArn", "EntitlementArn"]
     },
     "RevokeFlowEntitlementResponse": {
       "type": "structure",
@@ -5898,11 +5597,7 @@
     },
     "ScanMode": {
       "type": "string",
-      "enum": [
-        "progressive",
-        "interlace",
-        "progressive-segmented-frame"
-      ]
+      "enum": ["progressive", "interlace", "progressive-segmented-frame"]
     },
     "ServiceUnavailableException": {
       "type": "structure",
@@ -5914,9 +5609,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 503
@@ -5938,9 +5631,7 @@
         }
       },
       "documentation": "The source configuration for cloud flows receiving a stream from a bridge.",
-      "required": [
-        "BridgeArn"
-      ]
+      "required": ["BridgeArn"]
     },
     "SetSourceRequest": {
       "type": "structure",
@@ -6140,10 +5831,7 @@
         }
       },
       "documentation": "The settings for the source of the flow.",
-      "required": [
-        "Name",
-        "SourceArn"
-      ]
+      "required": ["Name", "SourceArn"]
     },
     "SourcePriority": {
       "type": "structure",
@@ -6158,10 +5846,7 @@
     },
     "SourceType": {
       "type": "string",
-      "enum": [
-        "OWNED",
-        "ENTITLED"
-      ]
+      "enum": ["OWNED", "ENTITLED"]
     },
     "StartFlowRequest": {
       "type": "structure",
@@ -6174,9 +5859,7 @@
           "documentation": "The ARN of the flow that you want to start."
         }
       },
-      "required": [
-        "FlowArn"
-      ]
+      "required": ["FlowArn"]
     },
     "StartFlowResponse": {
       "type": "structure",
@@ -6195,10 +5878,7 @@
     },
     "State": {
       "type": "string",
-      "enum": [
-        "ENABLED",
-        "DISABLED"
-      ]
+      "enum": ["ENABLED", "DISABLED"]
     },
     "Status": {
       "type": "string",
@@ -6223,9 +5903,7 @@
           "documentation": "The ARN of the flow that you want to stop."
         }
       },
-      "required": [
-        "FlowArn"
-      ]
+      "required": ["FlowArn"]
     },
     "StopFlowResponse": {
       "type": "structure",
@@ -6258,10 +5936,7 @@
         }
       },
       "documentation": "The tags to add to the resource. A tag is an array of key-value pairs. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.",
-      "required": [
-        "ResourceArn",
-        "Tags"
-      ]
+      "required": ["ResourceArn", "Tags"]
     },
     "Tcs": {
       "type": "string",
@@ -6307,17 +5982,11 @@
         }
       },
       "documentation": "The details of the thumbnail, including thumbnail base64 string, timecode and the time when thumbnail was generated.",
-      "required": [
-        "ThumbnailMessages",
-        "FlowArn"
-      ]
+      "required": ["ThumbnailMessages", "FlowArn"]
     },
     "ThumbnailState": {
       "type": "string",
-      "enum": [
-        "ENABLED",
-        "DISABLED"
-      ]
+      "enum": ["ENABLED", "DISABLED"]
     },
     "TooManyRequestsException": {
       "type": "structure",
@@ -6329,9 +5998,7 @@
         }
       },
       "documentation": "Exception raised by AWS Elemental MediaConnect. See the error message and documentation for the operation for more information on the cause of this exception.",
-      "required": [
-        "Message"
-      ],
+      "required": ["Message"],
       "exception": true,
       "error": {
         "httpStatusCode": 429
@@ -6407,9 +6074,7 @@
         }
       },
       "documentation": "Attributes related to the transport stream that are used in a source or output.",
-      "required": [
-        "Protocol"
-      ]
+      "required": ["Protocol"]
     },
     "TransportMediaInfo": {
       "type": "structure",
@@ -6421,9 +6086,7 @@
         }
       },
       "documentation": "The metadata of the transport stream in the current flow's source.",
-      "required": [
-        "Programs"
-      ]
+      "required": ["Programs"]
     },
     "TransportStream": {
       "type": "structure",
@@ -6469,10 +6132,7 @@
         }
       },
       "documentation": "The metadata of an elementary transport stream.",
-      "required": [
-        "StreamType",
-        "Pid"
-      ]
+      "required": ["StreamType", "Pid"]
     },
     "TransportStreamProgram": {
       "type": "structure",
@@ -6504,12 +6164,7 @@
         }
       },
       "documentation": "The metadata of a single transport stream program.",
-      "required": [
-        "ProgramPid",
-        "PcrPid",
-        "ProgramNumber",
-        "Streams"
-      ]
+      "required": ["ProgramPid", "PcrPid", "ProgramNumber", "Streams"]
     },
     "UntagResourceRequest": {
       "type": "structure",
@@ -6527,10 +6182,7 @@
           "documentation": "The keys of the tags to be removed."
         }
       },
-      "required": [
-        "TagKeys",
-        "ResourceArn"
-      ]
+      "required": ["TagKeys", "ResourceArn"]
     },
     "UpdateBridgeFlowSourceRequest": {
       "type": "structure",
@@ -6632,10 +6284,7 @@
         }
       },
       "documentation": "The fields that you want to update in the bridge output.",
-      "required": [
-        "OutputName",
-        "BridgeArn"
-      ]
+      "required": ["OutputName", "BridgeArn"]
     },
     "UpdateBridgeOutputResponse": {
       "type": "structure",
@@ -6676,9 +6325,7 @@
         }
       },
       "documentation": "A request to update the bridge.",
-      "required": [
-        "BridgeArn"
-      ]
+      "required": ["BridgeArn"]
     },
     "UpdateBridgeResponse": {
       "type": "structure",
@@ -6715,10 +6362,7 @@
         }
       },
       "documentation": "The fields that you want to update in the bridge source.",
-      "required": [
-        "BridgeArn",
-        "SourceName"
-      ]
+      "required": ["BridgeArn", "SourceName"]
     },
     "UpdateBridgeSourceResponse": {
       "type": "structure",
@@ -6750,10 +6394,7 @@
         }
       },
       "documentation": "A request to update the bridge state.",
-      "required": [
-        "BridgeArn",
-        "DesiredState"
-      ]
+      "required": ["BridgeArn", "DesiredState"]
     },
     "UpdateBridgeStateResponse": {
       "type": "structure",
@@ -6895,10 +6536,7 @@
         }
       },
       "documentation": "The entitlement fields that you want to update.",
-      "required": [
-        "FlowArn",
-        "EntitlementArn"
-      ]
+      "required": ["FlowArn", "EntitlementArn"]
     },
     "UpdateFlowEntitlementResponse": {
       "type": "structure",
@@ -6958,10 +6596,7 @@
         }
       },
       "documentation": "The fields that you want to update in the media stream.",
-      "required": [
-        "FlowArn",
-        "MediaStreamName"
-      ]
+      "required": ["FlowArn", "MediaStreamName"]
     },
     "UpdateFlowMediaStreamResponse": {
       "type": "structure",
@@ -7077,10 +6712,7 @@
         }
       },
       "documentation": "The fields that you want to update in the output.",
-      "required": [
-        "FlowArn",
-        "OutputArn"
-      ]
+      "required": ["FlowArn", "OutputArn"]
     },
     "UpdateFlowOutputResponse": {
       "type": "structure",
@@ -7121,9 +6753,7 @@
         }
       },
       "documentation": "A request to update flow.",
-      "required": [
-        "FlowArn"
-      ]
+      "required": ["FlowArn"]
     },
     "UpdateFlowResponse": {
       "type": "structure",
@@ -7244,10 +6874,7 @@
         }
       },
       "documentation": "A request to update the source of a flow.",
-      "required": [
-        "FlowArn",
-        "SourceArn"
-      ]
+      "required": ["FlowArn", "SourceArn"]
     },
     "UpdateFlowSourceResponse": {
       "type": "structure",
@@ -7298,9 +6925,7 @@
         }
       },
       "documentation": "A request to update gateway instance state.",
-      "required": [
-        "GatewayInstanceArn"
-      ]
+      "required": ["GatewayInstanceArn"]
     },
     "UpdateGatewayInstanceResponse": {
       "type": "structure",
@@ -7454,12 +7079,7 @@
         }
       },
       "documentation": "Desired VPC Interface for a Flow",
-      "required": [
-        "SubnetId",
-        "SecurityGroupIds",
-        "RoleArn",
-        "Name"
-      ]
+      "required": ["SubnetId", "SecurityGroupIds", "RoleArn", "Name"]
     },
     "__boolean": {
       "type": "boolean"

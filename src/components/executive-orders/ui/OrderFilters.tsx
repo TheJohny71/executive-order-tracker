@@ -1,5 +1,5 @@
-import React from 'react';
-import { Search } from 'lucide-react';
+import React from "react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { OrderFilters as OrderFiltersType, FilterType } from '@/types';
+import type { OrderFilters as OrderFiltersType, FilterType } from "@/types";
 
 interface OrderFiltersProps {
   filters: OrderFiltersType;
@@ -18,12 +18,12 @@ interface OrderFiltersProps {
   statuses?: Array<{ id: number; name: string }>;
 }
 
-export function OrderFilters({ 
-  filters, 
-  onFilterChange, 
-  categories, 
+export function OrderFilters({
+  filters,
+  onFilterChange,
+  categories,
   agencies,
-  statuses = []
+  statuses = [],
 }: OrderFiltersProps) {
   return (
     <div className="space-y-4">
@@ -33,15 +33,15 @@ export function OrderFilters({
           type="text"
           placeholder="Search orders..."
           value={filters.search}
-          onChange={(e) => onFilterChange('search', e.target.value)}
+          onChange={(e) => onFilterChange("search", e.target.value)}
           className="pl-10"
         />
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Select
           value={filters.type || "all"}
-          onValueChange={(value) => onFilterChange('type', value)}
+          onValueChange={(value) => onFilterChange("type", value)}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select type" />
@@ -56,7 +56,7 @@ export function OrderFilters({
 
         <Select
           value={filters.category || "all"}
-          onValueChange={(value) => onFilterChange('category', value)}
+          onValueChange={(value) => onFilterChange("category", value)}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select category" />
@@ -64,14 +64,16 @@ export function OrderFilters({
           <SelectContent>
             <SelectItem value="all">All Categories</SelectItem>
             {categories.map((category) => (
-              <SelectItem key={category} value={category}>{category}</SelectItem>
+              <SelectItem key={category} value={category}>
+                {category}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
         <Select
           value={filters.agency || "all"}
-          onValueChange={(value) => onFilterChange('agency', value)}
+          onValueChange={(value) => onFilterChange("agency", value)}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select agency" />
@@ -79,7 +81,9 @@ export function OrderFilters({
           <SelectContent>
             <SelectItem value="all">All Agencies</SelectItem>
             {agencies.map((agency) => (
-              <SelectItem key={agency} value={agency}>{agency}</SelectItem>
+              <SelectItem key={agency} value={agency}>
+                {agency}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -87,7 +91,7 @@ export function OrderFilters({
         {statuses.length > 0 && (
           <Select
             value={filters.statusId?.toString() || "all"}
-            onValueChange={(value) => onFilterChange('statusId', value)}
+            onValueChange={(value) => onFilterChange("statusId", value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select status" />
@@ -107,14 +111,14 @@ export function OrderFilters({
       <div className="flex flex-col sm:flex-row gap-4">
         <Input
           type="date"
-          value={filters.dateFrom || ''}
-          onChange={(e) => onFilterChange('dateFrom', e.target.value)}
+          value={filters.dateFrom || ""}
+          onChange={(e) => onFilterChange("dateFrom", e.target.value)}
           className="w-full sm:w-[240px]"
         />
         <Input
           type="date"
-          value={filters.dateTo || ''}
-          onChange={(e) => onFilterChange('dateTo', e.target.value)}
+          value={filters.dateTo || ""}
+          onChange={(e) => onFilterChange("dateTo", e.target.value)}
           className="w-full sm:w-[240px]"
         />
       </div>

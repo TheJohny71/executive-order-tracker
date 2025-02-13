@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationProps {
   currentPage: number;
@@ -8,15 +8,15 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export const Pagination: React.FC<PaginationProps> = ({ 
-  currentPage, 
-  totalPages, 
-  onPageChange 
+export const Pagination: React.FC<PaginationProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
 }) => {
   if (totalPages <= 1) {
     return null;
   }
-  
+
   const getPageNumbers = () => {
     const pages: number[] = []; // Fixed: Added type annotation here
     const maxVisiblePages = 5;
@@ -35,7 +35,10 @@ export const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <nav className="flex items-center justify-center space-x-2 mt-8" aria-label="Pagination">
+    <nav
+      className="flex items-center justify-center space-x-2 mt-8"
+      aria-label="Pagination"
+    >
       <Button
         variant="outline"
         size="icon"
@@ -54,7 +57,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           onClick={() => onPageChange(pageNumber)}
           className="min-w-[40px]"
           aria-label={`Page ${pageNumber}`}
-          aria-current={pageNumber === currentPage ? 'page' : undefined}
+          aria-current={pageNumber === currentPage ? "page" : undefined}
         >
           {pageNumber}
         </Button>

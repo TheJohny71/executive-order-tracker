@@ -1,6 +1,6 @@
 // File: src/lib/db.ts
 
-import { PrismaClient, DocumentType } from '@prisma/client';
+import { PrismaClient, DocumentType } from "@prisma/client";
 
 const globalForPrisma = global as unknown as {
   prisma?: PrismaClient;
@@ -9,10 +9,10 @@ const globalForPrisma = global as unknown as {
 export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
-    log: ['query', 'info', 'warn', 'error'],
+    log: ["query", "info", "warn", "error"],
   });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
 

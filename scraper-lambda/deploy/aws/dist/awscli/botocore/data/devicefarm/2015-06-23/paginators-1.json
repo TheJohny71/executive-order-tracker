@@ -58,10 +58,7 @@
     "GetOfferingStatus": {
       "input_token": "nextToken",
       "output_token": "nextToken",
-      "result_key": [
-        "current",
-        "nextPeriod"
-      ]
+      "result_key": ["current", "nextPeriod"]
     },
     "ListOfferingTransactions": {
       "input_token": "nextToken",

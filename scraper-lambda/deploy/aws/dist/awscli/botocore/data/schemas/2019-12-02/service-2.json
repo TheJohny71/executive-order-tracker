@@ -1254,10 +1254,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ],
+      "required": ["Message", "Code"],
       "exception": true,
       "error": {
         "httpStatusCode": 400
@@ -1286,11 +1283,7 @@
     },
     "CodeGenerationStatus": {
       "type": "string",
-      "enum": [
-        "CREATE_IN_PROGRESS",
-        "CREATE_COMPLETE",
-        "CREATE_FAILED"
-      ]
+      "enum": ["CREATE_IN_PROGRESS", "CREATE_COMPLETE", "CREATE_FAILED"]
     },
     "ConflictException": {
       "type": "structure",
@@ -1304,10 +1297,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ],
+      "required": ["Message", "Code"],
       "exception": true,
       "error": {
         "httpStatusCode": 409
@@ -1334,9 +1324,7 @@
           "documentation": "<p>Tags associated with the resource.</p>"
         }
       },
-      "required": [
-        "SourceArn"
-      ]
+      "required": ["SourceArn"]
     },
     "CreateDiscovererRequest": {
       "type": "structure",
@@ -1360,9 +1348,7 @@
         }
       },
       "documentation": "",
-      "required": [
-        "SourceArn"
-      ]
+      "required": ["SourceArn"]
     },
     "CreateDiscovererResponse": {
       "type": "structure",
@@ -1431,9 +1417,7 @@
           "documentation": "<p>Tags to associate with the registry.</p>"
         }
       },
-      "required": [
-        "RegistryName"
-      ]
+      "required": ["RegistryName"]
     },
     "CreateRegistryResponse": {
       "type": "structure",
@@ -1478,10 +1462,7 @@
           "documentation": "<p>The type of schema.</p>"
         }
       },
-      "required": [
-        "Type",
-        "Content"
-      ]
+      "required": ["Type", "Content"]
     },
     "CreateSchemaRequest": {
       "type": "structure",
@@ -1516,12 +1497,7 @@
           "documentation": "<p>The type of schema.</p>"
         }
       },
-      "required": [
-        "RegistryName",
-        "SchemaName",
-        "Type",
-        "Content"
-      ]
+      "required": ["RegistryName", "SchemaName", "Type", "Content"]
     },
     "CreateSchemaResponse": {
       "type": "structure",
@@ -1570,9 +1546,7 @@
           "documentation": "<p>The ID of the discoverer.</p>"
         }
       },
-      "required": [
-        "DiscovererId"
-      ]
+      "required": ["DiscovererId"]
     },
     "DeleteRegistryRequest": {
       "type": "structure",
@@ -1584,9 +1558,7 @@
           "documentation": "<p>The name of the registry.</p>"
         }
       },
-      "required": [
-        "RegistryName"
-      ]
+      "required": ["RegistryName"]
     },
     "DeleteResourcePolicyRequest": {
       "type": "structure",
@@ -1615,10 +1587,7 @@
           "documentation": "<p>The name of the schema.</p>"
         }
       },
-      "required": [
-        "RegistryName",
-        "SchemaName"
-      ]
+      "required": ["RegistryName", "SchemaName"]
     },
     "DeleteSchemaVersionRequest": {
       "type": "structure",
@@ -1642,11 +1611,7 @@
           "documentation": "The version number of the schema"
         }
       },
-      "required": [
-        "SchemaVersion",
-        "RegistryName",
-        "SchemaName"
-      ]
+      "required": ["SchemaVersion", "RegistryName", "SchemaName"]
     },
     "DescribeCodeBindingRequest": {
       "type": "structure",
@@ -1676,11 +1641,7 @@
           "documentation": "<p>Specifying this limits the results to only this schema version.</p>"
         }
       },
-      "required": [
-        "RegistryName",
-        "SchemaName",
-        "Language"
-      ]
+      "required": ["RegistryName", "SchemaName", "Language"]
     },
     "DescribeCodeBindingResponse": {
       "type": "structure",
@@ -1713,9 +1674,7 @@
           "documentation": "<p>The ID of the discoverer.</p>"
         }
       },
-      "required": [
-        "DiscovererId"
-      ]
+      "required": ["DiscovererId"]
     },
     "DescribeDiscovererResponse": {
       "type": "structure",
@@ -1761,9 +1720,7 @@
           "documentation": "<p>The name of the registry.</p>"
         }
       },
-      "required": [
-        "RegistryName"
-      ]
+      "required": ["RegistryName"]
     },
     "DescribeRegistryResponse": {
       "type": "structure",
@@ -1851,10 +1808,7 @@
           "documentation": "<p>Specifying this limits the results to only this schema version.</p>"
         }
       },
-      "required": [
-        "RegistryName",
-        "SchemaName"
-      ]
+      "required": ["RegistryName", "SchemaName"]
     },
     "DescribeSchemaResponse": {
       "type": "structure",
@@ -1934,10 +1888,7 @@
     },
     "DiscovererState": {
       "type": "string",
-      "enum": [
-        "STARTED",
-        "STOPPED"
-      ]
+      "enum": ["STARTED", "STOPPED"]
     },
     "DiscovererStateOutput": {
       "type": "structure",
@@ -1994,10 +1945,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ]
+      "required": ["Message", "Code"]
     },
     "ExportSchemaOutput": {
       "type": "structure",
@@ -2046,11 +1994,7 @@
           "locationName": "type"
         }
       },
-      "required": [
-        "RegistryName",
-        "SchemaName",
-        "Type"
-      ]
+      "required": ["RegistryName", "SchemaName", "Type"]
     },
     "ExportSchemaResponse": {
       "type": "structure",
@@ -2084,10 +2028,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ],
+      "required": ["Message", "Code"],
       "exception": true,
       "error": {
         "httpStatusCode": 403
@@ -2124,11 +2065,7 @@
           "documentation": "<p>Specifying this limits the results to only this schema version.</p>"
         }
       },
-      "required": [
-        "RegistryName",
-        "SchemaName",
-        "Language"
-      ]
+      "required": ["RegistryName", "SchemaName", "Language"]
     },
     "GetCodeBindingSourceResponse": {
       "type": "structure",
@@ -2151,10 +2088,7 @@
           "documentation": "<p>The type of event.</p>"
         }
       },
-      "required": [
-        "Type",
-        "Events"
-      ]
+      "required": ["Type", "Events"]
     },
     "GetDiscoveredSchemaOutput": {
       "type": "structure",
@@ -2178,10 +2112,7 @@
           "documentation": "<p>The type of event.</p>"
         }
       },
-      "required": [
-        "Type",
-        "Events"
-      ]
+      "required": ["Type", "Events"]
     },
     "GetDiscoveredSchemaResponse": {
       "type": "structure",
@@ -2249,10 +2180,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ],
+      "required": ["Message", "Code"],
       "exception": true,
       "error": {
         "httpStatusCode": 410
@@ -2270,10 +2198,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ],
+      "required": ["Message", "Code"],
       "exception": true,
       "error": {
         "httpStatusCode": 500
@@ -2433,10 +2358,7 @@
           "documentation": "<p>The name of the schema.</p>"
         }
       },
-      "required": [
-        "RegistryName",
-        "SchemaName"
-      ]
+      "required": ["RegistryName", "SchemaName"]
     },
     "ListSchemaVersionsResponse": {
       "type": "structure",
@@ -2491,9 +2413,7 @@
           "documentation": "<p>Specifying this limits the results to only those schema names that start with the specified prefix.</p>"
         }
       },
-      "required": [
-        "RegistryName"
-      ]
+      "required": ["RegistryName"]
     },
     "ListSchemasResponse": {
       "type": "structure",
@@ -2527,9 +2447,7 @@
           "documentation": "<p>The ARN of the resource.</p>"
         }
       },
-      "required": [
-        "ResourceArn"
-      ]
+      "required": ["ResourceArn"]
     },
     "ListTagsForResourceResponse": {
       "type": "structure",
@@ -2552,10 +2470,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ],
+      "required": ["Message", "Code"],
       "exception": true,
       "error": {
         "httpStatusCode": 404
@@ -2573,10 +2488,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ],
+      "required": ["Message", "Code"],
       "exception": true,
       "error": {
         "httpStatusCode": 412
@@ -2610,11 +2522,7 @@
           "documentation": "<p>Specifying this limits the results to only this schema version.</p>"
         }
       },
-      "required": [
-        "RegistryName",
-        "SchemaName",
-        "Language"
-      ]
+      "required": ["RegistryName", "SchemaName", "Language"]
     },
     "PutCodeBindingResponse": {
       "type": "structure",
@@ -2651,9 +2559,7 @@
         }
       },
       "documentation": "<p>Only update the policy if the revision ID matches the ID that's specified. Use this option to avoid modifying a policy that has changed since you last read it.</p>",
-      "required": [
-        "Policy"
-      ]
+      "required": ["Policy"]
     },
     "PutResourcePolicyOutput": {
       "type": "structure",
@@ -2690,9 +2596,7 @@
         }
       },
       "documentation": "<p>The name of the policy.</p>",
-      "required": [
-        "Policy"
-      ]
+      "required": ["Policy"]
     },
     "PutResourcePolicyResponse": {
       "type": "structure",
@@ -2911,10 +2815,7 @@
           "documentation": "<p>The name of the registry.</p>"
         }
       },
-      "required": [
-        "RegistryName",
-        "Keywords"
-      ]
+      "required": ["RegistryName", "Keywords"]
     },
     "SearchSchemasResponse": {
       "type": "structure",
@@ -2941,10 +2842,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ],
+      "required": ["Message", "Code"],
       "exception": true,
       "error": {
         "httpStatusCode": 503
@@ -2960,9 +2858,7 @@
           "documentation": "<p>The ID of the discoverer.</p>"
         }
       },
-      "required": [
-        "DiscovererId"
-      ]
+      "required": ["DiscovererId"]
     },
     "StartDiscovererResponse": {
       "type": "structure",
@@ -2987,9 +2883,7 @@
           "documentation": "<p>The ID of the discoverer.</p>"
         }
       },
-      "required": [
-        "DiscovererId"
-      ]
+      "required": ["DiscovererId"]
     },
     "StopDiscovererResponse": {
       "type": "structure",
@@ -3013,9 +2907,7 @@
           "documentation": "<p>Tags associated with the resource.</p>"
         }
       },
-      "required": [
-        "Tags"
-      ]
+      "required": ["Tags"]
     },
     "TagResourceRequest": {
       "type": "structure",
@@ -3033,10 +2925,7 @@
         }
       },
       "documentation": "<p></p>",
-      "required": [
-        "ResourceArn",
-        "Tags"
-      ]
+      "required": ["ResourceArn", "Tags"]
     },
     "Tags": {
       "type": "map",
@@ -3060,10 +2949,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ],
+      "required": ["Message", "Code"],
       "exception": true,
       "error": {
         "httpStatusCode": 429
@@ -3071,10 +2957,7 @@
     },
     "Type": {
       "type": "string",
-      "enum": [
-        "OpenApi3",
-        "JSONSchemaDraft4"
-      ]
+      "enum": ["OpenApi3", "JSONSchemaDraft4"]
     },
     "UnauthorizedException": {
       "type": "structure",
@@ -3088,10 +2971,7 @@
           "documentation": "<p>The message string of the error output.</p>"
         }
       },
-      "required": [
-        "Message",
-        "Code"
-      ],
+      "required": ["Message", "Code"],
       "exception": true,
       "error": {
         "httpStatusCode": 401
@@ -3113,10 +2993,7 @@
           "documentation": "<p>Keys of key-value pairs.</p>"
         }
       },
-      "required": [
-        "TagKeys",
-        "ResourceArn"
-      ]
+      "required": ["TagKeys", "ResourceArn"]
     },
     "UpdateDiscovererInput": {
       "type": "structure",
@@ -3149,9 +3026,7 @@
           "documentation": "<p>Support discovery of schemas in events sent to the bus from another account. (default: true)</p>"
         }
       },
-      "required": [
-        "DiscovererId"
-      ]
+      "required": ["DiscovererId"]
     },
     "UpdateDiscovererResponse": {
       "type": "structure",
@@ -3211,9 +3086,7 @@
         }
       },
       "documentation": "<p>Updates the registry.</p>",
-      "required": [
-        "RegistryName"
-      ]
+      "required": ["RegistryName"]
     },
     "UpdateRegistryResponse": {
       "type": "structure",
@@ -3292,10 +3165,7 @@
           "documentation": "<p>The schema type for the events schema.</p>"
         }
       },
-      "required": [
-        "RegistryName",
-        "SchemaName"
-      ]
+      "required": ["RegistryName", "SchemaName"]
     },
     "UpdateSchemaResponse": {
       "type": "structure",

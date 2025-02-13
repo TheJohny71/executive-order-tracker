@@ -12,7 +12,7 @@ export const LoadingFallback = () => (
           <Skeleton className="h-4 w-96 mt-2" />
         </CardHeader>
       </Card>
-      
+
       {[1, 2, 3].map((i) => (
         <Card key={i} className="mb-4">
           <CardHeader>

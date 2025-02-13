@@ -1,13 +1,18 @@
-import { NextRequest } from 'next/server';
-import { DocumentType, Prisma } from '@prisma/client';
-import { z } from 'zod';
-import sanitize from 'sanitize-html';
-import type { IOptions } from 'sanitize-html';
+import { NextRequest } from "next/server";
+import { DocumentType, Prisma } from "@prisma/client";
+import { z } from "zod";
+import sanitize from "sanitize-html";
+import type { IOptions } from "sanitize-html";
 
-import { prisma } from '@/lib/db';
-import type { WhereClause, OrderDbRecord, OrdersResponse, OrderStatus } from '@/types';
-import { transformOrderRecord } from '@/utils';
-import { logger } from '@/utils/logger';
+import { prisma } from "@/lib/db";
+import type {
+  WhereClause,
+  OrderDbRecord,
+  OrdersResponse,
+  OrderStatus,
+} from "@/types";
+import { transformOrderRecord } from "@/utils";
+import { logger } from "@/utils/logger";
 
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -34,13 +39,13 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     const where: WhereClause = {};
-    
+
     if (params.search) {
       const s = sanitize(params.search, sanitizeOptions);
       where.OR = [
-        { title: { contains: s, mode: 'insensitive' } },
-        { summary: { contains: s, mode: 'insensitive' } },
-        { number: { contains: s, mode: 'insensitive' } }
+        { title: { contains: s, mode: "insensitive" } },
+        { summary: { contains: s, mode: "insensitive" } },
+        { number: { contains: s, mode: "insensitive" } },
       ];
     }
 
@@ -51,57 +56,60 @@ export async function GET(request: NextRequest) {
     if (params.category) {
       where.categories = {
         some: {
-          name: params.category
-        }
+          name: params.category,
+        },
       };
     }
 
     if (params.agency) {
       where.agencies = {
         some: {
-          name: params.agency
-        }
+          name: params.agency,
+        },
       };
     }
 
-    const [totalCount, dbOrders, categories, agencies, statuses] = await Promise.all([
-      prisma.order.count({ where }),
-      prisma.order.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { datePublished: 'desc' },
-        include: {
-          categories: true,
-          agencies: true,
-          status: true,
-        },
-      }),
-      prisma.category.findMany({
-        orderBy: { name: 'asc' }
-      }),
-      prisma.agency.findMany({
-        orderBy: { name: 'asc' }
-      }),
-      prisma.status.findMany({
-        orderBy: { name: 'asc' }
-      })
-    ]);
+    const [totalCount, dbOrders, categories, agencies, statuses] =
+      await Promise.all([
+        prisma.order.count({ where }),
+        prisma.order.findMany({
+          where,
+          skip,
+          take: limit,
+          orderBy: { datePublished: "desc" },
+          include: {
+            categories: true,
+            agencies: true,
+            status: true,
+          },
+        }),
+        prisma.category.findMany({
+          orderBy: { name: "asc" },
+        }),
+        prisma.agency.findMany({
+          orderBy: { name: "asc" },
+        }),
+        prisma.status.findMany({
+          orderBy: { name: "asc" },
+        }),
+      ]);
 
-    const orders = dbOrders.map(order => transformOrderRecord(order as OrderDbRecord));
+    const orders = dbOrders.map((order) =>
+      transformOrderRecord(order as OrderDbRecord),
+    );
 
-    const mappedStatuses: OrderStatus[] = statuses.map(s => ({
+    const mappedStatuses: OrderStatus[] = statuses.map((s) => ({
       id: s.id,
       name: s.name,
-      color: null
+      color: null,
     }));
 
     const response: OrdersResponse = {
       orders,
       metadata: {
-        categories: categories.map(c => c.name),
-        agencies: agencies.map(a => a.name),
-        statuses: mappedStatuses
+        categories: categories.map((c) => c.name),
+        agencies: agencies.map((a) => a.name),
+        statuses: mappedStatuses,
       },
       pagination: {
         page,
@@ -113,34 +121,31 @@ export async function GET(request: NextRequest) {
 
     return new Response(JSON.stringify(response), {
       status: 200,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-store, max-age=0',
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store, max-age=0",
       },
     });
   } catch (error) {
-    logger.error('Error in GET /api/orders:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to fetch orders' }),
-      { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    logger.error("Error in GET /api/orders:", error);
+    return new Response(JSON.stringify({ error: "Failed to fetch orders" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     if (!body || !body.title) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields' }),
-        { 
+        JSON.stringify({ error: "Missing required fields" }),
+        {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
+          headers: { "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -149,25 +154,31 @@ export async function POST(request: NextRequest) {
       type: body.type ?? DocumentType.EXECUTIVE_ORDER,
       number: body.number ?? null,
       summary: body.summary ?? null,
-      datePublished: body.datePublished ? new Date(body.datePublished) : new Date(),
+      datePublished: body.datePublished
+        ? new Date(body.datePublished)
+        : new Date(),
       link: body.link ?? null,
       status: {
         connect: {
-          id: body.statusId ?? 1
-        }
+          id: body.statusId ?? 1,
+        },
       },
-      categories: body.categories ? {
-        connectOrCreate: body.categories.map((name: string) => ({
-          where: { name },
-          create: { name }
-        }))
-      } : undefined,
-      agencies: body.agencies ? {
-        connectOrCreate: body.agencies.map((name: string) => ({
-          where: { name },
-          create: { name }
-        }))
-      } : undefined,
+      categories: body.categories
+        ? {
+            connectOrCreate: body.categories.map((name: string) => ({
+              where: { name },
+              create: { name },
+            })),
+          }
+        : undefined,
+      agencies: body.agencies
+        ? {
+            connectOrCreate: body.agencies.map((name: string) => ({
+              where: { name },
+              create: { name },
+            })),
+          }
+        : undefined,
     };
 
     const newOrder = await prisma.order.create({
@@ -182,23 +193,20 @@ export async function POST(request: NextRequest) {
     const transformedOrder = transformOrderRecord(newOrder as OrderDbRecord);
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        order: transformedOrder 
+      JSON.stringify({
+        success: true,
+        order: transformedOrder,
       }),
-      { 
+      {
         status: 201,
-        headers: { 'Content-Type': 'application/json' },
-      }
+        headers: { "Content-Type": "application/json" },
+      },
     );
   } catch (error) {
-    logger.error('Error in POST /api/orders:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to create order' }),
-      { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    logger.error("Error in POST /api/orders:", error);
+    return new Response(JSON.stringify({ error: "Failed to create order" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }

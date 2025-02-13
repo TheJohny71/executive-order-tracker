@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import type { FC } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState } from "react";
+import type { FC } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 interface Category {
   name: string;
@@ -41,16 +41,16 @@ interface OrdersResponse {
 
 const ExecutiveOrderTracker: FC = () => {
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedAgency, setSelectedAgency] = useState('');
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedAgency, setSelectedAgency] = useState("");
 
   const { data, isLoading, error } = useQuery<OrdersResponse>({
-    queryKey: ['orders', page, search, selectedCategory, selectedAgency],
+    queryKey: ["orders", page, search, selectedCategory, selectedAgency],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: page.toString(),
-        limit: '10',
+        limit: "10",
         ...(search && { search }),
         ...(selectedCategory && { category: selectedCategory }),
         ...(selectedAgency && { agency: selectedAgency }),
@@ -58,7 +58,7 @@ const ExecutiveOrderTracker: FC = () => {
 
       const response = await fetch(`/api/orders?${params}`);
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
       return response.json();
     },
@@ -71,7 +71,7 @@ const ExecutiveOrderTracker: FC = () => {
   if (error) {
     return <div>Error: {(error as Error).message}</div>;
   }
-  
+
   if (!data) {
     return null;
   }
@@ -87,7 +87,7 @@ const ExecutiveOrderTracker: FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Executive Order Tracker</h1>
-      
+
       {/* Search and Filters */}
       <div className="mb-6 space-y-4">
         <input
@@ -97,7 +97,7 @@ const ExecutiveOrderTracker: FC = () => {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full p-2 border rounded"
         />
-        
+
         <div className="flex gap-4">
           <select
             value={selectedCategory}
@@ -135,7 +135,10 @@ const ExecutiveOrderTracker: FC = () => {
             <p className="text-gray-600">{order.summary}</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {order.categories.map((category: Category) => (
-                <span key={category.name} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
+                <span
+                  key={category.name}
+                  className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm"
+                >
                   {category.name}
                 </span>
               ))}

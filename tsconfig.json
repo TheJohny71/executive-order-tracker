@@ -11,10 +11,7 @@
     },
     "resolveJsonModule": true,
     "types": ["node", "react", "react-dom"],
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "allowJs": true,
     "checkJs": false,
     "noEmit": true,
@@ -47,11 +44,5 @@
     "src/**/*.ts",
     "src/**/*.tsx"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    ".next",
-    "out",
-    "coverage"
-  ]
+  "exclude": ["node_modules", "dist", ".next", "out", "coverage"]
 }

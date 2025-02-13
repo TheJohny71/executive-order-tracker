@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
-import * as React from 'react'
-import type { ReactNode } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import * as React from "react";
+import type { ReactNode } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-import { ThemeProvider } from './theme-provider'
+import { ThemeProvider } from "./theme-provider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,42 +21,39 @@ const queryClient = new QueryClient({
       retry: 1,
     },
   },
-})
+});
 
 interface ProvidersProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function Providers({ children }: ProvidersProps) {
-  const [mounted, setMounted] = React.useState<boolean>(false)
+  const [mounted, setMounted] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    setMounted(true)
-    return () => setMounted(false)
-  }, [])
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   if (!mounted) {
-    return <>{children}</>
+    return <>{children}</>;
   }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider 
+      <ThemeProvider
         attribute="class"
         defaultTheme="system"
         enableSystem
         disableTransitionOnChange
         storageKey="eo-tracker-theme"
-        themes={['light', 'dark', 'system']}
+        themes={["light", "dark", "system"]}
       >
         {children}
       </ThemeProvider>
-      {process.env.NODE_ENV === 'development' && (
-        <ReactQueryDevtools 
-          initialIsOpen={false}
-          position="bottom"
-        />
+      {process.env.NODE_ENV === "development" && (
+        <ReactQueryDevtools initialIsOpen={false} position="bottom" />
       )}
     </QueryClientProvider>
-  )
+  );
 }

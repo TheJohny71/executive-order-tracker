@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "esbuild index.ts --bundle --minify --platform=node --target=node18 --format=esm --external:@aws-sdk/* --external:@sparticuz/chromium --external:puppeteer-core --outfile=dist/index.mjs",
-    "dev": "ts-node src/scraper/local-scraper.ts",
+    "dev": "node --loader ts-node/esm src/scraper/local-scraper.ts",
     "test": "jest",
-    "lint": "eslint . --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "deploy": "sam deploy"
   },
   "dependencies": {
@@ -19,7 +19,10 @@
     "cheerio": "^1.0.0-rc.12",
     "date-fns": "^3.3.1",
     "http-status-codes": "^2.3.0",
+    "next": "^14.2.24",
     "puppeteer-core": "^24.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -27,12 +30,18 @@
     "@types/aws-lambda": "^8.10.133",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.16",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
+    "autoprefixer": "^10.4.17",
     "esbuild": "^0.20.0",
     "eslint": "^8.56.0",
+    "eslint-config-next": "14.1.0",
     "jest": "^29.7.0",
+    "postcss": "^8.4.33",
     "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.1",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

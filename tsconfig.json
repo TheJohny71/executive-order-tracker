@@ -10,7 +10,7 @@
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
-    "types": ["node", "react", "react-dom"],
+    "types": ["node", "react", "react-dom", "jest"],
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "allowJs": true,
     "checkJs": false,
@@ -36,13 +36,22 @@
       }
     ]
   },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext"
+    },
+    "esm": true,
+    "experimentalSpecifiers": true
+  },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/**/*.ts",
-    "src/**/*.tsx"
+    "src/**/*.tsx",
+    "src/scraper/**/*.ts"
   ],
   "exclude": ["node_modules", "dist", ".next", "out", "coverage"]
 }

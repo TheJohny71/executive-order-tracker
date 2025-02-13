@@ -1,10 +1,10 @@
-declare module '@sparticuz/chromium' {
+declare module 'chrome-aws-lambda' {
     const args: string[];
     const defaultViewport: {
         width: number;
         height: number;
     };
-    const executablePath: () => Promise<string>;
+    const executablePath: string;
     const headless: boolean;
     export { args, defaultViewport, executablePath, headless };
 }

@@ -1,4 +1,4 @@
-import chromium from '@sparticuz/chromium';
+import chromium from 'chrome-aws-lambda';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
@@ -87,10 +87,10 @@ export const handler = async (_event: LambdaEvent): Promise<{
   try {
     console.log('Starting browser...');
     browser = await puppeteer.launch({
-      args: [...chromium.args, '--disable-web-security', '--ignore-certificate-errors'],
+      args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: true
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless
     });
     
     console.log('Browser started, opening White House page...');

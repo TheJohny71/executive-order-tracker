@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "esbuild index.ts --bundle --minify --platform=node --target=node18 --format=esm --external:@aws-sdk/* --external:@sparticuz/chromium --external:puppeteer-core --outfile=dist/index.mjs"
+    "build": "esbuild index.ts --bundle --minify --platform=node --target=node18 --format=esm --external:@aws-sdk/* --external:chrome-aws-lambda --external:puppeteer-core --outfile=dist/index.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.744.0",
     "@aws-sdk/lib-dynamodb": "^3.744.0",
-    "@sparticuz/chromium": "^119.0.0",
-    "puppeteer-core": "^24.2.0"
+    "chrome-aws-lambda": "^10.1.0",
+    "puppeteer-core": "^10.1.0"
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.474.0",

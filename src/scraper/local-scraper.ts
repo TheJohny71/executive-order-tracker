@@ -1,8 +1,8 @@
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { PrismaClient, DocumentType } from '@prisma/client';
-import type { ScrapedOrder } from '../types';
-import { logger } from '../utils/logger';
+import type { ScrapedOrder } from '../types/index.js';
+import { logger } from '../utils/logger.js';
 import { fileURLToPath } from 'url';
 import { setTimeout } from 'timers/promises';
 
@@ -11,32 +11,36 @@ const BASE_URL = 'https://www.whitehouse.gov/briefing-room/presidential-actions/
 const CURRENT_YEAR = new Date().getFullYear();
 const RATE_LIMIT_DELAY = 1000; // 1 second delay between requests
 
-interface WPBlockData {
-    posts?: any[];
-    items?: any[];
-    data?: any[];
-    rendered?: string;
-    content?: {
-        rendered?: string;
-        raw?: string;
-    };
+interface WPPost {
+    id?: number | string;
+    slug?: string;
+    date?: string;
     title?: {
         rendered?: string;
         raw?: string;
-    };
+    } | string;
+    content?: {
+        rendered?: string;
+        raw?: string;
+    } | string;
     excerpt?: {
         rendered?: string;
         raw?: string;
-    };
-    categories?: number[];
-    agencies?: number[];
+    } | string;
+    link?: string;
+    url?: string;
+}
+
+interface WPBlockData {
+    posts?: WPPost[];
+    items?: WPPost[];
+    data?: WPPost[];
     [key: string]: any;
 }
 
 async function extractJsonData(page: puppeteer.Page): Promise<ScrapedOrder[] | null> {
     try {
         const jsonData = await page.evaluate(() => {
-            // Try multiple possible script selectors
             const selectors = [
                 'script[data-js="block-query:wp-loop"]',
                 'script[type="application/json"]',
@@ -65,7 +69,6 @@ async function extractJsonData(page: puppeteer.Page): Promise<ScrapedOrder[] | n
         logger.info('Found JSON data in script tag, processing...');
         logger.debug('Initial JSON Structure:', JSON.stringify(jsonData, null, 2).slice(0, 500) + '...');
 
-        // Handle different WordPress JSON structures
         const posts = extractPosts(jsonData);
         if (!posts || !Array.isArray(posts)) {
             logger.warn('Could not find posts array in JSON data');
@@ -75,56 +78,59 @@ async function extractJsonData(page: puppeteer.Page): Promise<ScrapedOrder[] | n
         return posts
             .filter(post => {
                 try {
-                    const postDate = new Date(post.date);
+                    const postDate = new Date(post.date || '');
                     return !isNaN(postDate.getTime()) && postDate.getFullYear() >= CURRENT_YEAR;
                 } catch (error) {
                     logger.warn(`Invalid date for post: ${post.id}`, error);
                     return false;
                 }
             })
-            .map(post => transformWPPostToScrapedOrder(post));
+            .map(transformWPPostToScrapedOrder);
     } catch (error) {
         logger.error('Error extracting JSON data:', error);
         return null;
     }
 }
 
-function extractPosts(data: WPBlockData): any[] | null {
+function extractPosts(data: WPBlockData): WPPost[] | null {
     if (Array.isArray(data)) return data;
     if (data.posts) return data.posts;
     if (data.items) return data.items;
     if (data.data) return data.data;
     
-    // Handle nested structures
     const possibleArrays = Object.values(data).filter(Array.isArray);
     if (possibleArrays.length > 0) {
-        // Return the longest array found (likely the posts)
         return possibleArrays.reduce((a, b) => a.length > b.length ? a : b);
     }
     
     return null;
 }
 
-function transformWPPostToScrapedOrder(post: WPBlockData): ScrapedOrder {
-    const title = post.title?.rendered || post.title?.raw || post.title || '';
-    const content = post.content?.rendered || post.content?.raw || post.content || '';
-    const excerpt = post.excerpt?.rendered || post.excerpt?.raw || post.excerpt || '';
+function getStringValue(field: string | { rendered?: string; raw?: string; } | undefined): string {
+    if (!field) return '';
+    if (typeof field === 'string') return field;
+    return field.rendered || field.raw || '';
+}
 
-    // Strip HTML tags from content if needed
+function transformWPPostToScrapedOrder(post: WPPost): ScrapedOrder {
+    const title = getStringValue(post.title);
+    const content = getStringValue(post.content);
+    const excerpt = getStringValue(post.excerpt);
+
     const stripHtml = (html: string) => html.replace(/<[^>]*>/g, '');
 
     return {
-        identifier: post.id?.toString() || post.slug || '',
+        identifier: (post.id?.toString() || post.slug || ''),
         type: determineDocumentType(title),
         title: stripHtml(title),
-        date: new Date(post.date),
+        date: new Date(post.date || ''),
         url: post.link || post.url || '',
         summary: stripHtml(excerpt),
         notes: null,
         content: stripHtml(content),
         statusId: '1',
-        categories: [], // We'll enhance this with actual categories if available
-        agencies: [],  // We'll enhance this with actual agencies if available
+        categories: [],
+        agencies: [],
         isNew: true,
         metadata: {
             orderNumber: extractOrderNumber(title),
@@ -165,7 +171,6 @@ async function scrapePresidentialActions(): Promise<ScrapedOrder[]> {
     try {
         const page = await browser.newPage();
         
-        // Add error handling for navigation
         await page.goto(BASE_URL, { 
             waitUntil: 'networkidle0',
             timeout: 30000 
@@ -174,7 +179,6 @@ async function scrapePresidentialActions(): Promise<ScrapedOrder[]> {
             throw error;
         });
 
-        // Try JSON extraction first
         const jsonActions = await extractJsonData(page);
         if (jsonActions && jsonActions.length > 0) {
             logger.info(`Successfully extracted ${jsonActions.length} actions from JSON data`);
@@ -182,10 +186,7 @@ async function scrapePresidentialActions(): Promise<ScrapedOrder[]> {
         }
 
         logger.info('No JSON data found or empty results, falling back to HTML scraping...');
-        
-        // Fall back to HTML scraping if needed
-        const actions = await scrapeFromHtml(page);
-        return actions;
+        return await scrapeFromHtml(page);
 
     } finally {
         await browser.close();
@@ -210,7 +211,6 @@ async function scrapeFromHtml(page: puppeteer.Page): Promise<ScrapedOrder[]> {
                 timeout: 30000
             });
             
-            // Rate limiting
             await setTimeout(RATE_LIMIT_DELAY);
             
             const pageActions = await page.evaluate(() => {
@@ -241,7 +241,6 @@ async function scrapeFromHtml(page: puppeteer.Page): Promise<ScrapedOrder[]> {
                         timeout: 30000
                     });
                     
-                    // Rate limiting between requests
                     await setTimeout(RATE_LIMIT_DELAY);
                     
                     const details = await page.evaluate(() => {
@@ -289,10 +288,7 @@ async function scrapeFromHtml(page: puppeteer.Page): Promise<ScrapedOrder[]> {
                 return nextButton !== null;
             });
 
-            if (!hasNextPage) {
-                hasMorePages = false;
-            }
-
+            hasMorePages = hasNextPage;
             currentPage++;
             
         } catch (error) {
@@ -304,7 +300,6 @@ async function scrapeFromHtml(page: puppeteer.Page): Promise<ScrapedOrder[]> {
     return actions;
 }
 
-// Main execution
 const currentFile = fileURLToPath(import.meta.url);
 if (process.argv[1] === currentFile) {
     scrapePresidentialActions()

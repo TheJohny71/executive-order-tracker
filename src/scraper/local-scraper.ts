@@ -1,215 +1,324 @@
-import axios from 'axios';
-import { load } from 'cheerio';
-import { parse, isAfter } from 'date-fns';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
+import { PrismaClient, DocumentType } from '@prisma/client';
+import type { ScrapedOrder } from '../types';
+import { logger } from '../utils/logger';
+import { fileURLToPath } from 'url';
+import { setTimeout } from 'timers/promises';
 
-interface PresidentialAction {
-    type: string;
-    title: string;
-    date: string;
-    url: string;
-    timestamp: Date;
+const prisma = new PrismaClient();
+const BASE_URL = 'https://www.whitehouse.gov/briefing-room/presidential-actions/';
+const CURRENT_YEAR = new Date().getFullYear();
+const RATE_LIMIT_DELAY = 1000; // 1 second delay between requests
+
+interface WPBlockData {
+    posts?: any[];
+    items?: any[];
+    data?: any[];
+    rendered?: string;
+    content?: {
+        rendered?: string;
+        raw?: string;
+    };
+    title?: {
+        rendered?: string;
+        raw?: string;
+    };
+    excerpt?: {
+        rendered?: string;
+        raw?: string;
+    };
+    categories?: number[];
+    agencies?: number[];
+    [key: string]: any;
 }
 
-interface ScrapeResult {
-    actions: PresidentialAction[];
-    nextPageUrl: string | undefined;
-}
+async function extractJsonData(page: puppeteer.Page): Promise<ScrapedOrder[] | null> {
+    try {
+        const jsonData = await page.evaluate(() => {
+            // Try multiple possible script selectors
+            const selectors = [
+                'script[data-js="block-query:wp-loop"]',
+                'script[type="application/json"]',
+                'script#wp-block-data',
+                'script[data-type="wp-block-data"]'
+            ];
 
-const START_DATE = new Date('2025-01-01');
-const RELEVANT_TYPES = ['Executive Order', 'Presidential Memorandum'];
+            for (const selector of selectors) {
+                const element = document.querySelector(selector);
+                if (element?.textContent) {
+                    try {
+                        return JSON.parse(element.textContent);
+                    } catch {
+                        continue;
+                    }
+                }
+            }
+            return null;
+        });
 
-function extractDateFromUrl(url: string): Date | null {
-    // Extract date from URLs like /2025/02/establishing-the-presidents.../
-    const dateMatch = url.match(/\/(\d{4})\/(\d{2})\/[^/]+\/?$/);
-    if (dateMatch) {
-        const [_, year, month] = dateMatch;
-        // Use the 1st of the month if day is not available
-        return new Date(`${year}-${month}-01`);
+        if (!jsonData) {
+            logger.debug('No JSON data found in script tags');
+            return null;
+        }
+
+        logger.info('Found JSON data in script tag, processing...');
+        logger.debug('Initial JSON Structure:', JSON.stringify(jsonData, null, 2).slice(0, 500) + '...');
+
+        // Handle different WordPress JSON structures
+        const posts = extractPosts(jsonData);
+        if (!posts || !Array.isArray(posts)) {
+            logger.warn('Could not find posts array in JSON data');
+            return null;
+        }
+
+        return posts
+            .filter(post => {
+                try {
+                    const postDate = new Date(post.date);
+                    return !isNaN(postDate.getTime()) && postDate.getFullYear() >= CURRENT_YEAR;
+                } catch (error) {
+                    logger.warn(`Invalid date for post: ${post.id}`, error);
+                    return false;
+                }
+            })
+            .map(post => transformWPPostToScrapedOrder(post));
+    } catch (error) {
+        logger.error('Error extracting JSON data:', error);
+        return null;
     }
+}
+
+function extractPosts(data: WPBlockData): any[] | null {
+    if (Array.isArray(data)) return data;
+    if (data.posts) return data.posts;
+    if (data.items) return data.items;
+    if (data.data) return data.data;
+    
+    // Handle nested structures
+    const possibleArrays = Object.values(data).filter(Array.isArray);
+    if (possibleArrays.length > 0) {
+        // Return the longest array found (likely the posts)
+        return possibleArrays.reduce((a, b) => a.length > b.length ? a : b);
+    }
+    
     return null;
 }
 
-async function scrapeWhiteHousePage(pageUrl: string): Promise<ScrapeResult> {
-    const response = await axios.get(pageUrl, {
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
-        }
-    });
-    
-    const $ = load(response.data);
-    const actions: PresidentialAction[] = [];
-    
-    // Looking for links and headings that might contain executive orders
-    $('h1, h2, h3').each(function() {
-        const $container = $(this);
-        const $link = $container.find('a').length ? $container.find('a') : $container;
-        const title = $link.text().trim();
-        let url = $link.attr('href') || '';
-        
-        // Skip if no title or clearly not a presidential action
-        if (!title || !url) return;
-        
-        // Make URL absolute if it's relative
-        if (url.startsWith('/')) {
-            url = `https://www.whitehouse.gov${url}`;
-        }
-        
-        // Skip if not in briefing room
-        if (!url.includes('/briefing-room/')) return;
+function transformWPPostToScrapedOrder(post: WPBlockData): ScrapedOrder {
+    const title = post.title?.rendered || post.title?.raw || post.title || '';
+    const content = post.content?.rendered || post.content?.raw || post.content || '';
+    const excerpt = post.excerpt?.rendered || post.excerpt?.raw || post.excerpt || '';
 
-        // Try multiple date sources
-        let timestamp: Date | null = null;
-        
-        // 1. Try to find an explicit date element
-        const dateText = $container.parent().find('time, .date').text().trim();
-        if (dateText) {
-            try {
-                timestamp = parse(dateText, 'MMMM d, yyyy', new Date());
-                if (isNaN(timestamp.getTime())) {
-                    timestamp = null;
-                }
-            } catch (e) {
-                timestamp = null;
-            }
-        }
-        
-        // 2. If no date found, try to extract from URL
-        if (!timestamp) {
-            timestamp = extractDateFromUrl(url);
-        }
-        
-        // Skip if no valid date found or before 2025
-        if (!timestamp || !isAfter(timestamp, START_DATE)) return;
-        
-        // Determine type based on title and URL
-        let type = 'Other';
-        const titleLower = title.toLowerCase();
-        const urlLower = url.toLowerCase();
-        
-        if (titleLower.includes('executive order') || urlLower.includes('executive-order')) {
-            type = 'Executive Order';
-        } else if (titleLower.includes('memorandum') || urlLower.includes('memorandum')) {
-            type = 'Presidential Memorandum';
-        }
-        
-        // Only include relevant types
-        if (RELEVANT_TYPES.includes(type)) {
-            actions.push({
-                type,
-                title,
-                date: timestamp.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                }),
-                url,
-                timestamp
-            });
-        }
-    });
-    
-    // Check for next page
-    const nextPageUrl = $('a.next-posts-link, a.next, link[rel="next"]').attr('href');
-    
-    console.log(`Found ${actions.length} relevant actions on page ${pageUrl}`);
-    
+    // Strip HTML tags from content if needed
+    const stripHtml = (html: string) => html.replace(/<[^>]*>/g, '');
+
     return {
-        actions,
-        nextPageUrl
+        identifier: post.id?.toString() || post.slug || '',
+        type: determineDocumentType(title),
+        title: stripHtml(title),
+        date: new Date(post.date),
+        url: post.link || post.url || '',
+        summary: stripHtml(excerpt),
+        notes: null,
+        content: stripHtml(content),
+        statusId: '1',
+        categories: [], // We'll enhance this with actual categories if available
+        agencies: [],  // We'll enhance this with actual agencies if available
+        isNew: true,
+        metadata: {
+            orderNumber: extractOrderNumber(title),
+            categories: [],
+            agencies: []
+        }
     };
 }
 
-async function main() {
+function extractOrderNumber(title: string): string | undefined {
+    const match = title.match(/\b(?:Executive Order|EO)\s+(\d+)\b/i);
+    return match?.[1];
+}
+
+function determineDocumentType(title: string): DocumentType {
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes('executive order')) {
+        return DocumentType.EXECUTIVE_ORDER;
+    } else if (lowerTitle.includes('memorandum')) {
+        return DocumentType.MEMORANDUM;
+    } else if (lowerTitle.includes('proclamation')) {
+        return DocumentType.PROCLAMATION;
+    }
+    return DocumentType.EXECUTIVE_ORDER;
+}
+
+async function scrapePresidentialActions(): Promise<ScrapedOrder[]> {
+    logger.info(`Starting scrape for presidential actions from ${CURRENT_YEAR}...`);
+    
+    const browser = await puppeteer.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+        ignoreHTTPSErrors: true,
+    });
+    
     try {
-        console.log('Starting scrape for executive orders and memos from 2025...');
+        const page = await browser.newPage();
         
-        let currentPage = 1;
-        let currentUrl = 'https://www.whitehouse.gov/briefing-room/presidential-actions/';
-        const allActions: PresidentialAction[] = [];
-        let continueScraping = true;
-        
-        while (continueScraping && currentPage <= 5) { // Limit to 5 pages for safety
-            console.log(`\nScraping page ${currentPage}...`);
-            
-            try {
-                const result = await scrapeWhiteHousePage(currentUrl);
-                
-                // Add new actions to our collection
-                allActions.push(...result.actions);
-                
-                // Check if we should continue to the next page
-                if (result.nextPageUrl) {
-                    currentUrl = result.nextPageUrl;
-                    currentPage++;
-                } else {
-                    continueScraping = false;
-                }
-                
-                // Add a small delay between requests
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-            } catch (error) {
-                console.error(`Error scraping page ${currentPage}:`, error);
-                continueScraping = false;
-            }
+        // Add error handling for navigation
+        await page.goto(BASE_URL, { 
+            waitUntil: 'networkidle0',
+            timeout: 30000 
+        }).catch(error => {
+            logger.error('Navigation failed:', error);
+            throw error;
+        });
+
+        // Try JSON extraction first
+        const jsonActions = await extractJsonData(page);
+        if (jsonActions && jsonActions.length > 0) {
+            logger.info(`Successfully extracted ${jsonActions.length} actions from JSON data`);
+            return jsonActions;
         }
 
-        // Sort actions by date (newest first)
-        allActions.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-
-        console.log('\nScraping completed!');
-        console.log(`Total actions found: ${allActions.length}`);
+        logger.info('No JSON data found or empty results, falling back to HTML scraping...');
         
-        if (allActions.length === 0) {
-            console.log('\nNo actions found. This could mean:');
-            console.log('1. The website structure might have changed');
-            console.log('2. There might be no executive orders or memorandums yet');
-            console.log('3. The date detection might need adjustment');
-            
-            // Debug output
-            console.log('\nDebug: Showing all h1, h2, h3 elements found:');
-            const response = await axios.get(currentUrl);
-            const $ = load(response.data);
-            $('h1, h2, h3').each(function() {
-                console.log('Title:', $(this).text().trim());
-                const href = $(this).find('a').attr('href');
-                if (href) console.log('URL:', href);
-                console.log('---');
-            });
-        } else {
-            // Display type breakdown
-            const typeCounts = allActions.reduce((acc, curr) => {
-                acc[curr.type] = (acc[curr.type] || 0) + 1;
-                return acc;
-            }, {} as Record<string, number>);
-            
-            console.log('\nBreakdown by type:');
-            Object.entries(typeCounts).forEach(([type, count]) => {
-                console.log(`${type}: ${count}`);
-            });
+        // Fall back to HTML scraping if needed
+        const actions = await scrapeFromHtml(page);
+        return actions;
 
-            // Display all found actions
-            console.log('\nAll actions found (newest first):');
-            allActions.forEach((action, index) => {
-                console.log(`\n${index + 1}. ${action.title}`);
-                console.log(`   Type: ${action.type}`);
-                console.log(`   Date: ${action.date}`);
-                console.log(`   URL: ${action.url}`);
-            });
-        }
-        
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Network error:', {
-                status: error.response?.status,
-                message: error.message,
-                data: error.response?.data
-            });
-        } else {
-            console.error('Error:', error);
-        }
-        process.exit(1);
+    } finally {
+        await browser.close();
     }
 }
 
-main();
+async function scrapeFromHtml(page: puppeteer.Page): Promise<ScrapedOrder[]> {
+    const actions: ScrapedOrder[] = [];
+    let currentPage = 1;
+    let hasMorePages = true;
+
+    while (hasMorePages && currentPage <= 5) {
+        const url = currentPage === 1 
+            ? BASE_URL 
+            : `${BASE_URL}page/${currentPage}/`;
+        
+        logger.info(`Scraping page ${currentPage}...`);
+        
+        try {
+            await page.goto(url, { 
+                waitUntil: 'networkidle0',
+                timeout: 30000
+            });
+            
+            // Rate limiting
+            await setTimeout(RATE_LIMIT_DELAY);
+            
+            const pageActions = await page.evaluate(() => {
+                const actionElements = document.querySelectorAll('h2 a, h3 a');
+                return Array.from(actionElements).map(link => {
+                    const container = link.closest('article') || link.closest('li');
+                    
+                    const title = link.textContent?.trim() || '';
+                    const url = link.getAttribute('href') || '';
+                    
+                    const dateElement = container?.querySelector('time') || 
+                                      container?.querySelector('.date, .entry-date');
+                    const date = dateElement?.textContent?.trim() || '';
+                    
+                    return { title, url, date };
+                }).filter(action => action.title && action.url);
+            });
+
+            const relevantActions = pageActions.filter(action => 
+                action.url.includes(`/${CURRENT_YEAR}/`)
+            );
+            
+            for (const action of relevantActions) {
+                try {
+                    logger.info(`Visiting ${action.title}...`);
+                    await page.goto(action.url, { 
+                        waitUntil: 'networkidle0',
+                        timeout: 30000
+                    });
+                    
+                    // Rate limiting between requests
+                    await setTimeout(RATE_LIMIT_DELAY);
+                    
+                    const details = await page.evaluate(() => {
+                        const content = document.body.textContent || '';
+                        const dateElement = document.querySelector('time') || 
+                                          document.querySelector('.date, .entry-date');
+                        return {
+                            content,
+                            date: dateElement?.textContent?.trim()
+                        };
+                    });
+                    
+                    const scrapedOrder: ScrapedOrder = {
+                        identifier: action.url.split('/').pop() || '',
+                        type: determineDocumentType(action.title),
+                        title: action.title,
+                        date: new Date(action.date || details.date || ''),
+                        url: action.url,
+                        summary: '',
+                        notes: null,
+                        content: details.content || null,
+                        statusId: '1',
+                        categories: [],
+                        agencies: [],
+                        isNew: true,
+                        metadata: {
+                            orderNumber: extractOrderNumber(action.title)
+                        }
+                    };
+                    
+                    if (!isNaN(scrapedOrder.date.getTime())) {
+                        actions.push(scrapedOrder);
+                    } else {
+                        logger.warn(`Invalid date for action: ${action.title}`);
+                    }
+                    
+                } catch (error) {
+                    logger.error(`Error processing action ${action.title}:`, error);
+                    continue;
+                }
+            }
+
+            const hasNextPage = await page.evaluate(() => {
+                const nextButton = document.querySelector('.pagination-next');
+                return nextButton !== null;
+            });
+
+            if (!hasNextPage) {
+                hasMorePages = false;
+            }
+
+            currentPage++;
+            
+        } catch (error) {
+            logger.error(`Error processing page ${currentPage}:`, error);
+            hasMorePages = false;
+        }
+    }
+
+    return actions;
+}
+
+// Main execution
+const currentFile = fileURLToPath(import.meta.url);
+if (process.argv[1] === currentFile) {
+    scrapePresidentialActions()
+        .then(results => {
+            logger.info('Scraping completed successfully', {
+                totalResults: results.length,
+                types: results.map(r => r.type)
+            });
+            process.exit(0);
+        })
+        .catch(error => {
+            logger.error('Scraper execution failed:', error);
+            process.exit(1);
+        });
+}
+
+export { scrapePresidentialActions };

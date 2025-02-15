@@ -6,7 +6,7 @@
     "build": "esbuild index.ts --bundle --minify --platform=node --target=node18 --format=esm --external:@aws-sdk/* --external:@sparticuz/chromium --external:puppeteer-core --outfile=dist/index.mjs",
     "dev": "NODE_OPTIONS=\"--loader ts-node/esm\" node src/scraper/local-scraper.ts",
     "scrape:local": "NODE_OPTIONS=\"--loader ts-node/esm\" node src/scraper/local-scraper.ts",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "deploy": "sam deploy"
@@ -52,28 +52,5 @@
   },
   "engines": {
     "node": ">=18.0.0"
-  },
-  "jest": {
-    "preset": "ts-jest/presets/default-esm",
-    "testEnvironment": "node",
-    "extensionsToTreatAsEsm": [".ts"],
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1",
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "transform": {
-      "^.+\\.tsx?$": ["ts-jest", {
-        "useESM": true,
-        "tsconfig": {
-          "jsx": "react-jsx"
-        }
-      }]
-    },
-    "modulePathIgnorePatterns": [
-      "<rootDir>/dist/",
-      "<rootDir>/scraper-lambda/deploy/",
-      "<rootDir>/scraper-lambda/temp_deploy/",
-      "<rootDir>/.next/"
-    ]
   }
 }

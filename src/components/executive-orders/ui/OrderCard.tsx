@@ -1,165 +1,171 @@
-// src/components/executive-orders/ui/OrderCard.tsx
-import React from "react";
-import { ChevronDown } from "lucide-react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+// File: src/components/executive-orders/ui/OrderCard.tsx
+import React, { useState } from 'react';
+import { 
+  ChevronDown, 
+  ChevronUp, 
+  Download, 
+  Link, 
+  GitCompare,
+  Bookmark,
+  MessageSquare 
+} from 'lucide-react';
+import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import type { Order, FilterType } from "@/types";
+} from '@/components/ui/collapsible';
+import type { Order } from '@/types';
 
 interface OrderCardProps {
   order: Order;
-  viewMode: "expanded" | "compact";
-  isComparing: boolean;
-  compareItems: Order[];
-  onCompareToggle: (order: Order) => void;
-  onRecentlyViewed: (order: Order) => void;
-  onFilterChange: (type: FilterType, value: string) => void;
+  isSelectable?: boolean;
+  onSelect?: (order: Order) => void;
+  className?: string;
 }
+
+type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
+
+const getBadgeVariant = (status: string): BadgeVariant => {
+  switch (status.toLowerCase()) {
+    case 'active':
+      return 'default';
+    case 'pending':
+      return 'secondary';
+    case 'cancelled':
+      return 'destructive';
+    default:
+      return 'outline';
+  }
+};
 
 export function OrderCard({
   order,
-  viewMode,
-  isComparing,
-  compareItems,
-  onCompareToggle,
-  onRecentlyViewed,
-  onFilterChange,
+  isSelectable = false,
+  onSelect,
+  className = ''
 }: OrderCardProps) {
-  const handleCategoryClick = (category: string | null) => {
-    if (category) {
-      onFilterChange("category", category);
-    }
-  };
-
-  const handleAgencyClick = (agency: string | null) => {
-    if (agency) {
-      onFilterChange("agency", agency);
-    }
-  };
-
-  const getStatusColor = (statusName: string) => {
-    switch (statusName.toLowerCase()) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "revoked":
-        return "bg-red-100 text-red-800";
-      case "superseded":
-        return "bg-yellow-100 text-yellow-800";
-      case "amended":
-        return "bg-blue-100 text-blue-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Card
-      className={`transform transition-all duration-200 hover:shadow-lg
-        ${viewMode === "compact" ? "border-l-4" : ""} ${order.category?.toLowerCase() || ""}`}
-    >
-      <Collapsible>
-        <CardHeader className="p-6">
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <Badge
-                  variant={
-                    order.type === "EXECUTIVE_ORDER" ? "default" : "secondary"
-                  }
-                >
-                  {order.type === "EXECUTIVE_ORDER"
-                    ? "Executive Order"
-                    : "Memorandum"}
+    <Card className={`transition-all duration-200 ${className}`}>
+      <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="cursor-pointer hover:bg-gray-50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-start space-x-4">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {order.title}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Published {new Date(order.datePublished).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Badge variant={getBadgeVariant(order.status.name)}>
+                  {order.status.name}
                 </Badge>
-                <Badge variant="outline">#{order.number}</Badge>
-                {order.status?.name && (
-                  <Badge className={getStatusColor(order.status.name)}>
-                    {order.status.name}
-                  </Badge>
+                {isExpanded ? (
+                  <ChevronUp className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-gray-400" />
                 )}
-                <span className="text-sm text-gray-500">
-                  {new Date(order.datePublished).toLocaleDateString()}
-                </span>
               </div>
-              <CollapsibleTrigger
-                className="flex items-center gap-2 hover:text-blue-600 transition-colors"
-                onClick={() => onRecentlyViewed(order)}
-              >
-                <h3 className="text-xl font-semibold">{order.title}</h3>
-                <ChevronDown className="h-4 w-4" />
-              </CollapsibleTrigger>
             </div>
-            {isComparing && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onCompareToggle(order)}
-              >
-                {compareItems.find((o) => o.id === order.id)
-                  ? "Remove"
-                  : "Compare"}
-              </Button>
-            )}
-          </div>
-        </CardHeader>
+          </CardHeader>
+        </CollapsibleTrigger>
+
         <CollapsibleContent>
-          <CardContent className="px-6 pb-6 pt-0">
-            <div className="flex justify-between items-start">
-              <div className="space-y-4 flex-1">
-                {order.summary && (
-                  <div>
-                    <h3 className="font-medium text-gray-900">Summary</h3>
-                    <p className="mt-1 text-gray-600">{order.summary}</p>
-                  </div>
-                )}
-                {order.category && (
-                  <div>
-                    <h3 className="font-medium text-gray-900">Category</h3>
-                    <div className="mt-1">
-                      <Badge
-                        variant="outline"
-                        className="cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleCategoryClick(order.category)}
-                      >
-                        {order.category}
-                      </Badge>
-                    </div>
-                  </div>
-                )}
-                {order.agency && (
-                  <div>
-                    <h3 className="font-medium text-gray-900">Agency</h3>
-                    <div className="mt-1">
-                      <Badge
-                        variant="outline"
-                        className="cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleAgencyClick(order.agency)}
-                      >
-                        {order.agency}
-                      </Badge>
-                    </div>
-                  </div>
-                )}
+          <CardContent className="pt-4 pb-2">
+            <div className="space-y-4">
+              {/* Summary */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-500 mb-2">
+                  Summary
+                </h4>
+                <p className="text-gray-700">{order.summary}</p>
               </div>
-              <div className="ml-6 flex flex-col items-end">
-                {order.link && (
-                  <a
-                    href={order.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                  >
-                    View on whitehouse.gov
-                  </a>
-                )}
+
+              {/* Metadata */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Agency */}
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">
+                    Agency
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline">
+                      {order.agency || 'N/A'}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Category */}
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">
+                    Category
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline">
+                      {order.category}
+                    </Badge>
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>
+
+          <CardFooter className="border-t pt-4">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center space-x-2">
+                <Button variant="outline" size="sm">
+                  <Bookmark className="h-4 w-4 mr-2" />
+                  Save
+                </Button>
+                <Button variant="outline" size="sm">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Comment
+                </Button>
+                {isSelectable && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelect?.(order);
+                    }}
+                  >
+                    <GitCompare className="h-4 w-4 mr-2" />
+                    Compare
+                  </Button>
+                )}
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Button variant="ghost" size="sm">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+                {order.link && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(order.link, '_blank');
+                    }}
+                  >
+                    <Link className="h-4 w-4 mr-2" />
+                    Source
+                  </Button>
+                )}
+              </div>
+            </div>
+          </CardFooter>
         </CollapsibleContent>
       </Collapsible>
     </Card>

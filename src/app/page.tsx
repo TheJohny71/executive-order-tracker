@@ -1,24 +1,12 @@
-"use client";
+// File: src/app/page.tsx
+// Description: Main app page that renders the tracker
 
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
-import { ErrorBoundary } from "@/components/error/ErrorBoundary";
-import { LoadingFallback } from "@/components/loading/LoadingFallback";
-
-const ExecutiveOrderTracker = dynamic(
-  () => import("@/components/executive-orders/ExecutiveOrderTracker"),
-  {
-    loading: () => <LoadingFallback />,
-    ssr: false,
-  },
-);
+import { TrackerRoot } from '@/components/executive-orders/TrackerRoot';
 
 export default function Home() {
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <ErrorBoundary>
-        <ExecutiveOrderTracker />
-      </ErrorBoundary>
-    </Suspense>
+    <div className="min-h-screen bg-gray-50">
+      <TrackerRoot />
+    </div>
   );
 }

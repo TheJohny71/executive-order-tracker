@@ -3,30 +3,43 @@
 
 import React, { useState, useCallback } from 'react';
 import { useOrders } from '@/hooks/useOrders';
+import { useOrderComparison } from '@/hooks/useOrderComparison';
 import { TrackerLayout } from './layouts/TrackerLayout';
 import { TrackerHeader } from './layouts/TrackerHeader';
 import { TrackerSidebar } from './layouts/TrackerSidebar';
 import { OrderList } from './features/OrderList';
-import type { OrderFilters } from '@/types';
+import { OrderComparison } from './features/OrderComparison';
+import type { OrderFilters, Order } from '@/types';
 
 const initialFilters: OrderFilters = {
   type: 'all',
   category: '',
   agency: '',
-  status: '',
+  statusId: null, // Changed from status to statusId
   search: '',
   page: 1,
-  limit: 10
+  limit: 10,
+  sort: 'desc'
 };
 
 export function TrackerRoot() {
   // State management
   const [filters, setFilters] = useState<OrderFilters>(initialFilters);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isComparing, setIsComparing] = useState(false);
+  
+  // Order comparison state
+  const {
+    selectedOrders,
+    isComparing,
+    canAddToComparison,
+    addOrder,
+    removeOrder,
+    clearComparison,
+    toggleComparison
+  } = useOrderComparison();
 
   // Fetch orders using your existing hook
-  const { data, loading, error, mutate } = useOrders(filters);
+  const { data, loading, error } = useOrders(filters); // Removed mutate as it's not in the type
 
   // Callback handlers
   const handleSearch = useCallback((query: string) => {
@@ -47,10 +60,6 @@ export function TrackerRoot() {
     console.log('Export clicked');
   }, []);
 
-  const handleCompare = useCallback(() => {
-    setIsComparing(prev => !prev);
-  }, []);
-
   const handleThemeToggle = useCallback(() => {
     setIsDarkMode(prev => !prev);
   }, []);
@@ -59,10 +68,12 @@ export function TrackerRoot() {
   if (error) {
     return (
       <div className="p-8 text-center">
-        <p className="text-red-500">Error loading orders: {error.message}</p>
+        <p className="text-red-500">Error loading orders: {error}</p>
       </div>
     );
   }
+
+  const lastUpdated = data?.metadata?.lastUpdate || new Date(); // Added fallback
 
   return (
     <div className={isDarkMode ? 'dark' : ''}>
@@ -72,29 +83,37 @@ export function TrackerRoot() {
         onThemeToggle={handleThemeToggle}
       />
       
-      <TrackerLayout orders={data?.orders || []} lastUpdate={data?.metadata?.lastUpdated}>
-        <div className="flex gap-6">
-          <TrackerSidebar
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            categories={data?.metadata?.categories || []}
-            agencies={data?.metadata?.agencies || []}
-            statuses={data?.metadata?.statuses || []}
-            onExport={handleExport}
-            onCompare={handleCompare}
+      <TrackerLayout orders={data?.orders || []} lastUpdate={lastUpdated}>
+        {isComparing && selectedOrders.length > 0 ? (
+          <OrderComparison
+            orders={selectedOrders}
+            onClose={clearComparison}
+            onRemoveOrder={removeOrder}
           />
-          
-          <main className="flex-1">
-            <OrderList
-              orders={data?.orders || []}
-              loading={loading}
-              isComparing={isComparing}
-              onOrderSelect={handleCompare}
-              pagination={data?.pagination}
-              onPageChange={(page) => setFilters(prev => ({ ...prev, page }))}
+        ) : (
+          <div className="flex gap-6">
+            <TrackerSidebar
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              categories={data?.metadata?.categories || []}
+              agencies={data?.metadata?.agencies || []}
+              statuses={data?.metadata?.statuses || []}
+              onExport={handleExport}
+              onCompare={toggleComparison}
             />
-          </main>
-        </div>
+            
+            <main className="flex-1">
+              <OrderList
+                orders={data?.orders || []}
+                loading={loading}
+                isComparing={isComparing}
+                onOrderSelect={addOrder}
+                pagination={data?.pagination}
+                onPageChange={(page) => setFilters(prev => ({ ...prev, page }))}
+              />
+            </main>
+          </div>
+        )}
       </TrackerLayout>
     </div>
   );

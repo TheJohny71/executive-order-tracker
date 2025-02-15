@@ -1,11 +1,8 @@
 // File: src/components/executive-orders/features/OrderList.tsx
-// Description: Displays the list of orders with support for comparison mode
-
 import React from 'react';
-import { Card } from '@/components/ui/card';
 import { OrderCard } from '../ui/OrderCard';
-import { LoadingSkeleton } from '../ui/LoadingSkeleton';
 import { Pagination } from '@/components/ui/pagination';
+import { LoadingSkeleton } from '@/components/ui/skeleton'; // Fixed import path
 import type { Order, PaginationData } from '@/types';
 
 interface OrderListProps {
@@ -17,42 +14,49 @@ interface OrderListProps {
   onPageChange: (page: number) => void;
 }
 
-export function OrderList({
+export const OrderList: React.FC<OrderListProps> = ({
   orders,
   loading,
   isComparing,
   onOrderSelect,
   pagination,
-  onPageChange
-}: OrderListProps) {
+  onPageChange,
+}) => {
   if (loading) {
     return <LoadingSkeleton />;
   }
 
+  if (!orders.length) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-gray-500">No orders found</p>
+      </div>
+    );
+  }
+
+  const totalPages = pagination ? Math.ceil(pagination.total / pagination.limit) : 1;
+  const currentPage = pagination ? pagination.page : 1;
+
   return (
     <div className="space-y-4">
-      {/* Orders list */}
       <div className="grid gap-4">
         {orders.map((order) => (
           <OrderCard
             key={order.id}
             order={order}
-            isSelectable={isComparing}
+            isComparing={isComparing}
             onSelect={() => onOrderSelect(order)}
           />
         ))}
       </div>
 
-      {/* Pagination */}
       {pagination && (
-        <div className="mt-6">
-          <Pagination
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            onPageChange={onPageChange}
-          />
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
       )}
     </div>
   );
-}
+};

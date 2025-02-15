@@ -12,23 +12,16 @@ const config: JestConfigWithTsJest = {
     '^.+\\.tsx?$': [
       'ts-jest',
       {
-        useESM: true,
-        tsconfig: {
-          jsx: 'react-jsx',
-          module: 'NodeNext',
-          moduleResolution: 'NodeNext'
-        }
-      },
-    ],
+        useESM: true
+      }
+    ]
   },
   modulePathIgnorePatterns: [
     '<rootDir>/dist/',
     '<rootDir>/scraper-lambda/deploy/',
     '<rootDir>/scraper-lambda/temp_deploy/',
     '<rootDir>/.next/'
-  ],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts']
+  ]
 };
 
 export default config;

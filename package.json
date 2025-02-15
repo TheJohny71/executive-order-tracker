@@ -9,7 +9,8 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "deploy": "sam deploy"
+    "deploy": "sam deploy",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.504.0",

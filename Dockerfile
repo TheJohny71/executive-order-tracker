@@ -1,5 +1,9 @@
 FROM public.ecr.aws/lambda/nodejs:18
 
+# Set npm version explicitly and configure npm
+RUN npm install -g npm@latest && \
+    npm config set registry https://registry.npmjs.org/
+
 # Install Chrome dependencies
 RUN yum install -y \
     atk \
@@ -26,14 +30,16 @@ RUN yum install -y \
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 
-# Copy package files and install dependencies
+# Copy package files
 COPY package*.json ./
 COPY tsconfig.json ./
-RUN npm install --legacy-peer-deps
+
+# Install dependencies with verbose logging and proper flags
+RUN npm install --legacy-peer-deps --verbose || exit 1
 
 # Copy and build TypeScript files
-COPY *.ts ./
-RUN npm run build
+COPY . ./
+RUN npm run build || exit 1
 
 # Clean up dev dependencies
 RUN npm prune --production --legacy-peer-deps

@@ -1,50 +1,90 @@
 {
   "compilerOptions": {
+    // Sets the ECMAScript version target for emitted JS
     "target": "es2020",
+
+    // Libraries included in the compilation (DOM, etc.)
     "lib": ["dom", "dom.iterable", "esnext"],
+
+    // How JSX is transformed
     "jsx": "preserve",
+
+    // For Next.js 13+ with ESM modules
     "module": "esnext",
     "moduleResolution": "bundler",
+
+    // Helpful for absolute imports like `@/components/...`
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
+
+    // Allows importing .json files
     "resolveJsonModule": true,
+
+    // Include standard type definitions
     "types": ["node", "react", "react-dom", "jest"],
     "typeRoots": ["./node_modules/@types", "./src/types"],
+
+    // Let you include JavaScript files (if you need them)
     "allowJs": true,
     "checkJs": false,
+
+    // Next.js doesn't need emitted files
     "noEmit": true,
+
+    // Speeds up incremental builds
     "incremental": true,
+
+    // Ensures each file is treated as a separate module
     "isolatedModules": true,
+
+    // Strict type-checking
     "strict": true,
     "strictNullChecks": true,
-    "noImplicitAny": false,
+    "noImplicitAny": false, // You can set to `true` if you want more strictness
+
+    // Warnings or errors for unused items
     "noUnusedLocals": false,
     "noUnusedParameters": false,
+
+    // Good practice checks
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": false,
     "useUnknownInCatchVariables": true,
+
+    // Allows default imports even if they don’t exist in the type system
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+
+    // Ensures file name casing consistency
     "forceConsistentCasingInFileNames": true,
+
+    // Skips .d.ts checking for faster builds
     "skipLibCheck": true,
+
+    // Next.js plugin
     "plugins": [
       {
         "name": "next"
       }
     ]
   },
+
+  // Override compilerOptions when using ts-node locally (e.g., for scripts)
   "ts-node": {
     "esm": true,
     "experimentalSpecifiers": true,
     "transpileOnly": true,
     "compilerOptions": {
+      // For local scripts in ESM style
       "module": "NodeNext",
       "moduleResolution": "NodeNext"
     }
   },
+
+  // Files and folders to include
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -57,6 +97,8 @@
     "jest.config.ts",
     "src/types/declarations.d.ts"
   ],
+
+  // Files and folders to exclude
   "exclude": [
     "node_modules",
     "dist",

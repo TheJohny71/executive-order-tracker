@@ -1,4 +1,4 @@
-// src/scraper/localScraper.ts
+// src/scraper/local-scraper.ts
 
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
@@ -12,8 +12,10 @@ import { setTimeout } from 'timers/promises';
 
 const prisma = new PrismaClient();
 const BASE_URL = 'https://www.whitehouse.gov/briefing-room/presidential-actions/';
-const CURRENT_YEAR = new Date().getFullYear();
 const RATE_LIMIT_DELAY = 1000; // 1 second delay
+
+// Define the lower date for filtering posts
+const lowerDate = new Date('2025-01-01');
 
 interface WPPost {
   id?: number | string;
@@ -82,11 +84,12 @@ async function extractJsonData(page: Page): Promise<ScrapedOrder[] | null> {
       return null;
     }
 
+    // Filter posts based on the lower date (January 1, 2025)
     return posts
       .filter((post) => {
         try {
           const postDate = new Date(post.date || '');
-          return !isNaN(postDate.getTime()) && postDate.getFullYear() >= CURRENT_YEAR;
+          return !isNaN(postDate.getTime()) && postDate >= lowerDate;
         } catch (error) {
           logger.warn(`Invalid date for post: ${post.id}`, error);
           return false;
@@ -168,7 +171,7 @@ function determineDocumentType(title: string): DocumentType {
 }
 
 export async function scrapePresidentialActions(): Promise<ScrapedOrder[]> {
-  logger.info(`Starting scrape for presidential actions from ${CURRENT_YEAR}...`);
+  logger.info(`Starting scrape for presidential actions from ${lowerDate.toDateString()} onward...`);
 
   // Puppeteer Launch Options
   const launchOptions: LaunchOptions = {
@@ -215,10 +218,9 @@ async function scrapeFromHtml(page: Page): Promise<ScrapedOrder[]> {
   let currentPage = 1;
   let hasMorePages = true;
 
-  while (hasMorePages && currentPage <= 5) {
-    const url =
-      currentPage === 1 ? BASE_URL : `${BASE_URL}page/${currentPage}/`;
-
+  while (hasMorePages) {
+    // Determine URL for current page
+    const url = currentPage === 1 ? BASE_URL : `${BASE_URL}page/${currentPage}/`;
     logger.info(`Scraping page ${currentPage}...`);
 
     try {
@@ -239,6 +241,7 @@ async function scrapeFromHtml(page: Page): Promise<ScrapedOrder[]> {
           const title = element.textContent?.trim() || '';
           const url = element.getAttribute('href') || '';
 
+          // Attempt to get a date string from the nearest time element
           const dateElement =
             container?.querySelector('time') ||
             container?.querySelector('.date, .entry-date');
@@ -248,19 +251,15 @@ async function scrapeFromHtml(page: Page): Promise<ScrapedOrder[]> {
         }).filter((action) => action.title && action.url);
       });
 
-      // Only keep actions for the current year
-      const relevantActions = pageActions.filter((action) =>
-        action.url.includes(`/${CURRENT_YEAR}/`)
-      );
-
-      for (const action of relevantActions) {
+      // Process each action by visiting its URL and fetching details
+      let foundNewerPosts = false;
+      for (const action of pageActions) {
         try {
           logger.info(`Visiting ${action.title}...`);
           await page.goto(action.url, {
             waitUntil: 'networkidle0',
             timeout: 30000
           });
-
           await setTimeout(RATE_LIMIT_DELAY);
 
           const details = await page.evaluate(() => {
@@ -274,11 +273,19 @@ async function scrapeFromHtml(page: Page): Promise<ScrapedOrder[]> {
             };
           });
 
+          const postDate = new Date(action.date || details.date || '');
+          if (isNaN(postDate.getTime()) || postDate < lowerDate) {
+            logger.warn(`Skipping action "${action.title}" as its date is before ${lowerDate.toDateString()}`);
+            continue;
+          }
+
+          foundNewerPosts = true; // at least one post on this page meets the criteria
+
           const scrapedOrder: ScrapedOrder = {
             identifier: action.url.split('/').pop() || '',
             type: determineDocumentType(action.title),
             title: action.title,
-            date: new Date(action.date || details.date || ''),
+            date: postDate,
             url: action.url,
             summary: '',
             notes: null,
@@ -294,34 +301,37 @@ async function scrapeFromHtml(page: Page): Promise<ScrapedOrder[]> {
             }
           };
 
-          if (!isNaN(scrapedOrder.date.getTime())) {
-            actions.push(scrapedOrder);
-          } else {
-            logger.warn(`Invalid date for action: ${action.title}`);
-          }
+          actions.push(scrapedOrder);
         } catch (error) {
           logger.error(`Error processing action ${action.title}:`, error);
           continue;
         }
       }
 
+      // If no actions on this page met the date criteria, assume no more newer posts exist.
+      if (!foundNewerPosts) {
+        logger.info(`No posts on page ${currentPage} are after ${lowerDate.toDateString()}. Ending pagination.`);
+        break;
+      }
+
+      // Check if there is a next page button available
       const hasNextPage = await page.evaluate(() => {
         const nextButton = document.querySelector('.pagination-next');
         return nextButton !== null;
       });
 
-      hasMorePages = hasNextPage;
+      if (!hasNextPage) break;
       currentPage++;
     } catch (error) {
       logger.error(`Error processing page ${currentPage}:`, error);
-      hasMorePages = false;
+      break;
     }
   }
 
   return actions;
 }
 
-// If you want to run this file directly with `ts-node src/scraper/localScraper.ts`:
+// If you want to run this file directly with `ts-node src/scraper/local-scraper.ts`:
 const currentFile = fileURLToPath(import.meta.url);
 if (process.argv[1] === currentFile) {
   scrapePresidentialActions()
@@ -337,3 +347,4 @@ if (process.argv[1] === currentFile) {
       process.exit(1);
     });
 }
+

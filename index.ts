@@ -1,55 +1,28 @@
-import chromium from "@sparticuz/chromium";
-import puppeteer from "puppeteer-core";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import chromium from '@sparticuz/chromium';
+import puppeteer, { Browser } from 'puppeteer-core';
+import type { LaunchOptions } from 'puppeteer-core';
 
-export const handler = async (event: any) => {
-  let browser = null;
+const launchBrowser = async (): Promise<Browser> => {
+  const executablePath = await chromium.executablePath();
 
-  try {
-    // Configure Chromium
-    chromium.setHeadlessMode = true;
-    chromium.setGraphicsMode = false;
+  const options: LaunchOptions = {
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath,
+    headless: true,
+    ignoreHTTPSErrors: true // Changed from ignoreHTTPSErrors to match LaunchOptions type
+  };
 
-    // Launch browser
-    browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-      ignoreHTTPSErrors: true,
-    });
-
-    // Rest of your scraping code...
-
-    return {
-      statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        success: true,
-        message: "Scraping completed successfully",
-      }),
-    };
-  } catch (error) {
-    console.error("Error:", error);
-    return {
-      statusCode: 500,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        success: false,
-        message: "Scraping failed",
-        error: error.message,
-      }),
-    };
-  } finally {
-    if (browser !== null) {
-      await browser.close();
-    }
-  }
+  const browser = await puppeteer.launch(options);
+  return browser;
 };
+
+// Ensure browser cleanup
+try {
+  const browser = await launchBrowser();
+  // Your browser operations here
+  await browser.close();
+} catch (err: unknown) {
+  console.error('Browser error:', err);
+  throw err;
+}

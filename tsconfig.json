@@ -39,7 +39,10 @@
   "ts-node": {
     "esm": true,
     "experimentalSpecifiers": true,
-    "transpileOnly": true
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "NodeNext"
+    }
   },
   "include": [
     "next-env.d.ts",
@@ -48,7 +51,17 @@
     ".next/types/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/scraper/**/*.ts"
+    "src/scraper/**/*.ts",
+    "test/**/*.ts",
+    "jest.config.ts"
   ],
-  "exclude": ["node_modules", "dist", ".next", "out", "coverage"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next",
+    "out",
+    "coverage",
+    "scraper-lambda/deploy",
+    "scraper-lambda/temp_deploy"
+  ]
 }

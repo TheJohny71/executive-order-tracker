@@ -1,4 +1,5 @@
-import puppeteer, { Page, Browser, PuppeteerLaunchOptions } from 'puppeteer-core';
+import puppeteer, { Page, Browser } from 'puppeteer-core';
+import type { PuppeteerLaunchOptions } from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { PrismaClient, DocumentType } from '@prisma/client';
 import type { ScrapedOrder } from '../types/index.js';

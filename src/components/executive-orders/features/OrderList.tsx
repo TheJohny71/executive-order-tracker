@@ -1,62 +1,84 @@
 // File: src/components/executive-orders/features/OrderList.tsx
 import React from 'react';
 import { OrderCard } from '../ui/OrderCard';
-import { Pagination } from '@/components/ui/pagination';
-import { LoadingSkeleton } from '@/components/ui/skeleton'; // Fixed import path
-import type { Order, PaginationData } from '@/types';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { Order } from '@/types';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface OrderListProps {
   orders: Order[];
-  loading: boolean;
-  isComparing: boolean;
+  isLoading: boolean;
+  selectedOrders: Order[];
   onOrderSelect: (order: Order) => void;
-  pagination?: PaginationData;
-  onPageChange: (page: number) => void;
 }
 
-export const OrderList: React.FC<OrderListProps> = ({
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-4">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="p-4 border rounded-lg">
+          <Skeleton className="h-4 w-1/4 mb-2" />
+          <Skeleton className="h-6 w-3/4 mb-4" />
+          <Skeleton className="h-20 w-full" />
+          <div className="mt-4 flex gap-2">
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-4 w-20" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function OrderList({
   orders,
-  loading,
-  isComparing,
-  onOrderSelect,
-  pagination,
-  onPageChange,
-}) => {
-  if (loading) {
+  isLoading,
+  selectedOrders,
+  onOrderSelect
+}: OrderListProps) {
+  if (isLoading) {
     return <LoadingSkeleton />;
   }
 
-  if (!orders.length) {
+  if (orders.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-gray-500">No orders found</p>
-      </div>
+      <Alert>
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          No orders found matching the current filters.
+        </AlertDescription>
+      </Alert>
     );
   }
 
-  const totalPages = pagination ? Math.ceil(pagination.total / pagination.limit) : 1;
-  const currentPage = pagination ? pagination.page : 1;
-
   return (
     <div className="space-y-4">
-      <div className="grid gap-4">
-        {orders.map((order) => (
-          <OrderCard
-            key={order.id}
-            order={order}
-            isComparing={isComparing}
-            onSelect={() => onOrderSelect(order)}
-          />
-        ))}
-      </div>
-
-      {pagination && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
+      {orders.map(order => (
+        <OrderCard
+          key={order.id}
+          order={order}
+          isSelectable={true}
+          onSelect={() => onOrderSelect(order)}
+          isComparing={selectedOrders.some(selected => selected.id === order.id)}
         />
+      ))}
+
+      {selectedOrders.length > 0 && (
+        <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg border z-10">
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary">
+              {selectedOrders.length} {selectedOrders.length === 1 ? 'order' : 'orders'} selected
+            </Badge>
+            {selectedOrders.length === 2 && (
+              <Badge variant="default">
+                Ready to compare
+              </Badge>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
-};
+}

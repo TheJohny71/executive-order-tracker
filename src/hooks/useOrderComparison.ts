@@ -1,53 +1,30 @@
 // File: src/hooks/useOrderComparison.ts
-// Description: Hook for managing order comparison state and logic
-
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import type { Order } from '@/types';
 
-interface UseOrderComparisonReturn {
-  selectedOrders: Order[];
-  isComparing: boolean;
-  canAddToComparison: boolean;
-  addOrder: (order: Order) => void;
-  removeOrder: (orderId: string) => void;
-  clearComparison: () => void;
-  toggleComparison: () => void;
-}
-
-export function useOrderComparison(maxComparisons = 2): UseOrderComparisonReturn {
+export function useOrderComparison() {
   const [selectedOrders, setSelectedOrders] = useState<Order[]>([]);
-  const [isComparing, setIsComparing] = useState(false);
 
-  const canAddToComparison = selectedOrders.length < maxComparisons;
-
-  const addOrder = useCallback((order: Order) => {
+  const toggleOrderSelection = (order: Order) => {
     setSelectedOrders(prev => {
-      if (prev.length >= maxComparisons) return prev;
-      if (prev.some(o => o.id === order.id)) return prev;
-      return [...prev, order];
+      const orderIndex = prev.findIndex(selected => selected.id === order.id);
+      if (orderIndex === -1) {
+        // Add order if not already selected and limit to 2 selections
+        return prev.length < 2 ? [...prev, order] : prev;
+      } else {
+        // Remove order if already selected
+        return prev.filter(selected => selected.id !== order.id);
+      }
     });
-  }, [maxComparisons]);
+  };
 
-  const removeOrder = useCallback((orderId: string) => {
-    setSelectedOrders(prev => prev.filter(order => order.id !== orderId));
-  }, []);
-
-  const clearComparison = useCallback(() => {
+  const clearSelectedOrders = () => {
     setSelectedOrders([]);
-    setIsComparing(false);
-  }, []);
-
-  const toggleComparison = useCallback(() => {
-    setIsComparing(prev => !prev);
-  }, []);
+  };
 
   return {
     selectedOrders,
-    isComparing,
-    canAddToComparison,
-    addOrder,
-    removeOrder,
-    clearComparison,
-    toggleComparison
+    toggleOrderSelection,
+    clearSelectedOrders
   };
 }

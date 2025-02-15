@@ -4,7 +4,7 @@ import {
   ChevronDown, 
   ChevronUp, 
   Download, 
-  Link, 
+  Link as LinkIcon, 
   GitCompare,
   Bookmark,
   MessageSquare 
@@ -24,6 +24,7 @@ interface OrderCardProps {
   isSelectable?: boolean;
   onSelect?: (order: Order) => void;
   className?: string;
+  isComparing?: boolean;
 }
 
 type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
@@ -45,22 +46,35 @@ export function OrderCard({
   order,
   isSelectable = false,
   onSelect,
-  className = ''
+  className = '',
+  isComparing = false
 }: OrderCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const handleLinkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (order.link) {
+      window.open(order.link, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleCompareClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onSelect?.(order);
+  };
+
   return (
-    <Card className={`transition-all duration-200 ${className}`}>
+    <Card className={`transition-all duration-200 ${className} ${isComparing ? 'ring-2 ring-primary' : ''}`}>
       <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
         <CollapsibleTrigger className="w-full">
-          <CardHeader className="cursor-pointer hover:bg-gray-50">
+          <CardHeader className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800">
             <div className="flex items-center justify-between">
               <div className="flex items-start space-x-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold">
                     {order.title}
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     Published {new Date(order.datePublished).toLocaleDateString()}
                   </p>
                 </div>
@@ -70,9 +84,9 @@ export function OrderCard({
                   {order.status.name}
                 </Badge>
                 {isExpanded ? (
-                  <ChevronUp className="h-5 w-5 text-gray-400" />
+                  <ChevronUp className="h-5 w-5 text-muted-foreground" />
                 ) : (
-                  <ChevronDown className="h-5 w-5 text-gray-400" />
+                  <ChevronDown className="h-5 w-5 text-muted-foreground" />
                 )}
               </div>
             </div>
@@ -84,17 +98,17 @@ export function OrderCard({
             <div className="space-y-4">
               {/* Summary */}
               <div>
-                <h4 className="text-sm font-medium text-gray-500 mb-2">
+                <h4 className="text-sm font-medium text-muted-foreground mb-2">
                   Summary
                 </h4>
-                <p className="text-gray-700">{order.summary}</p>
+                <p className="text-sm">{order.summary}</p>
               </div>
 
               {/* Metadata */}
               <div className="grid grid-cols-2 gap-4">
                 {/* Agency */}
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">
+                  <h4 className="text-sm font-medium text-muted-foreground mb-2">
                     Agency
                   </h4>
                   <div className="flex flex-wrap gap-2">
@@ -106,7 +120,7 @@ export function OrderCard({
 
                 {/* Category */}
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">
+                  <h4 className="text-sm font-medium text-muted-foreground mb-2">
                     Category
                   </h4>
                   <div className="flex flex-wrap gap-2">
@@ -134,10 +148,7 @@ export function OrderCard({
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelect?.(order);
-                    }}
+                    onClick={handleCompareClick}
                   >
                     <GitCompare className="h-4 w-4 mr-2" />
                     Compare
@@ -154,12 +165,9 @@ export function OrderCard({
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open(order.link, '_blank');
-                    }}
+                    onClick={handleLinkClick}
                   >
-                    <Link className="h-4 w-4 mr-2" />
+                    <LinkIcon className="h-4 w-4 mr-2" />
                     Source
                   </Button>
                 )}

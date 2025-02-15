@@ -1,21 +1,22 @@
 // File: src/components/executive-orders/TrackerRoot.tsx
-// Description: Root component that combines all tracker components and manages state
-
-import React, { useState, useCallback } from 'react';
-import { useOrders } from '@/hooks/useOrders';
-import { useOrderComparison } from '@/hooks/useOrderComparison';
-import { TrackerLayout } from './layouts/TrackerLayout';
-import { TrackerHeader } from './layouts/TrackerHeader';
-import { TrackerSidebar } from './layouts/TrackerSidebar';
+import React from 'react';
+import { useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchOrders } from '@/lib/api';
+import type { DocumentType, OrderFilters } from '@/types';
 import { OrderList } from './features/OrderList';
 import { OrderComparison } from './features/OrderComparison';
-import type { OrderFilters, Order } from '@/types';
+import { useSearchParams } from 'next/navigation';
+import { useOrderComparison } from '@/hooks/useOrderComparison';
+import { FilterBar } from './features/FilterBar';
+import { Button } from '@/components/ui/button';
+import { RotateCw } from 'lucide-react';
 
 const initialFilters: OrderFilters = {
   type: 'all',
   category: '',
   agency: '',
-  statusId: null, // Changed from status to statusId
+  statusId: undefined,
   search: '',
   page: 1,
   limit: 10,
@@ -23,98 +24,81 @@ const initialFilters: OrderFilters = {
 };
 
 export function TrackerRoot() {
-  // State management
-  const [filters, setFilters] = useState<OrderFilters>(initialFilters);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const searchParams = useSearchParams();
+  const { selectedOrders, toggleOrderSelection, clearSelectedOrders } = useOrderComparison();
   
-  // Order comparison state
-  const {
-    selectedOrders,
-    isComparing,
-    canAddToComparison,
-    addOrder,
-    removeOrder,
-    clearComparison,
-    toggleComparison
-  } = useOrderComparison();
+  // Get filters from URL params with proper type handling
+  const filters = {
+    ...initialFilters,
+    type: (searchParams?.get('type') as DocumentType) || initialFilters.type,
+    category: searchParams?.get('category') || initialFilters.category,
+    agency: searchParams?.get('agency') || initialFilters.agency,
+    statusId: searchParams?.get('statusId') ? Number(searchParams.get('statusId')) : undefined,
+    search: searchParams?.get('search') || initialFilters.search,
+    page: Number(searchParams?.get('page')) || initialFilters.page,
+    limit: Number(searchParams?.get('limit')) || initialFilters.limit,
+    sort: searchParams?.get('sort') || initialFilters.sort,
+  };
 
-  // Fetch orders using your existing hook
-  const { data, loading, error } = useOrders(filters); // Removed mutate as it's not in the type
+  // Fetch orders with current filters
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['orders', filters],
+    queryFn: () => fetchOrders(filters),
+  });
 
-  // Callback handlers
-  const handleSearch = useCallback((query: string) => {
-    setFilters(prev => ({ ...prev, search: query, page: 1 }));
-  }, []);
+  const handleRefresh = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
-  const handleFilterChange = useCallback((type: string, value: string) => {
-    setFilters(prev => ({ ...prev, [type]: value, page: 1 }));
-  }, []);
-
-  const handleCreateNew = useCallback(() => {
-    // Implement your create new logic
-    console.log('Create new clicked');
-  }, []);
-
-  const handleExport = useCallback(() => {
-    // Implement your export logic
-    console.log('Export clicked');
-  }, []);
-
-  const handleThemeToggle = useCallback(() => {
-    setIsDarkMode(prev => !prev);
-  }, []);
-
-  // Error handling
   if (error) {
     return (
-      <div className="p-8 text-center">
-        <p className="text-red-500">Error loading orders: {error}</p>
+      <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
+        <p className="text-lg text-red-600">Error loading orders</p>
+        <Button onClick={handleRefresh} variant="outline">
+          <RotateCw className="h-4 w-4 mr-2" />
+          Retry
+        </Button>
       </div>
     );
   }
 
-  const lastUpdated = data?.metadata?.lastUpdate || new Date(); // Added fallback
+  const lastUpdated = data?.metadata?.updatedAt ? new Date(data.metadata.updatedAt) : new Date();
 
   return (
-    <div className={isDarkMode ? 'dark' : ''}>
-      <TrackerHeader
-        onSearch={handleSearch}
-        onCreateNew={handleCreateNew}
-        onThemeToggle={handleThemeToggle}
-      />
-      
-      <TrackerLayout orders={data?.orders || []} lastUpdate={lastUpdated}>
-        {isComparing && selectedOrders.length > 0 ? (
+    <div className="container mx-auto py-6">
+      <div className="flex flex-col space-y-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Executive Orders</h1>
+          <Button onClick={handleRefresh} variant="outline" size="sm">
+            <RotateCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
+
+        <FilterBar
+          metadata={data?.metadata}
+          currentFilters={filters}
+          isLoading={isLoading}
+        />
+
+        {selectedOrders.length > 0 ? (
           <OrderComparison
             orders={selectedOrders}
-            onClose={clearComparison}
-            onRemoveOrder={removeOrder}
+            onClose={clearSelectedOrders}
           />
         ) : (
-          <div className="flex gap-6">
-            <TrackerSidebar
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              categories={data?.metadata?.categories || []}
-              agencies={data?.metadata?.agencies || []}
-              statuses={data?.metadata?.statuses || []}
-              onExport={handleExport}
-              onCompare={toggleComparison}
-            />
-            
-            <main className="flex-1">
-              <OrderList
-                orders={data?.orders || []}
-                loading={loading}
-                isComparing={isComparing}
-                onOrderSelect={addOrder}
-                pagination={data?.pagination}
-                onPageChange={(page) => setFilters(prev => ({ ...prev, page }))}
-              />
-            </main>
-          </div>
+          <OrderList
+            orders={data?.orders || []}
+            isLoading={isLoading}
+            selectedOrders={selectedOrders}
+            onOrderSelect={toggleOrderSelection}
+          />
         )}
-      </TrackerLayout>
+
+        <div className="text-sm text-gray-500 text-right">
+          Last updated: {lastUpdated.toLocaleString()}
+        </div>
+      </div>
     </div>
   );
 }

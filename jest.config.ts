@@ -14,7 +14,9 @@ const config: JestConfigWithTsJest = {
       {
         useESM: true,
         tsconfig: {
-          jsx: 'react-jsx'
+          jsx: 'react-jsx',
+          module: 'NodeNext',
+          moduleResolution: 'NodeNext'
         }
       },
     ],

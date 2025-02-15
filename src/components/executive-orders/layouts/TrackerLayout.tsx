@@ -1,31 +1,77 @@
 // File: src/components/executive-orders/layouts/TrackerLayout.tsx
-// Description: Main layout component for the executive order tracker
-
 import React from 'react';
+import { TrackerHeader } from './TrackerHeader';
+import { TrackerSidebar } from './TrackerSidebar';
 import { StatsCards } from '../features/StatsCards';
-import { useOrderStats } from '@/hooks/useOrderStats';
-import type { Order } from '@/types';
+import type { Order, OrderFilters, OrderMetadata } from '@/types';
 
 interface TrackerLayoutProps {
   children: React.ReactNode;
   orders: Order[];
+  filters: OrderFilters;
+  metadata: OrderMetadata;
   lastUpdate?: string | null;
+  onFilterChange: (type: keyof OrderFilters, value: string) => void;
+  onExport: () => void;
+  onCompare: () => void;
+  onSearch: (query: string) => void;
+  onCreateNew: () => void;
   className?: string;
 }
 
 export function TrackerLayout({ 
   children, 
-  orders, 
+  orders,
+  filters,
+  metadata,
   lastUpdate,
+  onFilterChange,
+  onExport,
+  onCompare,
+  onSearch,
+  onCreateNew,
   className = '' 
 }: TrackerLayoutProps) {
-  const stats = useOrderStats({ orders, lastUpdate });
-
   return (
-    <div className={`min-h-screen bg-gray-50 ${className}`}>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <TrackerHeader 
+        onSearch={onSearch}
+        onCreateNew={onCreateNew}
+        onThemeToggle={() => {}} // We can implement theme toggle later
+      />
+
+      {/* Main Content */}
       <div className="max-w-screen-2xl mx-auto px-4 py-8">
-        <StatsCards stats={stats.orderStats} className="mb-8" />
-        <main>{children}</main>
+        {/* Stats Section */}
+        <StatsCards stats={{
+          totalOrders: orders.length,
+          activeOrders: orders.filter(o => o.status.name.toLowerCase() === 'active').length,
+          newOrdersThisMonth: orders.filter(o => {
+            const orderDate = new Date(o.datePublished);
+            const today = new Date();
+            return orderDate.getMonth() === today.getMonth() && 
+                   orderDate.getFullYear() === today.getFullYear();
+          }).length,
+          pendingReview: orders.filter(o => o.status.name.toLowerCase() === 'pending').length,
+        }} className="mb-8" />
+
+        {/* Content Grid */}
+        <div className="flex gap-6">
+          {/* Sidebar */}
+          <TrackerSidebar
+            filters={filters}
+            metadata={metadata}
+            onFilterChange={onFilterChange}
+            onExport={onExport}
+            onCompare={onCompare}
+          />
+
+          {/* Main Content Area */}
+          <main className="flex-1">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   );

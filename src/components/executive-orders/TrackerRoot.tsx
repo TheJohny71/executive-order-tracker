@@ -1,14 +1,13 @@
 // File: src/components/executive-orders/TrackerRoot.tsx
-import React from 'react';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchOrders } from '@/lib/api';
-import type { DocumentType, OrderFilters } from '@/types';
-import { OrderList } from './features/OrderList';
-import { OrderComparison } from './features/OrderComparison';
 import { useSearchParams } from 'next/navigation';
+import { fetchOrders } from '@/lib/api';
+import { TrackerLayout } from './layouts/TrackerLayout';
+import { OrderList } from './features/OrderList';
+import OrderComparison from './features/OrderComparison';
 import { useOrderComparison } from '@/hooks/useOrderComparison';
-import { FilterBar } from './features/FilterBar';
+import type { DocumentType, OrderFilters } from '@/types';
 import { Button } from '@/components/ui/button';
 import { RotateCw } from 'lucide-react';
 
@@ -20,14 +19,16 @@ const initialFilters: OrderFilters = {
   search: '',
   page: 1,
   limit: 10,
-  sort: 'desc'
+  sort: 'desc',
+  dateFrom: '',
+  dateTo: ''
 };
 
 export function TrackerRoot() {
   const searchParams = useSearchParams();
   const { selectedOrders, toggleOrderSelection, clearSelectedOrders } = useOrderComparison();
   
-  // Get filters from URL params with proper type handling
+  // Get filters from URL params
   const filters = {
     ...initialFilters,
     type: (searchParams?.get('type') as DocumentType) || initialFilters.type,
@@ -38,6 +39,8 @@ export function TrackerRoot() {
     page: Number(searchParams?.get('page')) || initialFilters.page,
     limit: Number(searchParams?.get('limit')) || initialFilters.limit,
     sort: searchParams?.get('sort') || initialFilters.sort,
+    dateFrom: searchParams?.get('dateFrom') || initialFilters.dateFrom,
+    dateTo: searchParams?.get('dateTo') || initialFilters.dateTo,
   };
 
   // Fetch orders with current filters
@@ -46,7 +49,39 @@ export function TrackerRoot() {
     queryFn: () => fetchOrders(filters),
   });
 
-  const handleRefresh = useCallback(() => {
+  const handleFilterChange = useCallback((type: keyof OrderFilters, value: string) => {
+    const newParams = new URLSearchParams(searchParams?.toString());
+    if (value) {
+      newParams.set(type, value);
+    } else {
+      newParams.delete(type);
+    }
+    if (type !== 'page') {
+      newParams.delete('page'); // Reset pagination when filters change
+    }
+    window.history.pushState({}, '', `?${newParams.toString()}`);
+    refetch();
+  }, [searchParams, refetch]);
+
+  const handleExport = useCallback(() => {
+    // Implement export functionality
+    console.log('Export clicked', {
+      filters,
+      selectedOrders: selectedOrders.map(o => o.id)
+    });
+  }, [filters, selectedOrders]);
+
+  const handleSearch = useCallback((query: string) => {
+    handleFilterChange('search', query);
+  }, [handleFilterChange]);
+
+  const handleCreateNew = useCallback(() => {
+    // Implement create new functionality
+    console.log('Create new clicked');
+  }, []);
+
+  const handleClearFilters = useCallback(() => {
+    window.history.pushState({}, '', window.location.pathname);
     refetch();
   }, [refetch]);
 
@@ -54,7 +89,7 @@ export function TrackerRoot() {
     return (
       <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
         <p className="text-lg text-red-600">Error loading orders</p>
-        <Button onClick={handleRefresh} variant="outline">
+        <Button onClick={refetch} variant="outline">
           <RotateCw className="h-4 w-4 mr-2" />
           Retry
         </Button>
@@ -65,40 +100,35 @@ export function TrackerRoot() {
   const lastUpdated = data?.metadata?.updatedAt ? new Date(data.metadata.updatedAt) : new Date();
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex flex-col space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Executive Orders</h1>
-          <Button onClick={handleRefresh} variant="outline" size="sm">
-            <RotateCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
-        </div>
-
-        <FilterBar
-          metadata={data?.metadata}
-          currentFilters={filters}
-          isLoading={isLoading}
+    <TrackerLayout
+      orders={data?.orders || []}
+      filters={filters}
+      metadata={data?.metadata || { categories: [], agencies: [], statuses: [] }}
+      lastUpdate={lastUpdated.toISOString()}
+      onFilterChange={handleFilterChange}
+      onClearFilters={handleClearFilters}
+      onExport={handleExport}
+      onCompare={clearSelectedOrders}
+      onSearch={handleSearch}
+      onCreateNew={handleCreateNew}
+    >
+      {selectedOrders.length > 0 ? (
+        <OrderComparison
+          orders={selectedOrders}
+          onClose={clearSelectedOrders}
         />
-
-        {selectedOrders.length > 0 ? (
-          <OrderComparison
-            orders={selectedOrders}
-            onClose={clearSelectedOrders}
-          />
-        ) : (
-          <OrderList
-            orders={data?.orders || []}
-            isLoading={isLoading}
-            selectedOrders={selectedOrders}
-            onOrderSelect={toggleOrderSelection}
-          />
-        )}
-
-        <div className="text-sm text-gray-500 text-right">
-          Last updated: {lastUpdated.toLocaleString()}
-        </div>
+      ) : (
+        <OrderList
+          orders={data?.orders || []}
+          isLoading={isLoading}
+          selectedOrders={selectedOrders}
+          onOrderSelect={toggleOrderSelection}
+        />
+      )}
+      
+      <div className="mt-4 text-sm text-gray-500 text-right">
+        Last updated: {lastUpdated.toLocaleString()}
       </div>
-    </div>
+    </TrackerLayout>
   );
 }

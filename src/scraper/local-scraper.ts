@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer-core';
+import puppeteer, { Page, Browser, PuppeteerLaunchOptions } from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { PrismaClient, DocumentType } from '@prisma/client';
 import type { ScrapedOrder } from '../types/index.js';
@@ -38,7 +38,7 @@ interface WPBlockData {
     [key: string]: any;
 }
 
-async function extractJsonData(page: puppeteer.Page): Promise<ScrapedOrder[] | null> {
+async function extractJsonData(page: Page): Promise<ScrapedOrder[] | null> {
     try {
         const jsonData = await page.evaluate(() => {
             const selectors = [
@@ -160,13 +160,15 @@ function determineDocumentType(title: string): DocumentType {
 async function scrapePresidentialActions(): Promise<ScrapedOrder[]> {
     logger.info(`Starting scrape for presidential actions from ${CURRENT_YEAR}...`);
     
-    const browser = await puppeteer.launch({
+    const launchOptions = {
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
         executablePath: await chromium.executablePath(),
-        headless: chromium.headless,
+        headless: true,
         ignoreHTTPSErrors: true,
-    });
+    };
+    
+    const browser = await puppeteer.launch(launchOptions);
     
     try {
         const page = await browser.newPage();
@@ -193,7 +195,7 @@ async function scrapePresidentialActions(): Promise<ScrapedOrder[]> {
     }
 }
 
-async function scrapeFromHtml(page: puppeteer.Page): Promise<ScrapedOrder[]> {
+async function scrapeFromHtml(page: Page): Promise<ScrapedOrder[]> {
     const actions: ScrapedOrder[] = [];
     let currentPage = 1;
     let hasMorePages = true;
@@ -216,10 +218,11 @@ async function scrapeFromHtml(page: puppeteer.Page): Promise<ScrapedOrder[]> {
             const pageActions = await page.evaluate(() => {
                 const actionElements = document.querySelectorAll('h2 a, h3 a');
                 return Array.from(actionElements).map(link => {
-                    const container = link.closest('article') || link.closest('li');
+                    const element = link as HTMLAnchorElement;
+                    const container = element.closest('article') || element.closest('li');
                     
-                    const title = link.textContent?.trim() || '';
-                    const url = link.getAttribute('href') || '';
+                    const title = element.textContent?.trim() || '';
+                    const url = element.getAttribute('href') || '';
                     
                     const dateElement = container?.querySelector('time') || 
                                       container?.querySelector('.date, .entry-date');
@@ -267,7 +270,9 @@ async function scrapeFromHtml(page: puppeteer.Page): Promise<ScrapedOrder[]> {
                         agencies: [],
                         isNew: true,
                         metadata: {
-                            orderNumber: extractOrderNumber(action.title)
+                            orderNumber: extractOrderNumber(action.title),
+                            categories: [],
+                            agencies: []
                         }
                     };
                     

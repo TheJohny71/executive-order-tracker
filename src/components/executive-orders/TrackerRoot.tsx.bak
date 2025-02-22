@@ -1,5 +1,5 @@
 // File: src/components/executive-orders/TrackerRoot.tsx
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { fetchOrders } from '@/lib/api';
@@ -27,7 +27,6 @@ const initialFilters: OrderFilters = {
 export function TrackerRoot() {
   const searchParams = useSearchParams();
   const { selectedOrders, toggleOrderSelection, clearSelectedOrders } = useOrderComparison();
-  const [viewMode, setViewMode] = useState<'standard' | 'focus'>('standard');
   
   // Get filters from URL params
   const filters = {
@@ -86,15 +85,11 @@ export function TrackerRoot() {
     refetch();
   }, [refetch]);
 
-  const handleViewModeChange = useCallback((mode: 'standard' | 'focus') => {
-    setViewMode(mode);
-  }, []);
-
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
         <p className="text-lg text-red-600">Error loading orders</p>
-        <Button onClick={() => refetch()} variant="outline">
+        <Button onClick={refetch} variant="outline">
           <RotateCw className="h-4 w-4 mr-2" />
           Retry
         </Button>
@@ -103,19 +98,6 @@ export function TrackerRoot() {
   }
 
   const lastUpdated = data?.metadata?.updatedAt ? new Date(data.metadata.updatedAt) : new Date();
-
-  // Calculate stats
-  const stats = {
-    activeOrders: data?.orders.filter(o => o.status.name.toLowerCase() === 'active').length || 0,
-    pendingReview: data?.orders.filter(o => o.status.name.toLowerCase() === 'pending').length || 0,
-    newOrdersThisMonth: data?.orders.filter(o => {
-      const orderDate = new Date(o.datePublished);
-      const today = new Date();
-      return orderDate.getMonth() === today.getMonth() && 
-             orderDate.getFullYear() === today.getFullYear();
-    }).length || 0,
-    totalOrders: data?.orders.length || 0
-  };
 
   return (
     <TrackerLayout
@@ -129,9 +111,6 @@ export function TrackerRoot() {
       onCompare={clearSelectedOrders}
       onSearch={handleSearch}
       onCreateNew={handleCreateNew}
-      stats={stats}
-      viewMode={viewMode}
-      onViewModeChange={handleViewModeChange}
     >
       {selectedOrders.length > 0 ? (
         <OrderComparison
@@ -139,25 +118,17 @@ export function TrackerRoot() {
           onClose={clearSelectedOrders}
         />
       ) : (
-        <div className="space-y-6">
-          <OrderList
-            orders={data?.orders || []}
-            isLoading={isLoading}
-            selectedOrders={selectedOrders}
-            onOrderSelect={toggleOrderSelection}
-            viewMode={viewMode}
-          />
-          
-          <div className="flex items-center justify-between text-sm text-gray-500 px-4">
-            <span>
-              Showing {data?.orders.length || 0} of {data?.metadata?.total || 0} orders
-            </span>
-            <span>
-              Last updated: {lastUpdated.toLocaleString()}
-            </span>
-          </div>
-        </div>
+        <OrderList
+          orders={data?.orders || []}
+          isLoading={isLoading}
+          selectedOrders={selectedOrders}
+          onOrderSelect={toggleOrderSelection}
+        />
       )}
+      
+      <div className="mt-4 text-sm text-gray-500 text-right">
+        Last updated: {lastUpdated.toLocaleString()}
+      </div>
     </TrackerLayout>
   );
 }

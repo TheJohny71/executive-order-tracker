@@ -1,4 +1,3 @@
-// File: src/components/executive-orders/ui/OrderCard.tsx
 import React from 'react';
 import { 
   MessageSquare, 
@@ -16,14 +15,10 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import type { Order } from '@/types';
+import type { Order, ViewModeProps, SelectableProps } from '@/types';
 
-interface OrderCardProps {
+interface OrderCardProps extends ViewModeProps, SelectableProps {
   order: Order;
-  isSelectable?: boolean;
-  onSelect?: () => void;
-  isComparing?: boolean;
-  viewMode?: 'standard' | 'focus';
 }
 
 export function OrderCard({ 
@@ -88,8 +83,8 @@ export function OrderCard({
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">Agencies</h4>
                   <div className="flex flex-wrap gap-2">
-                    {order.agencies?.map((agency, index) => (
-                      <Badge key={index} variant="outline">{agency.name}</Badge>
+                    {order.agencies.map((agency) => (
+                      <Badge key={agency.id} variant="outline">{agency.name}</Badge>
                     ))}
                   </div>
                 </div>
@@ -97,8 +92,8 @@ export function OrderCard({
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">Categories</h4>
                   <div className="flex flex-wrap gap-2">
-                    {order.categories?.map((category, index) => (
-                      <Badge key={index} variant="secondary">{category.name}</Badge>
+                    {order.categories.map((category) => (
+                      <Badge key={category.id} variant="secondary">{category.name}</Badge>
                     ))}
                   </div>
                 </div>

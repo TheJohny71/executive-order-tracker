@@ -12,6 +12,7 @@ export type FilterType =
   | "limit"
   | "statusId"
   | "sort";
+
 export type SelectableValue = string | number | null;
 
 // Database Record Type (matches Prisma schema)
@@ -35,27 +36,41 @@ export interface OrderDbRecord {
   } | null;
 }
 
-// Order Interfaces
+// Base Types for Enhanced UI
+export interface Agency {
+  id: number;
+  name: string;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+}
+
+export interface Status {
+  id: number;
+  name: string;
+  color: string | null;
+}
+
+// Order Interface - Enhanced for UI
 export interface Order {
   id: number;
-  number: string;
+  number: string | null;
   title: string;
-  summary: string;
+  summary: string | null;
   type: DocumentType;
   datePublished: Date;
-  category: string;
-  agency: string | null;
-  statusId: number;
-  status: {
-    id: number;
-    name: string;
-    color: string | null;
-  };
   link: string | null;
   createdAt: Date;
   updatedAt: Date;
+  statusId: number;
+  status: Status;
+  agencies: Agency[];
+  categories: Category[];
 }
 
+// Filter and Query Types
 export interface OrderFilters {
   type: DocumentType | "all" | "";
   category: string;
@@ -69,20 +84,14 @@ export interface OrderFilters {
   sort?: "asc" | "desc" | string;
 }
 
-// Metadata and Status Interfaces
 export interface OrderMetadata {
   categories: string[];
   agencies: string[];
-  statuses: OrderStatus[];
+  statuses: Status[];
+  total?: number;
+  updatedAt?: string;
 }
 
-export interface OrderStatus {
-  id: number;
-  name: string;
-  color: string | null;
-}
-
-// Pagination Interfaces
 export interface PaginationData {
   total: number;
   page: number;
@@ -96,25 +105,42 @@ export interface OrdersResponse {
   pagination: PaginationData;
 }
 
-// Scraper Related Interfaces
-export interface ScrapedOrder {
-  identifier: string;
+// Component Props Types
+export interface ViewModeProps {
+  viewMode: "standard" | "focus";
+}
+
+export interface SelectableProps {
+  isSelectable?: boolean;
+  onSelect?: () => void;
+  isComparing?: boolean;
+}
+
+// Stats Types
+export interface OrderStats {
+  totalOrders: number;
+  activeOrders: number;
+  newOrdersThisMonth: number;
+  pendingReview: number;
+}
+
+export interface OrderStatusDistribution {
+  status: string;
+  count: number;
+  percentage: number;
+}
+
+export interface OrderTypeDistribution {
   type: DocumentType;
-  title: string;
-  date: Date;
-  url: string;
-  summary: string;
-  content: string | null;
-  notes: string | null;
-  statusId: string;
-  isNew: boolean;
-  categories: Array<{ name: string }>;
-  agencies: Array<{ name: string }>;
-  metadata?: {
-    orderNumber?: string;
-    categories?: Array<{ name: string }>;
-    agencies?: Array<{ name: string }>;
-  };
+  count: number;
+  percentage: number;
+}
+
+export interface DashboardStats {
+  orderStats: OrderStats;
+  statusDistribution: OrderStatusDistribution[];
+  typeDistribution: OrderTypeDistribution[];
+  lastUpdated: Date;
 }
 
 // Query Related Types
@@ -200,6 +226,27 @@ export interface OrderWhereInput {
     some: {
       name: string;
     };
+  };
+}
+
+// Scraper Related Types
+export interface ScrapedOrder {
+  identifier: string;
+  type: DocumentType;
+  title: string;
+  date: Date;
+  url: string;
+  summary: string;
+  content: string | null;
+  notes: string | null;
+  statusId: string;
+  isNew: boolean;
+  categories: Array<{ name: string }>;
+  agencies: Array<{ name: string }>;
+  metadata?: {
+    orderNumber?: string;
+    categories?: Array<{ name: string }>;
+    agencies?: Array<{ name: string }>;
   };
 }
 

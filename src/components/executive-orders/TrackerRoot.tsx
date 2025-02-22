@@ -1,4 +1,3 @@
-// File: src/components/executive-orders/TrackerRoot.tsx
 import React, { useCallback, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
@@ -7,7 +6,7 @@ import { TrackerLayout } from './layouts/TrackerLayout';
 import { OrderList } from './features/OrderList';
 import OrderComparison from './features/OrderComparison';
 import { useOrderComparison } from '@/hooks/useOrderComparison';
-import type { DocumentType, OrderFilters } from '@/types';
+import type { DocumentType, Order, OrderFilters, OrderStats } from '@/types';
 import { Button } from '@/components/ui/button';
 import { RotateCw } from 'lucide-react';
 
@@ -105,7 +104,7 @@ export function TrackerRoot() {
   const lastUpdated = data?.metadata?.updatedAt ? new Date(data.metadata.updatedAt) : new Date();
 
   // Calculate stats
-  const stats = {
+  const stats: OrderStats = {
     activeOrders: data?.orders.filter(o => o.status.name.toLowerCase() === 'active').length || 0,
     pendingReview: data?.orders.filter(o => o.status.name.toLowerCase() === 'pending').length || 0,
     newOrdersThisMonth: data?.orders.filter(o => {
@@ -124,11 +123,11 @@ export function TrackerRoot() {
       metadata={data?.metadata || { categories: [], agencies: [], statuses: [] }}
       lastUpdate={lastUpdated.toISOString()}
       onFilterChange={handleFilterChange}
-      onClearFilters={handleClearFilters}
       onExport={handleExport}
       onCompare={clearSelectedOrders}
       onSearch={handleSearch}
       onCreateNew={handleCreateNew}
+      onClearFilters={handleClearFilters}
       stats={stats}
       viewMode={viewMode}
       onViewModeChange={handleViewModeChange}

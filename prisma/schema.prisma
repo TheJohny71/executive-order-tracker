@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Order {
+  id            Int            @id @default(autoincrement())
+  type          DocumentType
+  number        String?        @unique
+  title         String
+  summary       String?
+  datePublished DateTime
+  link          String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  statusId Int?
+  status   Status? @relation(fields: [statusId], references: [id])
+
+  // M:N relationships
+  categories Category[] @relation("OrderCategories")
+  agencies   Agency[]   @relation("OrderAgencies")
+}
+
+model Status {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  orders Order[]
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  orders Order[] @relation("OrderCategories")
+}
+
+model Agency {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  orders Order[] @relation("OrderAgencies")
+}
+
+enum DocumentType {
+  EXECUTIVE_ORDER
+  PROCLAMATION
+  MEMORANDUM
+}

@@ -1,0 +1,4 @@
+# Lambda build artifacts
+scraper-lambda/
+node_modules
+.env
